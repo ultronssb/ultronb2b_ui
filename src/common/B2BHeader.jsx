@@ -47,7 +47,7 @@ const B2BHeader = () => {
                     <FontAwesomeIcon icon={faGear} style={{ fontSize: '30px' }} />
                     <span>Settings</span>
                 </a>
-                <div class="animation start-home"></div>
+                <div className="animation start-home"></div>
                 <div className="search_icon">
                     <input type="search" placeholder="Search" />
                     <label className="icon">

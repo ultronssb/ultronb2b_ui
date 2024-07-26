@@ -1,8 +1,9 @@
 import { Tabs } from '@mantine/core';
 import React from 'react';
+import { ModuleJson } from '../ModuleData/ModuleJson';
 
 const B2BTabs = (props) => {
-    console.log(props);
+    const data = ModuleJson()
 
     const tabs = [
         { label: 'First Tab', value: 'first' },
@@ -14,9 +15,9 @@ const B2BTabs = (props) => {
     return (
         <Tabs defaultValue="first">
             <Tabs.List grow={props.grow} justify={props.justify}>
-                {tabs.map((tab) => (
-                    <Tabs.Tab key={tab.value} value={tab.value} style={{ outline: 'none' }}>
-                        {tab.label}
+                {data.map((tab) => (
+                    <Tabs.Tab key={tab.id} value={tab.id} style={{ outline: 'none' }}>
+                        {tab.name}
                     </Tabs.Tab>
                 ))}
             </Tabs.List>
