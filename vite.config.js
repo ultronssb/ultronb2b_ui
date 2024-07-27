@@ -5,6 +5,7 @@ import styleX from 'vite-plugin-stylex';
 export default defineConfig({
   plugins: [react(), styleX()],
   server: {
+    host: '0.0.0.0',
     port: 3000,
   },
   resolve: {

@@ -1,14 +1,11 @@
-import { Anchor, AppShell, AppShellSection, Autocomplete, Avatar, Burger, Grid, GridCol, Group, Image, NavLink, rem, Skeleton, Stack, UnstyledButton } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import B2BTabs from '../common/B2BTabs';
-import { data } from "../moduleData/Json"
-import _ from 'lodash';
-import logo from "../assets/logo.webp";
-import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
-import { IconSearch } from '@tabler/icons-react';
+import { Anchor, AppShell, Avatar, Grid, Group, Stack, UnstyledButton } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import _ from 'lodash';
+import { useEffect, useState } from 'react';
+import logo from "../assets/logo.webp";
+import { Body } from '../components/home/Body';
 import { ModuleJson } from '../moduleData/ModuleJson';
-import ProductHome from '../components/product/ProductHome';
 
 
 const GradientText = css`
@@ -116,7 +113,7 @@ export default function Layout() {
         </Grid>
       </AppShell.Header>
       <AppShell.Main>
-        <ProductHome tabsData={childTabs}/>
+        <Body tabsJson={childTabs} />
       </AppShell.Main>
     </AppShell>
   );
