@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { data } from "./Json";
 
-export function ModuleJson() {
+export function ModuleJson(parentId) {
 
     function buildTree(data, parentId = null) {
         return _.chain(data)
@@ -14,6 +14,6 @@ export function ModuleJson() {
             .value();
     }
 
-    return buildTree(data, null, 2);
+    return buildTree(data, parentId);
 }
 

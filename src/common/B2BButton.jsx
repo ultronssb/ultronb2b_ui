@@ -1,20 +1,32 @@
 import { Button, } from '@mantine/core'
 import React from 'react'
+import PropTypes from 'prop-types';
 
-const B2BButton = (props) => {
+const B2BButton = ({ style , variant, color, size, radius, onClick, disabled, name }) => {
     return (
         <Button
-            style={{ outline: 'none' }}
-            variant={props.variant}
-            color={props.color}
-            size={props.size}
-            radius={props.radius}
-            onClick={props.onClick}
-            disabled={props.disabled}
+            style={{ outline: 'none',...style }}
+            variant={variant}
+            color={color}
+            size={size}
+            radius={radius}
+            onClick={onClick}
+            disabled={disabled}
         >
-            {props.name}
+            {name}
         </Button>
     )
 }
 
 export default B2BButton
+
+B2BButton.propTypes = {
+    style: PropTypes.object,
+    variant: PropTypes.string,
+    color: PropTypes.string,
+    size: PropTypes.string,
+    radius: PropTypes.string,
+    onClick: PropTypes.func,
+    disabled: PropTypes.bool,
+    name: PropTypes.string,
+}
