@@ -8,7 +8,7 @@ const B2BTabs = ({tabsdData = [], grow, justify, onClick}) => {
     <Tabs defaultValue="first">
       <Tabs.List grow={grow} justify={justify}>
         {tabsdData.map((tab) => (
-          <Tabs.Tab key={tab.id} value={tab.id} style={{ outline: "none" }} onClick={() => onClick(tab.id)}>
+          <Tabs.Tab key={tab.id} value={tab.id} style={{ outline: "none" }} onClick={() => onClick(tab)}>
             {tab.name}
           </Tabs.Tab>
         ))}

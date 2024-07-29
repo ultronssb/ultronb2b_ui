@@ -1,11 +1,12 @@
 import { css } from '@emotion/react';
-import { Anchor, AppShell, Avatar, Grid, Group, Stack, UnstyledButton } from '@mantine/core';
+import { Anchor, AppShell, Avatar, Container, Grid, Group, Stack, UnstyledButton } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import logo from "../assets/logo.webp";
-import { Body } from '../components/home/Body';
 import { ModuleJson } from '../moduleData/ModuleJson';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import B2BTabs from '../common/B2BTabs';
 
 
 const GradientText = css`
@@ -29,23 +30,58 @@ export default function Layout() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [headerData, setHeaderData] = useState([])
   const [childTabs,setChildTabs] = useState([])
+  const [childParentId, setChildParentId] = useState()
+  const [buttonGroup, setButtonGroup] = useState([])
+
+  const navigate = useNavigate();
+  const { state } = useLocation();
 
   useEffect (() => {
     if(parentId === null) {
       setHeaderData(getTabsData())
     } else {
-        setChildTabs(getTabsData())
+        const childJson = getTabsData() || [];
+        setChildTabs(childJson)
+        const childId = childJson.length > 1 ? childJson[0].id : null
+        setButtonGroup(childId ? ModuleJson(childId): null)
+        setChildParentId(childId)
+        
     }
   },[parentId])
 
 
-  const handleLinkClick = (index, parentId) => {
+  useEffect(() => {
+     if(state != null) {
+        setParentId(state.parentId)
+        setHeaderData(ModuleJson(null))
+        const childparentId = state.childParentId;
+        if(childparentId) {
+            setChildParentId(childparentId)
+            setButtonGroup(state.buttonGroup)
+        }
+     }
+  },[state])
+
+
+
+  const handleLinkClick = (index, tab) => {
     setActiveIndex(index);
-    setParentId(parentId);
+    setParentId(tab.id);
+    navigate(tab.path, {state: {parentId: tab.id, from: "header", activeIndex: index}})
   };
 
   const getTabsData = () =>{
         return ModuleJson(parentId)    
+  }
+
+  const handleChildButtonClick = (tabs) => {
+    console.log(tabs)
+    navigate(tabs.path, { state : {parentId: parentId, from:'button',childParentId: childParentId , buttonGroup: buttonGroup }})
+  }
+
+  const getButtonGroups = (tabs) => {
+    setChildParentId(tabs.id)
+    setButtonGroup(ModuleJson(tabs.id))
   }
   
 
@@ -59,7 +95,7 @@ export default function Layout() {
             backgroundColor: theme.colors.gray[1],
           },
         })}
-        onClick={() => handleLinkClick(index, headernav.id)}
+        onClick={() => handleLinkClick(index, headernav)}
       >
         <Stack justify='center' align='center' gap={0}>
           {headernav.icon}
@@ -113,7 +149,11 @@ export default function Layout() {
         </Grid>
       </AppShell.Header>
       <AppShell.Main>
-        <Body tabsJson={childTabs} />
+        {_.size(childTabs) > 1 && <B2BTabs tabsdData={childTabs} justify={"flex-start"} onClick={getButtonGroups}/>}
+        {_.size(buttonGroup) > 1 && <B2BTabs tabsdData={buttonGroup} justify={"flex-start"} onClick={handleChildButtonClick} />}
+        <Container>
+            <Outlet/>
+        </Container>
       </AppShell.Main>
     </AppShell>
   );
