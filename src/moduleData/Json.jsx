@@ -7,7 +7,7 @@ export const data = [
     parent_id: null,
     orderBy: 1,
     path: "/",
-    icon: <span class="material-symbols-outlined">monitoring</span>
+    icon: <span className="material-symbols-outlined">monitoring</span>
   },
   {
     id: "2",
@@ -15,12 +15,12 @@ export const data = [
     parent_id: null,
     orderBy: 2,
     path: "/product/product-hierarchy",
-    icon: <span class="material-symbols-outlined">
+    icon: <span className="material-symbols-outlined">
       inventory_2</span>,
     defaultChildId: 8,
   },
   {
-    id: "3", name: "Sales", parent_id: null, orderBy: 3, path: "/sales", icon: <span class="material-symbols-outlined">
+    id: "3", name: "Sales", parent_id: null, orderBy: 3, path: "/sales", icon: <span className="material-symbols-outlined">
       shopping_cart</span>
   },
   {
@@ -28,12 +28,12 @@ export const data = [
     name: "Inventory",
     parent_id: null,
     orderBy: 4,
-    path: "/inventory",
-    icon: <span class="material-symbols-outlined">
+    path: "/inventory/stocks",
+    icon: <span className="material-symbols-outlined">
       inventory</span>
   },
   {
-    id: "5", name: "CRM", parent_id: null, orderBy: 5, path: "/crm", icon: <span class="material-symbols-outlined">
+    id: "5", name: "CRM", parent_id: null, orderBy: 5, path: "/crm", icon: <span className="material-symbols-outlined">
       volunteer_activism</span>
   },
   {
@@ -42,11 +42,11 @@ export const data = [
     parent_id: null,
     orderBy: 6,
     path: "/e-commerce",
-    icon: <span class="material-symbols-outlined">
+    icon: <span className="material-symbols-outlined">
       shoppingmode</span>
   },
   {
-    id: "7", name: "Settings", parent_id: null, orderBy: 7, path: "/settings", icon: <span class="material-symbols-outlined">
+    id: "7", name: "Settings", parent_id: null, orderBy: 7, path: "/settings", icon: <span className="material-symbols-outlined">
       settings</span>
   },
 
@@ -84,7 +84,7 @@ export const data = [
     name: "Barcode",
     parent_id: "2",
     orderBy: 6,
-    path: "/product/batcode",
+    path: "/product/barcode",
   },
   {
     id: "14",
@@ -94,12 +94,12 @@ export const data = [
     path: "/product/history",
   },
   { id: "15", name: "PIM", parent_id: "2", orderBy: 8, path: "/product/pim" },
-  { id: "16", name: "ProductHeirarchy", parent_id: '8', orderBy: 1 },
-  { id: "17", name: "Division", parent_id: "8", orderBy: 2 },
-  { id: "18", name: "Department", parent_id: "8", orderBy: 3 },
-  { id: "19", name: "Section", parent_id: "8", orderBy: 4 },
-  { id: "20", name: "Category", parent_id: "8", orderBy: 5 },
-  { id: "21", name: "Brand", parent_id: "8", orderBy: 6 },
+  { id: "16", name: "ProductHeirarchy", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy"},
+  { id: "17", name: "Division", parent_id: "8", orderBy: 2, path: "/product/division"},
+  { id: "18", name: "Department", parent_id: "8", orderBy: 3, path: "/product/department" },
+  { id: "19", name: "Section", parent_id: "8", orderBy: 4,path: "/product/section" },
+  { id: "20", name: "Category", parent_id: "8", orderBy: 5, path: "/product/category" },
+  { id: "21", name: "Brand", parent_id: "8", orderBy: 6, path: "/product/brand" },
 
   { id: "22", name: "Tax Masters", parent_id: "9", orderBy: 1 },
   { id: "23", name: "GST", parent_id: "9", orderBy: 2 },
@@ -156,13 +156,13 @@ export const data = [
 
   { id: "62", name: "Packing", parent_id: "50", orderBy: 1 },
 
-  { id: "63", name: "Stocks", parent_id: "4", orderBy: 1 },
-  { id: "64", name: "Collections", parent_id: "4", orderBy: 2 },
-  { id: "65", name: "Discounts", parent_id: "4", orderBy: 3 },
+  { id: "63", name: "Stocks", parent_id: "4", orderBy: 1, path:'/inventory/stocks' },
+  { id: "64", name: "Collections", parent_id: "4", orderBy: 2, path: "/inventory/collections"},
+  { id: "65", name: "Discounts", parent_id: "4", orderBy: 3, path: "/inventory/discounts" },
 
-  { id: "66", name: "Stocks", parent_id: "63", orderBy: 1 },
-  { id: "67", name: "opening Stock", parent_id: "63", orderBy: 2 },
-  { id: "68", name: "Bulk Upload", parent_id: "63", orderBy: 3 },
+  { id: "66", name: "Stocks", parent_id: "63", orderBy: 1, path:'/inventory/stocks' },
+  { id: "67", name: "Opening Stock", parent_id: "63", orderBy: 2, path:'/inventory/opening-stocks'},
+  { id: "68", name: "Bulk Upload", parent_id: "63", orderBy: 3, model: true},
 
   { id: "69", name: "Collections", parent_id: "64", orderBy: 1 },
   { id: "70", name: "Create Collection", parent_id: "64", orderBy: 2 },
