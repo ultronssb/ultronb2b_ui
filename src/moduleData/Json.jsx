@@ -7,7 +7,7 @@ export const data = [
     parent_id: null,
     orderBy: 1,
     path: "/",
-    icon: <span className="material-symbols-outlined">monitoring</span>
+    icon: <span className="material-symbols-outlined">monitoring</span>,
   },
   {
     id: "2",
@@ -15,13 +15,17 @@ export const data = [
     parent_id: null,
     orderBy: 2,
     path: "/product/product-hierarchy",
-    icon: <span className="material-symbols-outlined">
-      inventory_2</span>,
-    defaultChildId: 8,
+    icon: <span className="material-symbols-outlined">inventory_2</span>,
+    defaultChildId: "8",
   },
   {
-    id: "3", name: "Sales", parent_id: null, orderBy: 3, path: "/sales", icon: <span className="material-symbols-outlined">
-      shopping_cart</span>
+    id: "3", 
+    name: "Sales", 
+    parent_id: null, 
+    orderBy: 3, 
+    path: "/sales", 
+    icon: <span className="material-symbols-outlined">shopping_cart</span>,
+    defaultChildId: "45",
   },
   {
     id: "4",
@@ -29,12 +33,17 @@ export const data = [
     parent_id: null,
     orderBy: 4,
     path: "/inventory/stocks",
-    icon: <span className="material-symbols-outlined">
-      inventory</span>
+    icon: <span className="material-symbols-outlined">inventory</span>,
+    defaultChildId: "63",
   },
   {
-    id: "5", name: "CRM", parent_id: null, orderBy: 5, path: "/crm", icon: <span className="material-symbols-outlined">
-      volunteer_activism</span>
+    id: "5",
+    name: "CRM",
+    parent_id: null,
+    orderBy: 5,
+    path: "/crm",
+    icon: <span className="material-symbols-outlined">volunteer_activism</span>,
+    defaultChildId: "70"
   },
   {
     id: "6",
@@ -42,12 +51,16 @@ export const data = [
     parent_id: null,
     orderBy: 6,
     path: "/e-commerce",
-    icon: <span className="material-symbols-outlined">
-      shoppingmode</span>
+    icon: <span className="material-symbols-outlined">shoppingmode</span>,
+    defaultChildId: "86",
   },
   {
-    id: "7", name: "Settings", parent_id: null, orderBy: 7, path: "/settings", icon: <span className="material-symbols-outlined">
-      settings</span>
+    id: "7",
+    name: "Settings",
+    parent_id: null,
+    orderBy: 7, path: "/settings/company-profile", icon: <span className="material-symbols-outlined">
+      settings</span>,
+      defaultChildId: "96",
   },
 
 
@@ -184,10 +197,10 @@ export const data = [
   { id: "99", name: "Shipment", parent_id: "7", orderBy: 4, path: "/settings/shipment" },
   { id: "100", name: "Users", parent_id: "7", orderBy: 5, path: "/settings/user" },
 
-  { id: "101", name: "Company Profile", parent_id: "96", orderBy: 1, path: "/settings" },
-  { id: "102", name: "Other Settings", parent_id: "96", orderBy: 2, path: "/settings/other-setting" },
-  { id: "103", name: "Legal", parent_id: "96", orderBy: 3, path: "/settings/legal" },
-  { id: "104", name: "Business Rules", parent_id: "96", orderBy: 4, path: "/settings/business-rules" },
+  { id: "101", name: "Company Profile", parent_id: "96", orderBy: 1, path: '/settings/company-profile' },
+  { id: "102", name: "Other Settings", parent_id: "96", orderBy: 2, path: '/settings/other-settings' },
+  { id: "103", name: "Legal", parent_id: "96", orderBy: 3,path: '/settings/legal' },
+  { id: "104", name: "Business Rules", parent_id: "96", orderBy: 4, path: '/settings/business-rules' },
 
   { id: "105", name: "Location Details", parent_id: "97", orderBy: 1, path: "/settings/location" },
   { id: "106", name: "New Location", parent_id: "97", orderBy: 2, path: "/settings/location/new-location" },

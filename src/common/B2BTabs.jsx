@@ -5,10 +5,10 @@ import PropTypes from 'prop-types';
 const B2BTabs = ({ tabsData = [], grow, justify, onClick, variant, margin, activeId }) => {
 
   return (
-    <Tabs key={activeId} defaultValue={activeId} onChange={(value) => onClick(tabsData.find(tab => tab.id === value))} variant={variant} style={{ marginBottom: margin }}>
+    <Tabs color="var(--tab-label)" key={activeId} defaultValue={activeId} onChange={(value) => onClick(tabsData.find(tab => tab.id === value))} variant={variant} style={{ marginBottom: margin }}>
       <Tabs.List grow={grow} justify={justify}>
         {tabsData.map((tab) => (
-          <Tabs.Tab key={tab.id} value={tab.id} style={{ outline: "none" }}>
+          <Tabs.Tab key={tab.id} value={tab.id} styles={{tab :{borderRight: "1px solid var(--tab-label)"},tabLabel:{color:'var(--tab-label)'}}}>
             {tab.name}
           </Tabs.Tab>
         ))}

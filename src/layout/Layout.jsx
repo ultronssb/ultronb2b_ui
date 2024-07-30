@@ -1,95 +1,63 @@
-import { css } from '@emotion/react';
 import { AppShell, Avatar, Button, Container, Group } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import _ from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import avatar from '../avatar.jpg';
 import B2BTabs from '../common/B2BTabs';
 import '../common/Header.css';
 import { ModuleJson } from '../moduleData/ModuleJson';
+import logo from '../assets/logo.webp';
 
-
-
-const GradientText = css`
-  position: relative;
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    marigin-left: 5rem;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, var(--color1), var(--color2), var(--color3), var(--color4));
-    z-index: -1;
-    pointer-events: none;
-  }
-`;
 export default function Layout() {
-  const [opened, { toggle }] = useDisclosure();
-  const [parentId, setParentId] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [childTabs, setChildTabs] = useState([])
-  const [childParentId, setChildParentId] = useState()
-  const [buttonGroup, setButtonGroup] = useState([])
+  const [stateData, setStateData] = useState({
+    parentId: null,
+    activeIndex: 0,
+    childTabs: [],
+    childParentId: null,
+    buttonGroup: []
+  });
 
   const navigate = useNavigate();
   const { state } = useLocation();
-  const headerData = useMemo(() => ModuleJson(null), [])
+  const headerData = useMemo(() => ModuleJson(null), []);
 
   useEffect(() => {
-    if (parentId !== null) {
-      const childJson = getTabsData() || [];
-      setChildTabs(childJson)
-      const childId = childJson.length > 1 ? childJson[0].id : null
-      setButtonGroup(childId ? ModuleJson(childId) : null)
-      setChildParentId(childId)
+    if (state) {
+      setStateData({
+        parentId: state.parentId,
+        activeIndex: state.activeIndex,
+        childTabs: state.tabs,
+        childParentId: state.childParentId,
+        buttonGroup: state.childParentId ? ModuleJson(state.childParentId) : []
+      });
     }
-  }, [parentId])
+  }, [state]);
 
-  useEffect(() => {
-    if (state != null) {
-      setParentId(state.parentId)
-      setActiveIndex(state.activeIndex)
-      const childparentId = state.childParentId;
-      if (childparentId) {
-        setChildParentId(childparentId)
-        setButtonGroup(state.buttonGroup)
-      }
-    }
-  }, [state?.parentId, state?.childParentId])
-  
-  console.log(state?.activeIndex,"activeIndex",state?.childParentId,childParentId)
+  // This Funtion is used to navigate page from header 
+  const handleLinkClick = useCallback((index, tab) => {
+    navigate(tab.path, { state: { parentId: tab.id, tabs: tab.children, childParentId: tab.defaultChildId, activeIndex: index } });
+  }, [navigate]);
 
-  const handleLinkClick = (index, tab) => {
-    navigate(tab.path, { state: { parentId: tab.id, from: "header", activeIndex: index } })
-  };
+  // This Funtion is used to navigate page from Tab click
+  const handleTabClick = useCallback((tabs) => {
+    navigate(tabs.path, { state: { parentId: stateData.parentId, tabs: stateData.childTabs, buttonGroup: tabs.children, childParentId: tabs.id, activeIndex: state?.activeIndex } });
+  }, [navigate, stateData]);
 
-  const handleChildButtonClick = (tabs) => {
-    navigate(tabs.path, { state: { parentId: parentId, from: 'button', childParentId: childParentId, buttonGroup: buttonGroup, activeIndex: state?.activeIndex } })
-
-  }
-
-  const getButtonGroups = (tabs) => {
-    navigate(tabs.path,{ state: { parentId: parentId, from: 'button', childParentId: tabs.id, buttonGroup: buttonGroup, activeIndex: state?.activeIndex } })
-  }
-
-  const getTabsData = () => {
-    return ModuleJson(parentId)
-  }
-
+  // This Funtion is used to navigate page from Button click
+  const handleButtonClick = useCallback((tabs) => {
+    navigate(tabs.path, { state: { parentId: stateData.parentId, tabs: stateData.childTabs, buttonGroup: stateData.buttonGroup, childParentId: tabs.parent_id, activeIndex: state?.activeIndex } });
+  }, [navigate, stateData]);
 
   return (
     <AppShell header={{ height: 60 }} padding="md">
-      <AppShell.Header style={{ borderBottom: 'none' }}>
+      <AppShell.Header style={{ borderBottom: 'none'}}>
         <nav>
-          <h1>Swatchline</h1>
+          {/* <h1>Swatchline</h1> */}
+          <img src={logo} />
           {headerData.map((headernav, index) => (
-            <div key={headernav.id} className="header" onClick={() => handleLinkClick(index, headernav)} >
+            <div key={headernav.id} className="header" onClick={() => handleLinkClick(index, headernav)}>
               <span>{headernav.icon}</span>
               <span>{headernav.name}</span>
-              <span className={`active ${index === activeIndex ? 'visible' : ''}`}></span>
+              <span className={`active ${index === stateData.activeIndex ? 'visible' : ''}`}></span>
             </div>
           ))}
           <label className="person_name">Hi Sachin</label>
@@ -97,23 +65,21 @@ export default function Layout() {
         </nav>
       </AppShell.Header>
       <AppShell.Main>
-        {_.size(childTabs) > 1 && <B2BTabs tabsData={childTabs} justify={"flex-start"} onClick={getButtonGroups} activeId={childParentId} variant='default' margin='10px' />}
-        {
-          _.size(buttonGroup) > 1 && (
-            <Group>
-              {buttonGroup.map((button) => (
-                <Button
-                  key={button.id}
-                  variant={button.path === window.location.pathname ? 'filled' : 'default'}
-                  onClick={() => handleChildButtonClick(button)}
-                >
-                  {button.name}
-                </Button>
-              ))}
-            </Group>
-          )
-        }
-        {/* <B2BTabs tabsData={buttonGroup} justify={"flex-start"} onClick={handleChildButtonClick} /> */}
+        {stateData.childTabs.length > 1 && <B2BTabs tabsData={stateData.childTabs} justify={"flex-start"} onClick={handleTabClick} activeId={stateData.childParentId} variant='default' margin='10px' />}
+        {stateData.buttonGroup.length > 1 && (
+          <Group>
+            {stateData.buttonGroup.map((button) => (
+              <Button
+                key={button.id}
+                variant={button.path === window.location.pathname ? 'filled' : 'default'}
+                onClick={() => handleButtonClick(button)}
+                radius={15}
+              >
+                {button.name}
+              </Button>
+            ))}
+          </Group>
+        )}
         <Container>
           <Outlet />
         </Container>
