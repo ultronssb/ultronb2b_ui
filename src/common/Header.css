@@ -3,134 +3,61 @@
 * {
     margin: 0;
     padding: 0;
-    color: #f2f2f2;
     box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', Arial, sans-serif;
 }
 
 nav {
-    background-color: #069cab;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 5rem;
+    height: 4rem;
+    box-shadow: 0px 0px 2px;
 }
 
-nav a {
-    font-size: 15px;
+nav h1 {
+    font-size: 18px;
     font-weight: 800;
-    color: white;
+    background: linear-gradient(to right, #003366, #66B2B2, #FF6F61, #B3669E);
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    left: 1rem;
+}
+
+nav .header {
+    font-size: 12px;
+    font-weight: 600;
     text-decoration: none;
-    line-height: 30px;
     position: relative;
     z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0px 15px;
-    width: 110px;
-}
-
-nav .animation {
-    position: absolute;
-    height: 5rem;
-    z-index: 0;
-    width: 7.5rem;
-    background-color: #036e78;
-    border-radius: 8px;
-    transition: all .5s ease 0s;
-}
-
-nav a:nth-child(1) {
-    width: 110px;
-}
-
-nav a:nth-child(2) {
-    width: 110px;
-}
-
-nav a:nth-child(3) {
-    width: 110px;
-}
-
-nav a:nth-child(4) {
-    width: 110px;
-}
-
-nav a:nth-child(5) {
-    width: 110px;
-}
-
-nav a:nth-child(6) {
-    width: 110px;
-}
-
-nav a:nth-child(7) {
-    width: 110px;
-}
-
-nav a.active:nth-child(1) ~ .animation {
-    left: 0;
-}
-
-nav a.active:nth-child(2) ~ .animation {
-    left: 150px;
-}
-
-nav a.active:nth-child(3) ~ .animation {
-    left: 305px;
-}
-
-nav a.active:nth-child(4) ~ .animation {
-    left: 455px;
-}
-
-nav a.active:nth-child(5) ~ .animation {
-    left: 610px;
-}
-
-nav a.active:nth-child(6) ~ .animation {
-    left: 765px;
-}
-
-nav a.active:nth-child(7) ~ .animation {
-    left: 915px;
-}
-
-nav .search_icon {
-    height: 45px;
-    width: 240px;
-    display: flex;
-    background: #fff;
-    border-radius: 5px;
-}
-
-nav .search_icon input[type="search"] {
-    border: none;
-    background: transparent;
-    padding: 0.5rem;
-    border-radius: 5px 0 0 5px;
-    font-size: 1rem;
-    outline: none;
-    width: 200px;
+    padding: 0px 10px;
+    width: 100px;
     color: #000;
 }
 
-nav .search_icon .icon {
-    width: 40px;
-    text-align: center;
-    line-height: 50px;
-    border-radius: 0 5px 5px 0;
-    border-left: 1px solid #000;
-    background-color: #000;
-    cursor: pointer;
+nav .active {
+    position: absolute;
+    height: 0.2rem;
+    top: 3.3rem;
+    z-index: 0;
+    width: 6rem;
+    background-color: #036e78;
+    transition: all .5s ease 0s;
+    display: none;
+}
+
+.active.visible {
+    display: block;
 }
 
 nav .person_name {
     display: contents;
     width: 200px;
-    color: #fff;
     font-size: 15px;
     font-weight: 800;
 }
@@ -140,3 +67,78 @@ nav .avatar {
     right: 1rem;
 }
 
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    nav h1 {
+        font-size: 16px;
+        left: 0.4rem;
+    }
+
+    nav .header {
+        font-size: 10px;
+        padding: 0px 0px;
+        width: 75px;
+    }
+
+    nav .active {
+        position: absolute;
+        height: 0.2rem;
+        top: 3.3rem;
+        z-index: 0;
+        width: 4.5rem;
+        background-color: #036e78;
+        transition: all .5s ease 0s;
+        display: none;
+    }
+
+    nav .person_name {
+        font-size: 10px;
+    }
+
+    nav .avatar {
+        right: 0rem;
+    }
+
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1439px) {
+    nav h1 {
+        font-size: 20px;
+    }
+
+    nav .header {
+        font-size: 12px;
+        padding: 0px 5px;
+        width: 90px;
+    }
+
+    nav .person_name {
+        font-size: 14px;
+    }
+
+}
+
+@media screen and (min-width: 2560px) {
+    nav {
+        height: 4.5rem;
+    }
+
+    nav h1 {
+        font-size: 40px;
+        left: 3rem;
+    }
+
+    nav .header {
+        font-size: 15px;
+        width: 115px;
+    }
+
+    nav .active {
+        top: 3.8rem;
+        width: 7rem;
+    }
+
+    nav .person_name {
+        font-size: 20px;
+    }
+
+}

@@ -6,6 +6,10 @@ import Division from './components/product/Division';
 import Department from './components/product/Department';
 import OpeningStocks from './components/inventory/OpeningStocks';
 import Stocks from './components/inventory/Stocks';
+import Collections from './components/inventory/Collections';
+import CreateCollection from './components/inventory/CreateCollection';
+import Discounts from './components/inventory/Discounts';
+import CreateDiscounts from './components/inventory/CreateDiscounts';
 
 function App() {
 
@@ -18,8 +22,11 @@ function App() {
         <Route path='/product/department' element={<Department />} />
 
         <Route path='/inventory/stocks' element={<Stocks />} />
-        <Route path='/inventory/opening-stocks' element={<OpeningStocks />} />
-        <Route path='/inventory/stocks' element={<Stocks />} />
+        <Route path='/inventory/stocks/opening-stocks' element={<OpeningStocks />} />
+        <Route path='/inventory/collections' element={<Collections />} />
+        <Route path='/inventory/collections/create' element={<CreateCollection />} />
+        <Route path='/inventory/discounts' element={<Discounts />} />
+        <Route path='/inventory/discounts/create' element={<CreateDiscounts />} />
       </Route>
     </Routes>
   );
