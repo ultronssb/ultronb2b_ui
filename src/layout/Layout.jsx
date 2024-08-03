@@ -6,6 +6,7 @@ import B2BTabs from '../common/B2BTabs';
 import '../common/Header.css';
 import { ModuleJson } from '../moduleData/ModuleJson';
 import logo from '../assets/logo.webp';
+import { LogOut } from '../utils/Utilities';
 
 export default function Layout() {
   const [stateData, setStateData] = useState({
@@ -51,7 +52,6 @@ export default function Layout() {
     <AppShell header={{ height: 60 }} padding="md">
       <AppShell.Header style={{ borderBottom: 'none'}}>
         <nav>
-          {/* <h1>Swatchline</h1> */}
           <img src={logo} />
           {headerData.map((headernav, index) => (
             <div key={headernav.id} className="header" onClick={() => handleLinkClick(index, headernav)}>
@@ -61,7 +61,7 @@ export default function Layout() {
             </div>
           ))}
           <label className="person_name">Hi Sachin</label>
-          <Avatar className="avatar" component="a" href="#" target="_blank" src={avatar} alt="Sachin's Avatar" />
+          <Avatar className="avatar" onClick={() => LogOut()} src={avatar} alt="Sachin's Avatar" />
         </nav>
       </AppShell.Header>
       <AppShell.Main>
@@ -80,7 +80,7 @@ export default function Layout() {
             ))}
           </Group>
         )}
-        <Container>
+        <Container size="responsive">
           <Outlet />
         </Container>
       </AppShell.Main>

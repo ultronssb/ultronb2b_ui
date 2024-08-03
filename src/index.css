@@ -4,4 +4,9 @@
   --color3: #FF6F61;
   --color4: #B3669E;
   --tab-label: #157b9c;
+  --mantine-scale : 1;
+}
+
+#root {
+  /* height: 100vh; */
 }

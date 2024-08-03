@@ -6,7 +6,7 @@ export const data = [
     name: "Dashboard",
     parent_id: null,
     orderBy: 1,
-    path: "/",
+    path: "/dashboard",
     icon: <span className="material-symbols-outlined">monitoring</span>,
   },
   {

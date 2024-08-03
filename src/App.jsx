@@ -1,26 +1,30 @@
 import { Route, Routes } from 'react-router-dom';
+import B2BTableGrid from './common/B2BTableGrid';
 import Dashboard from './components/dashboard/Dashboard';
 import Collections from './components/inventory/Collections';
 import CreateCollection from './components/inventory/CreateCollection';
+import CreateDiscounts from './components/inventory/CreateDiscounts';
 import Discounts from './components/inventory/Discounts';
 import OpeningStocks from './components/inventory/OpeningStocks';
 import Stocks from './components/inventory/Stocks';
+import { AdminLogin } from './components/login/AdminLogin';
 import Department from './components/product/Department';
 import Division from './components/product/Division';
 import ProductHome from './components/product/ProductHome';
-import Layout from './layout/Layout';
-import CompanyProfile from './components/settings/CompanyProfile';
-import OtherSettings from './components/settings/OtherSettings';
-import Legal from './components/settings/Legal';
 import BusinessRules from './components/settings/BusinessRules';
-import CreateDiscounts from './components/inventory/CreateDiscounts';
+import CompanyProfile from './components/settings/CompanyProfile';
+import Legal from './components/settings/Legal';
+import OtherSettings from './components/settings/OtherSettings';
+import Layout from './layout/Layout';
 
 function App() {
 
   return (
     <Routes>
-      <Route path='/' element={<Layout />}>
-        <Route index element={<Dashboard />} />
+      <Route path='/' element={<AdminLogin />} />
+
+      <Route element={<Layout />}>
+        <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/product/product-hierarchy' element={<ProductHome />} />
         <Route path='/product/division' element={<Division />} />
         <Route path='/product/department' element={<Department />} />
@@ -37,7 +41,7 @@ function App() {
         <Route path='/settings/other-settings' element={<OtherSettings />} />
         <Route path='/settings/legal' element={<Legal />} />
         <Route path='/settings/business-rules' element={<BusinessRules />} />
-
+        <Route path='/table' element={<B2BTableGrid />} />
       </Route>
     </Routes>
   );

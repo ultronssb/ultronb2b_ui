@@ -1,25 +1,89 @@
-import { getCoreRowModel, getExpandedRowModel, useReactTable } from '@tanstack/react-table'
-import React from 'react'
+import { faL } from '@fortawesome/free-solid-svg-icons';
+import { Paper } from '@mantine/core';
+import '@mantine/dates/styles.css'; //if using mantine date picker features
+import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import 'mantine-react-table/styles.css'; //import MRT styles
+import React from 'react';
 
+const B2BTableGrid = ({
+    data = [],
+    columns = [],
+    enableColumnActions = false,
+    enableGlobalFilter = true,
+    enableDensityToggle = false,
+    manualFiltering = false,
+    manualPagination = false,
+    manualSorting = false,
+    enableTopToolbar = false,
+    onColumnFilterFnsChange = () => { },
+    onColumnFiltersChange = () => { },
+    onGlobalFilterChange = () => { },
+    onPaginationChange = () => { },
+    onSortingChange = () => { },
+    columnFilters = [],
+    columnFilterFns = () => { },
+    selectAllMode = '',
+    globalFilter = '',
+    sorting = [],
+    pagination = { pageIndex: 0, pageSize: 5 },
+    isLoading = false,
+    isError = false,
+    isFetching = false,
+    pageCount,
+    rowCount,
+    enableResizing = false,
+}) => {
 
-const B2BTableGrid = ({data, columns, sorting}) => {
-
-    const table = useReactTable({
+    const table = useMantineReactTable({
         data: data,
-        columns : columns,
-        getCoreRowModel: getCoreRowModel(),
-        getExpandedRowModel: getExpandedRowModel(),
+        columns: columns,
+        defaultDisplayColumn: {
+            enableResizing: enableResizing
+        },
+        paginationDisplayMode: 'pages',
+        mantineTableProps: { striped: true },
+        enableColumnActions: enableColumnActions,
+        enableGlobalFilter: enableGlobalFilter,
+        enableDensityToggle: enableDensityToggle,
+        initialState: {
+            showColumnFilters: false,
+            density: 'xs',
+        },
+        layoutMode: 'grid',
+        enableTopToolbar: enableTopToolbar,
+        manualFiltering: manualFiltering,
+        manualPagination: manualPagination,
+        manualSorting: manualSorting,
+        enableHiding: false,
+        enableFullScreenToggle: false,
+        columnFilterDisplayMode: "subheader",
+        pageCount: pageCount,
+        rowCount: rowCount,
+        onColumnFilterFnsChange: onColumnFilterFnsChange,
+        onColumnFiltersChange: onColumnFiltersChange,
+        onGlobalFilterChange: onGlobalFilterChange,
+        onPaginationChange: onPaginationChange,
+        onSortingChange: onSortingChange,
+        selectAllMode: selectAllMode,
+        positionPagination: 'bottom',
+        positionToolbarAlertBanner: 'head-overlay',
+        state: {
+            columnFilters,
+            columnFilterFns,
+            globalFilter,
+            isLoading,
+            pagination,
+            showAlertBanner: isError,
+            showProgressBars: isFetching,
+            sorting,
+        },
     })
 
-  return (
-    <table>
-        <tbody>
-            {table.getRowModel().rows.map(row => (
-                <tr key={row.id}>{row.name}</tr>
-            ))}
-        </tbody>
-    </table>
-  )
+    return (
+        <Paper ml={20} mr={20} shadow='xl' withBorder radius={"md"}>
+            <MantineReactTable table={table} />
+        </Paper>
+    )
 }
 
-export default B2BTableGrid
+export default B2BTableGrid;
