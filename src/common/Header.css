@@ -7,16 +7,16 @@
     font-family: 'Open Sans', Arial, sans-serif;
 }
 
-nav {
+.nav-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 4rem;
     box-shadow: 0px 0px 2px;
-    background-color: var(--tab-label) !important;
+    background-color: var(--tab-label);
 }
 
-/* nav h1 {
+/* .nav-bar h1 {
     font-size: 18px;
     font-weight: 800;
     background: linear-gradient(to right, #003366, #66B2B2, #FF6F61, #B3669E);
@@ -26,12 +26,12 @@ nav {
     left: 1rem;
 } */
 
-nav img {
+.nav-bar img {
     background-color: #11627c;
     width: 170px;
     padding: 20px 10px;
 }
-nav .header {
+.nav-bar .header {
     font-size: 12px;
     font-weight: 600;
     text-decoration: none;
@@ -46,7 +46,7 @@ nav .header {
     color:white;
 }
 
-nav .active {
+.nav-bar .active {
     position: absolute;
     z-index: -1;
     width: 6rem;
@@ -60,7 +60,7 @@ nav .active {
     display: block;
 }
 
-nav .person_name {
+.nav-bar .person_name {
     display: contents;
     width: 200px;
     font-size: 15px;
@@ -68,24 +68,24 @@ nav .person_name {
     color: white;
 }
 
-nav .avatar {
+.nav-bar .avatar {
     position: relative;
     right: 1rem;
 }
 
 @media screen and (min-width: 768px) and (max-width: 1023px) {
-    nav h1 {
+    .nav-bar h1 {
         font-size: 16px;
         left: 0.4rem;
     }
 
-    nav .header {
+    .nav-bar .header {
         font-size: 10px;
         padding: 0px 0px;
         width: 75px;
     }
 
-    nav .active {
+    .nav-bar .active {
         position: absolute;
         height: 0.2rem;
         top: 3.3rem;
@@ -96,54 +96,54 @@ nav .avatar {
         display: none;
     }
 
-    nav .person_name {
-        font-size: 10px;
+    .nav-bar .person_name {
+        display: none;
     }
 
-    nav .avatar {
+    .nav-bar .avatar {
         right: 0rem;
     }
 
 }
 
 @media screen and (min-width: 1024px) and (max-width: 1439px) {
-    nav h1 {
+    .nav-bar h1 {
         font-size: 20px;
     }
 
-    nav .header {
+    .nav-bar .header {
         font-size: 12px;
         padding: 0px 5px;
         width: 90px;
     }
 
-    nav .person_name {
+    .nav-bar .person_name {
         font-size: 14px;
     }
 
 }
 
 @media screen and (min-width: 2560px) {
-    nav {
+    .nav-bar {
         height: 4.5rem;
     }
 
-    nav h1 {
+    .nav-bar h1 {
         font-size: 40px;
         left: 3rem;
     }
 
-    nav .header {
+    .nav-bar .header {
         font-size: 15px;
         width: 115px;
     }
 
-    nav .active {
+    .nav-bar .active {
         top: 3.8rem;
         width: 7rem;
     }
 
-    nav .person_name {
+    .nav-bar .person_name {
         font-size: 20px;
     }
 

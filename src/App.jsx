@@ -16,6 +16,8 @@ import CompanyProfile from './components/settings/CompanyProfile';
 import Legal from './components/settings/Legal';
 import OtherSettings from './components/settings/OtherSettings';
 import Layout from './layout/Layout';
+import CustomerLayout from './layout/CustomerLayout';
+import './App.css'
 
 function App() {
 
@@ -43,6 +45,7 @@ function App() {
         <Route path='/settings/business-rules' element={<BusinessRules />} />
         <Route path='/table' element={<B2BTableGrid />} />
       </Route>
+        <Route path='/customer' element={<CustomerLayout />} />
     </Routes>
   );
 }

@@ -51,7 +51,8 @@ export default function Layout() {
   return (
     <AppShell header={{ height: 60 }} padding="md">
       <AppShell.Header style={{ borderBottom: 'none'}}>
-        <nav>
+        <nav className='nav-bar'>
+          {/* <h1>Swatchline</h1> */}
           <img src={logo} />
           {headerData.map((headernav, index) => (
             <div key={headernav.id} className="header" onClick={() => handleLinkClick(index, headernav)}>
