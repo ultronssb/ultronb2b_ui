@@ -1,16 +1,17 @@
+import { faChevronRight, faHeadphones, faHeadset, faHouse, faPercent, faSearch, faShirt, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { AppShell, Burger, Group, Grid, TextInput, Card, Text, Title, Image, Checkbox } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { faHeadphones, faBars, faHouse, faPercent, faShirt, faChevronRight, faXmark, faSearch, faArrowUp } from '@fortawesome/free-solid-svg-icons';
-import logo from '../assets/logo.webp';
+import { AppShell, AppShellMain, AppShellNavbar, Burger, Card, Checkbox, Divider, Grid, Group, Image, Text, TextInput } from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useState } from 'react';
+import blue from '../assets/blue.jpeg';
 import fabric from '../assets/fabric.jpg';
 import white from '../assets/white.jpeg';
-import blue from '../assets/blue.jpeg';
-import { useEffect, useState } from 'react';
-import B2BButton from '../common/B2BButton';
 import '../common/CustomerHeader.css';
+import B2BButton from '../common/B2BButton';
 
 function CustomerLayout() {
+  const [opened, { toggle }] = useDisclosure();
+  const isMobile = useMediaQuery('(max-width: 992px)');
 
   const products = [
     {
@@ -18,70 +19,70 @@ function CustomerLayout() {
       ql: 'QL-048196',
       title: 'PU coated (front) Solid Vegan leather',
       price: '$7.79',
-      image:fabric
+      image: fabric
     },
     {
       id: 1,
       ql: 'QL-048196',
       title: 'PU coated (front) Solid Vegan leather',
       price: '$7.79',
-      image:white
+      image: white
     },
     {
       id: 1,
       ql: 'QL-048196',
       title: 'PU coated (front) Solid Vegan leather',
       price: '$7.79',
-      image:blue
+      image: blue
     },
     {
       id: 1,
       ql: 'QL-048196',
       title: 'PU coated (front) Solid Vegan leather',
       price: '$7.79',
-      image:blue
+      image: blue
     },
     {
       id: 1,
       ql: 'QL-048196',
       title: 'PU coated (front) Solid Vegan leather',
       price: '$7.79',
-      image:white
+      image: white
     },
     {
       id: 1,
       ql: 'QL-048196',
       title: 'PU coated (front) Solid Vegan leather',
       price: '$7.79',
-      image:fabric
+      image: fabric
     },
     {
       id: 1,
       ql: 'QL-048196',
       title: 'PU coated (front) Solid Vegan leather',
       price: '$7.79',
-      image:blue
+      image: blue
     },
     {
       id: 1,
       ql: 'QL-048196',
       title: 'PU coated (front) Solid Vegan leather',
       price: '$7.79',
-      image:fabric
+      image: fabric
     },
     {
       id: 1,
       ql: 'QL-048196',
       title: 'PU coated (front) Solid Vegan leather',
       price: '$7.79',
-      image:white
+      image: white
     },
     {
       id: 1,
       ql: 'QL-048196',
       title: 'PU coated (front) Solid Vegan leather',
       price: '$7.79',
-      image:blue
+      image: blue
     },
   ];
 
@@ -134,7 +135,80 @@ function CustomerLayout() {
       id: 2,
       category: 'Casual Wear'
     },
+    {
+      id: 2,
+      category: 'Casual Wear'
+    },
+    {
+      id: 2,
+      category: 'Casual Wear'
+    },
+    {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    }, {
+      id: 2,
+      category: 'Casual Wear'
+    },
   ];
+
+  const group = [
+    {
+      id: 2,
+      category: 'Garment Type'
+    }, {
+      id: 2,
+      category: 'Popular Fabric Type'
+    }, {
+      id: 2,
+      category: 'Popular Fabric Content'
+
+    }];
 
   const [isOpen, setIsOpen] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -144,132 +218,161 @@ function CustomerLayout() {
   };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   };
-
 
 
   return (
     <>
       <AppShell
+        className='main-app-shell'
         header={{ height: 60 }}
         padding="md"
+        layout='default'
+        navbar={{ width: 350, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       >
         <AppShell.Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Group>
-            <li style={{ listStyle: 'none' }}><span className='logo'>swatchline</span><FontAwesomeIcon className='home_icon' icon={faHouse} /></li>
-            <span style={{ borderLeft: '1.5px solid #000000', width: '10px', height: '25px' }}></span>
-            <li style={{ listStyle: 'none' }}><button className='libraryBtn'>Fabric Library</button></li>
+          <Group >
+            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+            <Text styles={{ root: { background: 'linear-gradient(to right, #003366, #66B2B2, #FF6F61, #B3669E)', fontSize: '35px', fontWeight: '800', backgroundClip: 'text', color: 'transparent' } }} className='logo'>Ultron</Text>
+            <FontAwesomeIcon className='home_icon' icon={faHouse} />
+            <div className='header_name'>
+              <B2BButton color={'#FF6F61'} radius={'20'} name={"Fabric Library"} />
+            </div>
           </Group>
-          <Group spacing="md" mr={15}>
-            <li style={{ listStyle: 'none' }}><FontAwesomeIcon icon={faHeadphones} className='help_icon' /><span className='help'>Help Center</span></li>
-            <span style={{ borderLeft: '1.5px solid #000000', width: '10px', height: '25px' }}></span>
-            <li className='btns' style={{ listStyle: 'none' }}>
-              <button className='signinBtn'>Sign In</button>
-              <span style={{ borderLeft: '1.5px solid #000000', width: '10px', height: '25px', marginTop: '9px' }}></span>
-              <button className='signupBtn'>Sign Up</button>
-            </li>
-            <li style={{ listStyle: 'none' }}><span className='menu'>Menu</span><FontAwesomeIcon className='menu_icon' icon={faBars} /></li>
+          <Group>
+            <FontAwesomeIcon icon={faHeadset} />
+            <Text size='md' className='help_center' style={{ color: '#59d496' }}>Help Center</Text>
+            <div className='sign_in_group'>
+              <B2BButton style={{ background: 'none', color: '#FF6F61' }} name={"Sign In"} radius={'20'} />
+              <B2BButton style={{ background: 'none', color: '#FF6F61', border: '2px solid transparent', borderImage: 'linear-gradient(to right, #003366, #66B2B2, #FF6F61, #B3669E)', borderImageSlice: 1 }} name={"Sign Up"} radius={'20'} />
+            </div>
           </Group>
         </AppShell.Header>
-        <div style={{ height: '100vh', overflow: 'hidden' }}>
-          <Grid style={{ marginTop: '60px' }} gutter="md">
-            <Grid.Col span={3}  style={{ height: '100vh', overflow: 'auto' }}>
-              <div style={{ minHeight: '100vh', marginLeft: '15px' }}>
-                <div style={{ marginTop: '30px' }}>
-                  <TextInput
-                    placeholder="Search for filters or Item number"
-                  />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginTop: '25px', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <FontAwesomeIcon icon={faPercent} style={{ color: '#b8324a', marginLeft: '3px' }} />
-                    <span style={{ color: '#b8324a', marginLeft: '20px' }}>SALE</span>
-                  </div>
-                  <Checkbox size="xs" />
-                </div>
-                <div className='group_name'>
-                  <div>POPULAR CATEGORIES</div>
-                </div>
-                <div className='button_filter' onClick={handleToggle}>
-                  <div className='flex-row items-center'>
-                    <div className='symbol'>
-                      <FontAwesomeIcon icon={faShirt}></FontAwesomeIcon>
-                    </div>
-                    <div>Garment Type</div>
-                  </div>
-                  <div className='flex-row items-center g-8' >
-                    <FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>
-                  </div>
-                </div>
-                {isOpen && (
-                  <div className='filter-panel grand-scheme' style={{display: visible ? "none" : "block",overflowY: 'auto'}}>
-                    <div className='values-filtered'>
-                      <FontAwesomeIcon icon={faXmark} onClick={()=>setVisible(true)} className='closer'></FontAwesomeIcon>
-                      <div className='head'>
-                        <div className='title'>Garment Type</div>
-                      </div>
-                    </div>
+        <AppShellNavbar p={10} style={{ overflowY: 'auto' }}>
+          <div style={{ marginTop: '30px' }}>
+            <TextInput placeholder="Search for filters or Item number" />
+          </div>
 
-                    <div className='filter-explorer filter-component'>
-                      <div className='left-panel filter-panel'>
-                        <div>
-                          <TextInput
-                            placeholder="Start Typing..."
-                            icon={<FontAwesomeIcon icon={faSearch} style={{ backgroundColor: 'red' }} />}
-                          />
-                        </div>
-                        <div style={{ height:'25rem', overflowY:'auto'}}>
-                          {data.map(item => (
-                            <div className='leaf' key={item.id}>
-                              <div className='name-count'>
-                                <div>
-                                  <Checkbox size="xs" />
-                                </div>
-                                <div style={{ marginLeft: '1rem' }}>{item.category}</div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', marginTop: '25px', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <FontAwesomeIcon icon={faPercent} style={{ color: '#b8324a', marginLeft: '3px' }} />
+              <span style={{ color: '#b8324a', paddingLeft: '20px' }}>SALE</span>
+            </div>
+            <Checkbox size="xs" />
+          </div>
+
+
+          <div className='group_name'>
+            <div>POPULAR CATEGORIES</div>
+          </div>
+          <Divider size={'xs'} />
+          <div>
+            {group.map((type, index) => (
+              <div className='button_filter' onClick={handleToggle}>
+                <div className='symbol'>
+                  <FontAwesomeIcon style={{ paddingRight: '1rem' }} icon={faShirt}></FontAwesomeIcon>
+                  <Text>{type.category}</Text>
+                </div>
+                <FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>
               </div>
-            </Grid.Col>
-            <div>
+            ))}
+          </div>
+        </AppShellNavbar>
+        {isOpen && (
+          <div className='grand-scheme'>
+            <FontAwesomeIcon icon={faXmark} onClick={handleToggle} className='closer'></FontAwesomeIcon>
+            <div className='values-filtered'>
+              <div className='head'>
+                <div className='title'>Garment Type</div>
+              </div>
             </div>
 
-            <Grid.Col onClick={()=>setVisible(true)} span={9} style={{ height: '100vh', overflow: 'auto' }}>
-              <TextInput style={{ width: '150px', marginTop: '10px', float: 'right' }}
-                placeholder="Search"
-              />
-              <div style={{ minHeight: '100vh', display: 'flex', flexWrap: 'wrap', marginTop: '50px' }}>
-                {products.map((product) => (
-                  <Grid.Col span={3} >
-                    <Card shadow="sm" padding="xs" radius="md" withBorder >
-                      <Card.Section>
-                        <Image
-                          src={product.image}
-                          height={160}
-                          alt="Norway"
-                        />
-                      </Card.Section>
-                      <Text mt="md">{product.ql}</Text>
-                      <Title order={4} mt="md">{product.title}</Title>
-                      <Text mt="md" size="lg" fw={700}>{product.price}</Text>
-                    </Card>
+            <div className='filter-explorer'>
+              <div className='left-panel'>
+                <div>
+                  <TextInput
+                    placeholder="Start Typing..."
+                    icon={<FontAwesomeIcon icon={faSearch} style={{ backgroundColor: 'red' }} />}
+                  />
+                </div>
+                <div className='absoluter-inside-content'>
+                  {data.map((item, index) => (
+                    <Checkbox key={index} className='leaf' label={item.category} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        <AppShellMain style={{ height: 'calc(100vh - 5rem)', overflowY: 'auto', overflowX: 'hidden' }}>
+          <Grid onClick={() => setVisible(false)}>
+            {/* <Grid.Col span={12} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
-                  </Grid.Col>
+            </Grid.Col> */}
+            <Grid.Col onClick={() => setVisible(true)}>
+              <div className='search-header'>
+                <Text style={{ fontSize: isMobile ? "14px" : "16px" }}>25,000 Items</Text>
+                <TextInput style={{ display: isMobile ? "none" : "block", width: '150px' }}
+                  placeholder="Search"
+                />
+                <Text onClick={() => setIsOpen(true)} style={{ display: !isMobile ? "none" : "block", width: '150px' }}
+                  placeholder="Search"
+                >Search</Text>
+              </div>
+              <div className='grid-container' onClick={() => setVisible(true)}>
+                {products.map((product, index) => (
+                  <Card key={index} shadow="sm" padding={0} radius="md" withBorder >
+                    <img
+                      className='product-image'
+                      src={product.image}
+                      alt="Norway"
+                    />
+                    <div style={{ padding: '12px' }}>
+                      <div className='colorchips borderable'>
+                        <div className='colorchip' style={{ background: 'rgb(85,85,85)' }}></div>
+                        <div className='colorchip' style={{ background: 'rgb(191,190,190)' }}></div>
+                        <div className='colorchip' style={{ background: 'rgb(0,47,108)' }}></div>
+                        <div className='colorchip' style={{ background: 'rgb(1,1,1)' }}></div>
+                        <div className='colorchip' style={{ background: 'rgb(111,68,51)' }}></div>
+                        <div className='colorchip' style={{ background: 'rgb(1,1,1)' }}></div>
+                      </div>
+                      <div>
+                        <div style={{ color: '#788191', fontWeight: '500', fontSize: '12px' }}>{product.ql}</div>
+                        <div style={{ fontWeight: '600', marginBottom: '8px', minHeight: '42px' }}>{product.title}</div>
+                      </div>
+
+                      <div className='quality-price'>
+                        <b className='price-container'>{product.price}</b>
+                      </div>
+
+                      <div className='quality-info'>
+                        <div className='contents'>
+                          <div className='f-600 item'>
+                            <div>N</div>
+                            <div>100</div>
+                          </div>
+
+                        </div>
+                      </div>
+
+                      <div>
+
+                      </div>
+                    </div>
+                    {/* <Text mt="md">{product.ql}</Text>
+                      <Title order={4} mt="md">{product.title}</Title>
+                      <Text mt="md" size="lg" fw={700}>{product.price}</Text> */}
+                  </Card>
                 ))}
               </div>
             </Grid.Col>
           </Grid>
-          <div className='go-to-top' onClick={scrollToTop}>
-              <FontAwesomeIcon icon={faArrowUp}></FontAwesomeIcon>
-
-            </div>
-        </div>
+        </AppShellMain>
+        {/* <div className='go-to-top' >
+            <FontAwesomeIcon onClick={() => scrollToTop} icon={faArrowUp}></FontAwesomeIcon>
+          </div> */}
+        {/* </div> */}
       </AppShell>
     </>
   );

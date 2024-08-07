@@ -7,6 +7,9 @@
   --mantine-scale : 1;
 }
 
+body{
+  font-size: 14px !important;
+}
 #root {
   /* height: 100vh; */
 }

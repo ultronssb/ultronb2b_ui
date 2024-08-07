@@ -5,18 +5,17 @@
     font-family: 'Open Sans', Arial, sans-serif;
 }
 
-::-webkit-scrollbar {
-    width: 2px;
+body {
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -.015em;
+    color: var(--text-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    word-break: break-word;
+    font-family: Inter, sans-serif;
+    overflow: hidden;
 }
 
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #888;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
+.mantine-Grid-col{
 }

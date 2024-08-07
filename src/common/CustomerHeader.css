@@ -3,6 +3,7 @@
     border: 1px solid #FF6F61;
     color: white;
 }
+
 .logo {
     font-size: 35px;
     font-weight: 800;
@@ -15,9 +16,10 @@
     border: 1px solid black;
     padding: 5px;
     border-radius: 5px;
-    margin-left: 1rem;
-    font-size: 12px;
+    margin-top: 0;
+    font-size: 15px;
 }
+
 button {
     border-radius: 50px;
     padding: 8px 16px;
@@ -47,6 +49,7 @@ button {
     border: 1px solid #FF6F61;
     color: #FF6F61;
 }
+
 .help {
     font-size: 16px;
     color: #59d496;
@@ -66,46 +69,42 @@ button {
     margin-left: 0.5rem;
 }
 
-.group_name{
-    color:#aab0bb;
-    font-weight:500;
-    margin-bottom:4px;
-    padding-bottom:8px;
-    font-size:12px;
-    border-bottom:1px solid #d1d5db;
-    text-transform:uppercase;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    margin-top:15px;
+.group_name {
+    color: #aab0bb;
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-block: 0.8rem;
 }
 
-.button_filter{
+.button_filter {
     display: flex;
     align-items: center;
     justify-content: space-between;
     color: #273344;
     font-weight: 500;
     user-select: none;
-    padding: 8px 4px;
     border-radius: 4px;
     cursor: pointer;
 }
 
-.flex-row{
+.flex-row {
     display: flex;
     flex-flow: row nowrap;
 }
 
-.items-center{
+.items-center {
     align-items: center !important;
 }
 
-.symbol{
-    max-width: 14px;
-    width: 14px;
-    height: 14px;
+.symbol {
+    display: flex;
+    align-items: center;
     margin-right: 8px;
+    padding: 0.5rem;
     flex: 0 0 auto;
     color: #788191;
 }
@@ -114,34 +113,105 @@ button {
     gap: 8px !important;
 }
 
-.filter-panel{
-    padding: 24px;
+.filter-panel {
+    padding: 20px;
     overflow-y: auto;
     overscroll-behavior: contain;
     background: var(--white);
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - var(94px));
+    max-height: calc(100vh - var(--app-shell-header-height));
 }
 
-.grand-scheme{
+.grand-scheme {
     box-shadow: 0 3px 6px rgba(0, 0, 0, .16);
     transition: none;
     z-index: 1;
+    padding: 24px;
     width: 400px;
-    bottom: -3.5rem;
-    left: 23.5rem;
+    top: calc(var(--app-shell-header-height));
+    left: var(--app-shell-navbar-width);
     position: absolute;
     background-color: #fff;
-    min-height: 100vh;
+    min-height: calc(100vh - var(--app-shell-header-height));
 }
 
-.values-filtered{
+.absoluter-inside-content{
+    height: calc(100vh - 16rem);
+    padding-block: 1rem;
+    overflow-y: auto;
+}
+
+.main-app-shell {
+    padding-top: calc(var(--app-shell-padding));
+}
+
+.grid-container {
+    width: 100%;
+    margin: 16px 0;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+img {
+    max-width: 100%;
+}
+
+.product-image {
+    aspect-ratio: 1 / 1;
+}
+
+.search-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+@media screen and (max-width : 768px) {
+    .grid-container {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(135px, 1fr));
+    }
+}
+
+
+@media screen and (max-width : 768px) {
+    .logo {
+        display: none;
+    }
+}
+
+
+@media screen and (min-width: 1024px) {
+    .grand-scheme {
+        position: absolute;
+        width: 400px;
+        top: var(--app-shell-header-height);
+        left: var(--app-shell-navbar-width);
+        bottom: 0;
+        min-height: 100vh;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .grand-scheme {
+        position: absolute;
+        width: 400px;
+        top: var(--app-shell-header-height + 1rem);
+        left: var(--app-shell-navbar-width);
+        bottom: 0;
+        min-height: 100vh;
+    }
+}
+
+.values-filtered {
     border-bottom: 1px solid #d1d5db;
-    margin-bottom: 24px;
 }
 
-.closer{
+.closer {
     color: #788191;
     cursor: pointer;
     font-style: normal;
@@ -149,31 +219,30 @@ button {
     float: right;
 }
 
-.head{
+.head {
     margin: 24px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.title{
+.title {
     font-size: 20px;
     font-weight: 700;
 }
 
-.filter-explorer{
-    margin-top: -24px;
+.filter-explorer {
     background: #fff;
     display: flex;
     height: 100%;
 }
 
-.filter-component{
+.filter-component {
     flex: 1 1 0;
     min-height: 0;
 }
 
-.left-panel{
+.left-panel {
     padding: 24px 0;
     width: 400px;
     display: flex;
@@ -181,20 +250,22 @@ button {
     flex: 1;
 }
 
-.leaf{
+.leaf {
     border-radius: 4px;
+    margin-block: 0.5rem;
     color: #273344;
+    background: #f6f7f8;
     font-weight: 500;
     padding: 8px;
 }
 
-.name-count{
+.name-count {
     display: flex;
     align-items: center;
 
 }
 
-.go-to-top{
+.go-to-top {
     width: 48px;
     height: 48px;
     display: flex;
@@ -212,21 +283,72 @@ button {
     cursor: pointer;
 }
 
+.colorchips {
+    display: flex;
+    justify-content: flex-start;
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    min-height: 12px
+}
 
-@media screen and (min-width: 768px) and (max-width: 1024px) {
+.borderable {
+    border-radius: 4px;
+    border: 1px solid #f0f2f4
+}
+
+.colorchip {
+    flex: 1;
+    max-width: 12px;
+    height: 12px;
+
+}
+
+.quality-price {
+    color: #273344;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.price-container {
+    font-size: 20px !important;
+}
+
+.contents{
+    display: flex;
+    flex-wrap: wrap;
+    -moz-column-gap: 8px;
+    column-gap: 8px;
+    row-gap: 0;
+}
+
+.item{
+    display: flex;
+    gap: 2px;
+    white-space: nowrap;
+}
+
+
+.f-600 {
+    font-weight: 600 !important;
+}
+
+.quality-info{
+font-size: 12px;
+overflow: hidden;
+}
+
+
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
     .logo {
         font-size: 30px;
         font-weight: 800;
     }
 
     .home_icon {
-        margin-top: 0.5rem;
-        font-size: 8px;
-    }
-
-    button {
-        font-size: 10px;
-        padding: 6px 12px;
+        font-size: 15px;
     }
 
     .help {
@@ -238,4 +360,27 @@ button {
         font-size: 11px;
         color: #787878;
     }
+
+    .grand-scheme {
+        position: relative;
+        width: 400px;
+        left: var(--app-shell-navbar-width);
+        bottom: -3.5rem;
+        min-height: 100vh;
+    }
+}
+
+.mantine-AppShell-header {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@media screen and (max-width : 650px) {
+
+    .help_center,
+    .sign_in_group,
+    .header_name {
+        display: none;
+    }
+
 }
