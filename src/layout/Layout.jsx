@@ -1,11 +1,15 @@
-import { AppShell, Avatar, Button, Container, Group } from '@mantine/core';
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { AppShell, Avatar, Button, Container, Group, rem } from '@mantine/core';
+import { IconLogout, IconUserCircle } from '@tabler/icons-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.webp';
 import avatar from '../avatar.jpg';
+import B2BMenu from '../common/B2BMenu';
 import B2BTabs from '../common/B2BTabs';
 import '../common/Header.css';
 import { ModuleJson } from '../moduleData/ModuleJson';
-import logo from '../assets/logo.webp';
 import { LogOut } from '../utils/Utilities';
 
 export default function Layout() {
@@ -16,10 +20,25 @@ export default function Layout() {
     childParentId: null,
     buttonGroup: []
   });
+  const [userName, setUserName] = useState('');
 
   const navigate = useNavigate();
   const { state } = useLocation();
   const headerData = useMemo(() => ModuleJson(null), []);
+
+  const menuItems = [
+    {
+      key: "User Settings",
+      value: () => { },
+      icon: <IconLogout style={{ width: rem(14), height: rem(14) }} />
+    },
+    {
+
+      key: "Log Out",
+      value: () => LogOut(),
+      icon: <IconUserCircle style={{ width: rem(14), height: rem(14) }} />
+    }
+  ]
 
   useEffect(() => {
     if (state) {
@@ -30,6 +49,8 @@ export default function Layout() {
         childParentId: state.childParentId,
         buttonGroup: state.childParentId ? ModuleJson(state.childParentId) : []
       });
+      let userId = JSON.parse(localStorage.getItem('user'))?.userId
+      setUserName(userId);
     }
   }, [state]);
 
@@ -48,33 +69,48 @@ export default function Layout() {
     navigate(tabs.path, { state: { parentId: stateData.parentId, tabs: stateData.childTabs, buttonGroup: stateData.buttonGroup, childParentId: tabs.parent_id, activeIndex: state?.activeIndex } });
   }, [navigate, stateData]);
 
+  const checkCurrentPathMatch = (button) => {
+    return button.path === window.location.pathname;
+  }
+
   return (
     <AppShell header={{ height: 60 }} padding="md">
-      <AppShell.Header style={{ borderBottom: 'none'}}>
+      <AppShell.Header style={{ borderBottom: 'none' }}>
         <nav className='nav-bar'>
-          {/* <h1>Swatchline</h1> */}
-          <img src={logo} />
-          {headerData.map((headernav, index) => (
-            <div key={headernav.id} className="header" onClick={() => handleLinkClick(index, headernav)}>
-              <span>{headernav.icon}</span>
-              <span>{headernav.name}</span>
-              <span className={`active ${index === stateData.activeIndex ? 'visible' : ''}`}></span>
-            </div>
-          ))}
-          <label className="person_name">Hi Sachin</label>
-          <Avatar className="avatar" onClick={() => LogOut()} src={avatar} alt="Sachin's Avatar" />
+          <div style={{ display: 'flex' }}>
+            <img src={logo} style={{ marginRight: '1rem' }} />
+            {headerData.map((headernav, index) => (
+              <div key={headernav.id} className="header" onClick={() => handleLinkClick(index, headernav)}>
+                <span>{headernav.icon}</span>
+                <span>{headernav.name}</span>
+                <span className={`active ${index === stateData.activeIndex ? 'visible' : ''}`}></span>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <B2BMenu menuItems={menuItems}>
+              <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', width: '10rem', justifyContent: 'flex-end' }}>
+                <div style={{ paddingRight: '2rem' }}>
+                  <label className="person_name">Hi, Sachin</label>
+                </div>
+                <Avatar styles={{ image: { padding: 0 } }} className="avatar" src={avatar} alt="Sachin's Avatar" />
+              </div>
+            </B2BMenu>
+          </div>
         </nav>
       </AppShell.Header>
-      <AppShell.Main>
+      <AppShell.Main ps={0} pe={0}>
         {stateData.childTabs.length > 1 && <B2BTabs tabsData={stateData.childTabs} justify={"flex-start"} onClick={handleTabClick} activeId={stateData.childParentId} variant='default' margin='10px' />}
         {stateData.buttonGroup.length > 1 && (
-          <Group>
+          <Group styles={{ root: { padding: '1rem' } }}>
             {stateData.buttonGroup.map((button) => (
               <Button
+                className='button-group'
                 key={button.id}
-                variant={button.path === window.location.pathname ? 'filled' : 'default'}
+                leftSection={!checkCurrentPathMatch(button) && <FontAwesomeIcon style={{ fontSize: '20px', color: "#1492cd" }} icon={faCirclePlus} />}
+                styles={{ root: { background: checkCurrentPathMatch(button) ? '#cfeffd' : 'linear-gradient(180deg, rgba(251, 251, 251, 1) 0%, rgba(231, 231, 231, 1) 100%)' }, label: { color: '#4e595e' } }}
+                variant={checkCurrentPathMatch(button) ? 'filled' : 'default'}
                 onClick={() => handleButtonClick(button)}
-                radius={15}
               >
                 {button.name}
               </Button>
@@ -82,7 +118,9 @@ export default function Layout() {
           </Group>
         )}
         <Container size="responsive">
-          <Outlet />
+          <div className='grid-container'>
+            <Outlet />
+          </div>
         </Container>
       </AppShell.Main>
       <AppShell.Footer h={5}></AppShell.Footer>

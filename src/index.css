@@ -3,13 +3,19 @@
   --color2: #66B2B2;
   --color3: #FF6F61;
   --color4: #B3669E;
-  --tab-label: #157b9c;
-  --mantine-scale : 1;
+  --tab-label: #3c6d8e;
+  --header-bg: #0780B2;
+  --mantine-scale: 1;
 }
 
 body{
   font-size: 14px !important;
 }
-#root {
-  /* height: 100vh; */
+.button-group {
+  color: black;
+}
+
+.grid-container{
+  max-width: 100%;
+  display: grid;
 }

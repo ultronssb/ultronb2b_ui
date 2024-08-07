@@ -1,10 +1,8 @@
 import ky from 'ky';
 import 'mantine-react-table/styles.css'; //make sure MRT styles were imported in your app root (once)
 import { useEffect, useMemo, useState } from "react";
-import B2BTableGrid from "../../common/B2BTableGrid";
-import notify from '../../utils/Notification';
-import { BASE_URL } from '../../api/EndPoints';
 import { B2B_API } from '../../api/Interceptor';
+import B2BTableGrid from "../../common/B2BTableGrid";
 
 const Dashboard = () => {
 
@@ -30,8 +28,7 @@ const Dashboard = () => {
 
 
   const getAllUsers = async () => {
-    console.log("users")
-    const response = await B2B_API.get('/get-all');
+    const response = await B2B_API.get('user/get-all');
     console.log(response, "response")
   }
 
@@ -43,14 +40,6 @@ const Dashboard = () => {
       setIsLoading(false);
     } catch (err) {
       setIsError(true);
-      notify({
-        id: "fetch error",
-        message: err.message,
-        // title: err.message,
-        error: true,
-        success: false
-      })
-      // return;
     }
     setIsError(false);
     setIsLoading(false);

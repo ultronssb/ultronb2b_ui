@@ -20,8 +20,7 @@ const notify = ({
     message,
     autoClose: 3000,
     withBorder: true,
-    icon: success ? <IconCheck style={{ width: rem(20), height: rem(20) }} /> :
-          error ? <IconX style={{ width: rem(20), height: rem(20) }} /> : null
+    icon: success ? <IconCheck style={{ width: rem(20), height: rem(20) }} /> : <IconX style={{ width: rem(20), height: rem(20) }} />
   })
 };
 

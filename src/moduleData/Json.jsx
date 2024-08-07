@@ -50,7 +50,7 @@ export const data = [
     name: "E-Commerce",
     parent_id: null,
     orderBy: 6,
-    path: "/e-commerce",
+    path: "/e-commerce/settings",
     icon: <span className="material-symbols-outlined">shoppingmode</span>,
     defaultChildId: "86",
   },
@@ -66,8 +66,8 @@ export const data = [
 
   /* Product Child Component */
   { id: "8", name: "Product Hierarchy", parent_id: "2", orderBy: 1, path: "/product/product-hierarchy" },
-  { id: "9", name: "Tax", parent_id: "2", orderBy: 2, path: "/product/tax" },
-  { id: "10", name: "Product", parent_id: "2", orderBy: 3, path: "/product/creation" },
+  { id: "9", name: "Tax", parent_id: "2", orderBy: 2, path: "/product/tax/tax-masters" },
+  { id: "10", name: "Product", parent_id: "2", orderBy: 3, path: "/product/product/articles" },
   { id: "11", name: "Variants", parent_id: "2", orderBy: 4, path: "/product/variants" },
   { id: "12", name: "Price Book", parent_id: "2", orderBy: 5, path: "/product/price-book" },
   { id: "13", name: "Barcode", parent_id: "2", orderBy: 6, path: "/product/batcode" },
@@ -81,27 +81,27 @@ export const data = [
   { id: "20", name: "Category", parent_id: "8", orderBy: 5, path: "/product/category" },
   { id: "21", name: "Brand", parent_id: "8", orderBy: 6, path: "/product/brand" },
   
-  { id: "22", name: "Tax Masters", parent_id: "9", orderBy: 1, path: "/product/tax"},
+  { id: "22", name: "Tax Masters", parent_id: "9", orderBy: 1, path: "/product/tax/tax-masters"},
   { id: "23", name: "GST", parent_id: "9", orderBy: 2, path: "/product/tax/gst"},
   { id: "24", name: "GST Slabs", parent_id: "9", orderBy: 3, path: "/product/tax/gst-slabs"},
   { id: "25", name: "HSN/SAC", parent_id: "9", orderBy: 4, path: "/product/tax/hsn"},
 
-  { id: "26", name: "Articles", parent_id: "10", orderBy: 1, path: "/product/creation" },
-  { id: "27", name: "Upload", parent_id: "10", orderBy: 2, path: "/product/upload" },
-  { id: "28", name: "Draft", parent_id: "10", orderBy: 3, path: "/product/draft" },
-  { id: "29", name: "Approved", parent_id: "10", orderBy: 4, path: "/product/approved" },
-  { id: "30", name: "Create", parent_id: "10", orderBy: 5, path: "/product/create" },
-  { id: "31", name: "Package Product", parent_id: "10", orderBy: 6, path: "/product/package" },
+  { id: "26", name: "Articles", parent_id: "10", orderBy: 1, path: "/product/product/articles" },
+  { id: "27", name: "Upload", parent_id: "10", orderBy: 2, path: "/product/product/upload" },
+  { id: "28", name: "Draft", parent_id: "10", orderBy: 3, path: "/product/product/draft" },
+  { id: "29", name: "Approved", parent_id: "10", orderBy: 4, path: "/product/product/approved" },
+  { id: "30", name: "Create", parent_id: "10", orderBy: 5, path: "/product/product/create" },
+  { id: "31", name: "Package Product", parent_id: "10", orderBy: 6, path: "/product/product/package" },
 
   { id: "32", name: "Variants", parent_id: "11", orderBy: 1, path: "/product/variants" },
-  { id: "33", name: "Draft", parent_id: "11", orderBy: 2, path: "/product/variants/draft" },
-  { id: "34", name: "Create", parent_id: "11", orderBy: 3, path: "/product/variants/create" },
+  { id: "33", name: "Draft", parent_id: "11", orderBy: 2, path: "/product/variant/draft" },
+  { id: "34", name: "Create", parent_id: "11", orderBy: 3, path: "/product/variant/create" },
 
   { id: "35", name: "Price Book", parent_id: "12", orderBy: 1, path: "/product/price-book" },
   { id: "36", name: "Create", parent_id: "12", orderBy: 2, path: "/product/price-book/create" },
 
-  { id: "37", name: "Barcode", parent_id: "13", orderBy: 1, path: "/product/batcode" },
-  { id: "38", name: "Create", parent_id: "13", orderBy: 2, path: "/product/batcode/create" },
+  { id: "37", name: "Barcode", parent_id: "13", orderBy: 1, path: "/product/barcode" },
+  { id: "38", name: "Create", parent_id: "13", orderBy: 2, path: "/product/barcode/create" },
 
   { id: "39", name: "History", parent_id: "14", orderBy: 1, path: "/product/history" },
   { id: "40", name: "Create History", parent_id: "14", orderBy: 2, path: "/product/history/create" },
@@ -175,13 +175,13 @@ export const data = [
 
 
   /* E-Commerce Child Component */
-  { id: "86", name: "Mobile", parent_id: "6", orderBy: 1, path: "/e-commerce" },
+  { id: "86", name: "Mobile", parent_id: "6", orderBy: 1, path: "/e-commerce/mobile" },
   { id: "87", name: "Website", parent_id: "6", orderBy: 2, path: "/e-commerce/website" },
   { id: "88", name: "Settings", parent_id: "6", orderBy: 3, path: "/e-commerce/settings" },
 
-  { id: "89", name: "Mobile App", parent_id: "86", orderBy: 1, path: "/e-commerce" },
-  { id: "90", name: "Publish Your App", parent_id: "86", orderBy: 2, path: "/e-commerce/publish" },
-  { id: "91", name: "Your App is Live", parent_id: "86", orderBy: 3, path: "/e-commerce/live" },
+  { id: "89", name: "Mobile App", parent_id: "86", orderBy: 1, path: "/e-commerce/mobile" },
+  { id: "90", name: "Publish Your App", parent_id: "86", orderBy: 2, path: "/e-commerce/mobile/publish" },
+  { id: "91", name: "Your App is Live", parent_id: "86", orderBy: 3, path: "/e-commerce/mobile/live" },
 
   { id: "92", name: "Website", parent_id: "87", orderBy: 1, path: "/e-commerce/website" },
   { id: "93", name: "Site Info", parent_id: "87", orderBy: 2, path: "/e-commerce/website/site-info" },
@@ -191,16 +191,16 @@ export const data = [
 
 
   /* Settings Child Component */
-  { id: "96", name: "Company Profile", parent_id: "7", orderBy: 1, path: "/settings" },
+  { id: "96", name: "Company Profile", parent_id: "7", orderBy: 1, path: "/settings/company-profile" },
   { id: "97", name: "Location", parent_id: "7", orderBy: 2, path: "/settings/location" },
   { id: "98", name: "Payment", parent_id: "7", orderBy: 3, path: "/settings/payment" },
   { id: "99", name: "Shipment", parent_id: "7", orderBy: 4, path: "/settings/shipment" },
   { id: "100", name: "Users", parent_id: "7", orderBy: 5, path: "/settings/user" },
 
   { id: "101", name: "Company Profile", parent_id: "96", orderBy: 1, path: '/settings/company-profile' },
-  { id: "102", name: "Other Settings", parent_id: "96", orderBy: 2, path: '/settings/other-settings' },
-  { id: "103", name: "Legal", parent_id: "96", orderBy: 3,path: '/settings/legal' },
-  { id: "104", name: "Business Rules", parent_id: "96", orderBy: 4, path: '/settings/business-rules' },
+  { id: "102", name: "Other Settings", parent_id: "96", orderBy: 2, path: '/settings/company-profile/other-settings' },
+  { id: "103", name: "Legal", parent_id: "96", orderBy: 3,path: '/settings/company-profile/legal' },
+  { id: "104", name: "Business Rules", parent_id: "96", orderBy: 4, path: '/settings/company-profile/business-rules' },
 
   { id: "105", name: "Location Details", parent_id: "97", orderBy: 1, path: "/settings/location" },
   { id: "106", name: "New Location", parent_id: "97", orderBy: 2, path: "/settings/location/new-location" },

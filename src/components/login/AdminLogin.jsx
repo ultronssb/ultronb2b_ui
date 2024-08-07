@@ -1,25 +1,24 @@
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Anchor,
-  Button,
-  Checkbox,
   Divider,
-  Group,
-  Paper,
   PasswordInput,
-  Stack,
-  Text,
   TextInput
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { upperFirst, useToggle } from '@mantine/hooks';
+import { useToggle } from '@mantine/hooks';
 import { useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../api/Interceptor';
+import LOGO from '../../assets/ultron-logo.png';
+import B2BButton from '../../common/B2BButton';
 import notify from '../../utils/Notification';
-import GoogleButton from './Google';
-import TwitterButton from './Twitter';
+import '../../css/AdminLogin.css'
+import { useState } from 'react';
 
 export function AdminLogin(props) {
   const [type, toggle] = useToggle(['login', 'register']);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const form = useForm({
@@ -38,6 +37,7 @@ export function AdminLogin(props) {
   });
 
   const handleLogin = async () => {
+    setLoading(true);
     const { email, password } = form.values
     const loginRequestBody = { emailId: email, password: password }
     try {
@@ -45,99 +45,88 @@ export function AdminLogin(props) {
       const { token } = response?.response
       localStorage.setItem('token', token)
       localStorage.setItem('user', JSON.stringify(response?.response))
-      notify({ 
-        id: "success", 
-        title: response.response.message, 
+      setLoading(false);
+      navigate('/dashboard')
+      notify({
+        id: "success",
+        title: response.message,
         success: true,
         error: false,
-        message: `Logged in User: ${response.response.userId}`, 
+        message: `Logged in User: ${response?.response?.userId}`,
       })
-      navigate('/dashboard')
     } catch (error) {
-      if (error.name === 'HTTPError') {
-        const errorJson = await error.response.json();
-        const { message } = errorJson;
-        notify({
-          id: "login failure",
-          success: false,
-          error: true,
-          color: 'red',
-          title: error.name,
-          message: `Oops: ${message}`
-        })
-      }
+      setLoading(false);
+      const { message } = error;
+      notify({
+        id: "login failure",
+        success: false,
+        error: true,
+        color: 'red',
+        title: message,
+        message: `Oops: ${message || "Something went wrong!!!"}`
+      })
     }
+    setLoading(false);
   }
 
   return (
-    <div style={{ maxWidth: 'calc(26.25rem* var(--mantine-scale))', marginLeft: 'auto', marginRight: 'auto' }}>
-      <Paper radius="md" mt={'6rem'} p="xl" withBorder {...props}>
-        <Text size="lg" fw={700}>
-          Welcome to UltronB2B,
-        </Text>
-
-        {/* <Group grow mb="md" mt="md">
-          <GoogleButton radius="xl">Google</GoogleButton>
-          <TwitterButton radius="xl">Twitter</TwitterButton>
-        </Group> */}
-
-        <Divider
-        //  label="Or continue with email" 
-         labelPosition="center" my="lg" />
-
-        <form onSubmit={form.onSubmit(() => handleLogin())}>
-          <Stack>
-            {type === 'register' && (
-              <TextInput
-                label="Name"
-                placeholder="Your name"
-                value={form.values.name}
-                onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
-                radius="md"
-              />
-            )}
-
-            <TextInput
-              required
-              label="Email"
-              placeholder="ex: ultronuser@gmail.com"
-              value={form.values.email}
-              onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-              error={form.errors.email && 'Invalid email'}
-              radius="md"
-            />
-
-            <PasswordInput
-              required
-              label="Password"
-              placeholder="Your password"
-              value={form.values.password}
-              onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-              error={form.errors.password && 'Password should include at least 6 characters'}
-              radius="md"
-            />
-
-            {type === 'register' && (
-              <Checkbox
-                label="I accept terms and conditions"
-                checked={form.values.terms}
-                onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
-              />
-            )}
-          </Stack>
-
-          <Group justify="space-between" mt="xl">
-            <Anchor component="button" type="button" c="dimmed" onClick={() => toggle()} size="xs">
-              {type === 'register'
-                ? 'Already have an account? Login'
-                : "Don't have an account? Register"}
-            </Anchor>
-            <Button type="submit" radius="xl">
-              {upperFirst(type)}
-            </Button>
-          </Group>
-        </form>
-      </Paper>
+    <div id="login-monday-container" className="login-monday-container">
+      <div className="login-monday-content-component">
+        <div className="login-monday-top-header-wrapper">
+          <div className="top-header-component">
+            <img className="account-logo" src={LOGO} alt="Monday logo" />
+          </div>
+        </div>
+        <div className="router-wrapper">
+          <div className="email-first-component">
+            <h1 className="login-header">Log in to Ultron B2B</h1>
+            <div className='email-label'>
+              <label htmlFor=''></label>
+            </div>
+            <form className='login-form' onSubmit={form.onSubmit(() => handleLogin())}>
+              <div className='email-password-field'>
+                <TextInput
+                  className='login-email'
+                  required
+                  size='md'
+                  placeholder="ex: ultronuser@gmail.com"
+                  value={form.values.email}
+                  onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+                  error={form.errors.email && 'Invalid email'}
+                  radius="sm"
+                />
+                <PasswordInput
+                  className='login-password'
+                  required
+                  size='md'
+                  placeholder="Your password"
+                  value={form.values.password}
+                  onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+                  error={form.errors.password && 'Password should include at least 6 characters'}
+                  radius="md"
+                />
+              </div>
+              <div className='button-container'>
+                <B2BButton type='submit' loading={loading} name={'Next'} rightSection={<FontAwesomeIcon color='white' icon={faArrowRight} />} variant={"contained"} radius={'5'} />
+              </div>
+            </form>
+            <div className="suggest-signup-wrapper">
+              <div className="suggest-signup-component">
+                <Divider size={'sm'} label={<>
+                  <span>Don't have an account yet?&nbsp;</span>
+                  <Anchor href=''>Sign Up</Anchor>
+                </>} />
+              </div>
+              <div className="login-support-link-component">
+                <span className="login-support-link-prefix">Can't log in?{" "}</span>
+                <Anchor rel="noopener noreferrer" href="" target="">Visit our help center</Anchor>
+              </div>
+            </div>
+            <div className="signed-on-accounts-wrapper">
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
