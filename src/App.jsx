@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import './App.css';
 import Dashboard from './components/dashboard/Dashboard';
 import AppIsLive from './components/e-commerce/mobile/AppIsLive';
 import MobileApp from './components/e-commerce/mobile/MobileApp';
@@ -48,8 +49,6 @@ import Role from './components/settings/users/Role';
 import RolePrivileges from './components/settings/users/RolePrivileges';
 import Users from './components/settings/users/Users';
 import Layout from './layout/Layout';
-import CustomerLayout from './layout/CustomerLayout';
-import './App.css'
 
 function App() {
 
@@ -96,7 +95,6 @@ function App() {
         <Route path='/inventory/collections/create' element={<CreateCollection />} />
         <Route path='/inventory/discounts' element={<Discounts />} />
         <Route path='/inventory/discounts/create' element={<CreateDiscounts />} />
-        <Route path='/inventory/discounts' element={<Discounts />} />
 
         <Route path='/settings/company-profile' element={<CompanyProfile />} />
         <Route path='/settings/company-profile/other-settings' element={<OtherSettings />} />
@@ -128,7 +126,6 @@ function App() {
 
 
       </Route>
-      <Route path='/fabrics' element={<CustomerLayout />} />
     </Routes>
   );
 }

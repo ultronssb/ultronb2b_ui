@@ -15,14 +15,13 @@
     background-color: var(--tab-label);
 }
 
-.nav-bar img {
+.nav-bar .ultron_logo {
     background-color: #11627c;
-    padding: 5px 25px;
+    padding: 5px 10px;
 }
-
-.nav-bar .header {
+.nav-bar .nav-header {
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     text-decoration: none;
     position: relative;
     z-index: 1;
@@ -32,8 +31,7 @@
     justify-content: center;
     padding: 0px 10px;
     width: 100px;
-    cursor: pointer;
-    color: white;
+    color:white;
 }
 
 .nav-bar .active {
@@ -43,7 +41,7 @@
     background-color: #11627c;
     transition: all .5s ease 0s;
     display: none;
-    padding: 33px;
+    padding: 32px;
 }
 
 .active.visible {
@@ -64,24 +62,16 @@
 }
 
 @media screen and (min-width: 768px) and (max-width: 1023px) {
-    .nav-bar h1 {
-        font-size: 16px;
-        left: 0.4rem;
-    }
-
-    .nav-bar .header {
-        font-size: 10px;
-        padding: 0px 0px;
+    .nav-bar .nav-header {
+        font-size: 9px;
         width: 75px;
     }
 
     .nav-bar .active {
         position: absolute;
         height: 0.2rem;
-        top: 3.3rem;
-        z-index: 0;
         width: 4.5rem;
-        background-color: #fff;
+        background-color: #11627c;
         transition: all .5s ease 0s;
         display: none;
     }
@@ -91,7 +81,7 @@
     }
 
     .nav-bar .avatar {
-        right: 0rem;
+        right: 4rem;
     }
 
 }
@@ -101,7 +91,7 @@
         font-size: 20px;
     }
 
-    .nav-bar .header {
+    .nav-bar .nav-header {
         font-size: 12px;
         padding: 0px 5px;
         width: 90px;
@@ -123,13 +113,12 @@
         left: 3rem;
     }
 
-    .nav-bar .header {
+    .nav-bar .nav-header {
         font-size: 15px;
         width: 115px;
     }
 
     .nav-bar .active {
-        top: 3.8rem;
         width: 7rem;
     }
 

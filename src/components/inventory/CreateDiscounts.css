@@ -1,0 +1,212 @@
+.header {
+    font-size: 28px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.discount-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.discount-form-group {
+    flex: 1 1 calc(50% - 32px);
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    text-align: left;
+    gap: 5px;
+}
+
+.discount-form-group .discount-label {
+    margin-bottom: 8px;
+    font-weight: bold;
+    width: 225px;
+}
+
+.discount-form-group .input-textField {
+    width: 240px !important;
+    outline: none !important;
+    background: none !important;
+    color: #666666 !important;
+}
+
+
+.rule-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.buyRule-form-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    text-align: left;
+    gap: 20px;
+}
+
+.getRule-form-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    text-align: left;
+    gap: 20px;
+}
+
+.rule-input-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 calc(50% - 500px);
+}
+
+
+.rule-input-form .rule-label {
+    margin-bottom: 8px;
+    font-weight: bold;
+    width: 200px;
+}
+
+.rule-input-form .input-textField {
+    width: 200px !important;
+    outline: none !important;
+    background: none !important;
+    color: #666666 !important;
+}
+
+.btn-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.discountBtn {
+    padding: 5px 20px;
+    background-color: rgb(26, 160, 70);
+    color: white;
+    border-radius: 0px !important;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+@media (max-width: 767px) {
+    .grid-container {
+        max-width: 100%;
+        place-items: center;
+        display: grid;
+    }
+
+    .header {
+        font-size: 28px;
+        width: 500px;
+        margin: 0px;
+    }
+
+    .discount-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 500px;
+        margin: 0px;
+    }
+
+    .discount-form-group {
+        flex: 1 1 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .rule-form {
+        display: flex;
+        column-gap: 50px;
+        width: 500px;
+        margin: 0px;
+    }
+
+    .rule-input-form {
+        flex: 1 1 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .rule-input-form .rule-label {
+        width: 225px;
+    }
+
+    .rule-input-form .input-textField {
+        width: 240px;
+    }
+
+
+
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .grid-container {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: none !important;
+        width: 740px !important;
+        place-items: center;
+    }
+
+    .header {
+        font-size: 28px;
+        width: 500px;
+        margin: 0px;
+    }
+
+    .discount-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 600px;
+        margin: 0px;
+    }
+
+    .discount-form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .rule-form {
+        display: flex;
+        column-gap: 50px;
+        width: 600px;
+        margin: 0px;
+    }
+
+    .buyRule-form-group,
+    .getRule-form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .buyRule-form-group {
+        display: flex;
+        row-gap: 3rem;
+    }
+
+    .btn-container {
+        width: 500px;
+        margin: 0px;
+        padding: 20px;
+    }
+
+}

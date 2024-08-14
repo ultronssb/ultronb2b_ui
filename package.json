@@ -36,6 +36,8 @@
     "react-router-dom": "^6.25.1"
   },
   "devDependencies": {
+    "@stylexjs/babel-plugin": "^0.7.5",
+    "@stylexjs/dev-runtime": "^0.7.5",
     "@stylexjs/eslint-plugin": "^0.7.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

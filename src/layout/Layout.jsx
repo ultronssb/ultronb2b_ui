@@ -4,11 +4,11 @@ import { AppShell, Avatar, Button, Container, Group, rem } from '@mantine/core';
 import { IconLogout, IconUserCircle } from '@tabler/icons-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import logo from '../assets/ultron-logo.png';
+import ultron_logo from "../assets/ultron-logo.png";
 import avatar from '../avatar.jpg';
 import B2BMenu from '../common/B2BMenu';
 import B2BTabs from '../common/B2BTabs';
-import '../common/Header.css';
+import '../css/Header.css';
 import { ModuleJson } from '../moduleData/ModuleJson';
 import { LogOut } from '../utils/Utilities';
 import { B2B_API } from '../api/Interceptor';
@@ -22,6 +22,10 @@ export default function Layout() {
     buttonGroup: []
   });
   const [userName, setUserName] = useState('');
+
+  const [opened, setOpened] = useState(false);
+  const openModal = () => setOpened(true);
+  const closeModal = () => setOpened(false);
 
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -78,6 +82,9 @@ export default function Layout() {
   // This Funtion is used to navigate page from Button click
   const handleButtonClick = useCallback((tabs) => {
     navigate(tabs.path, { state: { parentId: stateData.parentId, tabs: stateData.childTabs, buttonGroup: stateData.buttonGroup, childParentId: tabs.parent_id, activeIndex: state?.activeIndex } });
+    if (tabs.modal === true) {
+      openModal();
+    }
   }, [navigate, stateData]);
 
   const checkCurrentPathMatch = (button) => {
@@ -89,9 +96,9 @@ export default function Layout() {
       <AppShell.Header style={{ borderBottom: 'none' }}>
         <nav className='nav-bar'>
           <div style={{ display: 'flex' }}>
-            <img src={logo} style={{ marginRight: '1rem' }} />
+            <img className='ultron_logo' src={ultron_logo} style={{ marginRight: '1rem' }} />
             {headerData.map((headernav, index) => (
-              <div key={headernav.id} className="header" onClick={() => handleLinkClick(index, headernav)}>
+              <div key={headernav.id} className="nav-header" onClick={() => handleLinkClick(index, headernav)}>
                 <span>{headernav.icon}</span>
                 <span style={{ fontWeight: index === stateData.activeIndex ? 'bolder' : '500', letterSpacing: '0.6px', whiteSpace: 'nowrap' }}>{headernav.name}</span>
                 <span className={`active ${index === stateData.activeIndex ? 'visible' : ''}`}></span>
