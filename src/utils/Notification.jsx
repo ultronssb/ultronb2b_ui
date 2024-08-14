@@ -15,7 +15,7 @@ const notify = ({
 
   notifications.show({
     id,
-    color,
+    color: success ? 'teal' : error ? 'red' : 'blue',
     title,
     message,
     autoClose: 3000,

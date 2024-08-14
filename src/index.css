@@ -10,6 +10,7 @@
 
 body{
   font-size: 14px !important;
+  min-height: 100%;
 }
 .button-group {
   color: black;

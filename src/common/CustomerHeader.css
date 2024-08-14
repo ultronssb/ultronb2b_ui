@@ -144,6 +144,7 @@ button {
 
 .main-app-shell {
     padding-top: calc(var(--app-shell-padding));
+    overflow: hidden !important;
 }
 
 .grid-container {
@@ -370,10 +371,10 @@ overflow: hidden;
     }
 }
 
-.mantine-AppShell-header {
+/* .mantine-AppShell-header {
     padding-left: 1rem;
     padding-right: 1rem;
-}
+} */
 
 @media screen and (max-width : 650px) {
 

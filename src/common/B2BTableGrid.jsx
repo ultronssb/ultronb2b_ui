@@ -1,18 +1,19 @@
-import { faL } from '@fortawesome/free-solid-svg-icons';
-import { Paper } from '@mantine/core';
 import '@mantine/dates/styles.css'; //if using mantine date picker features
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import '@mantine/core/styles.css';
 import 'mantine-react-table/styles.css'; //import MRT styles
 import React from 'react';
 
 const B2BTableGrid = ({
     data = [],
     columns = [],
+    enableSorting = false,
+    enableFullScreenToggle = false,
     enableColumnActions = false,
     enableGlobalFilter = true,
     enableDensityToggle = false,
     manualFiltering = false,
-    manualPagination = false,
+    manualPagination = true,
     manualSorting = false,
     enableTopToolbar = false,
     onColumnFilterFnsChange = () => { },
@@ -26,6 +27,7 @@ const B2BTableGrid = ({
     globalFilter = '',
     sorting = [],
     pagination = { pageIndex: 0, pageSize: 5 },
+    rowsPerPageOptions = ['5', '10', '15'],
     isLoading = false,
     isError = false,
     isFetching = false,
@@ -41,6 +43,10 @@ const B2BTableGrid = ({
             enableResizing: enableResizing
         },
         paginationDisplayMode: 'pages',
+        mantinePaginationProps: {
+            radius: 'sm',
+            size: 'sm',
+        },
         mantineTableProps: { striped: true },
         enableColumnActions: enableColumnActions,
         enableGlobalFilter: enableGlobalFilter,
@@ -52,10 +58,11 @@ const B2BTableGrid = ({
         layoutMode: 'grid',
         enableTopToolbar: enableTopToolbar,
         manualFiltering: manualFiltering,
+        enableSorting: enableSorting,
         manualPagination: manualPagination,
         manualSorting: manualSorting,
         enableHiding: false,
-        enableFullScreenToggle: false,
+        enableFullScreenToggle: enableFullScreenToggle,
         columnFilterDisplayMode: "subheader",
         pageCount: pageCount,
         rowCount: rowCount,
@@ -67,6 +74,9 @@ const B2BTableGrid = ({
         selectAllMode: selectAllMode,
         positionPagination: 'bottom',
         positionToolbarAlertBanner: 'head-overlay',
+        mantinePaginationProps: {
+            rowsPerPageOptions: rowsPerPageOptions
+        },
         state: {
             columnFilters,
             columnFilterFns,
@@ -80,9 +90,16 @@ const B2BTableGrid = ({
     })
 
     return (
-        <Paper ml={20} mr={20} shadow='xl' withBorder radius={"md"}>
-            <MantineReactTable table={table} />
-        </Paper>
+        // <Paper
+        //     // ml={20}
+        //     // mr={20}
+        //     mt={20}
+        //     shadow='xl'
+        //     withBorder
+        //     radius={"md"}
+        // >
+        <MantineReactTable table={table} />
+        // </Paper>
     )
 }
 

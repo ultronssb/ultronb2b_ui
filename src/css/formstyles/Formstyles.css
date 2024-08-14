@@ -1,0 +1,115 @@
+.form-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.form-group {
+  flex: 1 1 calc(50% - 32px);
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  text-align: left;
+  /* gap: 15px; */
+}
+
+.form-label {
+  /* margin-bottom: 8px; */
+  font-weight: bold;
+  width: 225px;
+}
+
+.form-input,
+.form-select,.mantine-Select-input {
+  padding: 8px;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  width: 250px !important;
+  outline: none !important;
+  background: none !important;
+  color: #666666 !important;
+}
+
+/* .form-group input,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 250px;
+  outline: none;
+  background: none;
+  color: #666666;
+} */
+
+.radio-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-container {
+  align-items: center;
+}
+
+.status-block {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.save-button-container {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  padding-inline: 6rem;
+}
+
+.mrt-table-head-cell-labels {
+  padding-left: 0;
+}
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {
+  .form-group .form-label {
+    margin-bottom: 8px;
+    font-weight: bold;
+    width: 200px;
+  }
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .form-group.status-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Add Users Page CSS */
+
+.user--container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-block: 1rem;
+}
+
+.right--section {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}

@@ -231,7 +231,7 @@ function CustomerLayout() {
         layout='default'
         navbar={{ width: 350, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       >
-        <AppShell.Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <AppShell.Header pl={10} pr={10} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Group >
             <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
             <Text styles={{ root: { background: 'linear-gradient(to right, #003366, #66B2B2, #FF6F61, #B3669E)', fontSize: '35px', fontWeight: '800', backgroundClip: 'text', color: 'transparent' } }} className='logo'>Ultron</Text>

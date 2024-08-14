@@ -128,7 +128,7 @@ function App() {
 
 
       </Route>
-        <Route path='/customer' element={<CustomerLayout />} />
+      <Route path='/fabrics' element={<CustomerLayout />} />
     </Routes>
   );
 }

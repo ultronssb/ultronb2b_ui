@@ -4,13 +4,14 @@ import { AppShell, Avatar, Button, Container, Group, rem } from '@mantine/core';
 import { IconLogout, IconUserCircle } from '@tabler/icons-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import logo from '../assets/logo.webp';
+import logo from '../assets/ultron-logo.png';
 import avatar from '../avatar.jpg';
 import B2BMenu from '../common/B2BMenu';
 import B2BTabs from '../common/B2BTabs';
 import '../common/Header.css';
 import { ModuleJson } from '../moduleData/ModuleJson';
 import { LogOut } from '../utils/Utilities';
+import { B2B_API } from '../api/Interceptor';
 
 export default function Layout() {
   const [stateData, setStateData] = useState({
@@ -49,10 +50,20 @@ export default function Layout() {
         childParentId: state.childParentId,
         buttonGroup: state.childParentId ? ModuleJson(state.childParentId) : []
       });
-      let userId = JSON.parse(localStorage.getItem('user'))?.userId
-      setUserName(userId);
     }
   }, [state]);
+
+  useEffect(() => {
+    fetchUser()
+  }, [])
+  
+  const fetchUser = async () => {
+    let userId = JSON.parse(localStorage.getItem('user'))?.userId
+    const response = await B2B_API.get(`user/${userId}`).json();
+    const { firstName } = response.response
+    setUserName(firstName)
+  }
+
 
   // This Funtion is used to navigate page from header 
   const handleLinkClick = useCallback((index, tab) => {
@@ -74,7 +85,7 @@ export default function Layout() {
   }
 
   return (
-    <AppShell header={{ height: 60 }} padding="md">
+    <AppShell header={{ height: 60 }} padding="md" style={{overflowY:'auto',height: '100vh'}}>
       <AppShell.Header style={{ borderBottom: 'none' }}>
         <nav className='nav-bar'>
           <div style={{ display: 'flex' }}>
@@ -82,7 +93,7 @@ export default function Layout() {
             {headerData.map((headernav, index) => (
               <div key={headernav.id} className="header" onClick={() => handleLinkClick(index, headernav)}>
                 <span>{headernav.icon}</span>
-                <span>{headernav.name}</span>
+                <span style={{ fontWeight: index === stateData.activeIndex ? 'bolder' : '500', letterSpacing: '0.6px', whiteSpace: 'nowrap' }}>{headernav.name}</span>
                 <span className={`active ${index === stateData.activeIndex ? 'visible' : ''}`}></span>
               </div>
             ))}
@@ -91,7 +102,7 @@ export default function Layout() {
             <B2BMenu menuItems={menuItems}>
               <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', width: '10rem', justifyContent: 'flex-end' }}>
                 <div style={{ paddingRight: '2rem' }}>
-                  <label className="person_name">Hi, Sachin</label>
+                  <label className="person_name">Hi, {userName}</label>
                 </div>
                 <Avatar styles={{ image: { padding: 0 } }} className="avatar" src={avatar} alt="Sachin's Avatar" />
               </div>
@@ -99,7 +110,7 @@ export default function Layout() {
           </div>
         </nav>
       </AppShell.Header>
-      <AppShell.Main ps={0} pe={0}>
+      <AppShell.Main>
         {stateData.childTabs.length > 1 && <B2BTabs tabsData={stateData.childTabs} justify={"flex-start"} onClick={handleTabClick} activeId={stateData.childParentId} variant='default' margin='10px' />}
         {stateData.buttonGroup.length > 1 && (
           <Group styles={{ root: { padding: '1rem' } }}>
@@ -107,8 +118,8 @@ export default function Layout() {
               <Button
                 className='button-group'
                 key={button.id}
-                leftSection={!checkCurrentPathMatch(button) && <FontAwesomeIcon style={{ fontSize: '20px', color: "#1492cd" }} icon={faCirclePlus} />}
-                styles={{ root: { background: checkCurrentPathMatch(button) ? '#cfeffd' : 'linear-gradient(180deg, rgba(251, 251, 251, 1) 0%, rgba(231, 231, 231, 1) 100%)' }, label: { color: '#4e595e' } }}
+                // leftSection={!checkCurrentPathMatch(button) && <FontAwesomeIcon style={{ fontSize: '20px', color: "#1492cd" }} icon={faCirclePlus} />}
+                styles={{ root: { background: checkCurrentPathMatch(button) ? '#cfeffd' : 'linear-gradient(180deg, rgba(251, 251, 251, 1) 0%, rgba(231, 231, 231, 1) 100%)' }, label: { color: '#4e595e', fontWeight: checkCurrentPathMatch(button) ? "900" : "500" } }}
                 variant={checkCurrentPathMatch(button) ? 'filled' : 'default'}
                 onClick={() => handleButtonClick(button)}
               >
@@ -118,9 +129,7 @@ export default function Layout() {
           </Group>
         )}
         <Container size="responsive">
-          <div className='grid-container'>
-            <Outlet />
-          </div>
+          <Outlet />
         </Container>
       </AppShell.Main>
       <AppShell.Footer h={5}></AppShell.Footer>

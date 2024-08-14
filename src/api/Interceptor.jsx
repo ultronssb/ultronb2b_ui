@@ -26,13 +26,19 @@ export const B2B_API = ky.create({
         ],
         afterResponse: [
             async (response) => {
-                if (response.status === '403') {
-                    return window.location.href = "/"
-                } else {
-                    const data = await response.json();
-                    return data;
+                if (response.status === 403 || response.status === 401) {
+                    console.log(response.status, 'response.status');
+                    window.location.href = "/"
                 }
+                return response;
             }
         ]
-    }
-})
+    },
+    // retry: {
+    //     limit: 2, // Retry up to 2 times
+    //     methods: ["get", "put", "post", "delete", "options"], // Retry for these HTTP methods
+    //     statusCodes: [408, 413, 429, 500, 502, 503, 504], // Retry for these status codes
+    //     errorCodes: ["ECONNABORTED", "ETIMEDOUT"], // Retry for these error codes
+    //     maxRetryAfter: 10000 // Maximum time to wait before retrying (in milliseconds)
+    // }
+});

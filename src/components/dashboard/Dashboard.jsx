@@ -23,14 +23,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchUsers();
-    getAllUsers();
   }, [pagination.pageIndex, pagination.pageSize, sorting, columnFilters,])
-
-
-  const getAllUsers = async () => {
-    const response = await B2B_API.get('user/get-all');
-    console.log(response, "response")
-  }
 
   const fetchUsers = async () => {
     setIsLoading(true);

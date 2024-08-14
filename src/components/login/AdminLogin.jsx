@@ -8,13 +8,13 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useToggle } from '@mantine/hooks';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../api/Interceptor';
 import LOGO from '../../assets/ultron-logo.png';
 import B2BButton from '../../common/B2BButton';
+import '../../css/AdminLogin.css';
 import notify from '../../utils/Notification';
-import '../../css/AdminLogin.css'
-import { useState } from 'react';
 
 export function AdminLogin(props) {
   const [type, toggle] = useToggle(['login', 'register']);
@@ -79,7 +79,7 @@ export function AdminLogin(props) {
         </div>
         <div className="router-wrapper">
           <div className="email-first-component">
-            <h1 className="login-header">Log in to Ultron B2B</h1>
+            <h1 className="login-header">Log in to Ultron</h1>
             <div className='email-label'>
               <label htmlFor=''></label>
             </div>

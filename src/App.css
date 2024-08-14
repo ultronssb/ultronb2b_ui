@@ -2,7 +2,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Open Sans', Arial, sans-serif;
+    font-family: Helvetica, Arial, 'Lucida Sans', sans-serif;
+    /* font-family: 'Open Sans', Arial, sans-serif; */
 }
 
 body {
@@ -13,9 +14,5 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     word-break: break-word;
-    font-family: Inter, sans-serif;
     overflow: hidden;
-}
-
-.mantine-Grid-col{
 }
