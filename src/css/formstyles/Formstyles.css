@@ -69,6 +69,11 @@
   justify-content: center;
 }
 
+.radio-label-block {
+  display: flex;
+  gap: 2rem;
+}
+
 .status-container {
   align-items: center;
 }
