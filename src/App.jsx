@@ -49,6 +49,19 @@ import Role from './components/settings/users/Role';
 import RolePrivileges from './components/settings/users/RolePrivileges';
 import Users from './components/settings/users/Users';
 import Layout from './layout/Layout';
+import OrderManagement from './components/sales/OrderManagement';
+import SalesOrder from './components/sales/SalesOrder';
+import Invoice from './components/sales/Invoice';
+import ShipmentNote from './components/sales/ShipmentNote';
+import ReturnNote from './components/sales/ReturnNote';
+import Packing from './components/sales/Packing';
+import OpenOrder from './components/sales/OpenOrder';
+import Delivered from './components/sales/Delivered';
+import Cancelled from './components/sales/Cancelled';
+import Abondened from './components/sales/Abondened';
+import Returned from './components/sales/Returned';
+import CreateOrder from './components/sales/CreateOrder';
+import Channel from './components/settings/company_profile/Channel';
 
 function App() {
 
@@ -97,6 +110,7 @@ function App() {
         <Route path='/inventory/discounts/create' element={<CreateDiscounts />} />
 
         <Route path='/settings/company-profile' element={<CompanyProfile />} />
+        <Route path='/settings/company-profile/channels' element={<Channel />} />
         <Route path='/settings/company-profile/other-settings' element={<OtherSettings />} />
         <Route path='/settings/company-profile/legal' element={<Legal />} />
         <Route path='/settings/company-profile/business-rules' element={<BusinessRules />} />
@@ -105,12 +119,38 @@ function App() {
         <Route path='/settings/location/new-location' element={<NewLocation />} />
 
         <Route path='/settings/shipment' element={<Shipment />} />
-        <Route path='/settings/user' element={<Users />} />
+        <Route path='/settings/user-management' element={<Users />} />
         <Route path='/settings/user/role' element={<Role />} />
         <Route path='/settings/user/role-privileges' element={<RolePrivileges />} />
-        <Route path='/settings/user/create' element={<AddUsers />} />
+        <Route path='/settings/user' element={<AddUsers />} />
 
         <Route path='/settings/payment' element={<Payment />} />
+
+        {/* sales */}
+
+        <Route path='/sales/order-management' element={<OrderManagement />} />
+        <Route path='/sales/sales-order' element={<SalesOrder />} />
+        <Route path='/sales/invoice' element={<Invoice />} />
+        <Route path='/sales/shippment-note' element={<ShipmentNote />} />
+        <Route path='/sales/return-note' element={<ReturnNote />} />
+        <Route path='/sales/packing' element={<Packing />} />
+        <Route path='/sales/open-order' element={<OpenOrder />} />
+        <Route path='/sales/delivery' element={<Delivered />} />
+        <Route path='/sales/cancel' element={<Cancelled />} />
+        <Route path='/sales/abandon' element={<Abondened />} />
+        <Route path='/sales/return' element={<Returned />} />
+        <Route path='/sales/create-order' element={<CreateOrder />} />
+
+
+        {/* crm */}
+        {/* <Route path='/crm/customer' element={<Customer />} />
+        <Route path='/crm/loyalty' element={<Loyalty />} />
+        <Route path='/crm/salesman' element={<Salesman />} />
+        <Route path='/crm/customer/draft' element={<Draft />} />
+        <Route path='/crm/customer/approved' element={<Approved />} />
+        <Route path='/crm/customer/create' element={<Create />} />
+        <Route path='/crm/loyalty/create-new' element={<CreateNew />} />
+        <Route path='/crm/loyalty/point-status' element={<PointStatus />} /> */}
 
         {/* E-Commerce */}
 

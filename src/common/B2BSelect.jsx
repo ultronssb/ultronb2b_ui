@@ -1,18 +1,24 @@
 import { Select } from '@mantine/core'
 import React from 'react'
 
-const B2BSelect = (props) => {
+const B2BSelect = ({ placeholder, value, data, required, onChange, style, styles, clearable }) => {
+    
     return (
         <Select
             className='input-textField'
-            placeholder={props.placeholder}
-            data={props.data}
-            onChange={props.onChange}
-            clearable
+            style={style}
+            styles={{...styles}}
+            placeholder={placeholder}
+            value={value}
+            data={data}
+            required={required}
+            onChange={onChange}
+            clearable={clearable}
+            searchable
             comboboxProps={{ shadow: 'md' }}
             radius="sm"
+            size='md'
         />
-
     )
 }
 

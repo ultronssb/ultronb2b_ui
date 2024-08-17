@@ -12,6 +12,7 @@ import '../css/Header.css';
 import { ModuleJson } from '../moduleData/ModuleJson';
 import { LogOut } from '../utils/Utilities';
 import { B2B_API } from '../api/Interceptor';
+import B2BButton from '../common/B2BButton';
 
 export default function Layout() {
   const [stateData, setStateData] = useState({
@@ -60,7 +61,7 @@ export default function Layout() {
   useEffect(() => {
     fetchUser()
   }, [])
-  
+
   const fetchUser = async () => {
     let userId = JSON.parse(localStorage.getItem('user'))?.userId
     const response = await B2B_API.get(`user/${userId}`).json();
@@ -92,7 +93,7 @@ export default function Layout() {
   }
 
   return (
-    <AppShell header={{ height: 60 }} padding="md" style={{overflowY:'auto',height: '100vh'}}>
+    <AppShell header={{ height: 60 }} padding="md" style={{ overflowY: 'auto', height: '100vh' }}>
       <AppShell.Header style={{ borderBottom: 'none' }}>
         <nav className='nav-bar'>
           <div style={{ display: 'flex' }}>
@@ -106,7 +107,10 @@ export default function Layout() {
             ))}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <B2BMenu menuItems={menuItems}>
+            {/* <B2BMenu trigger="click" menuItems={floatButtonItems}> */}
+            <button onClick={() => alert("Work in progress!!!")} style={{ color: 'white', position: 'absolute', top: '3rem', right: '10rem', width: '30px', height: '30px', borderRadius: '25px', backgroundColor: '#022d46', outline: 'none', border: 'none', cursor: 'pointer' }}>+</button>
+            {/* </B2BMenu> */}
+            <B2BMenu trigger="hover" menuItems={menuItems}>
               <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', width: '10rem', justifyContent: 'flex-end' }}>
                 <div style={{ paddingRight: '2rem' }}>
                   <label className="person_name">Hi, {userName}</label>

@@ -1,24 +1,30 @@
+import { useDisclosure } from '@mantine/hooks';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
+import B2BModal from '../../../common/B2BModal';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
 
 const Role = () => {
-  const [role, setRole] = useState({
+  const initialState = {
     name: '',
     roleId: '',
     description: '',
     status: "ACTIVE"
-  });
+  }
+  const [role, setRole] = useState(initialState);
   const [roles, setRoles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
   const [rowCount, setRowCount] = useState(0);
+  const [deleteContent, setDeleteContent] = useState({});
+
+  const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
     fetchRoles();
@@ -75,18 +81,30 @@ const Role = () => {
         const { original } = row;
         return (
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <IconPencil style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-            <IconTrash style={{ cursor: 'pointer', color: 'red' }} stroke={2} />
+            <IconPencil onClick={() => editRole(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+            <IconTrash onClick={() => handleDeleteModal(original)} style={{ cursor: 'pointer', color: 'red' }} stroke={2} />
           </div>
         )
       }
     }
   ])
 
+  const editRole = (roleObj) => {
+    setRole((prev => ({ ...prev, ...roleObj })))
+  }
+
+  const handleDeleteModal = (roleObj) => {
+    setDeleteContent(roleObj);
+    open(true);
+  }
+
+  const handleDelete = (roleId) => {
+    console.log(roleId);
+  }
+
   const fetchRoles = async () => {
     try {
       const response = await B2B_API.get(`role/get-all-role?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
-
       setRoles(response?.response?.content);
       setRowCount(response?.response?.totalElements)
     } catch (error) {
@@ -101,11 +119,24 @@ const Role = () => {
     }));
   };
 
+  const DeleteModalContent = ({ body }) => {
+    const { name, roleId } = body;
+    return (
+      <>
+        <h4>Delete this Role {name}</h4>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '1rem' }}>
+          <B2BButton onClick={close} name={"No"} />
+          <B2BButton color={'red'} onClick={() => handleDelete(roleId)} name={"Yes"} />
+        </div>
+      </>
+    )
+  }
+
   const createRole = async (event) => {
     event.preventDefault();
     try {
       const response = await B2B_API.post('role', { json: role }).json();
-      setRole({ name: '', description: '', roleId: '', status: 'ACTIVE' });
+      setRole(initialState);
       fetchRoles();
       notify({
         id: "add_role",
@@ -189,7 +220,8 @@ const Role = () => {
             </div>
           </div>
           <div className='save-button-container'>
-            <B2BButton type='submit' name="Save" />
+            <B2BButton type='button' color={'red'} onClick={() => setRole(initialState)} name="Cancel" />
+            <B2BButton type='submit' name={role.roleId ? "Update" : "Save"} />
           </div>
         </form>
       </div>
@@ -201,11 +233,11 @@ const Role = () => {
         enableTopToolbar={true}
         enableGlobalFilter={true}
         pagination={pagination}
-        pageCount={5}
         rowCount={rowCount}
         onPaginationChange={setPagination}
         enableFullScreenToggle={true}
       />
+      <B2BModal opened={opened} title={"Are You Sure ?"} children={<DeleteModalContent body={deleteContent} />} open={open} close={close} />
     </>
   );
 }

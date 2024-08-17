@@ -1,5 +1,3 @@
-import { orderBy } from "lodash";
-
 export const data = [
   {
     id: "1",
@@ -195,23 +193,24 @@ export const data = [
   { id: "97", name: "Location", parent_id: "7", orderBy: 2, path: "/settings/location" },
   { id: "98", name: "Payment", parent_id: "7", orderBy: 3, path: "/settings/payment" },
   { id: "99", name: "Shipment", parent_id: "7", orderBy: 4, path: "/settings/shipment" },
-  { id: "100", name: "Users", parent_id: "7", orderBy: 5, path: "/settings/user" },
+  { id: "100", name: "Users", parent_id: "7", orderBy: 5, path: "/settings/user-management" },
 
   { id: "101", name: "Company Profile", parent_id: "96", orderBy: 1, path: '/settings/company-profile' },
-  { id: "102", name: "Other Settings", parent_id: "96", orderBy: 2, path: '/settings/company-profile/other-settings' },
-  { id: "103", name: "Legal", parent_id: "96", orderBy: 3,path: '/settings/company-profile/legal' },
-  { id: "104", name: "Business Rules", parent_id: "96", orderBy: 4, path: '/settings/company-profile/business-rules' },
+  { id: "102", name: "Channels", parent_id: "96", orderBy: 2, path: '/settings/company-profile/channels' },
+  { id: "103", name: "Other Settings", parent_id: "96", orderBy: 3, path: '/settings/company-profile/other-settings' },
+  { id: "104", name: "Legal", parent_id: "96", orderBy: 4,path: '/settings/company-profile/legal' },
+  { id: "105", name: "Business Rules", parent_id: "96", orderBy: 5, path: '/settings/company-profile/business-rules' },
 
-  { id: "105", name: "Location Details", parent_id: "97", orderBy: 1, path: "/settings/location" },
-  { id: "106", name: "New Location", parent_id: "97", orderBy: 2, path: "/settings/location/new-location" },
-  { id: "107", name: "Bulk Upload", parent_id: "97", orderBy: 3, modal: true },
+  { id: "106", name: "Location Details", parent_id: "97", orderBy: 1, path: "/settings/location" },
+  { id: "107", name: "New Location", parent_id: "97", orderBy: 2, path: "/settings/location/new-location" },
+  { id: "108", name: "Bulk Upload", parent_id: "97", orderBy: 3, modal: true },
 
-  { id: "108", name: "Payment Mode", parent_id: "98", orderBy: 1, path: "/settings/payment" },
+  { id: "109", name: "Payment Mode", parent_id: "98", orderBy: 1, path: "/settings/payment" },
 
-  { id: "109", name: "Shipment Mode", parent_id: "99", orderBy: 1, path: "/settings/shipment" },
+  { id: "110", name: "Shipment Mode", parent_id: "99", orderBy: 1, path: "/settings/shipment" },
 
-  { id: "110", name: "User Management", parent_id: "100", orderBy: 1, path: "/settings/user" },
-  { id: "111", name: "Role", parent_id: "100", orderBy: 2, path: "/settings/user/role" },
-  { id: "112", name: "Role Privileges", parent_id: "100", orderBy: 3, path: "/settings/user/role-privileges" },
-  { id: "113", name: "Users", parent_id: "100", orderBy: 4, path: "/settings/user/create" },
+  { id: "111", name: "User Management", parent_id: "100", orderBy: 1, path: "/settings/user-management" },
+  { id: "112", name: "Role", parent_id: "100", orderBy: 2, path: "/settings/user/role" },
+  { id: "113", name: "Role Privileges", parent_id: "100", orderBy: 3, path: "/settings/user/role-privileges" },
+  { id: "114", name: "Users", parent_id: "100", orderBy: 4, path: "/settings/user" },
 ];

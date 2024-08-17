@@ -16,6 +16,7 @@ const B2BTableGrid = ({
     manualPagination = true,
     manualSorting = false,
     enableTopToolbar = false,
+    renderRowActions = () => {},
     onColumnFilterFnsChange = () => { },
     onColumnFiltersChange = () => { },
     onGlobalFilterChange = () => { },
@@ -46,6 +47,7 @@ const B2BTableGrid = ({
         mantinePaginationProps: {
             radius: 'sm',
             size: 'sm',
+            rowsPerPageOptions: ["5" , "10", "15"]
         },
         mantineTableProps: { striped: true },
         enableColumnActions: enableColumnActions,
@@ -56,6 +58,7 @@ const B2BTableGrid = ({
             density: 'xs',
         },
         layoutMode: 'grid',
+        renderRowActions: renderRowActions,
         enableTopToolbar: enableTopToolbar,
         manualFiltering: manualFiltering,
         enableSorting: enableSorting,
@@ -74,9 +77,6 @@ const B2BTableGrid = ({
         selectAllMode: selectAllMode,
         positionPagination: 'bottom',
         positionToolbarAlertBanner: 'head-overlay',
-        mantinePaginationProps: {
-            rowsPerPageOptions: rowsPerPageOptions
-        },
         state: {
             columnFilters,
             columnFilterFns,

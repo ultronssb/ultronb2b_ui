@@ -1,5 +1,5 @@
-import { Text } from '@mantine/core';
-import { IconPlus } from '@tabler/icons-react';
+import { PasswordInput, Text } from '@mantine/core';
+import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
@@ -8,6 +8,9 @@ import { ERROR_MESSAGE } from '../../../common/CommonResponse';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
 import B2BSelect from '../../../common/B2BSelect';
+import B2BTextarea from '../../../common/B2BTextarea';
+import B2BInput from '../../../common/B2BInput';
+import B2BAnchor from '../../../common/B2BAnchor';
 
 const AddUsers = () => {
 
@@ -20,7 +23,7 @@ const AddUsers = () => {
     mobileNumber: '',
     emailId: '',
     roleName: '',
-    status: 'ACTIVE', // Default value remains as 'ACTIVE'
+    status: 'ACTIVE',
     assignedLocation: '',
     userName: '',
     password: ''
@@ -32,13 +35,21 @@ const AddUsers = () => {
   const [roles, setRoles] = useState([]);
   const [createUserArea, setCreateUserArea] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
+  const [rowCount, setRowCount] = useState(5)
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const columns = useMemo(() => [
     {
       header: 'S.No',
-      accessorFn: (_, index) => index + 1
+      accessorFn: (_, index) => index + 1,
+      size: 100,
+      mantineTableHeadCellProps: {
+        align: 'center'
+      },
+      mantineTableBodyCellProps: {
+        align: 'center'
+      },
     },
     {
       header: 'User ID',
@@ -60,7 +71,25 @@ const AddUsers = () => {
       header: 'Location ID',
       accessorKey: 'assignedLocation'
     },
-
+    {
+      header: 'Actions',
+      mantineTableHeadCellProps: {
+        align: 'center'
+      },
+      mantineTableBodyCellProps: {
+        align: 'center'
+      },
+      size: 100,
+      Cell: ({ row }) => {
+        const { original } = row;
+        return (
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+            <IconPencil onClick={() => editUser(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+            <IconTrash style={{ cursor: 'pointer', color: 'red' }} stroke={2} />
+          </div>
+        )
+      }
+    }
   ], [])
 
   useEffect(() => {
@@ -68,12 +97,19 @@ const AddUsers = () => {
     fetchAllRoles();
   }, [])
 
+  const editUser = (userObj) => {
+    console.log(userObj);
+    setCreateUserArea(true)
+    setUser((prev => ({ ...prev, ...userObj, })))
+  }
+
 
   const fetchAllUsers = async () => {
     setIsLoading(true)
     try {
-      const response = await B2B_API.get('user/get-all').json();
-      const data = response?.response;
+      const response = await B2B_API.get(`user/get-all-user?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const data = response?.response?.content;
+      setRowCount(response?.response?.totalElements)
       setUsers(data);
       setIsLoading(false)
     } catch (error) {
@@ -107,9 +143,26 @@ const AddUsers = () => {
 
   const createUser = async (event) => {
     event.preventDefault();
-    const response = await B2B_API.post('user', { json: user }).json();
-    setUser(initialUserState)
-
+    try {
+      const response = await B2B_API.post('user', { json: user }).json();
+      setUser(initialUserState)
+      setCreateUserArea(false)
+      fetchAllUsers();
+      notify({
+        id: 'create_user_success',
+        title: "Success!!!",
+        message: response.message,
+        success: true
+      })
+    } catch (error) {
+      notify({
+        id: 'create_user_error',
+        title: "Oops!!! " || ERROR_MESSAGE,
+        message: error.message,
+        error: true,
+        success: false,
+      })
+    }
   }
 
   return (
@@ -142,9 +195,9 @@ const AddUsers = () => {
             enableGlobalFilter={true}
             manualPagination={true}
             pagination={pagination}
-            pageCount={5}
-            rowCount={10}
+            rowCount={rowCount}
             onPaginationChange={setPagination}
+            enableFullScreenToggle={true}
           />
         </>
       )}
@@ -157,7 +210,7 @@ const AddUsers = () => {
             <form onSubmit={createUser} className='form-container'>
               <div className="form-group">
                 <label className='form-label'>User ID</label>
-                <input
+                <B2BInput
                   value={user.userId}
                   className='form-input'
                   disabled
@@ -169,30 +222,30 @@ const AddUsers = () => {
               </div>
               <div className="form-group">
                 <label className='form-label'>First Name</label>
-                <input
-                  value={user.firstName || ''}
-                  className='form-input'
-                  required
-                  type="text"
+                <B2BInput
+                  value={user.firstName}
+                  styles={{ input: { fontSize: '14px' } }}
+                  placeholder={'First Name'}
                   onChange={(event) => handleChange(event, 'firstName')}
-                  placeholder="First Name"
+                  type={'text'}
+                  required={true}
                 />
               </div>
               <div className="form-group">
                 <label className='form-label'>Last Name</label>
-                <input
-                  value={user.lastName || ''}
-                  className='form-input'
-                  required
-                  type="text"
+                <B2BInput
+                  value={user.lastName}
+                  styles={{ input: { fontSize: '14px' } }}
+                  placeholder={'Last Name'}
                   onChange={(event) => handleChange(event, 'lastName')}
-                  placeholder="Last Name"
+                  type={'text'}
+                  required={true}
                 />
               </div>
               <div className="form-group">
                 <label className='form-label'>Address</label>
-                <input
-                  value={user.address || ''}
+                <B2BTextarea
+                  value={user.address}
                   className='form-input'
                   required
                   type="text"
@@ -213,35 +266,23 @@ const AddUsers = () => {
               </div>
               <div className="form-group">
                 <label className='form-label'>Email</label>
-                <input
-                  value={user.emailId || ''}
-                  className='form-input'
-                  required
-                  type="email"
+                <B2BInput
+                  value={user.emailId}
+                  styles={{ input: { fontSize: '14px' } }}
+                  placeholder={'Email'}
                   onChange={(event) => handleChange(event, 'emailId')}
-                  placeholder="Email"
+                  type={'email'}
+                  required={true}
                 />
               </div>
               <div className="form-group">
                 <label className='form-label'>Role</label>
-                {/* <input
-                  value={user.role || ''}
-                  className='form-input'
-                  required
-                  type="text"
-                  onChange={(event) => handleChange(event, 'role')}
-                  placeholder="Role"
-                /> */}
-                {/* <select className='form-select' value={user.role} onChange={()=> console.log("sdhfjsdh")}>
-                  <option value="" selected disabled>Select Role</option>
-                  {roles.map(role => (
-                    <option key={role.id} value={role.name}>{role.name}</option>
-                  ))}
-                </select> */}
                 <B2BSelect
+                  styles={{ option: { fontSize: '13px' }, input: { fontSize: '13px' } }}
                   value={user.roleName}
-                  className="form-select"
                   data={roles.map(r => r.name)}
+                  required={true}
+                  clearable={roles.length > 0 ? true : false}
                   onChange={(value) => changeRoles(value, "roleName")}
                   placeholder={"Select Role"}
                 />
@@ -275,7 +316,7 @@ const AddUsers = () => {
               </div>
               <div className="form-group">
                 <label className='form-label'>Location</label>
-                <input
+                <B2BInput
                   value={user.assignedLocation || ''}
                   className='form-input'
                   required
@@ -286,7 +327,7 @@ const AddUsers = () => {
               </div>
               <div className="form-group">
                 <label className='form-label'>UserName</label>
-                <input
+                <B2BInput
                   value={user.userName || ''}
                   className='form-input'
                   required
@@ -295,19 +336,24 @@ const AddUsers = () => {
                   placeholder="User Name"
                 />
               </div>
-              <div className="form-group">
+              <div className="form-group password">
                 <label className='form-label'>Password</label>
-                <input
-                  value={user.password || ''}
-                  className='form-input'
+                <PasswordInput
+                  name='Password'
+                  styles={{ innerInput: { fontSize: '13px', paddingLeft: '8px' } }}
+                  className='input-textField'
                   required
-                  type="password"
-                  onChange={(event) => handleChange(event, 'password')}
+                  disabled={user.password ? true : false}
+                  size='md'
                   placeholder="Password"
+                  value={user.password}
+                  onChange={(event) => handleChange(event, 'password')}
                 />
+                {user.password ? <B2BAnchor title='Change Password' content="Change" style={{ paddingLeft: '1rem' }} href="" /> : null}
               </div>
               <div className='save-button-container'>
-                <B2BButton type='submit' name="Save" />
+                <B2BButton type='button' onClick={() => { setCreateUserArea(false); setUser(initialUserState) }} color={'red'} name="Cancel" />
+                <B2BButton type='submit' name={user?.userId ? "Update" : "Save"} />
               </div>
             </form>
           </div>

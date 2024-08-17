@@ -8,6 +8,11 @@
   box-sizing: border-box;
 }
 
+.centered {
+  align-items: center;
+  max-width: 700px;
+}
+
 .form-group {
   flex: 1 1 calc(50% - 32px);
   display: flex;
@@ -23,11 +28,17 @@
   width: 225px;
 }
 
-.form-input,
-.form-select,.mantine-Select-input {
+.form-input {
   padding: 8px;
   border: 1px solid #ccc !important;
   border-radius: 4px !important;
+  width: 250px !important;
+  outline: none !important;
+  /* background: none !important; */
+  color: #000 !important;
+}
+
+.input-textField {
   width: 250px !important;
   outline: none !important;
   background: none !important;
@@ -44,6 +55,10 @@
   background: none;
   color: #666666;
 } */
+
+.form-group.password {
+  align-items: center;
+}
 
 .radio-group {
   display: flex;
@@ -68,6 +83,7 @@
   display: flex;
   justify-content: end;
   padding-inline: 6rem;
+  gap: 1rem;
 }
 
 .mrt-table-head-cell-labels {
@@ -78,6 +94,18 @@
   .form-group {
     display: flex;
     flex-direction: column;
+  }
+
+  .form-group.password {
+    align-items: flex-start;
+  }
+
+  .save-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0;
   }
 }
 

@@ -23,6 +23,7 @@ const B2BDateInput = (props) => {
             placeholder="DD/MM/YYYY"
             clearable
             radius="sm"
+            size='md'
         />
     );
 };

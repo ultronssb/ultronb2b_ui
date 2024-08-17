@@ -21,18 +21,18 @@ export const B2B_API = ky.create({
         beforeError: [
             async (error) => {
                 const { response } = error
+                if (response.status === 403 || response.status === 401) {
+                    console.log(response.status, 'response.status');
+                    window.location.href = "/"
+                }
                 return await response.json();
             }
         ],
         afterResponse: [
             async (response) => {
-                if (response.status === 403 || response.status === 401) {
-                    console.log(response.status, 'response.status');
-                    window.location.href = "/"
-                }
                 return response;
             }
-        ]
+        ],
     },
     // retry: {
     //     limit: 2, // Retry up to 2 times
