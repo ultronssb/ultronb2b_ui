@@ -151,7 +151,7 @@ const AddUsers = () => {
       notify({
         id: 'create_user_success',
         title: "Success!!!",
-        message: response.message,
+        message: user.userId ? "Updated Successfully" : response.message,
         success: true
       })
     } catch (error) {
@@ -353,7 +353,7 @@ const AddUsers = () => {
               </div>
               <div className='save-button-container'>
                 <B2BButton type='button' onClick={() => { setCreateUserArea(false); setUser(initialUserState) }} color={'red'} name="Cancel" />
-                <B2BButton type='submit' name={user?.userId ? "Update" : "Save"} />
+                <B2BButton type={user.userId ? 'button' : 'submit'} name={user?.userId ? "Update" : "Save"} />
               </div>
             </form>
           </div>

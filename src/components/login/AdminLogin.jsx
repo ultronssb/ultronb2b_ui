@@ -103,7 +103,7 @@ export function AdminLogin(props) {
                   value={form.values.password}
                   onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
                   error={form.errors.password && 'Password should include at least 6 characters'}
-                  radius="md"
+                  radius="sm"
                 />
               </div>
               <div className='button-container'>

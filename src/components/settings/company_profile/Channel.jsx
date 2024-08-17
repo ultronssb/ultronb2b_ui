@@ -134,7 +134,7 @@ const Channel = () => {
             notify({
                 id: 'channel_post_error',
                 title: "Success!!!",
-                message: response.message,
+                message: channel.channelId ? "Channel Updated" : response.message,
                 success: true,
                 error: false
             })
