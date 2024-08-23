@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import B2BTableGrid from '../../../common/B2BTableGrid'
 import { B2B_API } from '../../../api/Interceptor'
+import GetCategory from './GetCategory'
 
 const productHierarchy = () => {
   const [departments, setDepartments] = useState([])
@@ -140,6 +141,9 @@ const productHierarchy = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <h3 style={{ margin: '1rem 0.3rem' }} key={"divison"}>Category Details</h3>
+      <GetCategory />
+
       <h3 style={{ margin: '1rem 0.3rem' }} key={"divison"}>Division</h3>
       <B2BTableGrid
         columns={divisionColumns}

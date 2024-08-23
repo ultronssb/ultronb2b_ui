@@ -10,9 +10,9 @@ const B2BTextarea = ({ placeholder, value, onChange, required }) => {
             radius="sm"
             required={required}
             autosize
-            minRows={2}
+            minRows={4}
             onChange={onChange}
-            maxRows={2}
+            maxRows={4}
         />
     )
 }

@@ -3,6 +3,7 @@ import B2BDateInput from '../../common/B2BDateInput';
 import B2BInput from '../../common/B2BInput';
 import B2BSelect from '../../common/B2BSelect';
 import './CreateDiscounts.css';
+import B2BButton from '../../common/B2BButton';
 
 const CreateDiscounts = () => {
 
@@ -88,7 +89,7 @@ const CreateDiscounts = () => {
         </div>
       </div>
       <div className='btn-container'>
-        <button className='discountBtn'>Save</button>
+        <B2BButton className='discountBtn' onClick='' name='Save' color='rgb(26, 160, 70)' />
       </div>
     </div>
   );

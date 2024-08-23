@@ -20,3 +20,30 @@ body{
   max-width: 100%;
   display: grid;
 }
+
+.flex {
+  display: flex;
+}
+
+.fjc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.c-j-10 {
+  column-gap: 1rem;
+}
+
+.f-a {
+  display: flex;
+  align-items: center;
+}
+
+.fs-18 {
+  font-size: 16px;
+}
+
+.cursor {
+  cursor: pointer;
+}

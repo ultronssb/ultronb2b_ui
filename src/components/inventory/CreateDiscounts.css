@@ -93,7 +93,7 @@
     padding: 20px;
 }
 
-.discountBtn {
+/* .discountBtn {
     padding: 5px 20px;
     background-color: rgb(26, 160, 70);
     color: white;
@@ -103,7 +103,7 @@
     border: none;
     font-size: 18px;
     font-weight: 800;
-}
+} */
 
 @media (max-width: 767px) {
     .grid-container {
