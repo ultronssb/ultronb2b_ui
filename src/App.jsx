@@ -62,6 +62,7 @@ import Abondened from './components/sales/Abondened';
 import Returned from './components/sales/Returned';
 import CreateOrder from './components/sales/CreateOrder';
 import Channel from './components/settings/company_profile/Channel';
+import Group from './components/product/product_hierarchy/Group';
 
 function App() {
 
@@ -78,6 +79,7 @@ function App() {
         <Route path='/product/section' element={<Section />} />
         <Route path='/product/category' element={<Category />} />
         <Route path='/product/brand' element={<Brand />} />
+        <Route path='/product/group' element={<Group />}/>
 
         <Route path='/product/tax/tax-masters' element={<TaxMasters />} />
         <Route path='/product/tax/gst' element={<GST />} />

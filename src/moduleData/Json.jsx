@@ -78,6 +78,7 @@ export const data = [
   { id: "19", name: "Section", parent_id: "8", orderBy: 4,path: "/product/section" },
   { id: "20", name: "Category", parent_id: "8", orderBy: 5, path: "/product/category" },
   { id: "21", name: "Brand", parent_id: "8", orderBy: 6, path: "/product/brand" },
+  { id: "115", name: "Group", parent_id: "8", orderBy: 7, path: "/product/group" },
   
   { id: "22", name: "Tax Masters", parent_id: "9", orderBy: 1, path: "/product/tax/tax-masters"},
   { id: "23", name: "GST", parent_id: "9", orderBy: 2, path: "/product/tax/gst"},
