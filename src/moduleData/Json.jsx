@@ -39,9 +39,9 @@ export const data = [
     name: "CRM",
     parent_id: null,
     orderBy: 5,
-    path: "/crm",
+    path: "/crm/customer",
     icon: <span className="material-symbols-outlined">volunteer_activism</span>,
-    defaultChildId: "70"
+    defaultChildId: "74"
   },
   {
     id: "6",
@@ -156,19 +156,19 @@ export const data = [
 
 
   /* CRM Child Component */
-  { id: "74", name: "Customer", parent_id: "5", orderBy: 1, path: "/crm" },
+  { id: "74", name: "Customer", parent_id: "5", orderBy: 1, path: "/crm/customer" },
   { id: "75", name: "Loyalty", parent_id: "5", orderBy: 2, path: "/crm/loyalty" },
   { id: "76", name: "Sales Man", parent_id: "5", orderBy: 3, path: "/crm/salesman" },
 
-  { id: "77", name: "Customer", parent_id: "70", orderBy: 1, path: "/crm" },
-  { id: "78", name: "Draft", parent_id: "70", orderBy: 2, path: "/crm/draft" },
-  { id: "79", name: "Approved", parent_id: "70", orderBy: 3, path: "/crm/approve" },
-  { id: "80", name: "Create", parent_id: "70", orderBy: 4, path: "/crm/create" },
-  { id: "81", name: "Bulk Uplaod", parent_id: "70", orderBy: 5, modal: true },
+  { id: "77", name: "Customer", parent_id: "74", orderBy: 1, path: "/crm/customer" },
+  { id: "78", name: "Draft", parent_id: "74", orderBy: 2, path: "/crm/customer/draft" },
+  { id: "79", name: "Approved", parent_id: "74", orderBy: 3, path: "/crm/customer/approved" },
+  { id: "80", name: "Create", parent_id: "74", orderBy: 4, path: "/crm/customer/create" },
+  { id: "81", name: "Bulk Uplaod", parent_id: "74", orderBy: 5, modal: true },
 
-  { id: "82", name: "Loyalty", parent_id: "77", orderBy: 1, path: "/crm/loyalty" },
-  { id: "83", name: "Create New", parent_id: "77", orderBy: 2, path: "/crm/loyalty/create" },
-  { id: "84", name: "Point Status", parent_id: "77", orderBy: 3, path: "/crm/loyalty/point-status" },
+  { id: "82", name: "Loyalty", parent_id: "75", orderBy: 1, path: "/crm/loyalty" },
+  { id: "83", name: "Create New", parent_id: "75", orderBy: 2, path: "/crm/loyalty/create-new" },
+  { id: "84", name: "Point Status", parent_id: "75", orderBy: 3, path: "/crm/loyalty/point-status" },
 
   { id: "85", name: "Sales Man", parent_id: "76", orderBy: 1, path: "/crm/salesman" },
 

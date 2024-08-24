@@ -34,7 +34,7 @@ import GST from './components/product/tax/GST';
 import GSTSlabs from './components/product/tax/GSTSlabs';
 import HsnSac from './components/product/tax/HsnSac';
 import TaxMasters from './components/product/tax/TaxMasters';
-import CreateVariant from './components/product/variants/CreateVariant';
+// import CreateVariant from './components/product/variants/CreateVariant';
 import Variants from './components/product/variants/Variants';
 import BusinessRules from './components/settings/company_profile/BusinessRules';
 import CompanyProfile from './components/settings/company_profile/CompanyProfile';
@@ -63,6 +63,14 @@ import Returned from './components/sales/Returned';
 import CreateOrder from './components/sales/CreateOrder';
 import Channel from './components/settings/company_profile/Channel';
 import Group from './components/product/product_hierarchy/Group';
+import PointStatus from './components/crm/PointStatus';
+import CreateNew from './components/crm/CreateNew';
+import Create from './components/crm/Create';
+import Approved from './components/crm/Approved';
+import Draft from './components/crm/Draft';
+import Salesman from './components/crm/Salesman';
+import Loyalty from './components/crm/Loyalty';
+import Customer from './components/crm/Customer';
 
 function App() {
 
@@ -91,7 +99,7 @@ function App() {
         <Route path='/product/product/create' element={<CreateProduct />} />
 
         <Route path='/product/variants' element={<Variants />} />
-        <Route path='/product/variant/create' element={<CreateVariant />} />
+        {/* <Route path='/product/variant/create' element={<CreateVariant />} /> */}
 
         <Route path='/product/price-book' element={<PriceBook />} />
         <Route path='/product/price-book/create' element={<CreatePriceBook />} />
@@ -145,14 +153,14 @@ function App() {
 
 
         {/* crm */}
-        {/* <Route path='/crm/customer' element={<Customer />} />
+        <Route path='/crm/customer' element={<Customer />} />
         <Route path='/crm/loyalty' element={<Loyalty />} />
         <Route path='/crm/salesman' element={<Salesman />} />
         <Route path='/crm/customer/draft' element={<Draft />} />
         <Route path='/crm/customer/approved' element={<Approved />} />
         <Route path='/crm/customer/create' element={<Create />} />
         <Route path='/crm/loyalty/create-new' element={<CreateNew />} />
-        <Route path='/crm/loyalty/point-status' element={<PointStatus />} /> */}
+        <Route path='/crm/loyalty/point-status' element={<PointStatus />} />
 
         {/* E-Commerce */}
 
