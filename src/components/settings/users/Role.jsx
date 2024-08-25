@@ -1,30 +1,23 @@
-import { useDisclosure } from '@mantine/hooks';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
-import B2BButton from '../../../common/B2BButton';
-import B2BModal from '../../../common/B2BModal';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
 
 const Role = () => {
-  const initialState = {
+  const [role, setRole] = useState({
     name: '',
     roleId: '',
     description: '',
     status: "ACTIVE"
-  }
-  const [role, setRole] = useState(initialState);
+  });
   const [roles, setRoles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
   const [rowCount, setRowCount] = useState(0);
-  const [deleteContent, setDeleteContent] = useState({});
-
-  const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
     fetchRoles();
@@ -81,30 +74,18 @@ const Role = () => {
         const { original } = row;
         return (
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <IconPencil onClick={() => editRole(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-            <IconTrash onClick={() => handleDeleteModal(original)} style={{ cursor: 'pointer', color: 'red' }} stroke={2} />
+            <IconPencil style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+            <IconTrash style={{ cursor: 'pointer', color: 'red' }} stroke={2} />
           </div>
         )
       }
     }
   ])
 
-  const editRole = (roleObj) => {
-    setRole((prev => ({ ...prev, ...roleObj })))
-  }
-
-  const handleDeleteModal = (roleObj) => {
-    setDeleteContent(roleObj);
-    open(true);
-  }
-
-  const handleDelete = (roleId) => {
-    console.log(roleId);
-  }
-
   const fetchRoles = async () => {
     try {
       const response = await B2B_API.get(`role/get-all-role?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+
       setRoles(response?.response?.content);
       setRowCount(response?.response?.totalElements)
     } catch (error) {
@@ -115,28 +96,17 @@ const Role = () => {
   const handleChange = (event, key) => {
     const value = event.target.type === 'radio' ? event.target.value : event.target.value;
     setRole(prev => ({
-      ...prev, [key]: key === 'name' ? value.toUpperCase() : value
+      ...prev,
+      [key]: key === 'name' ? value.toUpperCase() : value // Transform 'name' to uppercase
     }));
   };
 
-  const DeleteModalContent = ({ body }) => {
-    const { name, roleId } = body;
-    return (
-      <>
-        <h4>Delete this Role {name}</h4>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '1rem' }}>
-          <B2BButton onClick={close} name={"No"} />
-          <B2BButton color={'red'} onClick={() => handleDelete(roleId)} name={"Yes"} />
-        </div>
-      </>
-    )
-  }
 
   const createRole = async (event) => {
     event.preventDefault();
     try {
       const response = await B2B_API.post('role', { json: role }).json();
-      setRole(initialState);
+      setRole({ name: '', description: '', roleId: '', status: 'ACTIVE' });
       fetchRoles();
       notify({
         id: "add_role",
@@ -154,23 +124,86 @@ const Role = () => {
     }
   };
 
+  const json = [
+    {
+      label: "ROLL ID",
+      value: role.roleId,
+      style: { cursor: 'not-allowed' },
+      onChange: (event) => handleChange(event, 'roleId'),
+      type: "text",
+      placeholder: "ROLL ID"
+    },
+    {
+      label: "ROLL Name",
+      value: role.name,
+      onChange: (event) => handleChange(event, 'name'),
+      type: "text",
+      placeholder: "ROLL Name"
+    },
+    {
+      label: "ROLL Decription",
+      value: role.description,
+      onChange: (event) => handleChange(event, 'description'),
+      type: "text",
+      placeholder: "ROLL Description"
+    },
+    {
+      label: "Status",
+      type: "radio",
+      name: "status",
+      className: "form-group status-container",
+      options: [
+        { value: "ACTIVE", label: "ACTIVE" },
+        { value: "INACTIVE", label: "INACTIVE" }
+      ],
+      value: role.status,
+      onChange: (event) => handleChange(event, 'status')
+    }
+  ]
+
   return (
     <>
       <div className='grid-container'>
         <form onSubmit={createRole} className='form-container'>
-          <div className="form-group">
-            <label className='form-label'>Role ID</label>
-            <input
-              value={role.roleId}
-              className='form-input'
-              disabled
-              style={{ cursor: 'not-allowed' }}
-              onChange={(event) => handleChange(event, 'roleId')}
-              type="text"
-              placeholder="Role ID"
-            />
-          </div>
-          <div className="form-group">
+          {json.map(e => (
+            <div className={e.className ? e.className : "form-group"}>
+              <label className='form-label'>{e.label}</label>
+              {e.type == "radio" ? (
+                <div className='radio-label-block'>
+                  {e.options.map((option, idx) => (
+                    <div className='radio-group'>
+                      <div className='status-block'>
+                        <input
+                          id={`${e.name}-${option.value.toLowerCase()}`}
+                          value={option.value}
+                          style={e.style && e.style}
+                          onChange={(event) => e.onChange(event, e.name)}
+                          checked={e.value === option.value}
+                          type={e.type}
+                          placeholder={e.placeholder}
+                        />
+                        <label className='form-span radio' htmlFor={`${e.name}-${option.value.toLowerCase()}`}>{option.label}</label>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+                :
+                <input
+                  value={e.value}
+                  className='form-input'
+                  style={e.style && e.style}
+                  onChange={(event) => e.onChange(event, e.name)}
+                  type={e.type}
+                  placeholder={e.placeholder}
+                />
+              }
+            </div>
+          ))}
+
+
+
+          {/* <div className="form-group">
             <label className='form-label'>Name</label>
             <input
               value={role.name || ''}
@@ -220,9 +253,8 @@ const Role = () => {
             </div>
           </div>
           <div className='save-button-container'>
-            <B2BButton type='button' color={'red'} onClick={() => setRole(initialState)} name="Cancel" />
-            <B2BButton type='submit' name={role.roleId ? "Update" : "Save"} />
-          </div>
+            <B2BButton type='submit' name="Save" />
+          </div> */}
         </form>
       </div>
       <B2BTableGrid
@@ -237,7 +269,6 @@ const Role = () => {
         onPaginationChange={setPagination}
         enableFullScreenToggle={true}
       />
-      <B2BModal opened={opened} title={"Are You Sure ?"} children={<DeleteModalContent body={deleteContent} />} open={open} close={close} />
     </>
   );
 }

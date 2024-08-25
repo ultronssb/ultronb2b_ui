@@ -98,7 +98,7 @@ const AddUsers = () => {
   }, [])
 
   const editUser = (userObj) => {
-    console.log(userObj);
+    console.log(userObj,"obj");
     setCreateUserArea(true)
     setUser((prev => ({ ...prev, ...userObj, })))
   }

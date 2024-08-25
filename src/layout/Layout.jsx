@@ -2,7 +2,7 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AppShell, Avatar, Button, Container, Group, rem } from '@mantine/core';
 import { IconLogout, IconUserCircle } from '@tabler/icons-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import ultron_logo from "../assets/ultron-logo.png";
 import avatar from '../avatar.jpg';
@@ -13,6 +13,8 @@ import { ModuleJson } from '../moduleData/ModuleJson';
 import { LogOut } from '../utils/Utilities';
 import { B2B_API } from '../api/Interceptor';
 import B2BButton from '../common/B2BButton';
+
+export const ScrollContext = createContext(null);
 
 export default function Layout() {
   const [stateData, setStateData] = useState({
@@ -30,7 +32,10 @@ export default function Layout() {
 
   const navigate = useNavigate();
   const { state } = useLocation();
+  const appShellRef = useRef(null)
   const headerData = useMemo(() => ModuleJson(null), []);
+
+
 
   const menuItems = [
     {
@@ -45,6 +50,15 @@ export default function Layout() {
       icon: <IconUserCircle style={{ width: rem(14), height: rem(14) }} />
     }
   ]
+
+  const scrollToTop = () => {
+    if (appShellRef.current) {
+      appShellRef.current.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   useEffect(() => {
     if (state) {
@@ -93,57 +107,59 @@ export default function Layout() {
   }
 
   return (
-    <AppShell header={{ height: 60 }} padding="md" style={{ overflowY: 'auto', height: '100vh' }}>
-      <AppShell.Header style={{ borderBottom: 'none' }}>
-        <nav className='nav-bar'>
-          <div style={{ display: 'flex' }}>
-            <img className='ultron_logo' src={ultron_logo} style={{ marginRight: '1rem' }} />
-            {headerData.map((headernav, index) => (
-              <div key={headernav.id} className="nav-header" onClick={() => handleLinkClick(index, headernav)}>
-                <span>{headernav.icon}</span>
-                <span style={{ fontWeight: index === stateData.activeIndex ? 'bolder' : '500', letterSpacing: '0.6px', whiteSpace: 'nowrap' }}>{headernav.name}</span>
-                <span className={`active ${index === stateData.activeIndex ? 'visible' : ''}`}></span>
-              </div>
-            ))}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-            {/* <B2BMenu trigger="click" menuItems={floatButtonItems}> */}
-            <button onClick={() => alert("Work in progress!!!")} style={{ color: 'white', position: 'absolute', top: '3rem', right: '10rem', width: '30px', height: '30px', borderRadius: '25px', backgroundColor: '#022d46', outline: 'none', border: 'none', cursor: 'pointer' }}>+</button>
-            {/* </B2BMenu> */}
-            <B2BMenu trigger="hover" menuItems={menuItems}>
-              <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', width: '10rem', justifyContent: 'flex-end' }}>
-                <div style={{ paddingRight: '2rem' }}>
-                  <label className="person_name">Hi, {userName}</label>
+    <ScrollContext.Provider value={scrollToTop}>
+      <AppShell header={{ height: 60 }} ref={appShellRef} padding="md" style={{ overflowY: 'auto', height: '100vh' }}>
+        <AppShell.Header style={{ borderBottom: 'none' }}>
+          <nav className='nav-bar'>
+            <div style={{ display: 'flex' }}>
+              <img className='ultron_logo' src={ultron_logo} style={{ marginRight: '1rem' }} />
+              {headerData.map((headernav, index) => (
+                <div key={headernav.id} className="nav-header" onClick={() => handleLinkClick(index, headernav)}>
+                  <span>{headernav.icon}</span>
+                  <span style={{ fontWeight: index === stateData.activeIndex ? 'bolder' : '500', letterSpacing: '0.6px', whiteSpace: 'nowrap' }}>{headernav.name}</span>
+                  <span className={`active ${index === stateData.activeIndex ? 'visible' : ''}`}></span>
                 </div>
-                <Avatar styles={{ image: { padding: 0 } }} className="avatar" src={avatar} alt="Sachin's Avatar" />
-              </div>
-            </B2BMenu>
-          </div>
-        </nav>
-      </AppShell.Header>
-      <AppShell.Main>
-        {stateData.childTabs.length > 1 && <B2BTabs tabsData={stateData.childTabs} justify={"flex-start"} onClick={handleTabClick} activeId={stateData.childParentId} variant='default' margin='10px' />}
-        {stateData.buttonGroup.length > 1 && (
-          <Group styles={{ root: { padding: '1rem' } }}>
-            {stateData.buttonGroup.map((button) => (
-              <Button
-                className='button-group'
-                key={button.id}
-                // leftSection={!checkCurrentPathMatch(button) && <FontAwesomeIcon style={{ fontSize: '20px', color: "#1492cd" }} icon={faCirclePlus} />}
-                styles={{ root: { background: checkCurrentPathMatch(button) ? '#cfeffd' : 'linear-gradient(180deg, rgba(251, 251, 251, 1) 0%, rgba(231, 231, 231, 1) 100%)' }, label: { color: '#4e595e', fontWeight: checkCurrentPathMatch(button) ? "900" : "500" } }}
-                variant={checkCurrentPathMatch(button) ? 'filled' : 'default'}
-                onClick={() => handleButtonClick(button)}
-              >
-                {button.name}
-              </Button>
-            ))}
-          </Group>
-        )}
-        <Container size="responsive">
-          <Outlet />
-        </Container>
-      </AppShell.Main>
-      <AppShell.Footer h={5}></AppShell.Footer>
-    </AppShell>
+              ))}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+              {/* <B2BMenu trigger="click" menuItems={floatButtonItems}> */}
+              <button onClick={() => alert("Work in progress!!!")} style={{ color: 'white', position: 'absolute', top: '3rem', right: '10rem', width: '30px', height: '30px', borderRadius: '25px', backgroundColor: '#022d46', outline: 'none', border: 'none', cursor: 'pointer' }}>+</button>
+              {/* </B2BMenu> */}
+              <B2BMenu trigger="hover" menuItems={menuItems}>
+                <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', width: '10rem', justifyContent: 'flex-end' }}>
+                  <div style={{ paddingRight: '2rem' }}>
+                    <label className="person_name">Hi, {userName}</label>
+                  </div>
+                  <Avatar styles={{ image: { padding: 0 } }} className="avatar" src={avatar} alt="Sachin's Avatar" />
+                </div>
+              </B2BMenu>
+            </div>
+          </nav>
+        </AppShell.Header>
+        <AppShell.Main>
+          {stateData.childTabs?.length > 1 && <B2BTabs tabsData={stateData.childTabs} justify={"flex-start"} onClick={handleTabClick} activeId={stateData.childParentId} variant='default' margin='10px' />}
+          {stateData.buttonGroup.length > 1 && (
+            <Group styles={{ root: { padding: '1rem' } }}>
+              {stateData.buttonGroup.map((button) => (
+                <Button
+                  className='button-group'
+                  key={button.id}
+                  // leftSection={!checkCurrentPathMatch(button) && <FontAwesomeIcon style={{ fontSize: '20px', color: "#1492cd" }} icon={faCirclePlus} />}
+                  styles={{ root: { background: checkCurrentPathMatch(button) ? '#cfeffd' : 'linear-gradient(180deg, rgba(251, 251, 251, 1) 0%, rgba(231, 231, 231, 1) 100%)' }, label: { color: '#4e595e', fontWeight: checkCurrentPathMatch(button) ? "900" : "500" } }}
+                  variant={checkCurrentPathMatch(button) ? 'filled' : 'default'}
+                  onClick={() => handleButtonClick(button)}
+                >
+                  {button.name}
+                </Button>
+              ))}
+            </Group>
+          )}
+          <Container size="responsive" ref={appShellRef}>
+            <Outlet />
+          </Container>
+        </AppShell.Main>
+        <AppShell.Footer h={5}></AppShell.Footer>
+      </AppShell>
+    </ScrollContext.Provider>
   );
 }

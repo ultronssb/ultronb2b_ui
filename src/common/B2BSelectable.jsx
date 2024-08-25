@@ -1,10 +1,13 @@
 import { Combobox, InputBase, useCombobox } from '@mantine/core';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
+const B2BSelectable = ({ data, value, setData, setValue }) => {
+    const [search, setSearch] = useState(value || '');
 
-const B2BSelectable = ({ data, value,setData,  setValue }) => {
-
-  const [search, setSearch] = useState('');
+    // Reset the search value if the value prop changes
+    useEffect(() => {
+        setSearch(value);
+    }, [value]);
 
     console.log(data);
 
@@ -14,7 +17,8 @@ const B2BSelectable = ({ data, value,setData,  setValue }) => {
 
     const exactOptionMatch = data?.some((item) => item === search);
     const filteredOptions = exactOptionMatch
-        ? data : data?.filter((item) => item?.toLowerCase().includes(search.toLowerCase().trim()));
+        ? data
+        : data?.filter((item) => item?.toLowerCase().includes(search.toLowerCase().trim()));
 
     const options = filteredOptions.map((item, index) => (
         <Combobox.Option value={item} key={index}>
@@ -28,11 +32,11 @@ const B2BSelectable = ({ data, value,setData,  setValue }) => {
             withinPortal={false}
             onOptionSubmit={(val) => {
                 if (val === '$create') {
-                    setData((current) => [...current, search ]);//old value set panna
-                    setValue(search);//name la namme kudukura value set aakum
+                    setData((current) => [...current, search]);
+                    setValue(search);
                 } else {
                     setValue(val);
-                    setSearch(val);//already ullathukku
+                    setSearch(val);
                 }
 
                 combobox.closeDropdown();
@@ -41,7 +45,7 @@ const B2BSelectable = ({ data, value,setData,  setValue }) => {
             <Combobox.Target>
                 <InputBase
                     rightSection={<Combobox.Chevron />}
-                    value={search||value}
+                    value={search}
                     onChange={(event) => {
                         combobox.openDropdown();
                         combobox.updateSelectedOptionIndex();
@@ -50,7 +54,7 @@ const B2BSelectable = ({ data, value,setData,  setValue }) => {
                     onClick={() => combobox.openDropdown()}
                     onFocus={() => combobox.openDropdown()}
                     placeholder="Search Name"
-                    style={{width:'250px'}}
+                    style={{ width: '250px' }}
                     rightSectionPointerEvents="none"
                 />
             </Combobox.Target>

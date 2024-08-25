@@ -1,0 +1,338 @@
+.form-container {
+    display: flex;
+}
+.vd-g-row--gutter>.vd-g-col {
+    padding: 0 12px 12px;
+}
+
+.vd-g-s-12 {
+    max-width: 100%;
+}
+
+.vd-g-col {
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+label {
+    cursor: default;
+}
+
+.vd-util-text-overflow-break-word {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.vd-label {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-size: 15px;
+    font-synthesis: none;
+    font-weight: 700;
+    line-height: 1.3333333333;
+    margin: 0 0 4px;
+}
+
+.vd-ml1 {
+    margin-left: 4px !important;
+}
+
+.vd-text-mini-signpost,
+.vd-text-supplementary {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    font-synthesis: none;
+    margin: 0;
+}
+
+.vd-text-supplementary {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.25;
+}
+
+.vd-dropdown-input {
+    cursor: pointer;
+}
+
+.vd-select {
+    appearance: none;
+    border: 2px solid silver;
+    border-radius: 4px;
+    box-shadow: none;
+    box-sizing: border-box;
+    color: gray;
+    font-family: lato, Helvetica Neue, helvetica, roboto, arial, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    margin: 0;
+    outline: none;
+    padding: 11px 36px 11px 14px;
+    transition-duration: .2s;
+    transition-property: border-color, box-shadow;
+    width: 500px !important;
+    word-break: normal;
+}
+
+
+
+/* modal pop */
+.vd-popover-tether-pinned-top .vd-popover {
+    margin-top: 12px;
+}
+
+.vd-popover {
+    background-color: white;
+    border-radius: 5px;
+    filter: drop-shadow(0 4px 5px black);
+    position: relative;
+}
+
+.vd-popover--with-list .vd-popover-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+div {
+    display: block;
+    unicode-bidi: isolate;
+}
+.vd-popover-content {
+    background-color: white;
+    border-radius: 5px;
+    box-sizing: border-box;
+    max-height: calc(50vh - 40px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.vd-mr6 {
+    margin-right: 24px !important;
+}
+
+.vd-ml6 {
+    margin-left: 24px !important;
+}
+
+.vd-mb3 {
+    margin-bottom: 12px !important;
+}
+
+.vd-mt6 {
+    margin-top: 24px !important;
+}
+
+.vd-input:placeholder-shown {
+    text-overflow: ellipsis;
+}
+
+.vd-input {
+    border: 2px solid blue;
+    border-radius: 4px;
+    box-shadow: none;
+    box-sizing: border-box;
+    color: gray;
+    cursor: text;
+    font-family: lato, Helvetica Neue, helvetica, roboto, arial, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    margin: 0;
+    outline: none;
+    padding: 11px 14px;
+    transition-duration: .2s;
+    transition-property: border-color, box-shadow;
+    width: 100%;
+    word-break: normal;
+}
+
+.vd-mt4 {
+    margin-top: 16px !important;
+}
+
+.vd-text-signpost {
+    font-size: 15px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.vd-text-intro,
+.vd-text-signpost {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+    line-height: 1.3333333333;
+    margin: 0;
+    word-break: break-word;
+}
+
+.vd-mt2 {
+    margin-top: 8px !important;
+}
+
+.vd-hr,
+.vd-popover-list-separator {
+    border: none;
+    border-top: 1px solid black;
+    margin: 20px auto;
+    max-width: 1100px;
+    width: 100%;
+}
+
+hr {
+    display: block;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    unicode-bidi: isolate;
+    overflow: hidden;
+}
+
+.vd-popover-list {
+    box-sizing: border-box;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+    unicode-bidi: isolate;
+}
+
+.vd-popover-list-item:hover {
+    background-color: rgba(128,140,255,.102) !important;
+}
+
+.vd-popover-list-item {
+    color: currentColor;
+    cursor: pointer;
+    display: block;
+    outline: none;
+    padding: 16px 24px;
+    text-decoration: none;
+    transition-duration: .2s;
+    transition-property: color, background;
+    word-break: break-word;
+}
+
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+    unicode-bidi: isolate;
+}
+
+.helios-c-PJLV-icepvqO-css {
+    justify-content: space-between;
+    display: flex;
+    width: 100%;
+    gap: 5px;
+    flex-direction: row;
+}
+
+.helios-c-PJLV-ilkBNdM-css {
+    height: 100%;
+}
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px / 1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.vd-popover-actions .vd-action-bar {
+    border-radius: 0 0 5px 5px;
+    padding-left: 24px;
+    padding-right: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.category-list-footer {
+    height: unset;
+}
+
+.vd-suggestion--footer {
+    border-top: 1px solid gray;
+    bottom: 0;
+    box-sizing: border-box;
+    height: 60px;
+    left: 0;
+    position: absolute;
+    right: 0;
+}
+
+.vd-action-bar--inline {
+    padding: 8px 24px;
+}
+
+.helios-c-PJLV-idMyiqo-css {
+    justify-content: space-between;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-direction: row;
+}
+
+.vd-text-body {
+    font-weight: 400;
+}
+
+.vd-text-body,
+.vd-text-label {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 15px;
+    font-synthesis: none;
+    line-height: 1.3333333333;
+    margin: 0;
+    word-break: break-word;
+}
+
+.vd-btn:not(.vd-btn--link) {
+    outline: none;
+}
+
+.vd-btn--icon-supplementary {
+    background-color: initial;
+    color: gary;
+    padding: 12px 14px;
+}
+
+.vd-btn {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    border: 1px solid #0000;
+    border-radius: 4px;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    font-family: lato, Helvetica Neue, Helvetica, Roboto, Arial, sans-serif;
+    font-size: 15px;
+    font-synthesis: none;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+    padding: 12px 20px;
+    position: relative;
+    text-align: center;
+    transition-duration: .2s;
+    transition-property: background, color, border, box-shadow;
+    word-break: break-word;
+}

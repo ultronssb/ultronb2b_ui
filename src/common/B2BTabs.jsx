@@ -37,8 +37,5 @@ B2BTabs.propTypes = {
   tabsData: PropTypes.array,
   grow: PropTypes.bool,
   justify: PropTypes.string,
-  onClick: PropTypes.func,
-  variant: PropTypes.string,
-  margin: PropTypes.string,
-  activeId: PropTypes.string
-};
+  onClick: PropTypes.func
+}

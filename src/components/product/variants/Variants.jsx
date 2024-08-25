@@ -221,7 +221,7 @@ const Variants = () => {
                 <label className='form-label'>Name</label>
                 <B2BSelectable
                   data={varientType}
-                  value={varient.name}
+                  value={varient.name || ""}
                   setData={setVarientType}
                   setValue={(event) => handleChange(event, 'name')}
 

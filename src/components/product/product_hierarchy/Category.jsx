@@ -79,7 +79,6 @@ const CategoryTree = ({ level = 1, categories, onCategoryChange }) => {
   );
 };
 
-
 const Category = () => {
   const [categoryTree, setCategoryTree] = useState([{ name: '', parentId: null, productGroup: {}, child: [] }]);
   const [groups, setGroups] = useState([]);
@@ -190,7 +189,7 @@ const Category = () => {
         onCategoryChange={(newTree) => setCategoryTree(newTree)}
       />
       <B2BButton onClick={() => handleSave()} name='Save' color='rgb(26, 160, 70)' />
-      <pre>{JSON.stringify(categoryTree, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(categoryTree, null, 2)}</pre> */}
     </div>
   );
 };
