@@ -7,6 +7,7 @@ import B2BButton from '../../../common/B2BButton';
 import B2BSelect from '../../../common/B2BSelect';
 import notify from '../../../utils/Notification';
 import './Product_hierarchy.css';
+import _ from 'lodash';
 
 const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children }) => {
   return (
@@ -104,24 +105,18 @@ const Category = () => {
     setGroups(response.response);
   }
 
-  const handleSelectChange = (selectedGroup) => {
-    console.log(selectedGroup);
+  const handleSelectChange = (value) => {
+    console.log(groups, value);
+    const group = _.find(groups , gr => gr.name === value)
+    console.log(group)
     
-    if (selectedGroup && selectedGroup.length > 0) {
       setCategoryTree(prevTree => [
         {
           ...prevTree[0],
-          productGroup: selectedGroup[0]
+          productGroup: group
         }
       ]);
-    } else {
-      setCategoryTree(prevTree => [
-        {
-          ...prevTree[0],
-          productGroup: {}
-        }
-      ]);
-    }
+
   };
   
 
@@ -163,7 +158,6 @@ const Category = () => {
         error: true,
         success: false
       })
-      navigate(`/product/product-hierarchy`);
     }
   };
 
@@ -176,10 +170,10 @@ const Category = () => {
       <div className='group-input'>
         <label>Group Name</label>
         <B2BSelect
-          value={groups.name}
+          value={categoryTree[0].productGroup?.name}
           data={groups.map(group => (group.name))}
           required={true}
-          onChange={()=>handleSelectChange(groups)}
+          onChange={(event)=>handleSelectChange(event)}
           clearable={true}
         />
       </div>
