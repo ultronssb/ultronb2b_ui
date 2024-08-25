@@ -1,7 +1,7 @@
 import { Select } from '@mantine/core'
 import React from 'react'
 
-const B2BSelect = ({ placeholder, value, data, required, onChange, style, styles, clearable }) => {
+const B2BSelect = ({ placeholder, value, data, required, onChange, style, styles, clearable, scroll }) => {
     
     return (
         <Select
@@ -14,6 +14,7 @@ const B2BSelect = ({ placeholder, value, data, required, onChange, style, styles
             required={required}
             onChange={onChange}
             clearable={clearable}
+            withScrollArea={scroll}
             searchable
             comboboxProps={{ shadow: 'md' }}
             radius="sm"

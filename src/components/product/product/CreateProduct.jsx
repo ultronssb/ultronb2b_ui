@@ -6,6 +6,8 @@ import ProductPrice from './ProductPrice';
 import ProductTax from './ProductTax';
 import B2BButton from '../../../common/B2BButton';
 import ProductVariant from './ProductVariant';
+import ProductCategorys from './ProductCategorys';
+import ProductImage from './ProductImage';
 
 export const ProductContext = createContext(null);
 
@@ -125,7 +127,7 @@ const CreateProduct = () => {
       case "1":
         return <ProductType />;
       case "2":
-        return <ProductCategory />;
+        return <ProductCategorys />;
       case "3":
         return <ProductTax />;
       case "4":
@@ -133,7 +135,7 @@ const CreateProduct = () => {
       case "5":
         return <ProductPrice />;
       case "6":
-        return <div>Image Component</div>; // Replace with actual Image component
+        return <ProductImage />; // Replace with actual Image component
       default:
         return <ProductType />;
     }

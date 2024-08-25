@@ -86,6 +86,7 @@ const ProductVariant = () => {
                                                         <B2BSelect
                                                         value={pair.key}
                                                         data={getAvailableKeys(index)}
+                                                        clearable={true}
                                                         onChange={(e)=>handleSelectChange(index,e)}
                                                         />
                                                     </div>
