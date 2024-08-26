@@ -1,0 +1,31 @@
+.group-input {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+.group-input label {
+    font-size: 14px;
+    font-weight: 700;
+}
+.cat-Btn {
+    cursor: pointer;
+    width: fit-content;
+    padding: 6px 4px ;
+    background: none;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    color: #FF6F61;
+    font-size: 14px;
+    font-weight: 800;
+}
+.cat-Btn:hover {
+    cursor: pointer;
+    width: fit-content;
+    padding: 6px 4px ;
+    background: #FF6F61;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    color: #FFF;
+}

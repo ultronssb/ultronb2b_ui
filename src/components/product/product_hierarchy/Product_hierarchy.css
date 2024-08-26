@@ -1,9 +1,0 @@
-.group-input {
-    display: flex;
-    align-items: center;
-    gap: 3rem;
-}
-.group-input label {
-    font-size: 14px;
-    font-weight: 700;
-}

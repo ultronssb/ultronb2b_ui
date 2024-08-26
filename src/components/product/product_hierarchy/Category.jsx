@@ -1,30 +1,31 @@
 import { faArrowTurnUp, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BSelect from '../../../common/B2BSelect';
 import notify from '../../../utils/Notification';
-import './Product_hierarchy.css';
-import _ from 'lodash';
+import './Category.css';
 
 const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children }) => {
   return (
-    <div style={{ marginLeft: `${level + 130}px`, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-      <div>
+    <div style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px`, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <label style={{width:'110px'}}>Level {level}</label>
         {level < 4 && level > 1 && (<FontAwesomeIcon icon={faArrowTurnUp} style={{ transform: 'rotate(90deg)', marginRight: '20px' }} />)}
         <input type="text"
           value={name}
           onChange={(e) => onChange(e.target.value)}
           placeholder={`Level ${level} Category`}
           required
-          style={{ padding: '8px', outline: 'none', width: '250px' }}
+          style={{ padding: '12px', outline: 'none', width: '250px', border: '1px solid silver', borderRadius: '4px' }}
         />
         {level > 1 && (<FontAwesomeIcon icon={faTrashCan} onClick={onRemove} style={{ cursor: 'pointer', marginLeft: '1rem', fontSize: '18px', color: '#FF6E61' }} />)}
       </div>
       {children}
-      {level < 4 && (<span onClick={onAdd} style={{ cursor: 'pointer', width: 'fit-content', padding: '2px 0px' }}> + Add Level {level + 1} </span>)}
+      {level < 4 && (<button onClick={onAdd} className='cat-Btn' style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px`, }}> + Add Level {level + 1} </button>)}
     </div>
   );
 };
@@ -51,7 +52,7 @@ const CategoryTree = ({ level = 1, categories, onCategoryChange }) => {
   return (
     <>
       {categories.map((category, index) => (
-        <div key={index} style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem' }}>
+        <div key={index} style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem', gap: '1rem' }}>
           <CategoryInput
             level={level}
             name={category.name}
@@ -71,7 +72,7 @@ const CategoryTree = ({ level = 1, categories, onCategoryChange }) => {
           </CategoryInput>
           {level === 2 && (
             <>
-              <span style={{ width: '430px', height: '1px', border: '1px solid silver' }}></span>
+              <span style={{ width: '800px', height: '1px', border: '1px solid silver', }}></span>
             </>
           )}
         </div>
@@ -107,18 +108,18 @@ const Category = () => {
 
   const handleSelectChange = (value) => {
     console.log(groups, value);
-    const group = _.find(groups , gr => gr.name === value)
+    const group = _.find(groups, gr => gr.name === value)
     console.log(group)
-    
-      setCategoryTree(prevTree => [
-        {
-          ...prevTree[0],
-          productGroup: group
-        }
-      ]);
+
+    setCategoryTree(prevTree => [
+      {
+        ...prevTree[0],
+        productGroup: group
+      }
+    ]);
 
   };
-  
+
 
   const validateCategories = (categories) => {
     for (const category of categories) {
@@ -161,8 +162,6 @@ const Category = () => {
     }
   };
 
-  console.log(categoryTree);
-  
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1rem' }}>
@@ -173,7 +172,7 @@ const Category = () => {
           value={categoryTree[0].productGroup?.name}
           data={groups.map(group => (group.name))}
           required={true}
-          onChange={(event)=>handleSelectChange(event)}
+          onChange={(event) => handleSelectChange(event)}
           clearable={true}
         />
       </div>
@@ -185,7 +184,6 @@ const Category = () => {
       <B2BButton onClick={() => handleSave()} name='Save' color='rgb(26, 160, 70)' />
       {/* <pre>{JSON.stringify(categoryTree, null, 2)}</pre> */}
     </div>
-  );
-};
-
+  )
+}
 export default Category;
