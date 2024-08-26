@@ -5,7 +5,7 @@ import { ProductContext } from './CreateProduct';
 
 const ProductTaxSelect = () => {
 
-    const { product: product, handlechange: handleChange } = useContext(ProductContext)
+    const { product: product, handleChange: handleChange } = useContext(ProductContext)
     const [tax, setTax] = useState([]);
     const [selectedTax, setSelectedTax] = useState('');
     // To display the gstRate values in the select field, convert the integer values to string format since the select field requires string values to be shown
@@ -17,10 +17,10 @@ const ProductTaxSelect = () => {
         getAllTax()
     }, []);
 
-    const handlechange = (value) => {
-        const gstRateInt = parseInt(value.replace('%', '').trim(), 10);
-        setSelectedTax(gstRateInt);
-    }
+    // const handlechange = (value) => {
+    //     const gstRateInt = parseInt(value.replace('%', '').trim(), 10);
+    //     setSelectedTax(gstRateInt);
+    // }
 
     const getAllTax = async () => {
         try {
@@ -32,6 +32,11 @@ const ProductTaxSelect = () => {
             console.error("Failed to fetch Gst", err);
         }
     };
+
+    const concatPercent = (tax) => {
+        const taxValue = tax.toString() + ' %'
+        return taxValue;
+    }
 
     return (
         <div className="vd-g-col vd-g-s-12">
@@ -47,11 +52,11 @@ const ProductTaxSelect = () => {
                 <div>
                     <B2BSelect
                         styles={{ option: { fontSize: '13px' }, input: { fontSize: '13px' } }}
-                        value={tax.gstRate}
+                        value={Number.isInteger(product?.gst) ? concatPercent(product?.gst) : product?.gst}
                         data={gstRate}
                         required={true}
                         clearable={true}
-                        onChange={(value) => handlechange(value)}
+                        onChange={(value) => handleChange(value, "gst")}
                     />
                 </div>
             </div>

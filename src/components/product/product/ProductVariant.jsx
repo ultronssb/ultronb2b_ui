@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import './ProductVariant.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Modal, MultiSelect } from '@mantine/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { MultiSelect } from '@mantine/core';
+import _ from 'lodash';
+import React, { useContext, useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect';
-import _ from 'lodash';
+import './ProductVariant.css';
+import { ProductContext } from './CreateProduct';
 
 const ProductVariant = () => {
+
+    const {product: product, setProduct: setProduct, handleChange: handleChange} = useContext(ProductContext)
+
     const [attributes, setAttributes] = useState({});
     const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [] }]);
 
@@ -36,7 +40,15 @@ const ProductVariant = () => {
         const newPairs = [...selectedPairs];
         newPairs[index].values = selectedValues;
         setSelectedPairs(newPairs);
+        getListOfVaraints(newPairs)
+        setProduct((prev => ({...prev, prodVariants : getListOfVaraints(selectedPairs)})))
     };
+
+    // This method will return the List<List<String>> productVariants for all the selected variant group
+    const getListOfVaraints = (obj) => {
+      const prodVariants = obj.map(value => value.values)
+      return prodVariants;
+    }
 
     const addNewPair = () => {
         setSelectedPairs([...selectedPairs, { key: '', values: [] }]);

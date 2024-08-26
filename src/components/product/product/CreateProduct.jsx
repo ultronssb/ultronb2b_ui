@@ -13,12 +13,14 @@ export const ProductContext = createContext(null);
 
 const CreateProduct = () => {
   const tabs = [
-    { id: "1", name: "ProductType" },
-    { id: "2", name: "CategoryType" },
+    { id: "1", name: "Product Type" },
+    { id: "2", name: "Category Type" },
     { id: "3", name: "Tax" },
     { id: "4", name: "Variant" },
     { id: "5", name: "Price" },
-    { id: "6", name: "Image" },
+    { id: "6", name: "Fabric Content" },
+    { id: "7", name: "Image" },
+
   ];
 
   const initialState = {
@@ -42,12 +44,19 @@ const CreateProduct = () => {
         }
       ]
     },
-    prodVariants: [
-      ["red", "green", "M", "S"]
-    ],
-    priceSetting: {},
+    prodVariants: [],
+    priceSetting: {
+      isMarkUp: false,
+      isMarkDown: false,
+      costPrice: 0,
+      markUpPercent: 0,
+      markDownPercent: 0,
+      sellingPrice: 0,
+      mrp: 0,
+      margin: 0,
+    },
     categoryId: '',
-    hsnId: '',
+    gst: '',
     brandId: '',
 
     // commented codes are Not needed 
@@ -101,6 +110,10 @@ const CreateProduct = () => {
           ...prevState, otherInformation: { ...prevState.otherInformation, unitOfMeasures: updatedUnitOfMeasures }
         };
       });
+    } else if (fieldType === 'gst') {
+      // Value will be directly available in event, so event.replace....
+      const gstRateInt = parseInt(event?.replace('%', '')?.trim(), 10);
+      setProduct((prev) => ({ ...prev, gst: gstRateInt }))
     } else {
       setProduct((prev => ({ ...prev, [fieldType]: checkDirectValue(fieldType) ? event : event.target.value })))
     }
@@ -135,6 +148,8 @@ const CreateProduct = () => {
       case "5":
         return <ProductPrice />;
       case "6":
+        return <div>Fabric Content</div>;
+      case "7":
         return <ProductImage />; // Replace with actual Image component
       default:
         return <ProductType />;
@@ -162,7 +177,7 @@ const CreateProduct = () => {
   };
 
   return (
-    <ProductContext.Provider value={{ product, handleChange, addProduct }}>
+    <ProductContext.Provider value={{ product, handleChange, addProduct, setProduct }}>
       <B2BTabs
         tabsData={tabs}
         justify={"flex-start"}
@@ -171,12 +186,14 @@ const CreateProduct = () => {
         variant='default'
         margin='10px'
       />
-      {renderActiveComponent()} {/* Render the component based on the active tab */}
+      <div style={{ height: '50vh' }}>
+        {renderActiveComponent()} {/* Render the component based on the active tab */}
+      </div>
 
-      <div className='productType-btn' style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginTop: '4rem' }}>
+      <div className='productType-btn' style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginTop: '1rem' }}>
         {activeTab > "1" && <B2BButton name={'Back'} onClick={handleBackTab} />}
-        {activeTab < "6" && <B2BButton name={'Next'} onClick={handleNextTab} />}
-        {activeTab === "6" && <B2BButton name={'Save'} onClick={handleProductSave} />}
+        {activeTab < "7" && <B2BButton name={'Next'} onClick={handleNextTab} />}
+        {activeTab === "7" && <B2BButton name={'Save'} onClick={handleProductSave} />}
       </div>
     </ProductContext.Provider>
   );

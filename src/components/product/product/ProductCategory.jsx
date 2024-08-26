@@ -7,17 +7,15 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 
 const ProductCategory = () => {
-
-    // const initialData = {
-    //     name: ""
-    // }
-
     const [category, setCategory] = useState('');
     const [categorys, setCategorys] = useState([]);
     const [openModal, setOpenModal] = useState(false);
     const [filterCategories, setFilterCategories] = useState([])
     const [selecetedCategory, setSelectedCategory] = useState(null);
     const [countLevel, setCountLevel] = useState(1)
+
+    console.log(filterCategories);
+    
 
 
     useEffect(() => {
@@ -40,6 +38,7 @@ const ProductCategory = () => {
             const res = await B2B_API.get('product-category').json();
             setCategorys(res?.response);
             console.log(_.map(res.response, r => r.name))
+            setFilterCategories(res?.response)
 
         } catch (err) {
             console.error("Failed to Fetch Category")
