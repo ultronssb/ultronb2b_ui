@@ -71,6 +71,7 @@ import Draft from './components/crm/Draft';
 import Salesman from './components/crm/Salesman';
 import Loyalty from './components/crm/Loyalty';
 import Customer from './components/crm/Customer';
+import ProductTags from './components/product/product/ProductTags';
 
 function App() {
 
@@ -87,7 +88,8 @@ function App() {
         <Route path='/product/section' element={<Section />} />
         <Route path='/product/category' element={<Category />} />
         <Route path='/product/brand' element={<Brand />} />
-        <Route path='/product/group' element={<Group />}/>
+        <Route path='/product/group' element={<Group />} />
+        <Route path='/product/tags' element={<ProductTags />} />
 
         <Route path='/product/tax/tax-masters' element={<TaxMasters />} />
         <Route path='/product/tax/gst' element={<GST />} />

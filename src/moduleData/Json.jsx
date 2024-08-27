@@ -63,16 +63,17 @@ export const data = [
 
 
   /* Product Child Component */
-  { id: "8", name: "Product Hierarchy", parent_id: "2", orderBy: 1, path: "/product/product-hierarchy" },
-  { id: "9", name: "Tax", parent_id: "2", orderBy: 2, path: "/product/tax/tax-masters" },
+  { id: "8", name: "Product Categories", parent_id: "2", orderBy: 1, path: "/product/product-hierarchy" },
   { id: "10", name: "Product", parent_id: "2", orderBy: 3, path: "/product/product/articles" },
-  { id: "11", name: "Variants", parent_id: "2", orderBy: 4, path: "/product/variants" },
+  { id: "15", name: "Product Enrichment", parent_id: "2", orderBy: 4, path: "/product/pim" },//pims
   { id: "12", name: "Price Book", parent_id: "2", orderBy: 5, path: "/product/price-book" },
   { id: "13", name: "Barcode", parent_id: "2", orderBy: 6, path: "/product/batcode" },
   { id: "14", name: "History", parent_id: "2", orderBy: 7, path: "/product/history" },
-  { id: "15", name: "PIM", parent_id: "2", orderBy: 8, path: "/product/pim" },
   
-  { id: "16", name: "ProductHeirarchy", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy",},
+  { id: "16", name: "ProductCategories", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy",},
+  { id: "17", name: "Product Tags", parent_id: "8", orderBy: 2, path: "/product/tags" },
+  { id: "18", name: "Tax", parent_id: "8", orderBy: 3, path: "/product/tax/tax-masters" },
+  { id: "19", name: "Variants", parent_id: "8", orderBy: 4, path: "/product/variants" },
   // { id: "17", name: "Division", parent_id: "8", orderBy: 2, path: "/product/division"},
   // { id: "18", name: "Department", parent_id: "8", orderBy: 3, path: "/product/department" },
   // { id: "19", name: "Section", parent_id: "8", orderBy: 4,path: "/product/section" },
