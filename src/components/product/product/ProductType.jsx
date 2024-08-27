@@ -32,7 +32,7 @@ const ProductType = () => {
             ...prevProduct,
         }));
         if (resetRef.current) {
-            resetRef.current(); // Reset the file input
+            resetRef.current();
         }
         setImageFile(null)
         setImagePreview(null)

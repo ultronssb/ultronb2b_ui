@@ -111,9 +111,6 @@ const ProductCategorys = () => {
         return categoryName.filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
     };
 
-    // console.log(_.size(categorys), _.size(selectedPairs), _.size(categorys) >= _.size(selectedPairs))
-    console.log(product);
-
     return (
         <section className="product-variant-section">
             <div className="product-variant-section-wrap">

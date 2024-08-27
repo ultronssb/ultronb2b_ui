@@ -7,7 +7,6 @@ const ProductTaxSelect = () => {
 
     const { product: product, handleChange: handleChange } = useContext(ProductContext)
     const [tax, setTax] = useState([]);
-    const [selectedTax, setSelectedTax] = useState('');
     // To display the gstRate values in the select field, convert the integer values to string format since the select field requires string values to be shown
     const [gstRate, setGstRate] = useState([]);
 
@@ -16,11 +15,6 @@ const ProductTaxSelect = () => {
         // getAllTas(); Spelling Mistake
         getAllTax()
     }, []);
-
-    // const handlechange = (value) => {
-    //     const gstRateInt = parseInt(value.replace('%', '').trim(), 10);
-    //     setSelectedTax(gstRateInt);
-    // }
 
     const getAllTax = async () => {
         try {
@@ -55,7 +49,7 @@ const ProductTaxSelect = () => {
                         value={Number.isInteger(product?.gst) ? concatPercent(product?.gst) : product?.gst}
                         data={gstRate}
                         leftSectionPointerEvents="none"
-                        leftSection={<span style={{fontSize:'14px', fontWeight:'500'}}>GST </span>}
+                        leftSection={<span style={{ fontSize: '14px', fontWeight: '500' }}>GST </span>}
                         required={true}
                         placeholder={"%"}
                         clearable={true}
