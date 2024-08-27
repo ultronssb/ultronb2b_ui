@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Button, FileButton, Group, Text } from '@mantine/core';
+import { Button, FileButton, Group, MultiSelect, Text } from '@mantine/core';
 import { B2B_API } from '../../../api/Interceptor';
 import { ProductContext } from './CreateProduct';
 import B2BSelect from '../../../common/B2BSelect';
@@ -10,18 +10,31 @@ const ProductType = () => {
     const [brand, setBrand] = useState([]);
     const resetRef = useRef(null);
     const [imagePreview, setImagePreview] = useState(null);
+    const [productTags, setProductTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([])
 
     console.log(product);
 
 
+
     useEffect(() => {
         fetchAllBrand();
+        fetchAllTags();
     }, []);
 
     const fetchAllBrand = async () => {
         try {
             const res = await B2B_API.get(`brand`).json();
             setBrand(res.response);
+        } catch (err) {
+            console.error("Failed to Fetch Brand");
+        }
+    };
+
+    const fetchAllTags = async () => {
+        try {
+            const res = await B2B_API.get(`product-tag`).json();
+            setProductTags(res.response);
         } catch (err) {
             console.error("Failed to Fetch Brand");
         }
@@ -78,9 +91,7 @@ const ProductType = () => {
         },
         {
             label: "Product Tag",
-            value: product.productTag,
-            onChange: (event) => handleChange(event, "productTag"),
-            type: "text",
+            type: "multiselect",
             placeholder: "Enter Tag"
         },
         {
@@ -117,7 +128,7 @@ const ProductType = () => {
                 {json.map((field, index) => (
                     <div key={index} className={field.className ? field.className : "form-group"}>
                         <label className='form-label'>{field.label}</label>
-                        {field.type === "checkbox-group" ? (
+                        {field.type === "checkbox-group" && (
                             <div className="checkbox-group">
                                 {field.options.map((option, idx) => (
                                     <div key={idx} className="checkbox-item" style={{ display: 'flex', gap: '1rem' }}>
@@ -134,27 +145,55 @@ const ProductType = () => {
                                     </div>
                                 ))}
                             </div>
-                        ) : field.type === "select" ? (
-                            <B2BSelect
-                                data={brand.map(b => ({ label: b.name, value: b.brandId }))}
-                                value={product?.brandId}
-                                onChange={field.onChange}
-                                placeholder={"Select Brand Name"}
-                                clearable={true}
-                                maxDropdownHeight={400}
-                            />
-                        ) : (
-                            <input
-                                value={field.value}
-                                className='form-input'
-                                style={field.style}
-                                disabled={field.disabled}
-                                onChange={field.onChange}
-                                type={field.type}
-                                required={field.required}
-                                placeholder={field.placeholder}
-                            />
                         )}
+                        {
+                            field.type === "select" && (
+                                <B2BSelect
+                                    data={brand.map(b => ({ label: b.name, value: b.brandId }))}
+                                    value={product?.brandId}
+                                    onChange={field.onChange}
+                                    placeholder={"Select Brand Name"}
+                                    clearable={true}
+                                    maxDropdownHeight={400}
+                                />
+                            )
+                        }
+                        {
+                            field.type === 'text' && (
+                                <input
+                                    value={field.value}
+                                    className='form-input'
+                                    style={field.style}
+                                    disabled={field.disabled}
+                                    onChange={field.onChange}
+                                    type={field.type}
+                                    required={field.required}
+                                    placeholder={field.placeholder}
+                                />
+                            )
+                        }{
+                            field.type === 'textarea' && (
+                                <textarea
+                                    value={field.value}
+                                    className='form-input-textarea'
+                                    disabled={field.disabled}
+                                    onChange={field.onChange}
+                                    type={field.type}
+                                    required={field.required}
+                                    placeholder={field.placeholder}
+                                />
+                            )
+                        }{
+                            field.type === 'multiselect' && (
+                                <MultiSelect
+                                    value={product?.tags || []}
+                                    style={{ width: '250px' }}
+                                    placeholder="Tags"
+                                    data={productTags.map(tag => tag.name)}
+                                    onChange={(selectedTags) => handleChange({ target: { value: selectedTags } }, "tags")}
+                                />
+                            )
+                        }
                     </div>
                 ))}
                 <div>

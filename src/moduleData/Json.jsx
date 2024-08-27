@@ -72,12 +72,12 @@ export const data = [
   
   { id: "16", name: "ProductCategories", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy",},
   { id: "17", name: "Product Tags", parent_id: "8", orderBy: 2, path: "/product/tags" },
-  { id: "18", name: "Tax", parent_id: "8", orderBy: 3, path: "/product/tax/tax-masters" },
+  { id: "18", name: "Tax", parent_id: "8", orderBy: 3, path: "/product/tax/gst" },
   { id: "19", name: "Variants", parent_id: "8", orderBy: 4, path: "/product/variants" },
   // { id: "17", name: "Division", parent_id: "8", orderBy: 2, path: "/product/division"},
   // { id: "18", name: "Department", parent_id: "8", orderBy: 3, path: "/product/department" },
   // { id: "19", name: "Section", parent_id: "8", orderBy: 4,path: "/product/section" },
-  { id: "20", name: "Category", parent_id: "8", orderBy: 5, path: "/product/category" },
+  // { id: "20", name: "Category", parent_id: "8", orderBy: 5, path: "/product/category" },
   { id: "21", name: "Brand", parent_id: "8", orderBy: 6, path: "/product/brand" },
   { id: "115", name: "Group", parent_id: "8", orderBy: 7, path: "/product/group" },
   

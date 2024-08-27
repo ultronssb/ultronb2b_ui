@@ -30,6 +30,7 @@ const CreateProduct = () => {
     description: '',
     supplier: '',
     isCreateBarcode: true,
+    tags: [],
     otherInformation: {
       skuPrefix: '',
       unitOfMeasures:
@@ -67,7 +68,7 @@ const CreateProduct = () => {
 
   const [product, setProduct] = useState(initialState);
   const [imageFile, setImageFile] = useState(null)
-  const [activeTab, setActiveTab] = useState("1"); // Manage active tab as string
+  const [activeTab, setActiveTab] = useState("1");
 
   useEffect(() => {
     // Any initialization logic if needed
@@ -87,7 +88,7 @@ const CreateProduct = () => {
       const gstRateInt = parseInt(event?.replace('%', '')?.trim(), 10);
       setProduct((prev) => ({ ...prev, gst: gstRateInt }))
     } else {
-      setProduct((prev => ({ ...prev, [fieldType]: checkDirectValue(fieldType) ? event : event.target.value })))
+      setProduct((prev => ({ ...prev, [fieldType]: checkDirectValue(fieldType) ? event : event.target?.value })))
     }
   };
 
@@ -101,14 +102,29 @@ const CreateProduct = () => {
         //   "Content-Type": "multipart/form-data" // Set Content-Type for this specific request
         // }
       }).json();
-      console.log("Product added successfully:", res);
+      if (res.response.message) {
+        setProduct(initialState);
+        setImageFile(null);
+        setActiveTab("1");
+      }
+      notify({
+        title : 'Success!!',
+        message: res.response.message || 'Product Save Successfully.',
+        error : false,
+        success: true,
+      })
     } catch (err) {
-      console.error("Failed to Add Product", err);
+      notify({
+        title : 'Success!!',
+        message: err || 'Failed to add product.',
+        error : true,
+        success: false,
+      })
     }
   };
 
   const handleTabClick = (selectedTab) => {
-    setActiveTab(selectedTab.id); // Set active tab based on selectedTab.id
+    setActiveTab(selectedTab.id);
   };
 
   const renderActiveComponent = () => {
@@ -163,21 +179,8 @@ const CreateProduct = () => {
       : {};
     formData.append("product", JSON.stringify(updatedProduct))
     formData.append("image", imageFile)
-
-    try {
-      await addProduct(formData);
-
-      // Reset the product state to clear all fields
-      setProduct(initialState);
-      setImageFile(null);
-      setActiveTab("1"); // Optional: Reset to the first tab
-
-      console.log("Product saved and form reset.");
-    } catch (err) {
-      console.error("Failed to save product", err);
-    }
-
     addProduct(formData);
+
   };
 
 
