@@ -143,49 +143,6 @@ const productHierarchy = () => {
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <h3 style={{ margin: '1rem 0.3rem' }} key={"divison"}>Category Details</h3>
       <GetCategory />
-
-      <h3 style={{ margin: '1rem 0.3rem' }} key={"divison"}>Division</h3>
-      <B2BTableGrid
-        columns={divisionColumns}
-        data={division}
-        // isLoading={isLoading}
-        // isError={isError}
-        enableTopToolbar={true}
-        enableGlobalFilter={true}
-        manualPagination={false}
-        // pagination={pagination}
-        rowCount={5}
-        // onPaginationChange={setPagination}
-        enableFullScreenToggle={true}
-      />
-      <h3 style={{ margin: '1rem 0.3rem' }} key={"department"}>Department</h3>
-      <B2BTableGrid
-        columns={departmentColumns}
-        data={departments}
-        // isLoading={isLoading}
-        // isError={isError}
-        enableTopToolbar={true}
-        enableGlobalFilter={true}
-        manualPagination={false}
-        // pagination={pagination}
-        rowCount={5}
-        // onPaginationChange={setPagination}
-        enableFullScreenToggle={true}
-      />
-       <h3 style={{ margin: '1rem 0.3rem' }} key={"section"}>Section</h3>
-      <B2BTableGrid
-        columns={sectionColumns}
-        data={sections}
-        // isLoading={isLoading}
-        // isError={isError}
-        enableTopToolbar={true}
-        enableGlobalFilter={true}
-        manualPagination={false}
-        // pagination={pagination}
-        rowCount={5}
-        // onPaginationChange={setPagination}
-        enableFullScreenToggle={true}
-      />
     </div>
   )
 }

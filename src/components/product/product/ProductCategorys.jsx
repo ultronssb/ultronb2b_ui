@@ -1,93 +1,118 @@
-import React, { useEffect, useState } from 'react';
-import './ProductVariant.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Modal, MultiSelect } from '@mantine/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import _ from 'lodash';
+import React, { useContext, useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect';
-import _ from 'lodash';
+import './ProductVariant.css';
+import { ProductContext } from './CreateProduct';
 
 const ProductCategorys = () => {
-    const [category, setCategory] = useState('');
+    const { product, setProduct, handleChange } = useContext(ProductContext);
+
+    const initialState = { key: '', value: {}, heirarchyLabel: "", options: [], openModal: false, count: 2 }
     const [categorys, setCategorys] = useState([]);
-    const [childCategories, setChildcategories] = useState([])
     const [categoryName, setCategoryName] = useState([]);
-    const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [] }]);
-    const [openModal, setOpenModal] = useState(false);
-    const [filterCategories, setFilterCategories] = useState([])
-    const [selecetedCategory, setSelectedCategory] = useState(null);
-    const [countLevel, setCountLevel] = useState(2)
+    const [selectedPairs, setSelectedPairs] = useState([{ ...initialState }]);
 
     useEffect(() => {
         fetchVariant();
     }, []);
 
-    useEffect(() => {
-        if (selecetedCategory) {
-            if (_.size(selecetedCategory.child) == 0) {
-                setOpenModal(false)
-            } else {
-                setCountLevel(prev => prev + 1)
-                setFilterCategories(selecetedCategory.child)
-            }
-        }
-    }, [selecetedCategory])
-
 
     const fetchVariant = async () => {
         try {
             const res = await B2B_API.get('product-category').json();
-            const categoryName = res.response.map(res => (res.name));
+            const categories = res?.response?.filter(cat => cat.name?.toLowerCase() !== 'fabric content');
+            const categoryName = categories.map(res => (res.name));
             setCategoryName(categoryName)
-            setCategorys(res?.response)
+            setCategorys(categories)
+            setCategorysAndselectedPairs()
         } catch (error) {
             console.error('Error fetching variants:', error);
         }
     };
 
+    const setCategorysAndselectedPairs = () => {
+        const { productCategories } = product
+        if(_.size(productCategories) > 0) {
+           setSelectedPairs(productCategories)
+        }
+    }
+
     const handleSelectChange = (index, selectedKey) => {
         const newPairs = [...selectedPairs];
-        newPairs[index] = { key: selectedKey, values: [] };
+        newPairs[index] = { ...initialState, key: selectedKey };
+        const childCategory = categorys.find(cat => cat.name === selectedKey)?.child || [];
+        newPairs[index].options = childCategory;
         setSelectedPairs(newPairs);
-
-        const keyToCheck = newPairs[0]?.key;
-        const isKeyPresent = categoryName.some(category => category === keyToCheck);
-        if (isKeyPresent) {
-            const childCategory = categorys.find(cat => cat.name === keyToCheck)?.child || [];
-            setChildcategories(childCategory)
-            setFilterCategories(childCategory);
-        } else {
-            setFilterCategories([]);
-        }
+        setProduct(prev => ({ ...prev, productCategories: newPairs }));
     };
 
+    const openModals = (index, value) => {
+        const newPairs = [...selectedPairs];
+        newPairs[index].openModal = value
+        setSelectedPairs(newPairs);
+    }
+
     const addNewPair = () => {
-        setSelectedPairs([...selectedPairs, { key: '', values: [] }]);
+        setSelectedPairs([...selectedPairs, { ...initialState }]);
     };
 
     const removePair = (index) => {
         const newPairs = [...selectedPairs];
         newPairs.splice(index, 1);
         setSelectedPairs(newPairs);
+        setProduct(prev => ({ ...prev, productCategories: newPairs }));
     };
 
-    const handleChange = (event, key) => {
-        setCategory((prev) => ({ ...prev, [key]: event?.target?.value }))
-
+    const selectcategory = (index, cat) => {
+        const newPairs = [...selectedPairs];
+        const label = newPairs[index]?.heirarchyLabel
+        newPairs[index].value = cat || {};
+        const hasNoChild = _.size(cat?.child) == 0;
+        if (cat) {
+            if (hasNoChild) {
+                const splitLabel = label.split(" / ");
+                if (splitLabel.length === (newPairs[index].count - 1)) {
+                    splitLabel[splitLabel.length - 1] = cat.name
+                    newPairs[index].heirarchyLabel = _.join(splitLabel, " / ")
+                } else {
+                    newPairs[index].heirarchyLabel = label.concat(label ? " / " : "").concat(cat.name)
+                }
+                newPairs[index].openModal = false
+                newPairs[index].lastChildName = cat.name
+            } else {
+                newPairs[index].heirarchyLabel = label.concat(label ? " / " : "").concat(cat.name)
+                let count = newPairs[index].count
+                newPairs[index].count = ++count;
+                newPairs[index].options = cat.child
+            }
+        } else {
+            newPairs[index].heirarchyLabel = ""
+            newPairs[index].count = 2;
+            newPairs[index].options = getParentChild(newPairs[index].key)
+        }
+        setSelectedPairs(newPairs);
     }
 
-    const selectcategory = (cat) => {
-        setCategory(prev => prev.concat(prev ? " / " : "").concat(cat.name))
-        setSelectedCategory(cat);
+    const removeCategory = (index) => {
+        openModals(index, false)
+        selectcategory(index, null)
     }
 
-    const removeCategory = () => {
-        setOpenModal(false)
-        setCategory("")
-        setSelectedCategory(null)
-        setFilterCategories(childCategories)
-        setCountLevel(2)
+    const getParentChild = (key) => {
+        const childCategory = categorys.find(cat => cat.name === key)?.child || [];
+        return childCategory;
     }
+
+    const getAvailableKeys = (currentIndex) => {
+        const selectedKeys = selectedPairs.map(pair => pair.key);
+        return categoryName.filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
+    };
+
+    // console.log(_.size(categorys), _.size(selectedPairs), _.size(categorys) >= _.size(selectedPairs))
+    console.log(product);
 
     return (
         <section className="product-variant-section">
@@ -120,7 +145,7 @@ const ProductCategorys = () => {
                                                     <div className="product-variant-autocomplete-input-container">
                                                         <B2BSelect
                                                             value={pair.key}
-                                                            data={categoryName}
+                                                            data={getAvailableKeys(index)}
                                                             scroll={false}
                                                             styles={{ dropdown: { maxHeight: 250, overflowY: 'auto' } }}
                                                             onChange={(e) => handleSelectChange(index, e)}
@@ -134,38 +159,38 @@ const ProductCategorys = () => {
                                         <div className="cn-attribute-values-row">
                                             <div className="cn-attribute-values">
                                                 <div className="product-variant-lozenge-group">
-                                                <div className="vd-g-col vd-g-s-12">
+                                                    <div className="vd-g-col vd-g-s-12">
                                                         <div className="vd-popover-tether-target-wrapper vd-popover-tether-target vd-popover-tether-abutted vd-popover-tether-abutted-left vd-popover-tether-element-attached-left vd-popover-tether-target-attached-left vd-popover-tether-pinned vd-popover-tether-pinned-top">
                                                             <div>
-                                                                <input placeholder="Select a category"  style={{width:'100%'}} readOnly="" className="product-variant-select vd-dropdown-input " type="text" value={category} onChange={(e) => handleChange(e)} onClick={() => setOpenModal(true)} />
+                                                                <input placeholder="Select a category" disabled={pair.options.length === 0} style={{ width: '100%', cursor: pair.options.length === 0 ? 'not-allowed' : 'pointer' }} readOnly className="product-variant-select vd-dropdown-input " type="text" value={pair.heirarchyLabel} onClick={() => openModals(index, true)} onChange={() => { }} />
                                                             </div>
                                                         </div>
                                                     </div>
                                                     {
-                                                        openModal && (
+                                                        pair.openModal && (
                                                             <div className="vd-popover-tether-element-wrapper">
                                                                 <div className="vd-popover vd-category-select-popover vd-popover--with-list" style={{ width: '500px' }}>
                                                                     <div className="vd-popover-content">
                                                                         <div className="vd-mt6 vd-ml6 vd-mr6 vd-mb3">
                                                                             <label htmlFor="search-input" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
                                                                                 <span className="vd-text-label vd-util-text-overflow-break-word vd-label">Search all categories</span>
-                                                                                <span><FontAwesomeIcon icon={faClose} onClick={() => setOpenModal(false)} style={{ cursor: 'pointer' }} /></span>
+                                                                                <span><FontAwesomeIcon icon={faClose} onClick={() => openModals(index, false)} style={{ cursor: 'pointer' }} /></span>
                                                                             </label>
                                                                             <input className="vd-input" type="text" id="search-input" placeholder="Enter a category name" />
                                                                         </div>
                                                                         <div role="list">
                                                                             <div role="listitem" className="vd-mt4">
                                                                                 <div className="vd-ml6 vd-mr6">
-                                                                                    <span className="vd-text-signpost vd-util-text-overflow-break-word">Level {countLevel}</span>
+                                                                                    <span className="vd-text-signpost vd-util-text-overflow-break-word">Level {pair.count}</span>
                                                                                     <hr className="vd-hr vd-mt2" />
                                                                                 </div>
                                                                                 <div className='child-values'>
-                                                                                    {filterCategories.map((cat) => (
+                                                                                    {pair.options.map((cat) => (
                                                                                         <ul className="vd-popover-list" key={cat.id}>
                                                                                             <li
                                                                                                 tabIndex="0"
                                                                                                 className="vd-popover-list-item"
-                                                                                                onClick={() => selectcategory(cat)}
+                                                                                                onClick={() => selectcategory(index, cat)}
                                                                                             >
                                                                                                 <div className="helios-c-PJLV helios-c-PJLV-icepvqO-css">
                                                                                                     <div className="helios-c-PJLV helios-c-PJLV-iPJLV-css">
@@ -183,13 +208,13 @@ const ProductCategorys = () => {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    {filterCategories && (
+                                                                    {pair.heirarchyLabel && (
                                                                         <div className="vd-popover-actions">
                                                                             <div className="vd-action-bar vd-action-bar--inline category-list-footer vd-suggestion--footer">
                                                                                 <div className="helios-c-PJLV helios-c-PJLV-idMyiqo-css">
                                                                                     <div className="helios-c-PJLV helios-c-PJLV-iPJLV-css">
                                                                                         <div className="helios-c-PJLV helios-c-PJLV-ilkBNdM-css">
-                                                                                            <span className="vd-text-body vd-util-text-overflow-break-word">{filterCategories.name}</span>
+                                                                                            <span className="vd-text-body vd-util-text-overflow-break-word">{pair.heirarchyLabel}</span>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div className="helios-c-PJLV helios-c-PJLV-iPJLV-css">
@@ -198,7 +223,7 @@ const ProductCategorys = () => {
                                                                                                 aria-label="Remove selected category"
                                                                                                 type="button"
                                                                                                 className="vd-btn vd-btn--icon-supplementary"
-                                                                                                onClick={() => removeCategory()}
+                                                                                                onClick={() => removeCategory(index)}
                                                                                             >
                                                                                                 <FontAwesomeIcon className='fa vd-icon' icon={faTrash} />
                                                                                             </button>
@@ -228,7 +253,7 @@ const ProductCategorys = () => {
                                 </div>
                             ))}
                             <div className="product-variant-g-row">
-                                {_.size(categoryName) >= _.size(selectedPairs) && (
+                                {_.size(categorys) > _.size(selectedPairs) && (
                                     <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
                                         <button
                                             type="button"

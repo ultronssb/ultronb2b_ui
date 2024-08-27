@@ -54,7 +54,10 @@ const ProductTaxSelect = () => {
                         styles={{ option: { fontSize: '13px' }, input: { fontSize: '13px' } }}
                         value={Number.isInteger(product?.gst) ? concatPercent(product?.gst) : product?.gst}
                         data={gstRate}
+                        leftSectionPointerEvents="none"
+                        leftSection={<span style={{fontSize:'14px', fontWeight:'500'}}>GST </span>}
                         required={true}
+                        placeholder={"%"}
                         clearable={true}
                         onChange={(value) => handleChange(value, "gst")}
                     />

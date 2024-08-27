@@ -8,6 +8,9 @@ import B2BButton from '../../../common/B2BButton';
 import ProductVariant from './ProductVariant';
 import ProductCategorys from './ProductCategorys';
 import ProductImage from './ProductImage';
+import FabricContent from './FabricContent';
+import { B2B_API } from '../../../api/Interceptor';
+import _ from 'lodash';
 
 export const ProductContext = createContext(null);
 
@@ -15,11 +18,10 @@ const CreateProduct = () => {
   const tabs = [
     { id: "1", name: "Product Type" },
     { id: "2", name: "Category Type" },
-    { id: "3", name: "Tax" },
-    { id: "4", name: "Variant" },
+    { id: "3", name: "Fabric Content" },
+    { id: "4", name: "Tax" },
     { id: "5", name: "Price" },
-    { id: "6", name: "Fabric Content" },
-    { id: "7", name: "Image" },
+    { id: "6", name: "Variant" },
 
   ];
 
@@ -29,22 +31,27 @@ const CreateProduct = () => {
     articleCode: '',
     description: '',
     supplier: '',
+    isCreateBarcode: true,
     otherInformation: {
       skuPrefix: '',
-      unitOfMeasures: [
-        {
-          type: 'SALES',
-          isRoll: false,
-          isKg: false,
-        },
-        {
-          type: 'PURCHASE',
-          isRoll: false,
-          isKg: false,
-        }
-      ]
+      unitOfMeasures:
+      {
+        type: 'UOM',
+        isRoll: false,
+        isKg: false,
+      }
     },
-    prodVariants: [],
+    prodVariants: {
+
+    },
+    productCategories: {
+
+    },
+    fabricContent: {
+      fccCode: "",
+      composition: {}
+    },
+
     priceSetting: {
       isMarkUp: false,
       isMarkDown: false,
@@ -74,6 +81,7 @@ const CreateProduct = () => {
   }
 
   const [product, setProduct] = useState(initialState);
+  const [imageFile, setImageFile] = useState(null)
   const [activeTab, setActiveTab] = useState("1"); // Manage active tab as string
 
   useEffect(() => {
@@ -100,16 +108,19 @@ const CreateProduct = () => {
 
   const handleChange = (event, fieldType) => {
 
-    if (fieldType === "SALES" || fieldType === "PURCHASE") {
+    if (fieldType === "UOM") {
       const { value, checked } = event.target;
-      setProduct(prevState => {
-        const updatedUnitOfMeasures = prevState.otherInformation.unitOfMeasures.map(uom =>
-          uom.type === fieldType ? { ...uom, [value]: checked } : uom
-        );
-        return {
-          ...prevState, otherInformation: { ...prevState.otherInformation, unitOfMeasures: updatedUnitOfMeasures }
-        };
-      });
+      const { otherInformation } = product
+      otherInformation.unitOfMeasures[value] = checked;
+      setProduct(prevState => ({ ...prevState, otherInformation: otherInformation }))
+      // setProduct(prevState => {
+      //   const updatedUnitOfMeasures = prevState.otherInformation.unitOfMeasures.map(uom =>
+      //     uom.type === fieldType ? { ...uom, [value]: checked } : uom
+      //   );
+      //   return {
+      //     ...prevState, otherInformation: { ...prevState.otherInformation, unitOfMeasures: updatedUnitOfMeasures }
+      //   };
+      // });
     } else if (fieldType === 'gst') {
       // Value will be directly available in event, so event.replace....
       const gstRateInt = parseInt(event?.replace('%', '')?.trim(), 10);
@@ -122,13 +133,17 @@ const CreateProduct = () => {
 
 
   const addProduct = async (prod) => {
-    console.log(prod, "Add product API");
-    // try {
-    //   const res = await B2B_API.post(`product`, { json: prod }).json();
-    //   console.log("Product added successfully:", res);
-    // } catch (err) {
-    //   console.error("Failed to Add Product", err);
-    // }
+    try {
+      const res = await B2B_API.post(`product`, {
+        body: prod,
+        // headers: {
+        //   "Content-Type": "multipart/form-data" // Set Content-Type for this specific request
+        // }
+      }).json();
+      console.log("Product added successfully:", res);
+    } catch (err) {
+      console.error("Failed to Add Product", err);
+    }
   };
 
   const handleTabClick = (selectedTab) => {
@@ -141,16 +156,14 @@ const CreateProduct = () => {
         return <ProductType />;
       case "2":
         return <ProductCategorys />;
-      case "3":
-        return <ProductTax />;
       case "4":
+        return <ProductTax />;
+      case "6":
         return <ProductVariant />;
       case "5":
         return <ProductPrice />;
-      case "6":
-        return <div>Fabric Content</div>;
-      case "7":
-        return <ProductImage />; // Replace with actual Image component
+      case "3":
+        return <FabricContent />;
       default:
         return <ProductType />;
     }
@@ -167,17 +180,25 @@ const CreateProduct = () => {
     const nextTabIndex = tabs.findIndex(tab => tab.id === activeTab) + 1;
     if (nextTabIndex < tabs.length) {
       setActiveTab(tabs[nextTabIndex].id);
-      addProduct(product);
     }
   };
 
   // If product should be saved on next button click this function should be called into handleNextTab after setting Active Index
   const handleProductSave = () => {
-    addProduct(product);
+    const formData = new FormData();
+    product.prodVariants = Object.values(product.prodVariants)
+    product.productCategories = product.productCategories?.reduce((acc, item) => {
+      acc[item.key] = item.value;
+      return acc;
+    }, {});
+    formData.append("product", JSON.stringify(product))
+    formData.append("image", imageFile)
+
+    addProduct(formData);
   };
 
   return (
-    <ProductContext.Provider value={{ product, handleChange, addProduct, setProduct }}>
+    <ProductContext.Provider value={{ product, handleChange, addProduct, setProduct, imageFile, setImageFile }}>
       <B2BTabs
         tabsData={tabs}
         justify={"flex-start"}
@@ -186,14 +207,14 @@ const CreateProduct = () => {
         variant='default'
         margin='10px'
       />
-      <div style={{ height: '50vh' }}>
+      <div style={{ minHeight: '50vh' }}>
         {renderActiveComponent()} {/* Render the component based on the active tab */}
       </div>
 
       <div className='productType-btn' style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginTop: '1rem' }}>
         {activeTab > "1" && <B2BButton name={'Back'} onClick={handleBackTab} />}
-        {activeTab < "7" && <B2BButton name={'Next'} onClick={handleNextTab} />}
-        {activeTab === "7" && <B2BButton name={'Save'} onClick={handleProductSave} />}
+        {activeTab < "6" && <B2BButton name={'Next'} onClick={handleNextTab} />}
+        {activeTab === "6" && <B2BButton name={'Save'} onClick={handleProductSave} />}
       </div>
     </ProductContext.Provider>
   );

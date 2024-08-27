@@ -73,9 +73,9 @@ export const data = [
   { id: "15", name: "PIM", parent_id: "2", orderBy: 8, path: "/product/pim" },
   
   { id: "16", name: "ProductHeirarchy", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy",},
-  { id: "17", name: "Division", parent_id: "8", orderBy: 2, path: "/product/division"},
-  { id: "18", name: "Department", parent_id: "8", orderBy: 3, path: "/product/department" },
-  { id: "19", name: "Section", parent_id: "8", orderBy: 4,path: "/product/section" },
+  // { id: "17", name: "Division", parent_id: "8", orderBy: 2, path: "/product/division"},
+  // { id: "18", name: "Department", parent_id: "8", orderBy: 3, path: "/product/department" },
+  // { id: "19", name: "Section", parent_id: "8", orderBy: 4,path: "/product/section" },
   { id: "20", name: "Category", parent_id: "8", orderBy: 5, path: "/product/category" },
   { id: "21", name: "Brand", parent_id: "8", orderBy: 6, path: "/product/brand" },
   { id: "115", name: "Group", parent_id: "8", orderBy: 7, path: "/product/group" },
