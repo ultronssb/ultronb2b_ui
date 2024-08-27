@@ -192,7 +192,6 @@ const Brand = () => {
           </div>
         ))}
         <div className='save-button-container'>
-          <B2BButton type='submit' name="Sumbit" />
           <B2BButton type='submit' name="Save" />
         </div>
       </form>

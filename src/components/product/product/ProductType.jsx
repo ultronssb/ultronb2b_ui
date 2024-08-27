@@ -3,8 +3,13 @@ import { Button, FileButton, Group, MultiSelect, Text } from '@mantine/core';
 import { B2B_API } from '../../../api/Interceptor';
 import { ProductContext } from './CreateProduct';
 import B2BSelect from '../../../common/B2BSelect';
+import B2BButton from '../../../common/B2BButton';
+import { useNavigate } from 'react-router-dom';
+import { IconArrowLeft } from '@tabler/icons-react';
+import { ActiveTabContext } from '../../../layout/Layout';
 
 const ProductType = () => {
+    const { stateData } = useContext(ActiveTabContext);
 
     const { product, handleChange, setProduct, setImageFile, imageFile } = useContext(ProductContext);
     const [brand, setBrand] = useState([]);
@@ -12,10 +17,7 @@ const ProductType = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const [productTags, setProductTags] = useState([]);
     const [selectedTags, setSelectedTags] = useState([])
-
-    console.log(product);
-
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchAllBrand();
@@ -122,8 +124,15 @@ const ProductType = () => {
         }
     ];
 
+    const handleCancel = () => {
+        navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
+    }
+
     return (
-        <div className='grid-container'>
+        <div className='productType-container' style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
+            </div>
             <form className='form-container'>
                 {json.map((field, index) => (
                     <div key={index} className={field.className ? field.className : "form-group"}>

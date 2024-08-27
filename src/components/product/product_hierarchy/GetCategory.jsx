@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { B2B_API } from '../../../api/Interceptor';
 import { useNavigate } from 'react-router-dom';
 import { ActiveTabContext } from '../../../layout/Layout';
+import _ from 'lodash';
 
 const GetCategory = () => {
     const { stateData } = useContext(ActiveTabContext);
@@ -49,8 +50,6 @@ const GetCategory = () => {
         try {
             const response = await B2B_API.get('product-category').json();
             setCategory(response.response);
-            console.log(response.response);
-            
         } catch (error) {
             notify({
                 title: "Error!!",
@@ -63,27 +62,32 @@ const GetCategory = () => {
 
     const categoryEdit = (node) => {
         const categoryId = node.categoryId;
-        console.log(stateData)
-        navigate(`/product/product-hierarchy?id=${categoryId}`,{state: {...stateData, tabs:stateData.childTabs}});
+        navigate(`/product/product-hierarchy?id=${categoryId}`, { state: { ...stateData, tabs: stateData.childTabs } });
     }
 
     const TreeNode = ({ node, expanded, hasChildren, onToggle }) => {
         return (
-            <div className='f-a c-j-10'>
-                {node.parentId === null && <FontAwesomeIcon className='cursor' icon={faPenToSquare} onClick={() => categoryEdit(node)} />}
-                <Group gap="xs" style={{ display: 'contents' }}>
-                    <Group gap={5} onClick={onToggle} style={{ cursor: 'pointer', width: '100%', justifyContent: 'space-between', padding: '5px' }}>
-                        <span className='fs-16'>{node.name}</span>
-                        {hasChildren && (
-                            <FontAwesomeIcon
-                                icon={faChevronDown}
-                                size={14}
-                                style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                            />
-                        )}
-                    </Group>
-                    <Divider color='gray' />
-                </Group>
+            <div>
+                {
+                    _.size(category) > 0 && (
+                        <div className='f-a c-j-10'>
+                            {node.parentId === null && <FontAwesomeIcon className='cursor' icon={faPenToSquare} onClick={() => categoryEdit(node)} />}
+                            <Group gap="xs" style={{ display: 'contents' }}>
+                                <Group gap={5} onClick={onToggle} style={{ cursor: 'pointer', width: '100%', justifyContent: 'space-between', padding: '5px' }}>
+                                    <span className='fs-16'>{node.name}</span>
+                                    {hasChildren && (
+                                        <FontAwesomeIcon
+                                            icon={faChevronDown}
+                                            size={14}
+                                            style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                                        />
+                                    )}
+                                </Group>
+                                <Divider color='gray' />
+                            </Group>
+                        </div>
+                    )
+                }
             </div>
         );
     };

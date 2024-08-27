@@ -8,6 +8,7 @@ import ProductPrice from './ProductPrice';
 import ProductTax from './ProductTax';
 import ProductType from './ProductType';
 import ProductVariant from './ProductVariant';
+import notify from '../../../utils/Notification';
 
 export const ProductContext = createContext(null);
 
@@ -102,22 +103,20 @@ const CreateProduct = () => {
         //   "Content-Type": "multipart/form-data" // Set Content-Type for this specific request
         // }
       }).json();
-      if (res.response.message) {
-        setProduct(initialState);
-        setImageFile(null);
-        setActiveTab("1");
-      }
+      setProduct(initialState);
+      setImageFile(null);
+      setActiveTab("1");
       notify({
-        title : 'Success!!',
+        title: 'Success!!',
         message: res.response.message || 'Product Save Successfully.',
-        error : false,
+        error: false,
         success: true,
       })
     } catch (err) {
       notify({
-        title : 'Success!!',
+        title: 'Success!!',
         message: err || 'Failed to add product.',
-        error : true,
+        error: true,
         success: false,
       })
     }

@@ -70,7 +70,7 @@ export const data = [
   { id: "13", name: "Barcode", parent_id: "2", orderBy: 6, path: "/product/batcode" },
   { id: "14", name: "History", parent_id: "2", orderBy: 7, path: "/product/history" },
   
-  { id: "16", name: "ProductCategories", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy",},
+  { id: "16", name: "Product Categories", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy",},
   { id: "17", name: "Product Tags", parent_id: "8", orderBy: 2, path: "/product/tags" },
   { id: "18", name: "Tax", parent_id: "8", orderBy: 3, path: "/product/tax/gst" },
   { id: "19", name: "Variants", parent_id: "8", orderBy: 4, path: "/product/variants" },
@@ -86,7 +86,7 @@ export const data = [
   { id: "24", name: "GST Slabs", parent_id: "9", orderBy: 3, path: "/product/tax/gst-slabs"},
   { id: "25", name: "HSN/SAC", parent_id: "9", orderBy: 4, path: "/product/tax/hsn"},
 
-  { id: "26", name: "Articles", parent_id: "10", orderBy: 1, path: "/product/product/articles" },
+  { id: "26", name: "Product Category", parent_id: "10", orderBy: 1, path: "/product/product/articles" },
   { id: "27", name: "Upload", parent_id: "10", orderBy: 2, path: "/product/product/upload" },
   { id: "28", name: "Draft", parent_id: "10", orderBy: 3, path: "/product/product/draft" },
   { id: "29", name: "Approved", parent_id: "10", orderBy: 4, path: "/product/product/approved" },

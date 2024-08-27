@@ -35,7 +35,6 @@ export default function Layout() {
   const { state } = useLocation();
   const appShellRef = useRef(null)
   const headerData = useMemo(() => ModuleJson(null), []);
-  console.log(state)
 
 
   const menuItems = [

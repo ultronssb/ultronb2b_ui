@@ -6,11 +6,7 @@ const B2BStepper = ({ productType: ProductType, productImage: ProductImage, prod
     const [active, setActive] = useState(0);
     const [highestStepVisited, setHighestStepVisited] = useState(active);
 
-    const {product: product, addProduct : addProduct} = useContext(ProductContext)
-    
-
-    console.log(product, "stepper");
-    
+    const { product: product, addProduct: addProduct } = useContext(ProductContext)
 
     const handleStepChange = (nextStep) => {
         const isOutOfBounds = nextStep > 6 || nextStep < 0;
@@ -80,7 +76,7 @@ const B2BStepper = ({ productType: ProductType, productImage: ProductImage, prod
                 <Button variant="default" onClick={() => handleStepChange(active - 1)}>
                     Back
                 </Button>
-                <Button onClick={() => {addProduct(product); handleStepChange(active + 1)}}>Next step</Button>
+                <Button onClick={() => { addProduct(product); handleStepChange(active + 1) }}>Next step</Button>
             </Group>
         </>
     );

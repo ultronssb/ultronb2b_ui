@@ -1,26 +1,22 @@
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconPercentage } from '@tabler/icons-react';
+import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
-import B2BSelect from '../../../common/B2BSelect';
 import B2BInput from '../../../common/B2BInput';
+import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import _ from 'lodash';
+import './FabricContent.css';
 
 const FabricContent = () => {
     const { product, setProduct, handleChange } = useContext(ProductContext);
-
-    console.log(product);
-
 
     const [fabricContent, setFabricContent] = useState({});
     const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [], value: null }]);
     const [lastChild, setLastChild] = useState([]);
     const [value, setValue] = useState();
     const [fCCValue, setFCCValue] = useState('')
-
-    console.log(selectedPairs);
-
 
     useEffect(() => {
         fetchVariant();
@@ -100,7 +96,7 @@ const FabricContent = () => {
                 ...prevState.fabricContent,
                 composition: {
                     ...prevState.fabricContent.composition,
-                    [key]: value  // Replace with your key-value pair
+                    [key]: value
                 }
             }
         }));
@@ -129,18 +125,15 @@ const FabricContent = () => {
     };
 
     return (
-        <section className="product-variant-section" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div>
-                <B2BInput
-                    value={fCCValue}
-                    type='text'
-                    disabled='true'
-                />
+        <section className="fabric-content-section">
+            <div className='fabric-content-inner-top'>
+                <label>FCC</label>
+                <B2BInput value={fCCValue} type='text' disabled='true' />
             </div>
-            <div>
+            <div className='fabric-content-inner-bottom'>
                 {selectedPairs.map((pair, index) => (
-                    <div key={index} className="product-variant-g-row" style={{ marginLeft: '0px' }}>
-                        <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
+                    <div key={index} className="fabric-content-g-row">
+                        <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-4">
                             <B2BSelect
                                 value={selectedPairs[index].key}
                                 data={getAvailableKeys(index).map(key => ({ value: key, label: keyToNameMap[key] }))}
@@ -148,35 +141,36 @@ const FabricContent = () => {
                                 onChange={(e) => handleSelectChange(index, e)}
                             />
                         </div>
-                        <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-8 product-variant-mb2" style={{ display: 'flex' }}>
+                        <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-8 fabric-content-mb2" style={{ display: 'flex' }}>
                             <B2BInput
                                 value={pair.value}
-                                required="true"
+                                required={true}
                                 type="number"
                                 disabled={!pair.key}
                                 onChange={(e) => handleMultiSelectChange(index, e)}
+                                rightSection={<IconPercentage size={20} />}
                             />
                             {index > 0 && (
                                 <button
                                     type="button"
-                                    className="product-variant-btn product-variant-btn--icon-no product-variant-ml2"
+                                    className="fabric-content-btn fabric-content-btn--icon-no fabric-content-ml2"
                                     onClick={() => removePair(index)}
                                 >
-                                    <FontAwesomeIcon className="fa product-variant-icon" icon={faTrash} />
+                                    <FontAwesomeIcon className="fa fabric-content-icon" icon={faTrash} />
                                 </button>
                             )}
                         </div>
                     </div>
                 ))}
-                <div className="product-variant-g-row">
+                <div className="fabric-content-g-row">
                     {_.size(lastChild) > _.size(selectedPairs) && (
-                        <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
+                        <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-4">
                             <button
                                 type="button"
-                                className="product-variant-btn product-variant-btn--text-go"
+                                className="fabric-content-btn fabric-content-btn--text-go"
                                 onClick={addNewPair}
                             >
-                                <FontAwesomeIcon className="fa product-variant-icon product-variant-mr2" icon={faPlus} />
+                                <FontAwesomeIcon className="fa fabric-content-icon fabric-content-mr2" icon={faPlus} />
                                 Add another attribute
                             </button>
                         </div>

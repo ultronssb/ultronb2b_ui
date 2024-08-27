@@ -37,9 +37,6 @@ const ProductTaxSelect = () => {
             <label>
                 <span className="vd-text-label vd-util-text-overflow-break-word vd-label">
                     Product Tax
-                    <span className="vd-text-supplementary vd-util-text-overflow-break-word vd-ml1">
-                        Use Tax levels to filter your sales and inventory reports.
-                    </span>
                 </span>
             </label>
             <div className="vd-popover-tether-target-wrapper vd-popover-tether-target vd-popover-tether-abutted vd-popover-tether-abutted-left vd-popover-tether-element-attached-left vd-popover-tether-target-attached-left vd-popover-tether-pinned vd-popover-tether-pinned-top">

@@ -36,8 +36,8 @@ const ProductCategorys = () => {
 
     const setCategorysAndselectedPairs = () => {
         const { productCategories } = product
-        if(_.size(productCategories) > 0) {
-           setSelectedPairs(productCategories)
+        if (_.size(productCategories) > 0) {
+            setSelectedPairs(productCategories)
         }
     }
 
@@ -130,7 +130,7 @@ const ProductCategorys = () => {
                                 </div>
                                 <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-8">
                                     <label>
-                                        <span className="product-variant-text-label">Value</span>
+                                        <span className="product-variant-text-label">Level</span>
                                     </label>
                                 </div>
                             </div>

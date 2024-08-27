@@ -38,8 +38,6 @@ const CompanyProfile = () => {
   const fetchAllCompanyLocations = async () => {
     const response = await B2B_API.get('location-type/get-all').json();
     setCompanyLocations(response?.response)
-    console.log(response?.response);
-
   }
 
   const handleChange = (event, key) => {
@@ -48,8 +46,6 @@ const CompanyProfile = () => {
   }
 
   const handleLocationTypeChange = (value, key) => {
-    console.log(value, key);
-
     setCompany(prev => ({ ...prev, [key]: value }));
   };
 
@@ -57,7 +53,6 @@ const CompanyProfile = () => {
     event.preventDefault();
     try {
       const response = await B2B_API.post('company/save', { json: company }).json();
-      console.log(response, "save response");
     } catch (error) {
       notify({
         title: "Oops!!! ",

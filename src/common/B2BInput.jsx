@@ -1,7 +1,7 @@
 import { TextInput } from '@mantine/core';
 import React from 'react';
 
-const B2BInput = ({ value, styles, onChange, placeholder, variant, required, error, type, radius, disabled }) => {
+const B2BInput = ({ value, styles, onChange, placeholder, variant, required, error, type, radius, disabled, rightSection }) => {
     return (
         <TextInput
             className='input-textField'
@@ -16,6 +16,7 @@ const B2BInput = ({ value, styles, onChange, placeholder, variant, required, err
             disabled={disabled}
             onChange={onChange}
             error={error}
+            rightSection={rightSection}
         />
     );
 }

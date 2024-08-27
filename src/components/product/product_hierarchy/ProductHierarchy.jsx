@@ -12,6 +12,80 @@ import GetCategory from './GetCategory'
 import './ProductCategory.css'
 import { ActiveTabContext } from '../../../layout/Layout';
 
+
+const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children }) => {
+  return (
+    <div style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px`, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <label style={{ width: '110px' }}>Level {level}</label>
+        {level < 4 && level > 1 && (<FontAwesomeIcon icon={faArrowTurnUp} style={{ transform: 'rotate(90deg)', marginRight: '20px' }} />)}
+        <input type="text"
+          value={name}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={`Level ${level} Category`}
+          required
+          style={{ padding: '12px', outline: 'none', width: '250px', border: '1px solid silver', borderRadius: '4px' }}
+        />
+        {level > 1 && (<FontAwesomeIcon icon={faTrashCan} onClick={onRemove} style={{ cursor: 'pointer', marginLeft: '1rem', fontSize: '18px', color: '#FF6E61' }} />)}
+      </div>
+      {children}
+      {level < 4 && (<button onClick={onAdd} className='cat-Btn' style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px`, }}> + Add Level {level + 1} </button>)}
+    </div>
+  );
+};
+
+
+const CategoryTree = ({ level = 1, categories, onCategoryChange }) => {
+  const handleCategoryChange = (index, newValue) => {
+    const newCategories = [...categories];
+    newCategories[index].name = newValue?.trim();
+    onCategoryChange(newCategories);
+  };
+
+  const handleAddSubCategory = (index) => {
+    const newCategories = [...categories];
+    newCategories[index].child.push({ name: '', parentId: newCategories[index].name, child: [] });
+    onCategoryChange(newCategories);
+  };
+
+  const handleRemoveCategory = (index) => {
+    const newCategories = categories.filter((_, i) => i !== index);
+    onCategoryChange(newCategories);
+  };
+
+  return (
+    <>
+      {categories.map((category, index) => (
+        <div key={index} style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem', gap: '1rem' }}>
+          <CategoryInput
+            level={level}
+            name={category.name}
+            onChange={(newValue) => handleCategoryChange(index, newValue)}
+            onAdd={() => handleAddSubCategory(index)}
+            onRemove={() => handleRemoveCategory(index)}
+          >
+            <CategoryTree
+              level={level + 1}
+              categories={category.child}
+              onCategoryChange={(child) => {
+                const newCategories = [...categories];
+                newCategories[index].child = child;
+                onCategoryChange(newCategories);
+              }}
+            />
+          </CategoryInput>
+          {level === 2 && (
+            <>
+              <span style={{ width: '800px', height: '1px', border: '1px solid silver', }}></span>
+            </>
+          )}
+        </div>
+      ))}
+    </>
+  );
+};
+
+
 const productHierarchy = () => {
   const initialState = {
     name: '', parentId: null, productGroup: {}, child: []
@@ -46,9 +120,7 @@ const productHierarchy = () => {
   }
 
   const handleSelectChange = (value) => {
-    console.log(groups, value);
     const group = _.find(groups, gr => gr.name === value)
-    console.log(group)
 
     setCategoryTree(prevTree => [
       {
@@ -106,80 +178,8 @@ const productHierarchy = () => {
     const urlParams = new URLSearchParams(location.search);
     urlParams.delete('id');
     setCategoryTree([{ ...initialState }])
-    navigate('/product/product-hierarchy', {state: {...stateData, tabs: stateData.childTabs}});
+    navigate('/product/product-hierarchy', { state: { ...stateData, tabs: stateData.childTabs } });
   }
-
-  const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children }) => {
-    return (
-      <div style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px`, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <label style={{ width: '110px' }}>Level {level}</label>
-          {level < 4 && level > 1 && (<FontAwesomeIcon icon={faArrowTurnUp} style={{ transform: 'rotate(90deg)', marginRight: '20px' }} />)}
-          <input type="text"
-            value={name}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={`Level ${level} Category`}
-            required
-            style={{ padding: '12px', outline: 'none', width: '250px', border: '1px solid silver', borderRadius: '4px' }}
-          />
-          {level > 1 && (<FontAwesomeIcon icon={faTrashCan} onClick={onRemove} style={{ cursor: 'pointer', marginLeft: '1rem', fontSize: '18px', color: '#FF6E61' }} />)}
-        </div>
-        {children}
-        {level < 4 && (<button onClick={onAdd} className='cat-Btn' style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px`, }}> + Add Level {level + 1} </button>)}
-      </div>
-    );
-  };
-
-
-  const CategoryTree = ({ level = 1, categories, onCategoryChange }) => {
-    const handleCategoryChange = (index, newValue) => {
-      const newCategories = [...categories];
-      newCategories[index].name = newValue?.trim();
-      onCategoryChange(newCategories);
-    };
-
-    const handleAddSubCategory = (index) => {
-      const newCategories = [...categories];
-      newCategories[index].child.push({ name: '', parentId: newCategories[index].name, child: [] });
-      onCategoryChange(newCategories);
-    };
-
-    const handleRemoveCategory = (index) => {
-      const newCategories = categories.filter((_, i) => i !== index);
-      onCategoryChange(newCategories);
-    };
-
-    return (
-      <>
-        {categories.map((category, index) => (
-          <div key={index} style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem', gap: '1rem' }}>
-            <CategoryInput
-              level={level}
-              name={category.name}
-              onChange={(newValue) => handleCategoryChange(index, newValue)}
-              onAdd={() => handleAddSubCategory(index)}
-              onRemove={() => handleRemoveCategory(index)}
-            >
-              <CategoryTree
-                level={level + 1}
-                categories={category.child}
-                onCategoryChange={(child) => {
-                  const newCategories = [...categories];
-                  newCategories[index].child = child;
-                  onCategoryChange(newCategories);
-                }}
-              />
-            </CategoryInput>
-            {level === 2 && (
-              <>
-                <span style={{ width: '800px', height: '1px', border: '1px solid silver', }}></span>
-              </>
-            )}
-          </div>
-        ))}
-      </>
-    );
-  };
 
   useEffect(() => {
     fetchCategory()

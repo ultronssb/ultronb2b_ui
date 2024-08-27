@@ -89,10 +89,8 @@ const Variants = () => {
 
   const editVarient = (varobj) => {
     setCreateUser(true);
-    console.log(varobj, "varobj");
     setVarient((prev => ({ ...prev, ...varobj })));
   };
-  console.log(varient, "varrient");
 
   const fetchAllVarients = async () => {
     try {
@@ -166,7 +164,6 @@ const Variants = () => {
     }
   };
 
-  console.log(_.includes(['color', 'colour'], varient.name.toLowerCase()))
   return (
     <>
       {!createUser && (
