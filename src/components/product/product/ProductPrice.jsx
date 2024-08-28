@@ -3,6 +3,7 @@ import './ProductPrice.css';
 import _ from 'lodash';
 import { ProductContext } from './CreateProduct';
 import { Divider, Fieldset } from '@mantine/core';
+import ProductTaxSelect from './ProductTax';
 
 const ProductPrice = () => {
     const { product, handleChange, setProduct } = useContext(ProductContext);
@@ -181,10 +182,11 @@ const ProductPrice = () => {
             }));
         }
     };
-
+        
     return (
         <section className="helios-c-PJLV product-price-section">
             <div className="helios-c-PJLV product-price-section-wrap">
+                <ProductTaxSelect/>
                 <Fieldset legend='Price'>
                     <div className="product-price-g-row">
                         {/* Mark Up Section */}

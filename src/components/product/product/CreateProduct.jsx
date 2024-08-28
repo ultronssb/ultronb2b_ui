@@ -20,9 +20,8 @@ const CreateProduct = () => {
     { id: "2", name: "Category Type" },
     { id: "3", name: "Fabric Content" },
     { id: "4", name: "Dimensions" },
-    { id: "5", name: "Tax" },
-    { id: "6", name: "Price" },
-    { id: "7", name: "Variant" },
+    { id: "5", name: "Price" },
+    { id: "6", name: "Variant" },
 
   ];
 
@@ -161,10 +160,8 @@ const CreateProduct = () => {
       case "4":
         return <ProductDimension />;
       case "5":
-        return <ProductTax />;
-      case "6":
         return <ProductPrice />;
-      case "7":
+      case "6":
         return <ProductVariant />;
       default:
         return <ProductType />;
@@ -208,6 +205,7 @@ const CreateProduct = () => {
 
   };
 
+console.log(product);
 
   return (
     <ProductContext.Provider value={{ product, handleChange, addProduct, setProduct, imageFile, setImageFile }}>
@@ -225,8 +223,8 @@ const CreateProduct = () => {
       </div>
       <div className='productType-btn' style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginTop: '1rem' }}>
         {activeTab > "1" && <B2BButton name={'Back'} onClick={handleBackTab} />}
-        {activeTab < "7" && <B2BButton name={'Next'} onClick={handleNextTab} />}
-        {activeTab === "7" && <B2BButton name={'Save'} onClick={handleProductSave} />}
+        {activeTab < "6" && <B2BButton name={'Next'} onClick={handleNextTab} />}
+        {activeTab === "6" && <B2BButton name={'Save'} onClick={handleProductSave} />}
       </div>
     </ProductContext.Provider>
   );

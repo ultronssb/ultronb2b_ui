@@ -21,6 +21,9 @@ const OtherSettings = () => {
     displayPrice: '',
     skuCodeSeq: '',
     companyId: '',
+    variantSKU:'',
+    wholesaleMOQ:'',
+    sampleMOQ:'',
   }
 
   const [otherSettings, setOtherSettings] = useState(initialState)
@@ -193,7 +196,37 @@ const OtherSettings = () => {
       placeholder: "SKU Code Seq",
       inputType: 'text',
       onChange: (event) => handleChange(event, "skuCodeSeq")
-    }
+    },
+    {
+      type: 'input',
+      label: 'Varinat SKU',
+      disabled: false,
+      required: true,
+      value: otherSettings.variantSKU,
+      placeholder: "Variant",
+      inputType: 'text',
+      onChange: (event) => handleChange(event, "variantSKU")
+    },
+    {
+      type: 'input',
+      label: 'Sample MOQ',
+      disabled: false,
+      required: true,
+      value: otherSettings.sampleMOQ,
+      placeholder: "MOQ",
+      inputType: 'text',
+      onChange: (event) => handleChange(event, "sampleMOQ")
+    },
+    {
+      type: 'input',
+      label: 'Wholesale MOQ',
+      disabled: false,
+      required: true,
+      value: otherSettings.wholesaleMOQ,
+      placeholder: "MOQ",
+      inputType: 'text',
+      onChange: (event) => handleChange(event, "wholesaleMOQ")
+    },
   ]
 
   return (

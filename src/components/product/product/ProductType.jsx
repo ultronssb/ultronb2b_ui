@@ -7,6 +7,7 @@ import B2BButton from '../../../common/B2BButton';
 import { useNavigate } from 'react-router-dom';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { ActiveTabContext } from '../../../layout/Layout';
+import B2BInput from '../../../common/B2BInput';
 
 const ProductType = () => {
     const { stateData } = useContext(ActiveTabContext);
@@ -67,18 +68,11 @@ const ProductType = () => {
 
     const json = [
         {
-            label: "Product Code",
-            value: product.articleCode,
-            onChange: (event) => handleChange(event, "articleCode"),
-            type: "text",
-            require: true,
-            placeholder: "Enter Product Code"
-        },
-        {
             label: "Product Name",
             value: product.articleName,
             onChange: (event) => handleChange(event, "articleName"),
             type: "text",
+            fieldType: 'textField',
             require: true,
             placeholder: "Enter Product Name"
         },
@@ -87,41 +81,15 @@ const ProductType = () => {
             value: brand.map(b => b?.name),
             onChange: (event) => handleChange(event, "brandId"),
             type: "select",
+            fieldType: 'selectField',
             required: true,
             placeholder: "Enter Brand"
         },
         {
             label: "Product Tag",
             type: "multiselect",
+            fieldType: 'multiselectField',
             placeholder: "Enter Tag"
-        },
-        {
-            label: "Length",
-            type: "text",
-            placeholder: "Enter Length",
-            value: product.metrics?.length || '',
-            onChange: (event) => handleChange(event, "metrics.length"),
-        },
-        {
-            label: "Width",
-            type: "text",
-            placeholder: "Enter Width",
-            value: product.metrics?.width || '',
-            onChange: (event) => handleChange(event, "metrics.width"),
-        },
-        {
-            label: "Thickness",
-            type: "text",
-            placeholder: "Enter Thickness",
-            value: product.metrics?.thickness || '',
-            onChange: (event) => handleChange(event, "metrics.thickness"),
-        },
-        {
-            label: "Weight",
-            type: "text",
-            placeholder: "Weight in gsm",
-            value: product.metrics?.weight || '',
-            onChange: (event) => handleChange(event, "metrics.weight"),
         },
         {
             label: "UOM",
@@ -130,7 +98,8 @@ const ProductType = () => {
                 isRoll: product?.otherInformation.unitOfMeasures?.isRoll || false
             },
             onChange: (values) => handleChange(values, "UOM"),
-            type: "checkbox-group",
+            type: "checkbox",
+            fieldType: 'checkBoxField',
             options: [
                 { label: "Kg", value: "isKg" },
                 { label: "Roll", value: "isRoll" }
@@ -145,17 +114,31 @@ const ProductType = () => {
             value: product.description,
             onChange: (event) => handleChange(event, "description"),
             type: "textarea",
+            fieldType: 'textAreaField',
             placeholder: "Enter Description",
             rows: 1,
             cols: 50
+        },
+        {
+            label: "Barcode",
+            type: 'radio',
+            value: product.isCreateBarcode,
+            fieldType: 'radioField',
+            options: [
+                { label: "Yes", value: "true" },
+                { label: "No", value: "false" }
+            ],
+            placeholder: "Enter Description",
+            onChange: (event) => handleChange(event, "barcode"),
+            name: "barcode"
         }
+
 
     ];
 
     const handleCancel = () => {
         navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
     }
-    console.log(product, "brand");
 
     return (
         <div className='productType-container' style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem' }}>
@@ -163,29 +146,25 @@ const ProductType = () => {
                 <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
             </div>
             <form className='form-container'>
-                {json.map((field, index) => (
+                {json?.map((field, index) => (
                     <div key={index} className={field.className ? field.className : "form-group"}>
                         <label className='form-label'>{field.label}</label>
-                        {field.type === "checkbox-group" && (
-                            <div className="checkbox-group">
-                                {field.options.map((option, idx) => (
-                                    <div key={idx} className="checkbox-item" style={{ display: 'flex', gap: '1rem' }}>
-                                        <input
-                                            type="checkbox"
-                                            value={option.value}
-                                            // checked={
-                                            //     product?.otherInformation.unitOfMeasures?.find(uom => uom.type === field.name)?.[option.value] || false
-                                            // } 
-                                            onChange={field.onChange}
-                                            required={field.required}
-                                        />
-                                        <label className='checkbox-label'>{option.label}</label>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                         {
-                            field.type === "select" && (
+                            field.fieldType === 'textField' && (
+                                <B2BInput
+                                    value={field.value}
+                                    className='form-input'
+                                    style={field.style}
+                                    disabled={field.disabled}
+                                    onChange={field.onChange}
+                                    type={field.type}
+                                    required={field.required}
+                                    placeholder={field.placeholder}
+                                />
+                            )
+                        }
+                        {
+                            field.fieldType === "selectField" && (
                                 <B2BSelect
                                     data={brand.map(b => ({ label: b.name, value: b.brandId }))}
                                     value={product?.brandId}
@@ -197,20 +176,18 @@ const ProductType = () => {
                             )
                         }
                         {
-                            field.type === 'text' && (
-                                <input
-                                    value={field.value}
-                                    className='form-input'
-                                    style={field.style}
-                                    disabled={field.disabled}
-                                    onChange={field.onChange}
-                                    type={field.type}
-                                    required={field.required}
-                                    placeholder={field.placeholder}
+                            field.fieldType === 'multiselectField' && (
+                                <MultiSelect
+                                    value={product?.tags || []}
+                                    style={{ width: '250px' }}
+                                    placeholder="Tags"
+                                    data={productTags.map(tag => tag.name)}
+                                    onChange={(selectedTags) => handleChange({ target: { value: selectedTags } }, "tags")}
                                 />
                             )
-                        }{
-                            field.type === 'textarea' && (
+                        }
+                        {
+                            field.fieldType === 'textAreaField' && (
                                 <textarea
                                     value={field.value}
                                     className='form-input-textarea'
@@ -221,20 +198,42 @@ const ProductType = () => {
                                     placeholder={field.placeholder}
                                 />
                             )
-                        }{
-                            field.type === 'multiselect' && (
-                                <MultiSelect
-                                    value={product?.tags || []}
-                                    style={{ width: '250px' }}
-                                    placeholder="Tags"
-                                    data={productTags.map(tag => tag.name)}
-                                    onChange={(selectedTags) => handleChange({ target: { value: selectedTags } }, "tags")}
-                                />
-                            )
                         }
+                        {field.fieldType === "checkBoxField" && (
+                            <div className="checkbox-group">
+                                {field.options.map((option, idx) => (
+                                    <div key={idx} className="checkbox-item" style={{ display: 'flex', gap: '1rem' }}>
+                                        <input
+                                            type={field.type}
+                                            value={option.value}
+                                            onChange={field.onChange}
+                                            required={field.required}
+                                        />
+                                        <label className='checkbox-label'>{option.label}</label>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        {field.fieldType === "radioField" && (
+                            <div className="radio-group">
+                                {field.options.map((option, idx) => (
+                                    <div key={idx} className="radio-item" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                        <input
+                                            type="radio"
+                                            value={option.value}
+                                            name={field.name}
+                                            onChange={field.onChange}
+                                            checked={product.barcode === option.value}
+                                        />
+                                        <label className='radio-label'>{option.label}</label>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
                     </div>
                 ))}
-                <div>
+                <div className='form-group' style={{ display: 'flex', flexDirection: 'column' }}>
                     {product.image && (
                         <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                             <img

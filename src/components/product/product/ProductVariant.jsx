@@ -91,7 +91,7 @@ const ProductVariant = () => {
                             <div className="product-variant-g-row">
                                 <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
                                     <label>
-                                        <span className="product-variant-text-label">Attribute (e.g. colour)</span>
+                                        <span className="product-variant-text-label">Variant Name (e.g. colour)</span>
                                     </label>
                                 </div>
                                 <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-8">

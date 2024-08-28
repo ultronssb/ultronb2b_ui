@@ -154,6 +154,18 @@ const Channel = () => {
         setChannel(initialState)
     }
 
+    const uniqueCompaniesData = Array.from(new Set(companies.map(company => company.companyId)))
+        .map(id => {
+            const company = companies.find(c => c.companyId === id);
+            return {
+                label: company ? company.name : 'Unknown',
+                value: id ? id.toString() : 'N/A'
+            };
+        })
+
+    const safeCompaniesData = Array.from(new Set(uniqueCompaniesData.map(item => item.value)))
+        .map(value => uniqueCompaniesData.find(item => item.value === value));
+
     return (
         <div className='grid-container'>
             {!createChannel && <>
@@ -184,10 +196,10 @@ const Channel = () => {
                 <div className="form-group">
                     <label className='form-label'>Company ID</label>
                     <B2BSelect
-                        value={channel.companyId}
+                        value={channel.companyId || ''}
                         className='form-input'
                         clearable={true}
-                        data={companies?.map(company => ({ label: company.name, value: company?.companyId }))}
+                        data={safeCompaniesData}
                         styles={{ input: { fontSize: '14px' } }}
                         type="text"
                         required={true}
