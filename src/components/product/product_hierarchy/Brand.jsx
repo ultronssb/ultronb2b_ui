@@ -192,7 +192,8 @@ const Brand = () => {
           </div>
         ))}
         <div className='save-button-container'>
-          <B2BButton type='submit' name="Save" />
+          <B2BButton type='button' color={'red'} onClick={() => setBrand(initialData)} name="Cancel" />
+          <B2BButton type='submit' name={brand?.brandId ? "Update" : "Save"} />
         </div>
       </form>
 

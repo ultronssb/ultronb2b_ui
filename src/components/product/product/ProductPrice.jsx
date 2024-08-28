@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import './ProductPrice.css';
 import _ from 'lodash';
 import { ProductContext } from './CreateProduct';
+import { Divider, Fieldset } from '@mantine/core';
 
 const ProductPrice = () => {
     const { product, handleChange, setProduct } = useContext(ProductContext);
@@ -184,88 +185,90 @@ const ProductPrice = () => {
     return (
         <section className="helios-c-PJLV product-price-section">
             <div className="helios-c-PJLV product-price-section-wrap">
-                <h2 className="product-price-text-sub-heading product-price-mb4" role="heading" aria-level="2">Price</h2>
-                <div className="product-price-g-row">
-                    {/* Mark Up Section */}
-                    <div className="product-price-g-col product-price-g-s-12 product-price-g-m-9">
-                        <div className='input-check'>
-                            <input type="checkbox" id="enableInputsCheckbox" checked={markUpData.isMarkUp} onChange={() => handleCheckboxChange('markUp')} />
-                            <div className="product-price-text-signpost product-price-util-text-overflow-break-word product-price-mb6">Mark Up</div>
+                <Fieldset legend='Price'>
+                    <div className="product-price-g-row">
+                        {/* Mark Up Section */}
+                        <div className="product-price-g-col product-price-g-s-12 product-price-g-m-9">
+                            <div className='input-check'>
+                                <input type="checkbox" id="enableInputsCheckbox" checked={markUpData.isMarkUp} onChange={() => handleCheckboxChange('markUp')} />
+                                <div className="product-price-text-signpost product-price-util-text-overflow-break-word product-price-mb6">Mark Up</div>
+                            </div>
+                            <div className='table-container'>
+                                <table className="product-price-table-list">
+                                    <thead>
+                                        <tr className="product-price-table-list-row product-price-table-list-row--header">
+                                            <th className="product-price-table-list-head-cell">Cost Price</th>
+                                            <th className="product-price-table-list-head-cell">Markup %</th>
+                                            <th className="product-price-table-list-head-cell">Selling Price</th>
+                                            <th className="product-price-table-list-head-cell">MRP</th>
+                                            <th className="product-price-table-list-head-cell">Margin</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td className="product-price-table-list-cell">
+                                                <input className={!markUpData.isMarkUp ? "input-disable" : "product-price-input product-price-align-right"} disabled={!markUpData.isMarkUp} type="number" value={markUpData.costPrice || ''} onChange={(e) => handleInputChange(e, 'costPrice')} placeholder="0.00" />
+                                            </td>
+                                            <td className="product-price-table-list-cell">
+                                                <input className={!markUpData.isMarkUp ? "input-disable" : "product-price-input product-price-align-right"} disabled={!markUpData.isMarkUp} type="number" value={markUpData.markUpPercent || ''} onChange={(e) => handleInputChange(e, 'markUpPercent')} placeholder="0.00" />
+                                            </td>
+                                            <td className="product-price-table-list-cell">
+                                                <input className="input-disable" disabled={true} type="number" value={markUpData.sellingPrice || ''} readOnly placeholder="0.00" />
+                                            </td>
+                                            <td className="product-price-table-list-cell">
+                                                <input className="input-disable" disabled={true} type="number" value={markUpData.mrp || ''} readOnly placeholder="0.00" />
+                                            </td>
+                                            <td className="product-price-table-list-cell">
+                                                <input className="input-disable" disabled={true} type="number" value={markUpData.margin || ''} readOnly placeholder="0.00" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div className='table-container'>
-                            <table className="product-price-table-list">
-                                <thead>
-                                    <tr className="product-price-table-list-row product-price-table-list-row--header">
-                                        <th className="product-price-table-list-head-cell">Cost Price</th>
-                                        <th className="product-price-table-list-head-cell">Markup %</th>
-                                        <th className="product-price-table-list-head-cell">Selling Price</th>
-                                        <th className="product-price-table-list-head-cell">MRP</th>
-                                        <th className="product-price-table-list-head-cell">Margin</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td className="product-price-table-list-cell">
-                                            <input className={!markUpData.isMarkUp ? "input-disable" : "product-price-input product-price-align-right"} disabled={!markUpData.isMarkUp} type="number" value={markUpData.costPrice || ''} onChange={(e) => handleInputChange(e, 'costPrice')} placeholder="0.00" />
-                                        </td>
-                                        <td className="product-price-table-list-cell">
-                                            <input className={!markUpData.isMarkUp ? "input-disable" : "product-price-input product-price-align-right"} disabled={!markUpData.isMarkUp} type="number" value={markUpData.markUpPercent || ''} onChange={(e) => handleInputChange(e, 'markUpPercent')} placeholder="0.00" />
-                                        </td>
-                                        <td className="product-price-table-list-cell">
-                                            <input className="input-disable" disabled={true} type="number" value={markUpData.sellingPrice || ''} readOnly placeholder="0.00" />
-                                        </td>
-                                        <td className="product-price-table-list-cell">
-                                            <input className="input-disable" disabled={true} type="number" value={markUpData.mrp || ''} readOnly placeholder="0.00" />
-                                        </td>
-                                        <td className="product-price-table-list-cell">
-                                            <input className="input-disable" disabled={true} type="number" value={markUpData.margin || ''} readOnly placeholder="0.00" />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                        <Divider label='OR' labelPosition='center' />
 
-                    {/* Mark Down Section */}
-                    <div className="product-price-g-col product-price-g-s-12 product-price-g-m-9">
-                        <div className='input-check'>
-                            <input type="checkbox" id="enableInputsCheckbox2" checked={markDownData.isMarkDown} onChange={() => handleCheckboxChange('markDown')} />
-                            <div className="product-price-text-signpost product-price-util-text-overflow-break-word product-price-mb6">Mark Down</div>
-                        </div>
-                        <div className='table-container'>
-                            <table className="product-price-table-list">
-                                <thead>
-                                    <tr className="product-price-table-list-row product-price-table-list-row--header">
-                                        <th className="product-price-table-list-head-cell">MRP</th>
-                                        <th className="product-price-table-list-head-cell">Markdown %</th>
-                                        <th className="product-price-table-list-head-cell">Cost Price</th>
-                                        <th className="product-price-table-list-head-cell">Selling Price</th>
-                                        <th className="product-price-table-list-head-cell">Margin</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td className="product-price-table-list-cell">
-                                            <input className={!markDownData.isMarkDown ? "input-disable" : "product-price-input product-price-align-right"} disabled={!markDownData.isMarkDown} type="number" value={markDownData.mrp || ''} onChange={(e) => handleInputChange(e, 'mrp')} placeholder="0.00" />
-                                        </td>
-                                        <td className="product-price-table-list-cell">
-                                            <input className={!markDownData.isMarkDown ? "input-disable" : "product-price-input product-price-align-right"} disabled={!markDownData.isMarkDown} type="number" value={markDownData.markDownPercent || ''} onChange={(e) => handleInputChange(e, 'markDownPercent')} placeholder="0.00" />
-                                        </td>
-                                        <td className="product-price-table-list-cell">
-                                            <input className="input-disable" disabled={true} type="number" value={markDownData.costPrice || ''} readOnly placeholder="0.00" />
-                                        </td>
-                                        <td className="product-price-table-list-cell">
-                                            <input className="input-disable" disabled={true} type="number" value={markDownData.sellingPrice || ''} readOnly placeholder="0.00" />
-                                        </td>
-                                        <td className="product-price-table-list-cell">
-                                            <input className="input-disable" disabled={true} type="number" value={markDownData.margin || ''} readOnly placeholder="0.00" />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        {/* Mark Down Section */}
+                        <div className="product-price-g-col product-price-g-s-12 product-price-g-m-9">
+                            <div className='input-check'>
+                                <input type="checkbox" id="enableInputsCheckbox2" checked={markDownData.isMarkDown} onChange={() => handleCheckboxChange('markDown')} />
+                                <div className="product-price-text-signpost product-price-util-text-overflow-break-word product-price-mb6">Mark Down</div>
+                            </div>
+                            <div className='table-container'>
+                                <table className="product-price-table-list">
+                                    <thead>
+                                        <tr className="product-price-table-list-row product-price-table-list-row--header">
+                                            <th className="product-price-table-list-head-cell">MRP</th>
+                                            <th className="product-price-table-list-head-cell">Markdown %</th>
+                                            <th className="product-price-table-list-head-cell">Cost Price</th>
+                                            <th className="product-price-table-list-head-cell">Selling Price</th>
+                                            <th className="product-price-table-list-head-cell">Margin</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td className="product-price-table-list-cell">
+                                                <input className={!markDownData.isMarkDown ? "input-disable" : "product-price-input product-price-align-right"} disabled={!markDownData.isMarkDown} type="number" value={markDownData.mrp || ''} onChange={(e) => handleInputChange(e, 'mrp')} placeholder="0.00" />
+                                            </td>
+                                            <td className="product-price-table-list-cell">
+                                                <input className={!markDownData.isMarkDown ? "input-disable" : "product-price-input product-price-align-right"} disabled={!markDownData.isMarkDown} type="number" value={markDownData.markDownPercent || ''} onChange={(e) => handleInputChange(e, 'markDownPercent')} placeholder="0.00" />
+                                            </td>
+                                            <td className="product-price-table-list-cell">
+                                                <input className="input-disable" disabled={true} type="number" value={markDownData.costPrice || ''} readOnly placeholder="0.00" />
+                                            </td>
+                                            <td className="product-price-table-list-cell">
+                                                <input className="input-disable" disabled={true} type="number" value={markDownData.sellingPrice || ''} readOnly placeholder="0.00" />
+                                            </td>
+                                            <td className="product-price-table-list-cell">
+                                                <input className="input-disable" disabled={true} type="number" value={markDownData.margin || ''} readOnly placeholder="0.00" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </Fieldset>
             </div>
         </section>
     );

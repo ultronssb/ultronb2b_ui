@@ -21,9 +21,6 @@ const ProductTags = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
-  const [deleteContent, setDeleteContent] = useState({});
-
-  const [opened, { open, close }] = useDisclosure(false);
 
 
   const columns = useMemo(() => [
@@ -65,7 +62,6 @@ const ProductTags = () => {
 
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
             <IconPencil onClick={() => editGroup(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-            <IconTrash onClick={() => handleDeleteModal(original)} style={{ cursor: 'pointer', color: 'red' }} stroke={2} />
           </div>
         )
       }
@@ -74,11 +70,6 @@ const ProductTags = () => {
 
   const editGroup = (roleObj) => {
     setTag((prev => ({ ...prev, ...roleObj })))
-  }
-
-  const handleDeleteModal = (roleObj) => {
-    setDeleteContent(roleObj);
-    open(true);
   }
 
   useEffect(() => {
@@ -128,27 +119,6 @@ const ProductTags = () => {
     }));
   };
 
-  const handleDelete = (name) => {
-    console.log(name);
-  }
-
-
-  const DeleteModalContent = ({ body }) => {
-    const { name, roleId } = body;
-    return (
-      <>
-        <h4>Delete this Tag {name}</h4>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '1rem' }}>
-          <B2BButton onClick={close} name={"No"} />
-          <B2BButton color={'red'} onClick={() => handleDelete(name)} name={"Yes"} />
-        </div>
-      </>
-    )
-  }
-
-
-
-
   return (
     <>
       <div className='grid-container'>
@@ -193,8 +163,8 @@ const ProductTags = () => {
             </div>
           </div>
           <div className='save-button-container'>
-            <B2BButton type='button' color={'red'} onClick={() => setTag(initialState)} name="Cancel" />
-            <B2BButton type='submit' name={"Save"} />
+            <B2BButton type='button' color={'red'} onClick={() => setTag(initialData)} name="Cancel" />
+            <B2BButton type='submit' name={tag.name ? 'Update' : "Save"} />
           </div>
         </form>
       </div>
@@ -210,7 +180,6 @@ const ProductTags = () => {
         onPaginationChange={setPagination}
         enableFullScreenToggle={true}
       />
-      <B2BModal opened={opened} title={"Are You Sure ?"} children={<DeleteModalContent body={deleteContent} />} open={open} close={close} />
     </>
   )
 }

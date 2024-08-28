@@ -38,7 +38,7 @@ const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children }) => 
 const CategoryTree = ({ level = 1, categories, onCategoryChange }) => {
   const handleCategoryChange = (index, newValue) => {
     const newCategories = [...categories];
-    newCategories[index].name = newValue?.trim();
+    newCategories[index].name = newValue;
     onCategoryChange(newCategories);
   };
 
@@ -235,7 +235,7 @@ const productHierarchy = () => {
         <div className='create-product-btn'>
           {
             isCreateCategory === false ?
-              <B2BButton style={{ color: '#000' }} name="Create Category" onClick={() => setIsCreateCategory(true)} rightSection={<IconPlus size={15} />} color={"rgb(207, 239, 253)"} />
+              <B2BButton style={{ color: '#000' }} name="Create Category" onClick={() => setIsCreateCategory(true)} leftSection={<IconPlus size={15} />} color={"rgb(207, 239, 253)"} />
               :
               <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
           }

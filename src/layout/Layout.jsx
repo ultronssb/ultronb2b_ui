@@ -150,7 +150,7 @@ export default function Layout() {
                     variant={checkCurrentPathMatch(button) ? 'filled' : 'default'}
                     onClick={() => handleButtonClick(button)}
                   >
-                    {button.name}
+                    + {button.name}
                   </Button>
                 ))}
               </Group>

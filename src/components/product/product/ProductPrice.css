@@ -6,9 +6,19 @@
 }
 
 .product-price-section .product-price-section-wrap {
-    display: block;
+    display: flex;
     margin: auto;
     max-width: 1200px;
+    justify-content: center;
+}
+
+.mantine-Fieldset-root {
+    padding: 10px 60px !important;
+}
+
+.mantine-Fieldset-legend {
+    font-size: 20px !important;
+    font-weight: 800;
 }
 
 .product-price-mb4 {

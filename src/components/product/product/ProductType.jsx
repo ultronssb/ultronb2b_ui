@@ -72,7 +72,7 @@ const ProductType = () => {
             onChange: (event) => handleChange(event, "articleCode"),
             type: "text",
             require: true,
-            placeholder: "Enter Article Code"
+            placeholder: "Enter Product Code"
         },
         {
             label: "Product Name",
@@ -83,18 +83,45 @@ const ProductType = () => {
             placeholder: "Enter Product Name"
         },
         {
-            label: "Description",
-            value: product.description,
-            onChange: (event) => handleChange(event, "description"),
-            type: "textarea",
-            placeholder: "Enter Description",
-            rows: 1,
-            cols: 50
+            label: "Brand",
+            value: brand.map(b => b?.name),
+            onChange: (event) => handleChange(event, "brandId"),
+            type: "select",
+            required: true,
+            placeholder: "Enter Brand"
         },
         {
             label: "Product Tag",
             type: "multiselect",
             placeholder: "Enter Tag"
+        },
+        {
+            label: "Length",
+            type: "text",
+            placeholder: "Enter Length",
+            value: product.metrics?.length || '',
+            onChange: (event) => handleChange(event, "metrics.length"),
+        },
+        {
+            label: "Width",
+            type: "text",
+            placeholder: "Enter Width",
+            value: product.metrics?.width || '',
+            onChange: (event) => handleChange(event, "metrics.width"),
+        },
+        {
+            label: "Thickness",
+            type: "text",
+            placeholder: "Enter Thickness",
+            value: product.metrics?.thickness || '',
+            onChange: (event) => handleChange(event, "metrics.thickness"),
+        },
+        {
+            label: "Weight",
+            type: "text",
+            placeholder: "Weight in gsm",
+            value: product.metrics?.weight || '',
+            onChange: (event) => handleChange(event, "metrics.weight"),
         },
         {
             label: "UOM",
@@ -112,21 +139,23 @@ const ProductType = () => {
             placeholder: "Select UOM Type",
             required: true,
             className: "form-group",
-        }
-        ,
+        },
         {
-            label: "Brand",
-            value: brand.map(b => b?.name),
-            onChange: (event) => handleChange(event, "brandId"),
-            type: "select",
-            required: true,
-            placeholder: "Enter Brand"
+            label: "Description",
+            value: product.description,
+            onChange: (event) => handleChange(event, "description"),
+            type: "textarea",
+            placeholder: "Enter Description",
+            rows: 1,
+            cols: 50
         }
+
     ];
 
     const handleCancel = () => {
         navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
     }
+    console.log(product, "brand");
 
     return (
         <div className='productType-container' style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem' }}>

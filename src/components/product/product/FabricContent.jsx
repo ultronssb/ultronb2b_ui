@@ -127,10 +127,22 @@ const FabricContent = () => {
     return (
         <section className="fabric-content-section">
             <div className='fabric-content-inner-top'>
-                <label>FCC</label>
+                <label className='fabric-label'>Fabric Content Code</label>
                 <B2BInput value={fCCValue} type='text' disabled='true' />
             </div>
             <div className='fabric-content-inner-bottom'>
+                <div className="fabric-content-g-row">
+                    <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-4">
+                        <label>
+                            <span className="fabric-content-text-label">Fabric</span>
+                        </label>
+                    </div>
+                    <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-8">
+                        <label>
+                            <span className="fabric-content-text-label">Composition(%)</span>
+                        </label>
+                    </div>
+                </div>
                 {selectedPairs.map((pair, index) => (
                     <div key={index} className="fabric-content-g-row">
                         <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-4">

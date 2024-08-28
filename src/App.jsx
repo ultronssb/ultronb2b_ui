@@ -25,10 +25,7 @@ import PriceBook from './components/product/pricebook/PriceBook';
 import Articles from './components/product/product/Articles';
 import CreateProduct from './components/product/product/CreateProduct';
 import Brand from './components/product/product_hierarchy/Brand';
-import Department from './components/product/product_hierarchy/Department';
-import Division from './components/product/product_hierarchy/Division';
 import ProductHierarchy from './components/product/product_hierarchy/ProductHierarchy';
-import Section from './components/product/product_hierarchy/Section';
 import GST from './components/product/tax/GST';
 import GSTSlabs from './components/product/tax/GSTSlabs';
 import HsnSac from './components/product/tax/HsnSac';
@@ -82,9 +79,6 @@ function App() {
         <Route path='/dashboard' element={<Dashboard />} />
 
         <Route path='/product/product-hierarchy' element={<ProductHierarchy />} />
-        <Route path='/product/division' element={<Division />} />
-        <Route path='/product/department' element={<Department />} />
-        <Route path='/product/section' element={<Section />} />
         <Route path='/product/brand' element={<Brand />} />
         <Route path='/product/group' element={<Group />} />
         <Route path='/product/tags' element={<ProductTags />} />

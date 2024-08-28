@@ -9,6 +9,7 @@ import ProductTax from './ProductTax';
 import ProductType from './ProductType';
 import ProductVariant from './ProductVariant';
 import notify from '../../../utils/Notification';
+import ProductDimension from './ProductDimension';
 
 export const ProductContext = createContext(null);
 
@@ -18,9 +19,10 @@ const CreateProduct = () => {
     { id: "1", name: "Product Type" },
     { id: "2", name: "Category Type" },
     { id: "3", name: "Fabric Content" },
-    { id: "4", name: "Tax" },
-    { id: "5", name: "Price" },
-    { id: "6", name: "Variant" },
+    { id: "4", name: "Dimensions" },
+    { id: "5", name: "Tax" },
+    { id: "6", name: "Price" },
+    { id: "7", name: "Variant" },
 
   ];
 
@@ -32,6 +34,12 @@ const CreateProduct = () => {
     supplier: '',
     isCreateBarcode: true,
     tags: [],
+    metrics: {
+      weight: 0,
+      thickness: 0,
+      length: 0,
+      width: 0,
+    },
     otherInformation: {
       skuPrefix: '',
       unitOfMeasures:
@@ -80,16 +88,32 @@ const CreateProduct = () => {
   }
 
   const handleChange = (event, fieldType) => {
+    const value = event.target?.type === 'checkbox' ? event.target.checked : event.target?.value;
+
     if (fieldType === "UOM") {
       const { value, checked } = event.target;
-      const { otherInformation } = product
+      const { otherInformation } = product;
       otherInformation.unitOfMeasures[value] = checked;
-      setProduct(prevState => ({ ...prevState, otherInformation: otherInformation }))
+      setProduct(prevState => ({ ...prevState, otherInformation: otherInformation }));
     } else if (fieldType === 'gst') {
       const gstRateInt = parseInt(event?.replace('%', '')?.trim(), 10);
-      setProduct((prev) => ({ ...prev, gst: gstRateInt }))
+      setProduct((prev) => ({ ...prev, gst: gstRateInt }));
+    } else if (fieldType.includes('.')) {
+      // Handle nested object updates
+      const [parent, child] = fieldType.split('.'); // split fieldType by '.'
+
+      setProduct((prev) => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent],
+          [child]: value
+        }
+      }));
     } else {
-      setProduct((prev => ({ ...prev, [fieldType]: checkDirectValue(fieldType) ? event : event.target?.value })))
+      setProduct(prev => ({
+        ...prev,
+        [fieldType]: checkDirectValue(fieldType) ? event : event.target?.value,
+      }));
     }
   };
 
@@ -108,14 +132,14 @@ const CreateProduct = () => {
       setActiveTab("1");
       notify({
         title: 'Success!!',
-        message: res.response.message || 'Product Save Successfully.',
+        message: res?.response?.message || 'Product Save Successfully.',
         error: false,
         success: true,
       })
     } catch (err) {
       notify({
         title: 'Success!!',
-        message: err || 'Failed to add product.',
+        message: err?.response?.message || 'Failed to add product.',
         error: true,
         success: false,
       })
@@ -135,10 +159,12 @@ const CreateProduct = () => {
       case "3":
         return <FabricContent />;
       case "4":
-        return <ProductTax />;
+        return <ProductDimension />;
       case "5":
-        return <ProductPrice />;
+        return <ProductTax />;
       case "6":
+        return <ProductPrice />;
+      case "7":
         return <ProductVariant />;
       default:
         return <ProductType />;
@@ -199,8 +225,8 @@ const CreateProduct = () => {
       </div>
       <div className='productType-btn' style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginTop: '1rem' }}>
         {activeTab > "1" && <B2BButton name={'Back'} onClick={handleBackTab} />}
-        {activeTab < "6" && <B2BButton name={'Next'} onClick={handleNextTab} />}
-        {activeTab === "6" && <B2BButton name={'Save'} onClick={handleProductSave} />}
+        {activeTab < "7" && <B2BButton name={'Next'} onClick={handleNextTab} />}
+        {activeTab === "7" && <B2BButton name={'Save'} onClick={handleProductSave} />}
       </div>
     </ProductContext.Provider>
   );
