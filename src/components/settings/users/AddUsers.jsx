@@ -85,7 +85,6 @@ const AddUsers = () => {
         return (
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
             <IconPencil onClick={() => editUser(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-            <IconTrash style={{ cursor: 'pointer', color: 'red' }} stroke={2} />
           </div>
         )
       }
@@ -98,7 +97,6 @@ const AddUsers = () => {
   }, [])
 
   const editUser = (userObj) => {
-    console.log(userObj,"obj");
     setCreateUserArea(true)
     setUser((prev => ({ ...prev, ...userObj, })))
   }
@@ -174,14 +172,14 @@ const AddUsers = () => {
             <div className='right--section'>
               <B2BButton
                 name={"Bulk Upload"}
-                rightSection={<IconPlus />}
+                leftSection={<IconPlus />}
                 color={"#92D050"}
               />
               <B2BButton
                 style={{ color: '#000' }}
                 name={"Create User"}
                 onClick={() => setCreateUserArea(true)}
-                rightSection={<IconPlus size={15} />}
+                leftSection={<IconPlus size={15} />}
                 color={"rgb(207, 239, 253)"}
               />
             </div>

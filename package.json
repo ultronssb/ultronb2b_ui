@@ -20,7 +20,7 @@
     "@mantine/dates": "^7.11.2",
     "@mantine/form": "^7.11.2",
     "@mantine/hooks": "^7.11.2",
-    "@mantine/notifications": "^7.11.2",
+    "@mantine/notifications": "^7.12.1",
     "@mantinex/dev-icons": "^1.0.2",
     "@stylexjs/stylex": "^0.7.5",
     "@tabler/icons-react": "^3.11.0",

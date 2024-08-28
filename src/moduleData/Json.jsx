@@ -21,7 +21,7 @@ export const data = [
     name: "Sales", 
     parent_id: null, 
     orderBy: 3, 
-    path: "/sales", 
+    path: "/sales/order-management", 
     icon: <span className="material-symbols-outlined">shopping_cart</span>,
     defaultChildId: "45",
   },
@@ -63,20 +63,21 @@ export const data = [
 
 
   /* Product Child Component */
-  { id: "8", name: "Product Hierarchy", parent_id: "2", orderBy: 1, path: "/product/product-hierarchy" },
-  { id: "9", name: "Tax", parent_id: "2", orderBy: 2, path: "/product/tax/tax-masters" },
-  { id: "10", name: "Product", parent_id: "2", orderBy: 3, path: "/product/product/articles" },
-  { id: "11", name: "Variants", parent_id: "2", orderBy: 4, path: "/product/variants" },
-  { id: "12", name: "Price Book", parent_id: "2", orderBy: 5, path: "/product/price-book" },
-  { id: "13", name: "Barcode", parent_id: "2", orderBy: 6, path: "/product/batcode" },
-  { id: "14", name: "History", parent_id: "2", orderBy: 7, path: "/product/history" },
-  { id: "15", name: "PIM", parent_id: "2", orderBy: 8, path: "/product/pim" },
+  { id: "8", name: "Product Categories", parent_id: "2", orderBy: 1, path: "/product/product-hierarchy" },
+  { id: "10", name: "Product", parent_id: "2", orderBy: 2, path: "/product/product/articles" },
+  { id: "15", name: "Product Enrichment", parent_id: "2", orderBy: 3, path: "/product/pim" },//pims
+  { id: "12", name: "Price Book", parent_id: "2", orderBy: 4, path: "/product/price-book" },
+  { id: "13", name: "Barcode", parent_id: "2", orderBy: 5, path: "/product/batcode" },
+  { id: "14", name: "History", parent_id: "2", orderBy: 6, path: "/product/history" },
   
-  { id: "16", name: "ProductHeirarchy", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy",},
+  { id: "16", name: "Product Category", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy",},
+  { id: "17", name: "Product Tags", parent_id: "8", orderBy: 2, path: "/product/tags" },
+  { id: "18", name: "Tax", parent_id: "8", orderBy: 3, path: "/product/tax/gst" },
+  { id: "19", name: "Variants", parent_id: "8", orderBy: 4, path: "/product/variants" },
   // { id: "17", name: "Division", parent_id: "8", orderBy: 2, path: "/product/division"},
   // { id: "18", name: "Department", parent_id: "8", orderBy: 3, path: "/product/department" },
   // { id: "19", name: "Section", parent_id: "8", orderBy: 4,path: "/product/section" },
-  { id: "20", name: "Category", parent_id: "8", orderBy: 5, path: "/product/category" },
+  // { id: "20", name: "Category", parent_id: "8", orderBy: 5, path: "/product/category" },
   { id: "21", name: "Brand", parent_id: "8", orderBy: 6, path: "/product/brand" },
   { id: "115", name: "Group", parent_id: "8", orderBy: 7, path: "/product/group" },
   
@@ -85,12 +86,12 @@ export const data = [
   { id: "24", name: "GST Slabs", parent_id: "9", orderBy: 3, path: "/product/tax/gst-slabs"},
   { id: "25", name: "HSN/SAC", parent_id: "9", orderBy: 4, path: "/product/tax/hsn"},
 
-  { id: "26", name: "Articles", parent_id: "10", orderBy: 1, path: "/product/product/articles" },
-  { id: "27", name: "Upload", parent_id: "10", orderBy: 2, path: "/product/product/upload" },
-  { id: "28", name: "Draft", parent_id: "10", orderBy: 3, path: "/product/product/draft" },
-  { id: "29", name: "Approved", parent_id: "10", orderBy: 4, path: "/product/product/approved" },
-  { id: "30", name: "Create", parent_id: "10", orderBy: 5, path: "/product/product/create" },
-  { id: "31", name: "Package Product", parent_id: "10", orderBy: 6, path: "/product/product/package" },
+  { id: "26", name: "Product", parent_id: "10", orderBy: 1, path: "/product/product/articles" },
+  { id: "28", name: "Draft", parent_id: "10", orderBy: 2, path: "/product/product/draft" },
+  { id: "31", name: "Packaging", parent_id: "10", orderBy: 3, path: "/product/product/package" },
+  { id: "27", name: "Upload", parent_id: "10", orderBy: 4, path: "/product/product/upload" },
+  // { id: "29", name: "Approved", parent_id: "10", orderBy: 4, path: "/product/product/approved" },
+  // { id: "30", name: "Create", parent_id: "10", orderBy: 5, path: "/product/product/create" },
 
   { id: "32", name: "Variants", parent_id: "11", orderBy: 1, path: "/product/variants" },
   { id: "33", name: "Draft", parent_id: "11", orderBy: 2, path: "/product/variant/draft" },
@@ -112,7 +113,7 @@ export const data = [
 
 
   /* Sales Child Component */
-  { id: "45", name: "Order Management", parent_id: "3", orderBy: 1, path: "/sales" },
+  { id: "45", name: "Order Management", parent_id: "3", orderBy: 1, path: "/sales/order-management" },
   { id: "46", name: "Sales Order", parent_id: "3", orderBy: 2, path: "/sales/sales-order" },
   { id: "47", name: "Invoice", parent_id: "3", orderBy: 3, path: "/sales/invoice" },
   { id: "48", name: "Shippment Note", parent_id: "3", orderBy: 4, path: "/sales/shippment-note" },

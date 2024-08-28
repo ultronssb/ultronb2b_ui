@@ -93,7 +93,6 @@ const Channel = () => {
                 return (
                     <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                         <IconPencil onClick={() => editChannel(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-                        <IconTrash style={{ cursor: 'pointer', color: 'red' }} stroke={2} />
                     </div>
                 )
             }
@@ -165,7 +164,7 @@ const Channel = () => {
                             style={{ color: '#000' }}
                             name={"Create Channel"}
                             onClick={() => setCreateChannel(true)}
-                            rightSection={<IconPlus size={15} />}
+                            leftSection={<IconPlus size={15} />}
                             color={"rgb(207, 239, 253)"}
                         />
                     </div>

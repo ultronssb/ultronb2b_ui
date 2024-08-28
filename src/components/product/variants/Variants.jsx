@@ -80,7 +80,6 @@ const Variants = () => {
         return (
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <IconPencil onClick={() => editVarient(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-            <IconTrash style={{ cursor: 'pointer', color: 'red' }} stroke={2} />
           </div>
         );
       }
@@ -89,10 +88,8 @@ const Variants = () => {
 
   const editVarient = (varobj) => {
     setCreateUser(true);
-    console.log(varobj, "varobj");
     setVarient((prev => ({ ...prev, ...varobj })));
   };
-  console.log(varient, "varrient");
 
   const fetchAllVarients = async () => {
     try {
@@ -166,7 +163,6 @@ const Variants = () => {
     }
   };
 
-  console.log(_.includes(['color', 'colour'], varient.name.toLowerCase()))
   return (
     <>
       {!createUser && (
@@ -178,7 +174,7 @@ const Variants = () => {
                 style={{ color: '#000' }}
                 name={"Create Variants"}
                 onClick={() => setCreateUser(true)}
-                rightSection={<IconPlus size={15} />}
+                leftSection={<IconPlus size={15} />}
                 color={"rgb(207, 239, 253)"}
               />
             </div>

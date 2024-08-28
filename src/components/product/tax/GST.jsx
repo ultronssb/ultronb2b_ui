@@ -90,7 +90,6 @@ const GST = () => {
         return (
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
             <IconPencil onClick={() => editGST(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-            <IconTrash style={{ cursor: 'pointer', color: 'red' }} stroke={2} />
           </div>
         );
       }
@@ -166,7 +165,7 @@ const GST = () => {
                 style={{ color: '#000' }}
                 name={"Create GST"}
                 onClick={() => setCreateGSTArea(true)}
-                rightSection={<IconPlus size={15} />}
+                leftSection={<IconPlus size={15} />}
                 color={"rgb(207, 239, 253)"}
               />
             </div>

@@ -9,8 +9,6 @@ const B2BSelectable = ({ data, value, setData, setValue }) => {
         setSearch(value);
     }, [value]);
 
-    console.log(data);
-
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),
     });

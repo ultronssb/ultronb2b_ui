@@ -1,204 +1,3 @@
-// import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { MultiSelect } from '@mantine/core';
-// import _ from 'lodash';
-// import React, { useContext, useEffect, useState } from 'react';
-// import { B2B_API } from '../../../api/Interceptor';
-// import B2BSelect from '../../../common/B2BSelect';
-// import './ProductVariant.css';
-// import { ProductContext } from './CreateProduct';
-
-// const ProductVariant = () => {
-//     const { product, setProduct, handleChange } = useContext(ProductContext);
-
-//     console.log(product);
-
-
-//     const [attributes, setAttributes] = useState({});
-//     const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [] }]);
-
-//     useEffect(() => {
-//         fetchVariant();
-//     }, []);
-
-
-//     console.log(attributes);
-
-//     const fetchVariant = async () => {
-//         try {
-//             const response = await B2B_API.get('variant').json();
-//             const groupedVariants = _.groupBy(response.response, 'name');
-//             setAttributes(groupedVariants);
-//             setSelectedPairsFromProduct()
-//         } catch (error) {
-//             console.error('Error fetching variants:', error);
-//         }
-//     };
-
-//     const setSelectedPairsFromProduct = () => {
-//         const { prodVariants } = product
-//         const keys = Object.keys(prodVariants)
-//         if (_.size(keys) > 0) {
-//             setSelectedPairs(_.map(keys, key => {
-//                 return {
-//                     "key": key,
-//                     "value": prodVariants[key]
-//                 }
-//             }))
-//         }
-//     }
-
-//     const handleSelectChange = (index, selectedKey) => {
-//         const newPairs = [...selectedPairs];
-//         newPairs[index].key = selectedKey;
-//         newPairs[index].values = [];
-//         setSelectedPairs(newPairs);
-
-//         // const updatedVariants = Array.isArray(product.prodVariants) ? [...product.prodVariants] : [];
-
-//         // const variantIndex = updatedVariants.findIndex(variant => variant.name === selectedKey);
-
-//         // if (variantIndex === -1) {
-//         //     updatedVariants.push({ name: selectedKey, value: [] });
-//         // }
-//         // setProduct(prev => ({ ...prev, prodVariants: updatedVariants }));
-//     };
-
-//     const handleMultiSelectChange = (index, selectedValues) => {
-//         const newPairs = [...selectedPairs];
-//         newPairs[index].values = selectedValues;
-//         setSelectedPairs(newPairs);
-
-//         const updatedVariants = { ...product.prodVariants };
-//         updatedVariants[newPairs[index].key] = selectedValues;
-//         setProduct(prev => ({ ...prev, prodVariants: updatedVariants }));
-//     };
-
-
-//     const addNewPair = () => {
-//         setSelectedPairs([...selectedPairs, { key: '', values: [] }]);
-//     };
-
-//     const removePair = (index) => {
-//         const newPairs = [...selectedPairs];
-//         const removedPairKey = newPairs[index].key;
-//         newPairs.splice(index, 1);
-//         setSelectedPairs(newPairs);
-//         // Create a new prodVariants object
-//         const updatedVariants = { ...product.prodVariants };
-//         // Remove the variant from the updatedVariants object
-//         delete updatedVariants[removedPairKey];
-
-//         setProduct(prev => ({ ...prev, prodVariants: updatedVariants }));
-//     };
-
-//     const getAvailableKeys = (currentIndex) => {
-//         const selectedKeys = selectedPairs.map(pair => pair.key);
-//         return Object.keys(attributes).filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
-//     };
-//     console.log(product);
-
-//     return (
-//         <section className="product-variant-section">
-//             <div className="product-variant-section-wrap">
-//                 <h2 className="product-variant-text-sub-heading">Variants</h2>
-//                 <div className="product-variant-g-row">
-//                     <div className="product-variant-g-col product-variant-g-s-12 product-variant-g-m-3 product-variant-grid-settings-item">
-//                         Choose up to three variable attributes for this product to create and manage SKUs and their inventory levels.
-//                     </div>
-//                     <div className="product-variant-g-col product-variant-g-s-12 product-variant-g-m-9">
-//                         <div>
-//                             <div className="product-variant-g-row">
-//                                 <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
-//                                     <label>
-//                                         <span className="product-variant-text-label">Attribute (e.g. colour)</span>
-//                                     </label>
-//                                 </div>
-//                                 <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-8">
-//                                     <label>
-//                                         <span className="product-variant-text-label">Value (e.g. Green)</span>
-//                                     </label>
-//                                 </div>
-//                             </div>
-//                             {selectedPairs.map((pair, index) => (
-//                                 <div key={index} className="product-variant-g-row">
-//                                     <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
-//                                         <div className="product-variant-flex">
-//                                             <div className="product-variant-flex-grow-1 product-variant-mr2">
-//                                                 <div className="product-variant-popover-tether-target-wrapper">
-//                                                     <div className="product-variant-autocomplete-input-container">
-//                                                         <B2BSelect
-//                                                             value={pair.key}
-//                                                             data={getAvailableKeys(index)}
-//                                                             clearable={true}
-//                                                             onChange={(e) => handleSelectChange(index, e)}
-//                                                         />
-//                                                     </div>
-//                                                 </div>
-//                                             </div>
-//                                         </div>
-//                                     </div>
-//                                     <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-8 product-variant-mb2">
-//                                         <div className="cn-attribute-values-row">
-//                                             <div className="cn-attribute-values">
-//                                                 <div className="product-variant-lozenge-group">
-//                                                     {/* <MultiSelect
-//                                                         style={{ width: '100%' }}
-//                                                         accessKey=''
-//                                                         data={attributes[pair.key]?.map((item) => ({value: item.id, label: item.value}))}
-//                                                         onChange={(values) => handleMultiSelectChange(index, values)}
-//                                                         value={pair.values}
-//                                                     /> */}
-//                                                     <MultiSelect
-//                                                         style={{ width: '100%' }}
-//                                                         accessKey=''
-//                                                         data={Array.isArray(attributes[pair.key])
-//                                                             ? attributes[pair.key].map((item) => ({ value: item.id, label: item.value }))
-//                                                             : []}
-//                                                         onChange={(values) => handleMultiSelectChange(index, values)}
-//                                                         value={Array.isArray(pair.values) ? pair.values : []}
-//                                                     />
-
-//                                                 </div>
-//                                             </div>
-//                                             {index > 0 && (
-//                                                 <button
-//                                                     type="button"
-//                                                     className="product-variant-btn product-variant-btn--icon-no product-variant-ml2"
-//                                                     onClick={() => removePair(index)}
-//                                                 >
-//                                                     <FontAwesomeIcon className="fa product-variant-icon" icon={faTrash} />
-//                                                 </button>
-//                                             )}
-//                                         </div>
-//                                     </div>
-//                                 </div>
-//                             ))}
-//                             <div className="product-variant-g-row">
-//                                 {_.size(attributes) >= _.size(selectedPairs) && (
-//                                     <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
-//                                         <button
-//                                             type="button"
-//                                             className="product-variant-btn product-variant-btn--text-go"
-//                                             onClick={addNewPair}
-//                                         >
-//                                             <FontAwesomeIcon className="fa product-variant-icon product-variant-mr2" icon={faPlus} />
-//                                             Add another attribute
-//                                         </button>
-//                                     </div>
-//                                 )}
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//         </section>
-//     );
-// };
-
-// export default ProductVariant;
-
-
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { MultiSelect } from '@mantine/core';
@@ -212,9 +11,6 @@ import { ProductContext } from './CreateProduct';
 const ProductVariant = () => {
     const { product, setProduct, handleChange } = useContext(ProductContext);
 
-    console.log(product);
-
-
     const [attributes, setAttributes] = useState({});
     const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [] }]);
 
@@ -222,20 +18,16 @@ const ProductVariant = () => {
         fetchVariant();
     }, []);
 
-
-    console.log(attributes);
-
     const fetchVariant = async () => {
         try {
             const response = await B2B_API.get('variant').json();
             const groupedVariants = _.groupBy(response.response, 'name');
             setAttributes(groupedVariants);
-            setSelectedPairsFromProduct(); // Set initial state from product data
+            setSelectedPairsFromProduct();
         } catch (error) {
             console.error('Error fetching variants:', error);
         }
     };
-    
 
     const setSelectedPairsFromProduct = () => {
         const { prodVariants } = product;
@@ -249,7 +41,6 @@ const ProductVariant = () => {
         }
     };
 
-
     const handleSelectChange = (index, selectedKey) => {
         const newPairs = [...selectedPairs];
         newPairs[index].key = selectedKey;
@@ -261,12 +52,11 @@ const ProductVariant = () => {
         const newPairs = [...selectedPairs];
         newPairs[index].values = selectedValues;
         setSelectedPairs(newPairs);
-    
+
         const updatedVariants = { ...product.prodVariants };
         updatedVariants[newPairs[index].key] = selectedValues;
         setProduct(prev => ({ ...prev, prodVariants: updatedVariants }));
     };
-    
 
     const addNewPair = () => {
         setSelectedPairs([...selectedPairs, { key: '', values: [] }]);
@@ -287,7 +77,6 @@ const ProductVariant = () => {
         const selectedKeys = selectedPairs.map(pair => pair.key);
         return Object.keys(attributes).filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
     };
-    console.log(product);
 
     return (
         <section className="product-variant-section">

@@ -6,6 +6,7 @@ import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect';
 import './ProductVariant.css';
 import { ProductContext } from './CreateProduct';
+import './ProductCategory.css'
 
 const ProductCategorys = () => {
     const { product, setProduct, handleChange } = useContext(ProductContext);
@@ -35,8 +36,8 @@ const ProductCategorys = () => {
 
     const setCategorysAndselectedPairs = () => {
         const { productCategories } = product
-        if(_.size(productCategories) > 0) {
-           setSelectedPairs(productCategories)
+        if (_.size(productCategories) > 0) {
+            setSelectedPairs(productCategories)
         }
     }
 
@@ -111,9 +112,6 @@ const ProductCategorys = () => {
         return categoryName.filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
     };
 
-    // console.log(_.size(categorys), _.size(selectedPairs), _.size(categorys) >= _.size(selectedPairs))
-    console.log(product);
-
     return (
         <section className="product-variant-section">
             <div className="product-variant-section-wrap">
@@ -132,7 +130,7 @@ const ProductCategorys = () => {
                                 </div>
                                 <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-8">
                                     <label>
-                                        <span className="product-variant-text-label">Value</span>
+                                        <span className="product-variant-text-label">Level</span>
                                     </label>
                                 </div>
                             </div>

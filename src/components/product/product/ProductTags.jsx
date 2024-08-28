@@ -6,21 +6,22 @@ import B2BTableGrid from '../../../common/B2BTableGrid';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import B2BModal from '../../../common/B2BModal';
+import _ from 'lodash';
 
-const Group = () => {
-
+const ProductTags = () => {
   const initialData = {
     name: "",
     status: "ACTIVE"
 
   }
 
-  const [group, setGroup] = useState(initialData);
-  const [groups, setGroups] = useState([]);
+  const [tag, setTag] = useState(initialData);
+  const [tags, setTags] = useState([]);
   const [rowCount, setRowCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
+
 
   const columns = useMemo(() => [
     {
@@ -36,7 +37,7 @@ const Group = () => {
     },
 
     {
-      header: 'Group Name',
+      header: 'Tag Name',
       accessorKey: 'name',
       size: 120
     },
@@ -68,29 +69,29 @@ const Group = () => {
   ])
 
   const editGroup = (roleObj) => {
-    setGroup((prev => ({ ...prev, ...roleObj })))
+    setTag((prev => ({ ...prev, ...roleObj })))
   }
 
   useEffect(() => {
-    fetchGroups();
+    fetchTags();
   }, [pagination.pageIndex, pagination.pageSize]);
 
   const addGroup = async (event) => {
     event.preventDefault();
     try {
-      const response = await B2B_API.post(`group/save`, { json: group }).json();
-      setGroup(initialData);
-      fetchGroups()
+      const response = await B2B_API.post(`product-tag`, { json: tag }).json();
+      setTag(initialData);
+      fetchTags()
       notify({
-        id: 'create_group',
-        message: response.message,
+        id: 'create_tag',
+        message: response.message || "Tag added successfully",
         success: true,
         error: false
       })
 
     } catch (error) {
       notify({
-        id: "add_group_error",
+        id: "add_tag_error",
         message: error.message,
         success: false,
         error: true
@@ -99,10 +100,10 @@ const Group = () => {
   }
 
 
-  const fetchGroups = async () => {
+  const fetchTags = async () => {
     try {
-      const response = await B2B_API.get(`group/get-all-group?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
-      setGroups(response?.response?.content);
+      const response = await B2B_API.get(`product-tag/page?page=${pagination.pageIndex}&size=${pagination.pageSize}`).json();
+      setTags(response?.response?.content);
       setRowCount(response?.response?.totalElements)
     } catch (error) {
       console.error('Failed to fetch groups:', error);
@@ -113,12 +114,10 @@ const Group = () => {
 
   const handleChange = (event, key) => {
     const value = event.target.type === 'radio' ? event.target.value : event.target.value;
-    setGroup(prev => ({
-      ...prev, [key]: key === 'name' ? value.toUpperCase() : value
+    setTag(prev => ({
+      ...prev, [key]: key === 'name' ? _.capitalize(value) : value
     }));
   };
-
-
 
   return (
     <>
@@ -127,12 +126,12 @@ const Group = () => {
           <div className="form-group">
             <label className='form-label'>Name</label>
             <input
-              value={group.name || ''}
+              value={tag.name || ''}
               className='form-input'
               required
               type="text"
               onChange={(event) => handleChange(event, 'name')}
-              placeholder="Group Name"
+              placeholder="Tag Name"
             />
           </div>
 
@@ -144,7 +143,7 @@ const Group = () => {
                   type="radio"
                   value="ACTIVE"
                   onChange={(event) => handleChange(event, 'status')}
-                  checked={group.status === "ACTIVE"}
+                  checked={tag.status === "ACTIVE"}
                   name="status"
                   id="status-active"
                 />
@@ -155,7 +154,7 @@ const Group = () => {
                   type="radio"
                   value="INACTIVE"
                   onChange={(event) => handleChange(event, 'status')}
-                  checked={group.status === "INACTIVE"}
+                  checked={tag.status === "INACTIVE"}
                   name="status"
                   id="status-inactive"
                 />
@@ -164,14 +163,14 @@ const Group = () => {
             </div>
           </div>
           <div className='save-button-container'>
-            <B2BButton type='button' color={'red'} onClick={() => setGroup(initialData)} name="Cancel" />
-            <B2BButton type='submit' name={group.name ? 'Update' : "Save"} />
+            <B2BButton type='button' color={'red'} onClick={() => setTag(initialData)} name="Cancel" />
+            <B2BButton type='submit' name={tag.name ? 'Update' : "Save"} />
           </div>
         </form>
       </div>
       <B2BTableGrid
         columns={columns}
-        data={groups}
+        data={tags}
         isLoading={isLoading}
         isError={isError}
         enableTopToolbar={true}
@@ -185,4 +184,4 @@ const Group = () => {
   )
 }
 
-export default Group
+export default ProductTags

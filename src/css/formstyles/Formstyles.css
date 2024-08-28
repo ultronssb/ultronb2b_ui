@@ -45,6 +45,17 @@
   color: #666666 !important;
 }
 
+.form-input-textarea{
+  padding: 8px;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  width: 250px !important;
+  outline: none !important;
+  color: #000 !important;
+  resize: none;
+  height: 5rem;
+}
+
 /* .form-group input,
 .form-group select {
   padding: 8px;

@@ -1,0 +1,103 @@
+.fabric-content-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    font-size: 15px;
+    padding: 24px 48px;
+}
+
+.fabric-content-inner-top .fabric-label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.fabric-content-g-row {
+    display: flex;
+    flex-flow: row wrap;
+    margin-left: 0px;
+    margin-right: auto;
+    max-width: 1000px;
+    gap: 0px;
+}
+
+.fabric-content-g-row .fabric-content-g-row {
+    max-width: none;
+}
+
+.fabric-content-mr2 {
+    margin-right: 8px !important;
+}
+
+.fabric-content-mb2 {
+    margin-bottom: 8px !important;
+}
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px / 1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.fabric-content-text-label {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 15px;
+    font-synthesis: none;
+    line-height: 1.3333333333;
+    margin: 0;
+    word-break: break-word;
+}
+
+.fabric-content-text-label {
+    font-weight: 700;
+}
+
+.fabric-content-btn:not(.fabric-content-btn--link) {
+    outline: none;
+}
+
+.fabric-content-btn--text-go {
+    background-color: initial;
+    color: var(--hs-color-fg-go-default);
+}
+
+.fabric-content-btn {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    border: 1px solid #0000;
+    border-radius: 4px;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    font-family: lato, Helvetica Neue, Helvetica, Roboto, Arial, sans-serif;
+    font-size: 15px;
+    font-synthesis: none;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+    padding: 12px 20px;
+    position: relative;
+    text-align: center;
+    transition-duration: .2s;
+    transition-property: background, color, border, box-shadow;
+    word-break: break-word;
+}
+
+.fabric-content-mr2 {
+    margin-right: 8px !important;
+}
+
+.fabric-content-g-col {
+    box-sizing: border-box;
+    flex: 1 1;
+    min-width: 0;
+}
+
+.fabric-content-g-m-4 {
+    flex: 0 0 33.3333333333%;
+    max-width: 33.3333333333%;
+}

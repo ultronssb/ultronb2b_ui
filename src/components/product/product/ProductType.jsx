@@ -1,21 +1,27 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Button, FileButton, Group, Text } from '@mantine/core';
+import { Button, FileButton, Group, MultiSelect, Text } from '@mantine/core';
 import { B2B_API } from '../../../api/Interceptor';
 import { ProductContext } from './CreateProduct';
 import B2BSelect from '../../../common/B2BSelect';
+import B2BButton from '../../../common/B2BButton';
+import { useNavigate } from 'react-router-dom';
+import { IconArrowLeft } from '@tabler/icons-react';
+import { ActiveTabContext } from '../../../layout/Layout';
 
 const ProductType = () => {
+    const { stateData } = useContext(ActiveTabContext);
 
     const { product, handleChange, setProduct, setImageFile, imageFile } = useContext(ProductContext);
     const [brand, setBrand] = useState([]);
     const resetRef = useRef(null);
     const [imagePreview, setImagePreview] = useState(null);
-
-    console.log(product);
-
+    const [productTags, setProductTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([])
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchAllBrand();
+        fetchAllTags();
     }, []);
 
     const fetchAllBrand = async () => {
@@ -27,12 +33,21 @@ const ProductType = () => {
         }
     };
 
+    const fetchAllTags = async () => {
+        try {
+            const res = await B2B_API.get(`product-tag`).json();
+            setProductTags(res.response);
+        } catch (err) {
+            console.error("Failed to Fetch Brand");
+        }
+    };
+
     const clearFile = () => {
         setProduct((prevProduct) => ({
             ...prevProduct,
         }));
         if (resetRef.current) {
-            resetRef.current(); // Reset the file input
+            resetRef.current();
         }
         setImageFile(null)
         setImagePreview(null)
@@ -57,7 +72,7 @@ const ProductType = () => {
             onChange: (event) => handleChange(event, "articleCode"),
             type: "text",
             require: true,
-            placeholder: "Enter Article Code"
+            placeholder: "Enter Product Code"
         },
         {
             label: "Product Name",
@@ -68,20 +83,45 @@ const ProductType = () => {
             placeholder: "Enter Product Name"
         },
         {
-            label: "Description",
-            value: product.description,
-            onChange: (event) => handleChange(event, "description"),
-            type: "textarea",
-            placeholder: "Enter Description",
-            rows: 1,
-            cols: 50
+            label: "Brand",
+            value: brand.map(b => b?.name),
+            onChange: (event) => handleChange(event, "brandId"),
+            type: "select",
+            required: true,
+            placeholder: "Enter Brand"
         },
         {
             label: "Product Tag",
-            value: product.productTag,
-            onChange: (event) => handleChange(event, "productTag"),
-            type: "text",
+            type: "multiselect",
             placeholder: "Enter Tag"
+        },
+        {
+            label: "Length",
+            type: "text",
+            placeholder: "Enter Length",
+            value: product.metrics?.length || '',
+            onChange: (event) => handleChange(event, "metrics.length"),
+        },
+        {
+            label: "Width",
+            type: "text",
+            placeholder: "Enter Width",
+            value: product.metrics?.width || '',
+            onChange: (event) => handleChange(event, "metrics.width"),
+        },
+        {
+            label: "Thickness",
+            type: "text",
+            placeholder: "Enter Thickness",
+            value: product.metrics?.thickness || '',
+            onChange: (event) => handleChange(event, "metrics.thickness"),
+        },
+        {
+            label: "Weight",
+            type: "text",
+            placeholder: "Weight in gsm",
+            value: product.metrics?.weight || '',
+            onChange: (event) => handleChange(event, "metrics.weight"),
         },
         {
             label: "UOM",
@@ -99,25 +139,34 @@ const ProductType = () => {
             placeholder: "Select UOM Type",
             required: true,
             className: "form-group",
-        }
-        ,
+        },
         {
-            label: "Brand",
-            value: brand.map(b => b?.name),
-            onChange: (event) => handleChange(event, "brandId"),
-            type: "select",
-            required: true,
-            placeholder: "Enter Brand"
+            label: "Description",
+            value: product.description,
+            onChange: (event) => handleChange(event, "description"),
+            type: "textarea",
+            placeholder: "Enter Description",
+            rows: 1,
+            cols: 50
         }
+
     ];
 
+    const handleCancel = () => {
+        navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
+    }
+    console.log(product, "brand");
+
     return (
-        <div className='grid-container'>
+        <div className='productType-container' style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
+            </div>
             <form className='form-container'>
                 {json.map((field, index) => (
                     <div key={index} className={field.className ? field.className : "form-group"}>
                         <label className='form-label'>{field.label}</label>
-                        {field.type === "checkbox-group" ? (
+                        {field.type === "checkbox-group" && (
                             <div className="checkbox-group">
                                 {field.options.map((option, idx) => (
                                     <div key={idx} className="checkbox-item" style={{ display: 'flex', gap: '1rem' }}>
@@ -134,27 +183,55 @@ const ProductType = () => {
                                     </div>
                                 ))}
                             </div>
-                        ) : field.type === "select" ? (
-                            <B2BSelect
-                                data={brand.map(b => ({ label: b.name, value: b.brandId }))}
-                                value={product?.brandId}
-                                onChange={field.onChange}
-                                placeholder={"Select Brand Name"}
-                                clearable={true}
-                                maxDropdownHeight={400}
-                            />
-                        ) : (
-                            <input
-                                value={field.value}
-                                className='form-input'
-                                style={field.style}
-                                disabled={field.disabled}
-                                onChange={field.onChange}
-                                type={field.type}
-                                required={field.required}
-                                placeholder={field.placeholder}
-                            />
                         )}
+                        {
+                            field.type === "select" && (
+                                <B2BSelect
+                                    data={brand.map(b => ({ label: b.name, value: b.brandId }))}
+                                    value={product?.brandId}
+                                    onChange={field.onChange}
+                                    placeholder={"Select Brand Name"}
+                                    clearable={true}
+                                    maxDropdownHeight={400}
+                                />
+                            )
+                        }
+                        {
+                            field.type === 'text' && (
+                                <input
+                                    value={field.value}
+                                    className='form-input'
+                                    style={field.style}
+                                    disabled={field.disabled}
+                                    onChange={field.onChange}
+                                    type={field.type}
+                                    required={field.required}
+                                    placeholder={field.placeholder}
+                                />
+                            )
+                        }{
+                            field.type === 'textarea' && (
+                                <textarea
+                                    value={field.value}
+                                    className='form-input-textarea'
+                                    disabled={field.disabled}
+                                    onChange={field.onChange}
+                                    type={field.type}
+                                    required={field.required}
+                                    placeholder={field.placeholder}
+                                />
+                            )
+                        }{
+                            field.type === 'multiselect' && (
+                                <MultiSelect
+                                    value={product?.tags || []}
+                                    style={{ width: '250px' }}
+                                    placeholder="Tags"
+                                    data={productTags.map(tag => tag.name)}
+                                    onChange={(selectedTags) => handleChange({ target: { value: selectedTags } }, "tags")}
+                                />
+                            )
+                        }
                     </div>
                 ))}
                 <div>

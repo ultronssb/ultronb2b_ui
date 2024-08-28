@@ -93,7 +93,7 @@ const Dashboard = () => {
     {
       header: "Category",
       accessorKey: 'categoryName',
-      accessorFn : (row) => row.category?.name,
+      accessorFn: (row) => row.category?.name,
       mantineTableHeadCellProps: {
         align: 'left',
         flex: 1
@@ -111,7 +111,6 @@ const Dashboard = () => {
 
   const onColumnFiltersChange = (filters) => {
     setColumnFilters(filters);
-    console.log(columnFilters);
   };
 
   const onColumnFilterFnsChange = (data) => {

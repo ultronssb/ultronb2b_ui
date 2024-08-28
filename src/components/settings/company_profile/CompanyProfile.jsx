@@ -56,8 +56,6 @@ const CompanyProfile = () => {
   }
 
   const handleLocationTypeChange = (value, key) => {
-    console.log(value, key);
-
     setCompany(prev => ({ ...prev, [key]: value }));
   };
 
