@@ -1,6 +1,10 @@
-import React, { useMemo, useState } from 'react'
-import B2BInput from '../../../common/B2BInput'
+import React, { useEffect, useState } from 'react'
 import B2BButton from '../../../common/B2BButton'
+import B2BDateInput from '../../../common/B2BDateInput'
+import B2BInput from '../../../common/B2BInput'
+import B2BSelect from '../../../common/B2BSelect'
+import { currencies, TimeFormats } from '../../../utils/SettingsInput'
+import { B2B_API } from '../../../api/Interceptor'
 
 const OtherSettings = () => {
 
@@ -21,16 +25,59 @@ const OtherSettings = () => {
 
   const [otherSettings, setOtherSettings] = useState(initialState)
 
-  const handleChange = (event, key) => {
-    setOtherSettings((prev) => ({ ...prev, [key]: event.target.value }))
+
+  useEffect(() => {
+    // fetchCompanies();
+    getSettings()
+  }, [])
+
+  const fetchCompanies = async () => {
+    const response = await B2B_API.get('company/get-all').json();
+    const company = response?.response[0]
+    if (company) {
+      setOtherSettings((prev) => ({ ...prev, companyId: company.companyId }))
+    }
+    console.log(otherSettings)
   }
 
-  const handleCreateSettings = (event) => {
-    event.preventDefault();
+  const getSettings = async () => {
+    const response = await B2B_API.get('settings').json();
+    if(response.response)
+      setOtherSettings(response.response)
+  }
 
+
+  const checkEventValue = (key) => {
+    if (key === 'dateDisplay' || key === "displayPrice" || key === "timeDisplay" || key === "weight" || key === "size" || key === "timeZone" || key === "dateDisplay" || key === "symbol") {
+      return true
+    }
+  }
+
+  const handleChange = (event, key) => {
+    setOtherSettings((prev) => ({ ...prev, [key]: checkEventValue(key) ? event : event?.target?.value }))
+  }
+
+  const handleCreateSettings = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await B2B_API.post('settings/save', { json: otherSettings }).json()
+      console.log(response, "settingsResponse");
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const otherSettingsJson = [
+    {
+      type: 'input',
+      label: 'Company',
+      disabled: true,
+      value: otherSettings.companyId,
+      placeholder: "Company",
+      inputType: 'text',
+      required: true,
+      // onChange: (event) => handleChange(event, "companyId")
+    },
     {
       type: 'input',
       label: 'Currency',
@@ -38,14 +85,18 @@ const OtherSettings = () => {
       value: otherSettings.currency,
       placeholder: "Currency",
       inputType: 'text',
+      required: true,
       onChange: (event) => handleChange(event, "currency")
     },
     {
       type: 'input',
       label: 'Time Zone',
       disabled: false,
+      required: true,
       value: otherSettings.timeZone,
       placeholder: "Time Zone",
+      // data: TimeZones.map(timeZone => timeZone?.value),
+      // inputType: 'select',
       inputType: 'text',
       onChange: (event) => handleChange(event, "timeZone")
     },
@@ -55,7 +106,10 @@ const OtherSettings = () => {
       disabled: false,
       value: otherSettings.symbol,
       placeholder: "Symbol",
+      // data: currencies.map(currency => currency.value),
+      // inputType: 'select',
       inputType: 'text',
+      required: true,
       onChange: (event) => handleChange(event, "symbol")
     },
     {
@@ -64,7 +118,10 @@ const OtherSettings = () => {
       disabled: false,
       value: otherSettings.timeDisplay,
       placeholder: "Time Display",
+      // data: TimeFormats,
+      // inputType: 'select',
       inputType: 'text',
+      required: true,
       onChange: (event) => handleChange(event, "timeDisplay")
     },
     {
@@ -73,7 +130,10 @@ const OtherSettings = () => {
       disabled: false,
       value: otherSettings.weight,
       placeholder: "Weight",
+      // data: ["Kilogram", "Gram", "Milligram"],
+      // inputType: 'select',
       inputType: 'text',
+      required: true,
       onChange: (event) => handleChange(event, "weight")
     },
     {
@@ -81,8 +141,11 @@ const OtherSettings = () => {
       label: 'Date Display',
       disabled: false,
       value: otherSettings.dateDisplay,
+      required: true,
       placeholder: "Date Display",
-      inputType: 'date',
+      // data: dateFormats.map(date => date?.value),
+      // inputType: 'select',
+      inputType: 'text',
       onChange: (event) => handleChange(event, "dateDisplay")
     },
     {
@@ -91,6 +154,9 @@ const OtherSettings = () => {
       disabled: false,
       value: otherSettings.size,
       placeholder: "Size",
+      required: true,
+      // data: clothMeasurementUnits,
+      // inputType: 'select',
       inputType: 'text',
       onChange: (event) => handleChange(event, "size")
     }
@@ -101,6 +167,7 @@ const OtherSettings = () => {
       type: 'input',
       label: 'Region Name',
       disabled: false,
+      required: true,
       value: otherSettings.regionName,
       placeholder: "Region Name",
       inputType: 'text',
@@ -110,50 +177,100 @@ const OtherSettings = () => {
       type: 'input',
       label: 'Display Price',
       disabled: false,
+      required: true,
       value: otherSettings.displayPrice,
       placeholder: "Display Price",
-      inputType: 'text',
+      data: ["Inclusive of Tax", "Exclusive of Tax"],
+      inputType: 'select',
       onChange: (event) => handleChange(event, "displayPrice")
     },
     {
       type: 'input',
       label: 'SKU Code Seq.',
       disabled: false,
+      required: true,
       value: otherSettings.skuCodeSeq,
       placeholder: "SKU Code Seq",
       inputType: 'text',
       onChange: (event) => handleChange(event, "skuCodeSeq")
     }
   ]
-  
+
   return (
     <form onSubmit={handleCreateSettings} className='form-container'>
-      {otherSettingsJson.map(settings => (
-        <div className="form-group">
+      {otherSettingsJson.map((settings, index) => (
+        <div className="form-group" key={index}>
           <label className='form-label'>{settings.label}</label>
-          <B2BInput
-            value={settings.value}
-            className='form-input'
-            required={settings.required}
-            disabled={settings.disabled}
-            type={settings.type}
-            placeholder={settings.placeholder}
-            onChange={settings.onChange}
-          />
+          {
+            (() => {
+              switch (settings.inputType) {
+                case 'date':
+                  return <B2BDateInput
+                    placeholder={settings.placeholder}
+                    required={settings.required}
+                    value={settings.value}
+                    onChange={settings.onChange}
+                  />
+                case 'text':
+                  return (
+                    <B2BInput
+                      value={settings.value}
+                      className='form-input'
+                      required={settings.required}
+                      disabled={settings.disabled}
+                      type={settings.type}
+                      placeholder={settings.placeholder}
+                      onChange={settings.onChange}
+                    />
+                  )
+                case 'select':
+                  return (
+                    <B2BSelect
+                      value={settings.value}
+                      onChange={settings.onChange}
+                      data={settings.data}
+                      placeholder={settings.placeholder}
+                    />
+                  )
+              }
+            })()
+          }
         </div>
       ))}
-      {regionsJson.map(region => (
-        <div className="form-group">
+      {regionsJson.map((region, index) => (
+        <div className="form-group" key={index}>
           <label className='form-label'>{region.label}</label>
-          <B2BInput
-            value={region.value}
-            className='form-input'
-            required={region.required}
-            disabled={region.disabled}
-            type={region.type}
-            placeholder={region.placeholder}
-            onChange={region.onChange}
-          />
+          {
+            (() => {
+              switch (region.inputType) {
+                case 'date':
+                  return <B2BDateInput
+
+                  />
+                case 'text':
+                  return (
+                    <B2BInput
+                      value={region.value}
+                      className='form-input'
+                      required={region.required}
+                      disabled={region.disabled}
+                      type={region.type}
+                      placeholder={region.placeholder}
+                      onChange={region.onChange}
+                    />
+                  )
+                case 'select':
+                  return (
+                    <B2BSelect
+                      value={region.value}
+                      onChange={region.onChange}
+                      data={region.data}
+                      placeholder={region.placeholder}
+                    />
+                  )
+              }
+            })()
+          }
         </div>
       ))}
       <div className='save-button-container' style={{ paddingBlock: '2rem', paddingInline: 0, justifyContent: 'center', alignItems: 'center' }}>

@@ -6,6 +6,8 @@ import B2BButton from '../../../common/B2BButton';
 import B2BSelect from '../../../common/B2BSelect';
 import { B2B_API } from '../../../api/Interceptor';
 import notify from '../../../utils/Notification';
+import { getpayLoadFromToken } from '../../../common/JwtPayload';
+import _ from 'lodash';
 
 const CompanyProfile = () => {
 
@@ -26,6 +28,7 @@ const CompanyProfile = () => {
     latitude: '',
     longitude: '',
     locationTypeId: '',
+    locationType:{},
   }
 
   const [company, setCompany] = useState(initialCompany);
@@ -33,13 +36,18 @@ const CompanyProfile = () => {
 
   useEffect(() => {
     fetchAllCompanyLocations();
+    fetchCompany()
   }, [])
 
   const fetchAllCompanyLocations = async () => {
     const response = await B2B_API.get('location-type/get-all').json();
     setCompanyLocations(response?.response)
-    console.log(response?.response);
+  }
 
+  const fetchCompany = async () => {
+    const payload = await getpayLoadFromToken()
+    const response = await B2B_API.get(`company/${payload.iss}`).json();
+    setCompany(response?.response)
   }
 
   const handleChange = (event, key) => {
@@ -55,9 +63,18 @@ const CompanyProfile = () => {
 
   const createCompanyProfile = async (event) => {
     event.preventDefault();
+    const locationType = _.find(companyLocations, cl => cl.locationId === company.locationTypeId)
+    company.locationType = locationType; 
+    const isUpdate = company.id;
+    const successMessage = isUpdate ? 'updated': 'added';
     try {
       const response = await B2B_API.post('company/save', { json: company }).json();
-      console.log(response, "save response");
+      notify({
+        title: "Success!!! ",
+        message: `Company ${successMessage} Successfully`,
+        success: true,
+        error: false
+      })
     } catch (error) {
       notify({
         title: "Oops!!! ",
@@ -75,7 +92,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Company ID</label>
           <B2BInput
-            value={company.companyId}
+            value={company?.companyId}
             className='form-input'
             disabled
             style={{ cursor: 'not-allowed' }}
@@ -86,7 +103,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Company Name</label>
           <B2BInput
-            value={company.companyName}
+            value={company.name}
             styles={{ input: { fontSize: '14px' } }}
             placeholder={'Company Name'}
             onChange={(event) => handleChange(event, 'name')}
@@ -97,7 +114,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Location Type</label>
           <B2BSelect
-            value={company.locationTypeId}
+            value={company.locationTypeId || company.locationType?.locationTypeId}
             styles={{ input: { fontSize: '14px' } }}
             data={companyLocations?.map(loc => ({ label: loc.name, value: loc.locationTypeId }))}
             placeholder={'Location Type'}

@@ -101,6 +101,7 @@ const Channel = () => {
     ]
 
     const editChannel = (channelObj) => {
+        console.log(channelObj)
         setCreateChannel(true)
         setChannel((prev) => ({ ...prev, ...channelObj }))
     }
@@ -187,7 +188,7 @@ const Channel = () => {
                         value={channel.companyId}
                         className='form-input'
                         clearable={true}
-                        data={companies.map(company => ({ label: company.name, value: company.companyId }))}
+                        data={companies?.map(company => ({ label: company.name, value: company?.companyId }))}
                         styles={{ input: { fontSize: '14px' } }}
                         type="text"
                         required={true}
