@@ -1,6 +1,7 @@
 .form-container {
     display: flex;
 }
+
 .vd-g-row--gutter>.vd-g-col {
     padding: 0 12px 12px;
 }
@@ -95,10 +96,12 @@ label {
     flex-direction: column;
     padding: 0;
 }
+
 div {
     display: block;
     unicode-bidi: isolate;
 }
+
 .vd-popover-content {
     background-color: white;
     border-radius: 5px;
@@ -213,7 +216,7 @@ ul {
 }
 
 .vd-popover-list-item:hover {
-    background-color: rgba(128,140,255,.102) !important;
+    background-color: rgba(128, 140, 255, .102) !important;
 }
 
 .vd-popover-list-item {

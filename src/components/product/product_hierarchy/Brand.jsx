@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { IconPencil } from '@tabler/icons-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
-import B2BTableGrid from '../../../common/B2BTableGrid';
-import { IconPencil } from '@tabler/icons-react';
 import B2BInput from '../../../common/B2BInput';
+import B2BTableGrid from '../../../common/B2BTableGrid';
 
 const Brand = () => {
 

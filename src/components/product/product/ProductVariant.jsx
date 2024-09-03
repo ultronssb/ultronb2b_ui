@@ -5,8 +5,8 @@ import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect';
-import './ProductVariant.css';
 import { ProductContext } from './CreateProduct';
+import './ProductVariant.css';
 
 const ProductVariant = () => {
     const { product, setProduct, handleChange } = useContext(ProductContext);

@@ -165,7 +165,7 @@ const Group = () => {
           </div>
           <div className='save-button-container'>
             <B2BButton type='button' color={'red'} onClick={() => setGroup(initialData)} name="Cancel" />
-            <B2BButton type='submit' name={group.name ? 'Update' : "Save"} />
+            <B2BButton type='submit' name={group?.id ? 'Update' : "Save"} />
           </div>
         </form>
       </div>

@@ -70,7 +70,7 @@ const CreateProduct = () => {
       margin: 0,
     },
     categoryId: '',
-    gst: '',
+    gstId: '',
     brandId: '',
   }
 
@@ -94,12 +94,10 @@ const CreateProduct = () => {
       const { otherInformation } = product;
       otherInformation.unitOfMeasures[value] = checked;
       setProduct(prevState => ({ ...prevState, otherInformation: otherInformation }));
-    } else if (fieldType === 'gst') {
-      const gstRateInt = parseInt(event?.replace('%', '')?.trim(), 10);
-      setProduct((prev) => ({ ...prev, gst: gstRateInt }));
+    } else if (fieldType === 'gstId') {
+      setProduct(prev => ({ ...prev, gstId: event }));
     } else if (fieldType.includes('.')) {
-      // Handle nested object updates
-      const [parent, child] = fieldType.split('.'); // split fieldType by '.'
+      const [parent, child] = fieldType.split('.');
 
       setProduct((prev) => ({
         ...prev,
@@ -205,7 +203,7 @@ const CreateProduct = () => {
 
   };
 
-console.log(product);
+  console.log(product);
 
   return (
     <ProductContext.Provider value={{ product, handleChange, addProduct, setProduct, imageFile, setImageFile }}>

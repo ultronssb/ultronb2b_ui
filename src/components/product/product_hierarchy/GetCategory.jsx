@@ -1,11 +1,11 @@
 import { faChevronDown, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, Group } from '@mantine/core';
-import React, { useContext, useEffect, useState } from 'react'
-import { B2B_API } from '../../../api/Interceptor';
-import { useNavigate } from 'react-router-dom';
-import { ActiveTabContext } from '../../../layout/Layout';
 import _ from 'lodash';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { B2B_API } from '../../../api/Interceptor';
+import { ActiveTabContext } from '../../../layout/Layout';
 
 const GetCategory = () => {
     const { stateData } = useContext(ActiveTabContext);

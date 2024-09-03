@@ -1,17 +1,16 @@
-import { faArrowTurnUp, faTrashCan } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { IconArrowAutofitLeft, IconArrowLeft, IconPlus } from '@tabler/icons-react'
-import _ from 'lodash'
+import { faArrowTurnUp, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
+import _ from 'lodash';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom'
-import { B2B_API } from '../../../api/Interceptor'
-import B2BButton from '../../../common/B2BButton'
-import B2BSelect from '../../../common/B2BSelect'
-import notify from '../../../utils/Notification'
-import GetCategory from './GetCategory'
-import './ProductCategory.css'
+import { useLocation, useNavigate } from 'react-router-dom';
+import { B2B_API } from '../../../api/Interceptor';
+import B2BButton from '../../../common/B2BButton';
+import B2BSelect from '../../../common/B2BSelect';
+import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
-
+import notify from '../../../utils/Notification';
+import './ProductHierarchy.css';
 
 const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children }) => {
   return (
@@ -19,7 +18,8 @@ const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children }) => 
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
         <label style={{ width: '110px' }}>Level {level}</label>
         {level < 4 && level > 1 && (<FontAwesomeIcon icon={faArrowTurnUp} style={{ transform: 'rotate(90deg)', marginRight: '20px' }} />)}
-        <input type="text"
+        <input
+          type="text"
           value={name}
           onChange={(e) => onChange(e.target.value)}
           placeholder={`Level ${level} Category`}
@@ -29,11 +29,10 @@ const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children }) => 
         {level > 1 && (<FontAwesomeIcon icon={faTrashCan} onClick={onRemove} style={{ cursor: 'pointer', marginLeft: '1rem', fontSize: '18px', color: '#FF6E61' }} />)}
       </div>
       {children}
-      {level < 4 && (<button onClick={onAdd} className='cat-Btn' style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px`, }}> + Add Level {level + 1} </button>)}
+      {level < 4 && (<button onClick={onAdd} className='cat-Btn' style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px` }}> + Add Level {level + 1} </button>)}
     </div>
   );
 };
-
 
 const CategoryTree = ({ level = 1, categories, onCategoryChange }) => {
   const handleCategoryChange = (index, newValue) => {
@@ -75,9 +74,7 @@ const CategoryTree = ({ level = 1, categories, onCategoryChange }) => {
             />
           </CategoryInput>
           {level === 2 && (
-            <>
-              <span style={{ width: '800px', height: '1px', border: '1px solid silver', }}></span>
-            </>
+            <span style={{ width: '800px', height: '1px', border: '1px solid silver' }}></span>
           )}
         </div>
       ))}
@@ -85,29 +82,27 @@ const CategoryTree = ({ level = 1, categories, onCategoryChange }) => {
   );
 };
 
-
-const productHierarchy = () => {
-  const initialState = {
-    name: '', parentId: null, productGroup: {}, child: []
-  }
+const ProductHierarchy = () => {
+  const initialState = { name: '', parentId: null, productGroup: {}, child: [] };
   const { stateData } = useContext(ActiveTabContext);
-
-  const [productCategories, setProductCategories] = useState([])
+  const [productCategories, setProductCategories] = useState([]);
   const [isCreateCategory, setIsCreateCategory] = useState(false);
   const [categoryTree, setCategoryTree] = useState([{ ...initialState }]);
   const [groups, setGroups] = useState([]);
-  const location = useLocation()
+  const [categoryRowCount, setCategoryRowCount] = useState(0);
+  const [categoryPagination, setCategoryPagination] = useState({ pageIndex: 0, pageSize: 5 });
+
+  const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get('id');
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const fetchCategory = async () => {
-      if (!id) return
+      if (!id) return;
       const response = await B2B_API.get(`product-category/${id}`).json();
       setCategoryTree(response.response);
-      setIsCreateCategory(true)
+      setIsCreateCategory(true);
     };
 
     fetchCategory();
@@ -117,20 +112,12 @@ const productHierarchy = () => {
   const fetchGroup = async () => {
     const response = await B2B_API.get(`group`).json();
     setGroups(response.response);
-  }
-
-  const handleSelectChange = (value) => {
-    const group = _.find(groups, gr => gr.name === value)
-
-    setCategoryTree(prevTree => [
-      {
-        ...prevTree[0],
-        productGroup: group
-      }
-    ]);
-
   };
 
+  const handleSelectChange = (value) => {
+    const group = _.find(groups, gr => gr.name === value);
+    setCategoryTree(prevTree => [{ ...prevTree[0], productGroup: group }]);
+  };
 
   const validateCategories = (categories) => {
     for (const category of categories) {
@@ -151,17 +138,17 @@ const productHierarchy = () => {
         message: 'Please fill out all category names before saving.',
         error: true,
         success: false
-      })
+      });
       return;
     }
     try {
       const response = await B2B_API.post('product-category', { json: categoryTree[0] }).json();
       notify({
         title: "Success!!",
-        message: 'Category save successfully.',
+        message: 'Category saved successfully.',
         error: false,
         success: true
-      })
+      });
       setIsCreateCategory(false);
     } catch (error) {
       notify({
@@ -169,24 +156,44 @@ const productHierarchy = () => {
         message: error.message,
         error: true,
         success: false
-      })
+      });
     }
   };
 
   const handleCancel = () => {
-    setIsCreateCategory(false)
+    setIsCreateCategory(false);
     const urlParams = new URLSearchParams(location.search);
     urlParams.delete('id');
-    setCategoryTree([{ ...initialState }])
+    setCategoryTree([{ ...initialState }]);
     navigate('/product/product-hierarchy', { state: { ...stateData, tabs: stateData.childTabs } });
-  }
+  };
 
   useEffect(() => {
-    fetchCategory()
-  }, [])
+    fetchCategory();
+  }, []);
+
+
+  const countLeafNodes = (node) => {
+    let count = 0;
+    const traverse = (node) => {
+      if (!node.child || node.child.length === 0) {
+        count += 1;
+        return;
+      }
+      node.child.forEach(traverse);
+    };
+    traverse(node);
+    return count;
+  };
+
+  const counts = productCategories.map(node => ({
+    name: node.name,
+    count: countLeafNodes(node),
+  }));
 
   const categoryColumns = useMemo(() => [
     {
+      id: 'serialNumber',
       header: 'S.No',
       accessorFn: (_, index) => index + 1,
       size: 100,
@@ -196,41 +203,72 @@ const productHierarchy = () => {
       mantineTableBodyCellProps: {
         align: 'center'
       },
-    }, {
-      header: 'ID',
-      accessorKey: 'departmentId',
     },
     {
-      header: 'Name',
+      id: 'categoryName',
+      header: 'Category Name',
       accessorKey: 'name'
     },
     {
-      header: 'Description',
-      accessorKey: 'description'
+      id: 'attributeCount',
+      header: 'Attribute Count',
+      accessorFn: (row) => {
+        const category = counts.find(c => c.name === row.name);
+        return category ? category.count : 0;
+      },
+      size: 150,
     },
     {
-      header: 'Division',
-      accessorKey: 'division.name'
-    },
-    {
+      id: 'status',
       header: 'Status',
       accessorKey: 'status'
+    },
+    {
+      id: 'actions',
+      header: 'Actions',
+      mantineTableHeadCellProps: {
+        align: 'center'
+      },
+      mantineTableBodyCellProps: {
+        align: 'center'
+      },
+      size: 100,
+      Cell: ({ row }) => {
+        const { original } = row;
+        return (
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+            <IconPencil onClick={() => categoryEdit(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+          </div>
+        )
+      }
     }
-  ], [])
+  ], [counts]);
+
+
+
+  const categoryEdit = (node) => {
+    const categoryId = node.categoryId;
+    navigate(`/product/product-hierarchy?id=${categoryId}`, { state: { ...stateData, tabs: stateData.childTabs } });
+  };
 
   const fetchCategory = async () => {
     try {
-      const response = await B2B_API.get(`department`).json();
-      setProductCategories(response.response);
-    } catch (err) {
-      console.error("Failed to fetch Department", err);
+      const response = await B2B_API.get('product-category').json();
+      setProductCategories(response?.response || []);
+      console.log(response.response);
+    } catch (error) {
+      notify({
+        title: "Error!!",
+        message: error.message,
+        error: true,
+        success: false
+      });
     }
-  }
-
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <h3 style={{ margin: '1rem 0.3rem' }} key={"divison"}>Category Details</h3>
+      <h3 style={{ margin: '1rem 0.3rem' }} key={"division"}>Category Details</h3>
       <div className='product-category-container'>
         <div className='create-product-btn'>
           {
@@ -243,7 +281,13 @@ const productHierarchy = () => {
         <div>
           {
             isCreateCategory === false && (
-              <GetCategory />
+              <B2BTableGrid
+                columns={categoryColumns}
+                data={productCategories}
+                enableTopToolbar={true}
+                enableGlobalFilter={true}
+                enableFullScreenToggle={true}
+              />
             )
           }
           {
@@ -253,7 +297,7 @@ const productHierarchy = () => {
                   <label>Group Name</label>
                   <B2BSelect
                     value={categoryTree[0].productGroup?.name}
-                    data={groups.map(group => (group.name))}
+                    data={groups.map(group => group.name)}
                     required={true}
                     onChange={(event) => handleSelectChange(event)}
                     clearable={true}
@@ -274,7 +318,7 @@ const productHierarchy = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default productHierarchy
+export default ProductHierarchy;

@@ -13,7 +13,7 @@ const ProductDimension = () => {
 
     const json = [
         {
-            label:"Thickness",
+            label: "Thickness",
             type: "number",
             placeholder: "In mm",
             value: product.metrics?.thickness || '',
@@ -36,10 +36,10 @@ const ProductDimension = () => {
     ];
 
     return (
-        <form className='form-container' style={{display:'flex', gap:'5rem',justifyContent:'center'}}>
+        <form className='form-container' style={{ display: 'flex', gap: '5rem', justifyContent: 'center' }}>
             {json.map((field, index) => (
-                <div key={index} style={{display:'flex',flexDirection:'column'}}>
-                    <label style={{fontSize:'16px',fontWeight:'800'}}>{field.label}</label>
+                <div key={index} style={{ display: 'flex', flexDirection: 'column' }}>
+                    <label style={{ fontSize: '16px', fontWeight: '800' }}>{field.label}</label>
                     {
                         field.type === 'number' && (
                             <input

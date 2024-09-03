@@ -1,12 +1,12 @@
-import { IconPencil, IconTrash } from '@tabler/icons-react';
+import { IconPencil } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
+import B2BButton from '../../../common/B2BButton';
+import B2BInput from '../../../common/B2BInput';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
-import B2BButton from '../../../common/B2BButton';
-import { BackgroundImage } from '@mantine/core';
 
 const Role = () => {
   const initialData = {
@@ -109,7 +109,7 @@ const Role = () => {
     const value = event.target.type === 'radio' ? event.target.value : event.target.value;
     setRole(prev => ({
       ...prev,
-      [key]: key === 'name' ? value.toUpperCase() : value // Transform 'name' to uppercase
+      [key]: key === 'name' ? value.toUpperCase() : value
     }));
   };
 
@@ -140,11 +140,10 @@ const Role = () => {
     {
       label: "ROLL ID",
       value: role.roleId,
-      style: { cursor: 'not-allowed', backgroundColor: 'gray' },
       onChange: (event) => handleChange(event, 'roleId'),
       type: "text",
       placeholder: "ROLL ID",
-      disable : true
+      disable: true
     },
     {
       label: "ROLL Name",
@@ -194,7 +193,6 @@ const Role = () => {
                           checked={e.value === option.value}
                           type={e.type}
                           placeholder={e.placeholder}
-                          disabled={e.disable}
                         />
                         <label className='form-span radio' htmlFor={`${e.name}-${option.value.toLowerCase()}`}>{option.label}</label>
                       </div>
@@ -203,12 +201,14 @@ const Role = () => {
                 </div>
               )
                 :
-                <input
+                <B2BInput
                   value={e.value}
                   className='form-input'
-                  style={e.style && e.style}
+                  style={e.style}
                   onChange={(event) => e.onChange(event, e.name)}
                   type={e.type}
+                  disabled={e.disable}
+                  required={e.required}
                   placeholder={e.placeholder}
                 />
               }

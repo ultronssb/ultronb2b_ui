@@ -1,16 +1,13 @@
-import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
-import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { B2B_API } from '../../../api/Interceptor';
-import notify from '../../../utils/Notification';
-import { ERROR_MESSAGE } from '../../../common/CommonResponse';
-import B2BTableGrid from '../../../common/B2BTableGrid';
-import B2BButton from '../../../common/B2BButton';
-import { ColorInput, ColorSwatch, Text } from '@mantine/core';
-import B2BInput from '../../../common/B2BInput';
-import B2BSelectable from '../../../common/B2BSelectable';
-import _ from 'lodash';
+import { Text } from '@mantine/core';
+import { IconPencil, IconPlus } from '@tabler/icons-react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { B2B_API } from '../../../api/Interceptor';
+import B2BButton from '../../../common/B2BButton';
+import B2BTableGrid from '../../../common/B2BTableGrid';
+import { ERROR_MESSAGE } from '../../../common/CommonResponse';
 import { ActiveTabContext } from '../../../layout/Layout';
+import notify from '../../../utils/Notification';
 
 const Articles = () => {
   const initialState = {
