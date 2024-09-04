@@ -100,6 +100,28 @@ const FabricContent = () => {
                 }
             }
         }));
+        const pairsObject = newPairs.reduce((acc, pair) => {
+            acc[pair.key] = pair.value;
+            return acc;
+        }, {});
+        fabricContentCode(pairsObject);
+    };
+
+    const fabricContentCode = async (newPairs) => {
+        try {
+            const results = await Promise.all(
+                Object.entries(newPairs).map(async ([key, value]) => {
+                    const res = await B2B_API.get(`product-category/category/${key}`).json();
+                    const name = res.response.name;
+                    const fcc = name.substring(0, 3).toUpperCase();
+                    return `${fcc}-${value}%`;
+                })
+            );
+            const formattedFCC = results.join(' ');
+            setFCCValue(formattedFCC);
+        } catch (error) {
+            console.error("Error fetching category data: ", error);
+        }
     };
 
     const addNewPair = () => {

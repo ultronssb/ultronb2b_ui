@@ -129,14 +129,14 @@ const CreateProduct = () => {
       setActiveTab("1");
       notify({
         title: 'Success!!',
-        message: res?.response?.message || 'Product Save Successfully.',
+        message: res?.message || 'Product Save Successfully.',
         error: false,
         success: true,
       })
     } catch (err) {
       notify({
         title: 'Success!!',
-        message: err?.response?.message || 'Failed to add product.',
+        message: err?.message || 'Failed to add product.',
         error: true,
         success: false,
       })
