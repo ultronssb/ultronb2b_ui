@@ -125,9 +125,23 @@ const GST = () => {
   };
 
 
+  // const handleChange = (event, key) => {
+  //   setGst(prev => ({ ...prev, [key]: event?.target?.value }));
+  // };
   const handleChange = (event, key) => {
-    setGst(prev => ({ ...prev, [key]: event?.target?.value }));
+    const value = event?.target?.value;
+    if (key === 'gstRate') {
+      const rate = parseFloat(value);
+      const calculatedIgst = rate || '';
+      const calculatedCgstSgst = (rate / 2) || '';
+      setGst(prev => ({ ...prev, [key]: value, igst: calculatedIgst, cgst: calculatedCgstSgst, sgst: calculatedCgstSgst }));
+    } else if (['igst', 'cgst', 'sgst'].includes(key)) {
+      return;
+    } else {
+      setGst(prev => ({ ...prev, [key]: value }));
+    }
   };
+  
 
   const createGST = async (event) => {
     event.preventDefault();
@@ -234,7 +248,7 @@ const GST = () => {
                   placeholder={'IGST'}
                   onChange={(event) => handleChange(event, 'igst')}
                   type={'text'}
-                  required={true}
+                  readOnly
                 />
               </div>
               <div className="form-group">
@@ -245,7 +259,7 @@ const GST = () => {
                   placeholder={'CGST'}
                   onChange={(event) => handleChange(event, 'cgst')}
                   type={'text'}
-                  required={true}
+                  readOnly
                 />
               </div>
               <div className="form-group">
@@ -256,7 +270,7 @@ const GST = () => {
                   placeholder={'SGST'}
                   onChange={(event) => handleChange(event, 'sgst')}
                   type={'text'}
-                  required={true}
+                  readOnly
                 />
               </div>
               <div className="form-group">
@@ -267,7 +281,6 @@ const GST = () => {
                   placeholder={'GST Cess'}
                   onChange={(event) => handleChange(event, 'gstcess')}
                   type={'text'}
-                  required={true}
                 />
               </div>
               <div className="form-group">
