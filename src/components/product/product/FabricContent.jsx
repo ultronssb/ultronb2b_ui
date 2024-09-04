@@ -10,13 +10,12 @@ import { ProductContext } from './CreateProduct';
 import './FabricContent.css';
 
 const FabricContent = () => {
-    const { product, setProduct, handleChange } = useContext(ProductContext);
+    const { product, setProduct, handleChange, inputError, setInputError } = useContext(ProductContext);
 
     const [fabricContent, setFabricContent] = useState({});
     const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [], value: null }]);
     const [lastChild, setLastChild] = useState([]);
-    const [value, setValue] = useState();
-    const [fCCValue, setFCCValue] = useState('')
+    const [fCCValue, setFCCValue] = useState('');
 
     useEffect(() => {
         fetchVariant();
@@ -82,6 +81,14 @@ const FabricContent = () => {
         const newPairs = [...selectedPairs];
         newPairs[index].key = e;
         setSelectedPairs(newPairs);
+
+        // clear FCC Error Message
+        setInputError(prev => ({
+            ...prev,
+            fabricContentError: false,
+            fabricContentErrorMessage: '',
+        }));
+
     };
 
     const handleMultiSelectChange = (index, e) => {
@@ -173,6 +180,7 @@ const FabricContent = () => {
                                 data={getAvailableKeys(index).map(key => ({ value: key, label: keyToNameMap[key] }))}
                                 clearable={true}
                                 onChange={(e) => handleSelectChange(index, e)}
+                                error={inputError?.fabricContentError ? inputError?.fabricContentError : null}
                             />
                         </div>
                         <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-8 fabric-content-mb2" style={{ display: 'flex' }}>
@@ -183,6 +191,7 @@ const FabricContent = () => {
                                 disabled={!pair.key}
                                 onChange={(e) => handleMultiSelectChange(index, e)}
                                 rightSection={<IconPercentage size={20} />}
+                                error={inputError?.fabricContentErrorMessage}
                             />
                             {index > 0 && (
                                 <button
@@ -216,3 +225,8 @@ const FabricContent = () => {
 };
 
 export default FabricContent;
+
+
+
+
+

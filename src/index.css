@@ -47,3 +47,6 @@ body{
 .cursor {
   cursor: pointer;
 }
+.error-message{
+  color: red;
+}

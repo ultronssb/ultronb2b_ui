@@ -8,11 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { ActiveTabContext } from '../../../layout/Layout';
 import B2BInput from '../../../common/B2BInput';
+import { head } from 'lodash';
 
 const ProductType = () => {
     const { stateData } = useContext(ActiveTabContext);
 
-    const { product, handleChange, setProduct, setImageFile, imageFile } = useContext(ProductContext);
+    const { product, handleChange, setProduct, setImageFile, imageFile, inputError } = useContext(ProductContext);
     const [brand, setBrand] = useState([]);
     const resetRef = useRef(null);
     const [imagePreview, setImagePreview] = useState(null);
@@ -74,7 +75,8 @@ const ProductType = () => {
             type: "text",
             fieldType: 'textField',
             require: true,
-            placeholder: "Enter Product Name"
+            placeholder: "Enter Product Name",
+            error: inputError.articleNameErrorMessage,
         },
         {
             label: "Brand",
@@ -83,7 +85,8 @@ const ProductType = () => {
             type: "select",
             fieldType: 'selectField',
             required: true,
-            placeholder: "Enter Brand"
+            placeholder: "Enter Brand",
+            error: inputError.brandIdErrorMessage
         },
         {
             label: "Product Tag",
@@ -130,7 +133,7 @@ const ProductType = () => {
             ],
             placeholder: "Enter Description",
             onChange: (event) => handleChange(event, "barcode"),
-            name: "barcode"
+            name: "barcode",
         }
 
 
@@ -139,7 +142,6 @@ const ProductType = () => {
     const handleCancel = () => {
         navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
     }
-
     return (
         <div className='productType-container' style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -160,17 +162,19 @@ const ProductType = () => {
                                     type={field.type}
                                     required={field.required}
                                     placeholder={field.placeholder}
+                                    error={field.error}
                                 />
                             )
                         }
                         {
                             field.fieldType === "selectField" && (
                                 <B2BSelect
-                                    data={brand.map(b => ({ label: b.name, value: b.brandId }))}
+                                    data={brand ? brand.map(b => ({ label: b.name, value: b.brandId })) : []}
                                     value={product?.brandId}
                                     onChange={field.onChange}
                                     placeholder={"Select Brand Name"}
                                     clearable={true}
+                                    error={field.error}
                                     maxDropdownHeight={400}
                                 />
                             )
@@ -268,3 +272,8 @@ const ProductType = () => {
 };
 
 export default ProductType;
+
+
+
+
+

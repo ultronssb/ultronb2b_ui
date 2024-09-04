@@ -4,7 +4,7 @@ import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
 
 const ProductTaxSelect = () => {
-    const { product, handleChange } = useContext(ProductContext);
+    const { product, handleChange, inputError } = useContext(ProductContext);
     const [tax, setTax] = useState([]);
 
     useEffect(() => {
@@ -38,6 +38,7 @@ const ProductTaxSelect = () => {
                         required
                         clearable
                         onChange={(event) => handleChange(event, 'gstId')}
+                        error={inputError?.gstError ? inputError.gstErrorMessage : ""}
                     />
                 </div>
             </div>

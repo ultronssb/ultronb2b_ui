@@ -5,6 +5,7 @@ import B2BInput from '../../../common/B2BInput'
 import B2BSelect from '../../../common/B2BSelect'
 import { currencies, TimeFormats } from '../../../utils/SettingsInput'
 import { B2B_API } from '../../../api/Interceptor'
+import notify from '../../../utils/Notification'
 
 const OtherSettings = () => {
 
@@ -21,9 +22,9 @@ const OtherSettings = () => {
     displayPrice: '',
     skuCodeSeq: '',
     companyId: '',
-    variantSKU:'',
-    wholesaleMOQ:'',
-    sampleMOQ:'',
+    variantSKU: '',
+    wholesaleMOQ: '',
+    sampleMOQ: '',
   }
 
   const [otherSettings, setOtherSettings] = useState(initialState)
@@ -45,28 +46,39 @@ const OtherSettings = () => {
 
   const getSettings = async () => {
     const response = await B2B_API.get('settings').json();
-    if(response.response)
+    if (response.response)
       setOtherSettings(response.response)
   }
 
 
-  const checkEventValue = (key) => {
-    if (key === 'dateDisplay' || key === "displayPrice" || key === "timeDisplay" || key === "weight" || key === "size" || key === "timeZone" || key === "dateDisplay" || key === "symbol") {
-      return true
-    }
-  }
+  // const checkEventValue = (key) => {
+  //   if (key === 'dateDisplay' || key === "displayPrice" || key === "timeDisplay" || key === "weight" || key === "size" || key === "timeZone" || key === "dateDisplay" || key === "symbol") {
+  //     return true
+  //   }
+  // }
 
   const handleChange = (event, key) => {
-    setOtherSettings((prev) => ({ ...prev, [key]: checkEventValue(key) ? event : event?.target?.value }))
+    setOtherSettings((prev) => ({ ...prev, [key]: event?.target?.value }))
   }
 
   const handleCreateSettings = async (event) => {
     event.preventDefault();
     try {
       const response = await B2B_API.post('settings/save', { json: otherSettings }).json()
-      console.log(response, "settingsResponse");
-    } catch (error) {
-      console.error(error);
+      notify({
+        title: 'Success!!',
+        message: response?.message || 'Setting Update Successfully.',
+        error: false,
+        success: true,
+      })
+    } catch (err) {
+      notify({
+        title: 'Error!!',
+        message: err?.response?.message || 'Failed to update Setting.',
+        error: true,
+        success: false,
+      })
+      console.error(err);
     }
   }
 

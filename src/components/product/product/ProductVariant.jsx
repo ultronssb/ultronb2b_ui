@@ -9,7 +9,7 @@ import { ProductContext } from './CreateProduct';
 import './ProductVariant.css';
 
 const ProductVariant = () => {
-    const { product, setProduct, handleChange } = useContext(ProductContext);
+    const { product, setProduct, handleChange, inputError, setInputError } = useContext(ProductContext);
 
     const [attributes, setAttributes] = useState({});
     const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [] }]);
@@ -46,6 +46,11 @@ const ProductVariant = () => {
         newPairs[index].key = selectedKey;
         newPairs[index].values = [];
         setSelectedPairs(newPairs);
+        setInputError(prev => ({
+            ...prev,
+            variantError: false,
+            variantErrorMessage: '',
+        }));
     };
 
     const handleMultiSelectChange = (index, selectedValues) => {
@@ -112,7 +117,11 @@ const ProductVariant = () => {
                                                             data={getAvailableKeys(index)}
                                                             clearable={true}
                                                             onChange={(e) => handleSelectChange(index, e)}
+                                                            error={inputError.variantError ? inputError.variantError : null}
                                                         />
+                                                        {inputError?.variantError && (
+                                                            <div className="error-message">{inputError?.variantErrorMessage}</div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
