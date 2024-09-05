@@ -16,9 +16,7 @@ const ProductType = () => {
     const { product, handleChange, setProduct, setImageFile, imageFile, inputError } = useContext(ProductContext);
     const [brand, setBrand] = useState([]);
     const resetRef = useRef(null);
-    const [imagePreview, setImagePreview] = useState(null);
     const [productTags, setProductTags] = useState([]);
-    const [selectedTags, setSelectedTags] = useState([])
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -34,7 +32,6 @@ const ProductType = () => {
             console.error("Failed to Fetch Brand");
         }
     };
-
     const fetchAllTags = async () => {
         try {
             const res = await B2B_API.get(`product-tag`).json();
@@ -52,18 +49,27 @@ const ProductType = () => {
             resetRef.current();
         }
         setImageFile(null)
-        setImagePreview(null)
+        setCurrentImage(null)
     };
 
     const fileChange = (file) => {
-
         if (file) {
-            setImageFile(file)
+            setImageFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImagePreview(reader.result);
+                setProduct((prevProduct) => ({
+                    ...prevProduct,
+                    image: reader.result,
+                }));
             };
+            console.log(product.image)
             reader.readAsDataURL(file);
+        } else {
+            setImageFile(null);
+            setProduct((prevProduct) => ({
+                ...prevProduct,
+                image: '',
+            }));
         }
     };
 
@@ -135,8 +141,6 @@ const ProductType = () => {
             onChange: (event) => handleChange(event, "barcode"),
             name: "barcode",
         }
-
-
     ];
 
     const handleCancel = () => {
@@ -238,16 +242,6 @@ const ProductType = () => {
                     </div>
                 ))}
                 <div className='form-group' style={{ display: 'flex', flexDirection: 'column' }}>
-                    {product.image && (
-                        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                            <img
-                                src={URL.createObjectURL(imageFile)}
-                                alt="Selected"
-                                style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
-                            />
-                            <Text size="sm" ta="center" mt="sm">{product.image}</Text>
-                        </div>
-                    )}
                     <Group justify="flex-start">
                         <FileButton resetRef={resetRef} onChange={(file) => fileChange(file)} accept="image/png,image/jpeg">
                             {(props) => <Button {...props}>Upload image</Button>}
@@ -256,11 +250,11 @@ const ProductType = () => {
                             Reset
                         </Button>
                     </Group>
-                    {imagePreview && (
-                        <div>
+                    {product.image && (
+                        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                             <img
-                                src={imagePreview}
-                                alt="Preview"
+                                src={imageFile ? URL.createObjectURL(imageFile) : ''
+                                }
                                 style={{ width: '300px', height: 'auto', marginTop: '10px' }}
                             />
                         </div>

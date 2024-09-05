@@ -81,7 +81,7 @@ const Articles = () => {
         const { original } = row;
         return (
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <IconPencil onClick={() => editVarient(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+          <IconPencil onClick={() => editVarient(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
           </div>
         );
       }
@@ -90,6 +90,8 @@ const Articles = () => {
 
   const editVarient = (varobj) => {
     setIsCreateProduct(true);
+    navigate(`/product/product/create?id=${varobj.id}`);
+    console.log(varobj)
     setProduct((prev => ({ ...prev, ...varobj })));
   };
 

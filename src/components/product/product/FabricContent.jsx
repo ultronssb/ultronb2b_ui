@@ -18,6 +18,8 @@ const FabricContent = () => {
     const [fCCValue, setFCCValue] = useState('');
 
     useEffect(() => {
+        setFCCValue(product?.fabricContent?.value
+        )
         fetchVariant();
     }, []);
 
@@ -42,12 +44,12 @@ const FabricContent = () => {
 
     const setSelectedPairsFromProduct = () => {
         const { fabricContent } = product
-        const keys = Object.keys(fabricContent.composition)
+        const keys = Object.keys(fabricContent?.composition)
         if (_.size(keys) > 0) {
             setSelectedPairs(_.map(keys, key => {
                 return {
                     "key": key,
-                    "value": fabricContent.composition[key]
+                    "value": fabricContent?.composition[key]
                 }
             }))
         }

@@ -1,21 +1,21 @@
+import { isEmpty } from 'lodash';
 import React, { createContext, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTabs from '../../../common/B2BTabs';
+import notify from '../../../utils/Notification';
 import FabricContent from './FabricContent';
 import ProductCategorys from './ProductCategorys';
-import ProductPrice from './ProductPrice';
-import ProductType from './ProductType'
-import ProductTax from './ProductTax';
-import ProductVariant from './ProductVariant';
-import notify from '../../../utils/Notification';
 import ProductDimension from './ProductDimension';
-import _, { isEmpty, isNull } from 'lodash';
+import ProductPrice from './ProductPrice';
+import ProductType from './ProductType';
+import ProductVariant from './ProductVariant';
 
 export const ProductContext = createContext(null);
 
 const CreateProduct = () => {
-  const [error, setError] = useState('');
+
   const tabs = [
     { id: "1", name: "Product Type" },
     { id: "2", name: "Category Type" },
@@ -23,15 +23,15 @@ const CreateProduct = () => {
     { id: "4", name: "Dimensions" },
     { id: "5", name: "Price" },
     { id: "6", name: "Variant" },
-
   ];
 
-  const initialState = {
+  const initialProductData = {
     productId: '',
     articleName: '',
     articleCode: '',
     description: '',
     supplier: '',
+    barcode: '',
     isCreateBarcode: true,
     tags: [],
     metrics: {
@@ -45,7 +45,7 @@ const CreateProduct = () => {
       unitOfMeasures:
       {
         type: 'UOM',
-        isRoll: false,
+        isRoll: true,
         isKg: false,
       }
     },
@@ -59,7 +59,7 @@ const CreateProduct = () => {
       fccCode: "",
       composition: {}
     },
-
+    image: "",
     priceSetting: {
       isMarkUp: false,
       isMarkDown: false,
@@ -74,8 +74,10 @@ const CreateProduct = () => {
     gstId: '',
     brandId: '',
   }
-  const [canChangeTab, setCanChangeTab] = useState(false);
-  const [product, setProduct] = useState(initialState);
+
+  const [error, setError] = useState('')
+  const location = useLocation();
+  const [product, setProduct] = useState(initialProductData);
   const [imageFile, setImageFile] = useState(null)
   const [activeTab, setActiveTab] = useState("1");
   const [isFormValid, setIsFormValid] = useState(false);
@@ -106,8 +108,15 @@ const CreateProduct = () => {
     mrpErrorMessage: '',
     costPriceError: false,
     costPriceErrorMessage: '',
-
   })
+
+  useEffect(() => {
+    const query_param = new URLSearchParams(location.search);
+    const id = query_param.get('id');
+    if (id) {
+      fetchProduct(id);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     setIsFormValid(validateProductVariants());
@@ -124,13 +133,9 @@ const CreateProduct = () => {
     );
   };
 
-
   const handleChange = (event, fieldType) => {
     const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
-    // if (value) {
-    // setInputError((prev) => ({ ...prev, [fieldType + 'Error']: false, [fieldType + 'ErrorMessage']: '' }))
-    // }
-      setInputError("")
+    setInputError("")
 
     if (fieldType === "UOM") {
       const { value, checked } = event.target;
@@ -158,121 +163,30 @@ const CreateProduct = () => {
       ...prev,
       [`${fieldType}ErrorMessage`]: ''
     }));
-  };
-
-  // const handleChange = (event, fieldType) => {
-  //   const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
-
-  //   if (fieldType === "UOM") {
-  //     const { value, checked } = event.target;
-  //     setProduct(prevState => ({
-  //       ...prevState,
-  //       otherInformation: {
-  //         ...prevState.otherInformation,
-  //         unitOfMeasures: {
-  //           ...prevState.otherInformation.unitOfMeasures,
-  //           [value]: checked
-  //         }
-  //       }
-  //     }));
-  //   } else if (fieldType === 'gstId') {
-  //     setProduct(prev => ({ ...prev, gstId: value }));
-  //   } else if (fieldType.includes('.')) {
-  //     const [parent, child] = fieldType.split('.');
-  //     setProduct(prev => ({
-  //       ...prev,
-  //       [parent]: {
-  //         ...prev[parent],
-  //         [child]: value
-  //       }
-  //     }));
-  //   } else {
-  //     setProduct(prev => ({
-  //       ...prev,
-  //       [fieldType]: checkDirectValue(fieldType) ? value : event.target?.value,
-  //     }));
-  //   }
-
-  //   // Clear specific errors related to the field being changed
-  //   if (fieldType === 'productCategories') {
-  //     setInputError(prev => ({
-  //       ...prev,
-  //       categoryError: false,
-  //       categoryErrorMessage: ''
-  //     }));
-  //   } else {
-  //     setInputError(prev => {
-  //       const newErrors = { ...prev };
-  //       delete newErrors[`${fieldType}Error`];
-  //       delete newErrors[`${fieldType}ErrorMessage`];
-  //       return newErrors;
-  //     });
-  //   }
-  // };
-
-
-
-
-  // const handleChange = (event, fieldType) => {
-  //   const { name, value, checked, type } = event.target;
-
-  //   // Determine the new value
-  //   const newValue = type === 'checkbox' ? checked : value;
-
-  //   // Update product state based on fieldType
-  //   if (fieldType === "UOM") {
-  //     // Handle unit of measure changes
-  //     const { value, checked } = event.target;
-  //     const { otherInformation } = product;
-  //     otherInformation.unitOfMeasures[value] = checked;
-  //     setProduct(prevState => ({ ...prevState, otherInformation }));
-  //   } else if (fieldType === 'gstId') {
-  //     // Handle GST ID change
-  //     setProduct(prev => ({ ...prev, gstId: newValue }));
-  //   } else if (fieldType.includes('.')) {
-  //     // Handle nested field changes (e.g., metrics.weight)
-  //     const [parent, child] = fieldType.split('.');
-  //     setProduct(prev => ({
-  //       ...prev,
-  //       [parent]: {
-  //         ...prev[parent],
-  //         [child]: newValue
-  //       }
-  //     }));
-  //   } else {
-  //     // Handle direct field changes
-  //     setProduct(prev => ({
-  //       ...prev,
-  //       [fieldType]: newValue
-  //     }));
-  //   }
-
-  //   // Clear the error message for the field if value is valid
-  //   setInputError(prev => ({
-  //     ...prev,
-  //     [`${fieldType}ErrorMessage`]: '',
-  //   }));
-  // }
+  }
 
   const addProduct = async (prod) => {
     try {
-      const res = await B2B_API.post(`product`, {
+      const res = await B2B_API.post(product, {
         body: prod,
         // headers: {
         //   "Content-Type": "multipart/form-data" // Set Content-Type for this specific request
         // }
       }).json();
-      setProduct(initialState);
+      setProduct(initialProductData);
       setImageFile(null);
       setActiveTab("1");
       notify({
+        id: product.id ? "Product Updated Successfully !!" : "Created Successfully !!",
         title: 'Success!!',
-        message: res?.message || 'Product Save Successfully.',
+        message: product.id ? "Updated Successfully" : res?.message,
         error: false,
         success: true,
       })
+
     } catch (err) {
       notify({
+        title: 'Error!!',
         title: 'Error!!',
         message: err?.message || 'Failed to add product.',
         error: true,
@@ -328,45 +242,13 @@ const CreateProduct = () => {
           isValid = false;
         }
         break;
-
       case "2": // validate for category
         if (isEmpty(product.productCategories)) {
           errors.categoryError = true,
             errors.categoryErrorMessage = 'Category not be null !!'
           isValid = false;
         }
-
         break;
-
-      // case "2": // Validate for Category
-      //   if (isEmpty(product.productCategories)) {
-      //     errors.categoryError = true;
-      //     errors.categoryErrorMessage = 'Categories cannot be null!';
-      //     isValid = false;
-      //   } else {
-      //     const categoryErrors = product.productCategories.map((category, index) => {
-      //       if (!category.key) {
-      //         return `Category ${index + 1} must be selected.`;
-      //       }
-
-      //       if (!category.value || isEmpty(category.value.child) || category.value.child.length === 0) {
-      //         return `Category ${category.key || index + 1} must have at least one sub-category selected.`;
-      //       }
-
-      //       return '';
-      //     });
-
-      //     const filteredCategoryErrors = categoryErrors.filter(error => error !== '');
-
-      //     if (filteredCategoryErrors.length > 0) {
-      //       errors.categoryError = true;
-      //       errors.categoryErrorMessage = filteredCategoryErrors.join(' ');
-      //       isValid = false;
-      //     }
-      //   }
-      // break;
-
-
       case "3": // Validate Fabric Content (FCC)
         const isFabricContentValid = product?.fabricContent?.composition &&
           Object.keys(product.fabricContent.composition).length > 0 &&
@@ -456,10 +338,7 @@ const CreateProduct = () => {
           isValid = false;
         }
         break;
-      case "6": // Validate Variants
-        // const hasSelectedVariants = product?.prodVariants &&
-        //   Object.keys(product.prodVariants).some(key => product.prodVariants[key].length > 0);
-
+      case "6":
         if (isEmpty(product.prodVariants)) {
           errors.variantError = true;
           errors.variantErrorMessage = 'At least one variant must be selected!';
@@ -467,46 +346,14 @@ const CreateProduct = () => {
         }
         break;
     }
-
-    // Update error state
     setInputError(prev => ({ ...prev, ...errors }));
-
-    // Only proceed to the next tab if there are no errors
     if (isValid) {
       const nextTabIndex = tabs.findIndex(tab => tab.id === activeTab) + 1;
       if (nextTabIndex < tabs.length) {
         setActiveTab(tabs[nextTabIndex].id);
       }
     }
-    // if (isEmpty(product?.articleName)) {
-    //   setInputError((prev) => ({
-    //     ...prev,
-    //     articleNameError: true,
-    //     articleNameErrorMessage: "Product Name is Required!",
-    //   }));
-    //   return;
-    // }
-    // if (isEmpty(product?.brandId) || isNull(product.brandId)) {
-    //   setInputError((prev) => ({
-    //     ...prev,
-    //     brandIdError: true,
-    //     brandIdErrorMessage: "Brand is Required!",
-    //   }));
-    //   return;
-    // }
-    // if (isEmpty(product?.categoryId)) {
-    //   setInputError((prev) => ({
-    //     ...prev,
-    //     categoryError: true,
-    //     categoryErrorMessage: "Category Name is Required"
-    //   }))
-    //   return;
-    // }
   }
-
-
-
-
 
   const handleProductSave = async () => {
     const formData = new FormData();
@@ -515,9 +362,7 @@ const CreateProduct = () => {
       prodVariants: { ...product.prodVariants },
       productCategories: [...product.productCategories]
     };
-
     updatedProduct.prodVariants = Object.values(updatedProduct.prodVariants);
-
     updatedProduct.productCategories = updatedProduct.productCategories
       ? updatedProduct.productCategories.reduce((acc, item) => {
         acc[item.key] = item.value;
@@ -527,10 +372,95 @@ const CreateProduct = () => {
     formData.append("product", JSON.stringify(updatedProduct))
     formData.append("image", imageFile)
     addProduct(formData);
-
   };
 
-  console.log(product);
+  const fetchProduct = async (id) => {
+    try {
+      const response = await B2B_API.get(`product/get/${id}`).json();
+      const product = response.response;
+      const barcodeString = product?.isCreateBarcode ? "true" : "false";;
+      const transformData = () => {
+        const result = {};
+        product?.productVariants.forEach(variant => {
+          variant.variants.forEach(v => {
+            if (!result[v.name]) {
+              result[v.name] = [];
+            }
+            result[v.name].push(v.id);
+          });
+        });
+
+        return result;
+      };
+      const transformCategories = () => {
+        const result = [];
+
+        for (const [key, value] of Object.entries(product?.productCategories
+        )) {
+          result.push({
+            key: key,
+            value: value,
+            heirarchyLabel: '',
+            options: value.options || [],
+            openModal: false
+          });
+        }
+
+        return result;
+      };
+      const adjustPriceSetting = (priceSetting) => {
+        return {
+          ...priceSetting,
+          isMarkDown: priceSetting.markDownPercent > 0 ? true : false,
+          isMarkUp: priceSetting.markUpPercent > 0 ? true : false,
+        };
+      };
+
+      setProduct({
+        ...product,
+        tags: product?.productTags.split(",").map(tag => tag.trim()),
+        brandId: product?.brand?.brandId,
+        barcode: barcodeString,
+        gstId: product?.gst?.gstId,
+        image: `http://192.168.1.13:8080${product?.image}`,
+        productCategories: transformCategories(),
+        prodVariants: transformData(),
+        priceSetting: adjustPriceSetting(product?.priceSetting),
+      });
+      const initializeImage = async () => {
+        try {
+          const imageFile = await fetchImageAsBlob();
+          setImageFile(imageFile);
+        } catch (error) {
+          console.error("Failed to fetch and set image file:", error);
+        }
+      };
+      const fetchImageAsBlob = async () => {
+        try {
+          const response = await fetch(`http://192.168.1.13:8080${product?.image}`);
+          const contentType = response.headers.get('Content-Type');
+          if (!contentType || !contentType.startsWith('image/')) {
+            throw new Error('Expected an image, but received: ' + contentType);
+          }
+          const blob = await response.blob();
+          const file = new File([blob], 'image.jpeg', { type: blob.type });
+          return file;
+        } catch (error) {
+          console.error('Error:', error);
+          throw error;
+        }
+      };
+      initializeImage()
+    } catch (err) {
+      notify({
+        title: 'Error!',
+        message: err?.message || 'Failed to fetch product.',
+        error: true,
+        success: false,
+      });
+    }
+  };
+
 
   return (
     <ProductContext.Provider value={{ product, handleChange, addProduct, setProduct, imageFile, setImageFile, inputError, setInputError }}>
@@ -553,7 +483,7 @@ const CreateProduct = () => {
           <B2BButton
             name={'Save'}
             onClick={handleProductSave}
-            disabled={!isFormValid} // Disable Save button if the form is not valid
+            disabled={!isFormValid}
           />
         }
       </div>
@@ -561,6 +491,4 @@ const CreateProduct = () => {
   );
 };
 export default CreateProduct;
-
-
 

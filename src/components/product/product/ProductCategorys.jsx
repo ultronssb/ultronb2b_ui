@@ -4,12 +4,12 @@ import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect';
-import { ProductContext } from './CreateProduct';
-import './ProductCategory.css';
 import './ProductVariant.css';
+import { ProductContext } from './CreateProduct';
+import './ProductCategory.css'
 
 const ProductCategorys = () => {
-    const { product, setProduct, handleChange, inputError, setInputError } = useContext(ProductContext);
+    const { product, setProduct, handleChange } = useContext(ProductContext);
 
     const initialState = { key: '', value: {}, heirarchyLabel: "", options: [], openModal: false, count: 2 }
     const [categorys, setCategorys] = useState([]);
@@ -41,37 +41,6 @@ const ProductCategorys = () => {
         }
     }
 
-    // const handleSelectChange = (index, selectedKey) => {
-    //     const newPairs = [...selectedPairs];
-    //     newPairs[index] = { ...initialState, key: selectedKey };
-    //     const childCategory = categorys.find(cat => cat.name === selectedKey)?.child || [];
-    //     newPairs[index].options = childCategory;
-    //     setSelectedPairs(newPairs);
-    //     setProduct(prev => ({ ...prev, productCategories: newPairs }));
-
-    //     // Clear errors for the category field
-    //     setInputError(prev => ({
-    //         ...prev,
-    //         categoryError: false,
-    //         categoryErrorMessage: '',
-    //     }));
-    //     setInputError("")
-    // };
-    // const handleSelectChange = (index, selectedKey) => {
-    //     const newPairs = [...selectedPairs];
-    //     newPairs[index] = { ...initialState, key: selectedKey };
-    //     const childCategory = categorys.find(cat => cat.name === selectedKey)?.child || [];
-    //     newPairs[index].options = childCategory;
-    //     setSelectedPairs(newPairs);
-    //     setProduct(prev => ({ ...prev, productCategories: newPairs }));
-
-    //     // Clear errors for the category field
-    //     setInputError(prev => ({
-    //         ...prev,
-    //         categoryError: false,
-    //         categoryErrorMessage: '',
-    //     }));
-    // };
     const handleSelectChange = (index, selectedKey) => {
         const newPairs = [...selectedPairs];
         newPairs[index] = { ...initialState, key: selectedKey };
@@ -79,15 +48,7 @@ const ProductCategorys = () => {
         newPairs[index].options = childCategory;
         setSelectedPairs(newPairs);
         setProduct(prev => ({ ...prev, productCategories: newPairs }));
-
-        // Clear errors for the category field
-        setInputError(prev => ({
-            ...prev,
-            categoryError: false,
-            categoryErrorMessage: '',
-        }));
     };
-
 
     const openModals = (index, value) => {
         const newPairs = [...selectedPairs];
@@ -186,7 +147,6 @@ const ProductCategorys = () => {
                                                             scroll={false}
                                                             styles={{ dropdown: { maxHeight: 250, overflowY: 'auto' } }}
                                                             onChange={(e) => handleSelectChange(index, e)}
-                                                            error={inputError?.categoryError ? inputError?.categoryErrorMessage : null}
                                                         />
                                                     </div>
                                                 </div>
