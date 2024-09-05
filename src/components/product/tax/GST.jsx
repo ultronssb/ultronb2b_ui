@@ -128,21 +128,77 @@ const GST = () => {
   // const handleChange = (event, key) => {
   //   setGst(prev => ({ ...prev, [key]: event?.target?.value }));
   // };
+  // const handleChange = (event, key) => {
+  //   const value = event?.target?.value;
+  //   if (key === 'gstRate') {
+  //     const rate = parseFloat(value);
+  //     const calculatedIgst = rate || '';
+  //     const calculatedCgstSgst = (rate / 2) || '';
+  //     setGst(prev => ({ ...prev, [key]: value, igst: calculatedIgst, cgst: calculatedCgstSgst, sgst: calculatedCgstSgst }));
+  //   } else if (['igst', 'cgst', 'sgst'].includes(key)) {
+  //     return;
+  //   } else {
+  //     setGst(prev => ({ ...prev, [key]: value }));
+  //   }
+  // };
+  
+
+  // const handleChange = (event, key) => {
+  //   const value = event?.target?.value;
+  //   if (key === 'gstRate') {
+  //     const rate = parseFloat(value) || 0;
+  //     const calculatedIgst = rate;
+  //     const calculatedCgstSgst = rate / 2;
+  
+  //     setGst((prev) => ({
+  //       ...prev,
+  //       [key]: value,
+  //       igst: calculatedIgst,
+  //       cgst: calculatedCgstSgst,
+  //       sgst: calculatedCgstSgst,
+  //       name: `GST ${rate}%`, 
+  //     }));
+  //   }
+  //   else if (['igst', 'cgst', 'sgst','name'].includes(key)) {
+  //     return;
+  //   } else {
+  //     setGst((prev) => ({ ...prev, [key]: value }));
+  //   }
+  // };
+
   const handleChange = (event, key) => {
     const value = event?.target?.value;
     if (key === 'gstRate') {
       const rate = parseFloat(value);
-      const calculatedIgst = rate || '';
-      const calculatedCgstSgst = (rate / 2) || '';
-      setGst(prev => ({ ...prev, [key]: value, igst: calculatedIgst, cgst: calculatedCgstSgst, sgst: calculatedCgstSgst }));
-    } else if (['igst', 'cgst', 'sgst'].includes(key)) {
+      if (!rate) {
+        setGst((prev) => ({
+          ...prev,
+          gstRate: '',
+          igst: '',
+          cgst: '',
+          sgst: '',
+          name: '',
+        }));
+      } else {
+        const calculatedIgst = rate;
+        const calculatedCgstSgst = rate / 2; 
+        setGst((prev) => ({
+          ...prev,
+          gstRate: value,
+          igst: calculatedIgst,
+          cgst: calculatedCgstSgst,
+          sgst: calculatedCgstSgst,
+          name: `GST ${rate}%`,
+        }));
+      }
+    } else if (['igst', 'cgst', 'sgst','name'].includes(key)) {
       return;
     } else {
-      setGst(prev => ({ ...prev, [key]: value }));
+      setGst((prev) => ({ ...prev, [key]: value }));
     }
   };
   
-
+  
   const createGST = async (event) => {
     event.preventDefault();
     try {
@@ -226,7 +282,7 @@ const GST = () => {
                   placeholder={'Name'}
                   onChange={(event) => handleChange(event, 'name')}
                   type={'text'}
-                  required={true}
+                  readOnly
                 />
               </div>
               <div className="form-group">
@@ -236,7 +292,7 @@ const GST = () => {
                   styles={{ input: { fontSize: '14px' } }}
                   placeholder={'GST Rate'}
                   onChange={(event) => handleChange(event, 'gstRate')}
-                  type={'text'}
+                  type={'number'}
                   required={true}
                 />
               </div>
