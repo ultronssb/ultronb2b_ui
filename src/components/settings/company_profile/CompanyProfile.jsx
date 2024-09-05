@@ -46,6 +46,8 @@ const CompanyProfile = () => {
 
   const fetchCompany = async () => {
     const payload = await getpayLoadFromToken()
+    console.log(payload);
+    
     const response = await B2B_API.get(`company/${payload.iss}`).json();
     setCompany(response?.response)
   }

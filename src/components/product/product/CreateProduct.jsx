@@ -81,6 +81,7 @@ const CreateProduct = () => {
   const [imageFile, setImageFile] = useState(null)
   const [activeTab, setActiveTab] = useState("1");
   const [isFormValid, setIsFormValid] = useState(false);
+  const [currentTab, setCurrentTab] = useState(0);
   const [inputError, setInputError] = useState({
     articleNameError: false,
     articleNameErrorMessage: '',
@@ -125,6 +126,13 @@ const CreateProduct = () => {
   const checkDirectValue = (key) => {
     if (key === 'brandId') return true
   }
+  useEffect(() => {
+    const query_param = new URLSearchParams(location.search);
+    const id = query_param.get('id');
+    if (id) {
+      fetchProduct(id);
+    }
+  }, [location.search]);
 
   const validateProductVariants = () => {
     return !(
@@ -169,9 +177,6 @@ const CreateProduct = () => {
     try {
       const res = await B2B_API.post(product, {
         body: prod,
-        // headers: {
-        //   "Content-Type": "multipart/form-data" // Set Content-Type for this specific request
-        // }
       }).json();
       setProduct(initialProductData);
       setImageFile(null);
@@ -195,8 +200,7 @@ const CreateProduct = () => {
     }
   };
 
-  const handleTabClick = () => {
-  };
+
   const renderActiveComponent = () => {
     switch (activeTab) {
       case "1":
@@ -215,8 +219,13 @@ const CreateProduct = () => {
         return <ProductType />;
     }
   };
-  console.log(product, "pro");
 
+  const handleTabClick = (index) => {
+    if (index <= currentTab || index === currentTab + 1) {
+      setCurrentTab(index);
+      setActiveTab(tabs[index].id);
+    }
+  };
 
   const handleBackTab = () => {
     const prevTabIndex = tabs.findIndex(tab => tab.id === activeTab) - 1;
@@ -351,6 +360,7 @@ const CreateProduct = () => {
       const nextTabIndex = tabs.findIndex(tab => tab.id === activeTab) + 1;
       if (nextTabIndex < tabs.length) {
         setActiveTab(tabs[nextTabIndex].id);
+        setCurrentTab(nextTabIndex)
       }
     }
   }

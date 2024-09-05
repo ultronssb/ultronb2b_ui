@@ -21,6 +21,7 @@ const FabricContent = () => {
         setFCCValue(product?.fabricContent?.value
         )
         fetchVariant();
+        setFCCValue(product?.fabricContent?.value)
     }, []);
 
     useEffect(() => {
@@ -114,6 +115,7 @@ const FabricContent = () => {
             return acc;
         }, {});
         fabricContentCode(pairsObject);
+        setInputError("")
     };
 
     const fabricContentCode = async (newPairs) => {
