@@ -131,7 +131,7 @@ const CreateProduct = () => {
     );
   };
 
-
+  
 
 
   const handleChange = (event, fieldType) => {
@@ -247,11 +247,12 @@ const CreateProduct = () => {
         break;
 
       case "2": // validate for category
-        if (isEmpty(product?.productCategories)) {
+        if (isEmpty(product.productCategories)) {
           errors.categoryError = true,
             errors.categoryErrorMessage = 'Category not be null !!'
           isValid = false;
         }
+
         break;
 
       case "3": // Validate Fabric Content (FCC)
@@ -434,7 +435,7 @@ const CreateProduct = () => {
         brandId: product?.brand?.brandId,
         barcode: barcodeString,
         gstId: product?.gst?.gstId,
-        image: `http://136.185.1.251:8081${product?.image}`,
+        image: `http://192.168.1.13:8080${product?.image}`,
         productCategories: transformCategories(),
         prodVariants: transformData(),
         priceSetting: adjustPriceSetting(product?.priceSetting),
@@ -449,7 +450,7 @@ const CreateProduct = () => {
       };
       const fetchImageAsBlob = async () => {
         try {
-          const response = await fetch(`http://136.185.1.251:8081${product?.image}`);
+          const response = await fetch(`http://192.168.1.13:8080${product?.image}`);
           const contentType = response.headers.get('Content-Type');
           if (!contentType || !contentType.startsWith('image/')) {
             throw new Error('Expected an image, but received: ' + contentType);
@@ -504,3 +505,6 @@ const CreateProduct = () => {
   );
 };
 export default CreateProduct;
+
+
+

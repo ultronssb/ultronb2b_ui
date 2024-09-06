@@ -9,7 +9,7 @@ import { ProductContext } from './CreateProduct';
 import './ProductCategory.css'
 
 const ProductCategorys = () => {
-    const { product, setProduct, handleChange, inputError,setInputError } = useContext(ProductContext);
+    const { product, setProduct, handleChange, inputError, setInputError } = useContext(ProductContext);
 
     const initialState = { key: '', value: {}, heirarchyLabel: "", options: [], openModal: false, count: 2 }
     const [categorys, setCategorys] = useState([]);
@@ -150,9 +150,9 @@ const ProductCategorys = () => {
                                                             onChange={(e) => handleSelectChange(index, e)}
                                                             error={inputError?.categoryErrorMessage}
                                                         />
-                                                        {/* {inputError.categoryError && (
+                                                        {inputError.categoryError && (
                                                             <p className="error-message">{inputError.categoryErrorMessage}</p>
-                                                        )} */}
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
