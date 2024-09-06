@@ -216,11 +216,12 @@ const CreateProduct = () => {
   console.log(product, "pro");
 
   const handleTabClick = (index) => {
-    if (index <= currentTab || index === currentTab + 1) {
+    if (index === currentTab || index === currentTab + 1) {
       setCurrentTab(index);
       setActiveTab(tabs[index].id);
     }
   };
+
 
   const handleBackTab = () => {
     const prevTabIndex = tabs.findIndex(tab => tab.id === activeTab) - 1;
@@ -247,15 +248,22 @@ const CreateProduct = () => {
         }
         break;
 
-      case "2": // validate for category
+      case "2": // Validate for category
         if (isEmpty(product.productCategories)) {
-          errors.categoryError = true,
-            errors.categoryErrorMessage = 'Category not be null !!'
+          errors.categoryError = true;
+          errors.categoryErrorMessage = 'Category cannot be null!';
           isValid = false;
+        } else {
+          for (const pair of product.productCategories) {
+            if (!pair.heirarchyLabel) {
+              errors.categoryError = true;
+              errors.categoryErrorMessage = 'All Category-child fields are Required !!!';
+              isValid = false;
+              break;
+            }
+          }
         }
-
         break;
-
       case "3": // Validate Fabric Content (FCC)
         const isFabricContentValid = product?.fabricContent?.composition &&
           Object.keys(product.fabricContent.composition).length > 0 &&

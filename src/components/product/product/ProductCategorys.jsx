@@ -96,6 +96,7 @@ const ProductCategorys = () => {
             newPairs[index].options = getParentChild(newPairs[index].key)
         }
         setSelectedPairs(newPairs);
+        setInputError("");
     }
 
     const removeCategory = (index) => {
