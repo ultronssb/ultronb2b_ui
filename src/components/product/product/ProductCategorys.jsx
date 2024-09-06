@@ -150,9 +150,6 @@ const ProductCategorys = () => {
                                                             onChange={(e) => handleSelectChange(index, e)}
                                                             error={inputError?.categoryErrorMessage}
                                                         />
-                                                        {inputError.categoryError && (
-                                                            <p className="error-message">{inputError.categoryErrorMessage}</p>
-                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
