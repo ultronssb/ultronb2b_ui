@@ -131,7 +131,7 @@ const CreateProduct = () => {
     );
   };
 
-  
+
 
 
   const handleChange = (event, fieldType) => {
@@ -178,8 +178,9 @@ const CreateProduct = () => {
       setImageFile(null);
       setActiveTab("1");
       notify({
+        id: product?.id ? "Updated Successfully" : "Added Successfully",
         title: 'Success!!',
-        message: res?.message || 'Product Save Successfully.',
+        message: product?.id ? "Updated Successfully" : res?.message,
         error: false,
         success: true,
       })

@@ -216,6 +216,9 @@ const ProductType = () => {
                                             value={option.value}
                                             onChange={field.onChange}
                                             required={field.required}
+                                            checked={
+                                                product?.otherInformation.unitOfMeasures?.[option.value] || false
+                                            }
                                         />
                                         <label className='checkbox-label'>{option.label}</label>
                                     </div>
