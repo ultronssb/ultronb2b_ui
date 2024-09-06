@@ -9,7 +9,7 @@ import { ProductContext } from './CreateProduct';
 import './ProductCategory.css'
 
 const ProductCategorys = () => {
-    const { product, setProduct, handleChange } = useContext(ProductContext);
+    const { product, setProduct, handleChange, inputError,setInputError } = useContext(ProductContext);
 
     const initialState = { key: '', value: {}, heirarchyLabel: "", options: [], openModal: false, count: 2 }
     const [categorys, setCategorys] = useState([]);
@@ -48,6 +48,7 @@ const ProductCategorys = () => {
         newPairs[index].options = childCategory;
         setSelectedPairs(newPairs);
         setProduct(prev => ({ ...prev, productCategories: newPairs }));
+        setInputError("")
     };
 
     const openModals = (index, value) => {
@@ -147,7 +148,11 @@ const ProductCategorys = () => {
                                                             scroll={false}
                                                             styles={{ dropdown: { maxHeight: 250, overflowY: 'auto' } }}
                                                             onChange={(e) => handleSelectChange(index, e)}
+                                                            error={inputError?.categoryErrorMessage}
                                                         />
+                                                        {/* {inputError.categoryError && (
+                                                            <p className="error-message">{inputError.categoryErrorMessage}</p>
+                                                        )} */}
                                                     </div>
                                                 </div>
                                             </div>

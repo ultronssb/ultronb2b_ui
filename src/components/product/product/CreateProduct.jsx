@@ -1,21 +1,21 @@
-import { isEmpty } from 'lodash';
 import React, { createContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTabs from '../../../common/B2BTabs';
-import notify from '../../../utils/Notification';
 import FabricContent from './FabricContent';
 import ProductCategorys from './ProductCategorys';
-import ProductDimension from './ProductDimension';
 import ProductPrice from './ProductPrice';
-import ProductType from './ProductType';
+import ProductType from './ProductType'
+import ProductTax from './ProductTax';
 import ProductVariant from './ProductVariant';
+import notify from '../../../utils/Notification';
+import ProductDimension from './ProductDimension';
+import _, { isEmpty, isNull } from 'lodash';
 
 export const ProductContext = createContext(null);
 
 const CreateProduct = () => {
-
+  const [error, setError] = useState('');
   const tabs = [
     { id: "1", name: "Product Type" },
     { id: "2", name: "Category Type" },
@@ -23,15 +23,15 @@ const CreateProduct = () => {
     { id: "4", name: "Dimensions" },
     { id: "5", name: "Price" },
     { id: "6", name: "Variant" },
+
   ];
 
-  const initialProductData = {
+  const initialState = {
     productId: '',
     articleName: '',
     articleCode: '',
     description: '',
     supplier: '',
-    barcode: '',
     isCreateBarcode: true,
     tags: [],
     metrics: {
@@ -45,7 +45,7 @@ const CreateProduct = () => {
       unitOfMeasures:
       {
         type: 'UOM',
-        isRoll: true,
+        isRoll: false,
         isKg: false,
       }
     },
@@ -59,7 +59,7 @@ const CreateProduct = () => {
       fccCode: "",
       composition: {}
     },
-    image: "",
+
     priceSetting: {
       isMarkUp: false,
       isMarkDown: false,
@@ -74,10 +74,7 @@ const CreateProduct = () => {
     gstId: '',
     brandId: '',
   }
-
-  const [error, setError] = useState('')
-  const location = useLocation();
-  const [product, setProduct] = useState(initialProductData);
+  const [product, setProduct] = useState(initialState);
   const [imageFile, setImageFile] = useState(null)
   const [activeTab, setActiveTab] = useState("1");
   const [isFormValid, setIsFormValid] = useState(false);
@@ -109,15 +106,8 @@ const CreateProduct = () => {
     mrpErrorMessage: '',
     costPriceError: false,
     costPriceErrorMessage: '',
-  })
 
-  useEffect(() => {
-    const query_param = new URLSearchParams(location.search);
-    const id = query_param.get('id');
-    if (id) {
-      fetchProduct(id);
-    }
-  }, [location.search]);
+  })
 
   useEffect(() => {
     setIsFormValid(validateProductVariants());
@@ -141,8 +131,14 @@ const CreateProduct = () => {
     );
   };
 
+
+
+
   const handleChange = (event, fieldType) => {
     const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
+    // if (value) {
+    //   setInputError((prev) => ({ ...prev, [fieldType + 'Error']: false, [fieldType + 'ErrorMessage']: '' }))
+    // }
     setInputError("")
 
     if (fieldType === "UOM") {
@@ -171,27 +167,24 @@ const CreateProduct = () => {
       ...prev,
       [`${fieldType}ErrorMessage`]: ''
     }));
-  }
+  };
 
   const addProduct = async (prod) => {
     try {
-      const res = await B2B_API.post(product, {
+      const res = await B2B_API.post(`product`, {
         body: prod,
       }).json();
-      setProduct(initialProductData);
+      setProduct(initialState);
       setImageFile(null);
       setActiveTab("1");
       notify({
-        id: product.id ? "Product Updated Successfully !!" : "Created Successfully !!",
         title: 'Success!!',
-        message: product.id ? "Updated Successfully" : res?.message,
+        message: res?.message || 'Product Save Successfully.',
         error: false,
         success: true,
       })
-
     } catch (err) {
       notify({
-        title: 'Error!!',
         title: 'Error!!',
         message: err?.message || 'Failed to add product.',
         error: true,
@@ -219,6 +212,7 @@ const CreateProduct = () => {
         return <ProductType />;
     }
   };
+  console.log(product, "pro");
 
   const handleTabClick = (index) => {
     if (index <= currentTab || index === currentTab + 1) {
@@ -251,13 +245,15 @@ const CreateProduct = () => {
           isValid = false;
         }
         break;
+
       case "2": // validate for category
-        if (isEmpty(product.productCategories)) {
+        if (isEmpty(product?.productCategories)) {
           errors.categoryError = true,
             errors.categoryErrorMessage = 'Category not be null !!'
           isValid = false;
         }
         break;
+
       case "3": // Validate Fabric Content (FCC)
         const isFabricContentValid = product?.fabricContent?.composition &&
           Object.keys(product.fabricContent.composition).length > 0 &&
@@ -355,7 +351,11 @@ const CreateProduct = () => {
         }
         break;
     }
+
+    // Update error state
     setInputError(prev => ({ ...prev, ...errors }));
+
+    // Only proceed to the next tab if there are no errors
     if (isValid) {
       const nextTabIndex = tabs.findIndex(tab => tab.id === activeTab) + 1;
       if (nextTabIndex < tabs.length) {
@@ -372,7 +372,9 @@ const CreateProduct = () => {
       prodVariants: { ...product.prodVariants },
       productCategories: [...product.productCategories]
     };
+
     updatedProduct.prodVariants = Object.values(updatedProduct.prodVariants);
+
     updatedProduct.productCategories = updatedProduct.productCategories
       ? updatedProduct.productCategories.reduce((acc, item) => {
         acc[item.key] = item.value;
@@ -382,8 +384,8 @@ const CreateProduct = () => {
     formData.append("product", JSON.stringify(updatedProduct))
     formData.append("image", imageFile)
     addProduct(formData);
-  };
 
+  };
   const fetchProduct = async (id) => {
     try {
       const response = await B2B_API.get(`product/get/${id}`).json();
@@ -432,7 +434,7 @@ const CreateProduct = () => {
         brandId: product?.brand?.brandId,
         barcode: barcodeString,
         gstId: product?.gst?.gstId,
-        image: `http://192.168.1.13:8080${product?.image}`,
+        image: `http://136.185.1.251:8081${product?.image}`,
         productCategories: transformCategories(),
         prodVariants: transformData(),
         priceSetting: adjustPriceSetting(product?.priceSetting),
@@ -447,7 +449,7 @@ const CreateProduct = () => {
       };
       const fetchImageAsBlob = async () => {
         try {
-          const response = await fetch(`http://192.168.1.13:8080${product?.image}`);
+          const response = await fetch(`http://136.185.1.251:8081${product?.image}`);
           const contentType = response.headers.get('Content-Type');
           if (!contentType || !contentType.startsWith('image/')) {
             throw new Error('Expected an image, but received: ' + contentType);
@@ -471,6 +473,7 @@ const CreateProduct = () => {
     }
   };
 
+  console.log(product);
 
   return (
     <ProductContext.Provider value={{ product, handleChange, addProduct, setProduct, imageFile, setImageFile, inputError, setInputError }}>
@@ -493,7 +496,7 @@ const CreateProduct = () => {
           <B2BButton
             name={'Save'}
             onClick={handleProductSave}
-            disabled={!isFormValid}
+            disabled={!isFormValid} // Disable Save button if the form is not valid
           />
         }
       </div>
@@ -501,4 +504,3 @@ const CreateProduct = () => {
   );
 };
 export default CreateProduct;
-
