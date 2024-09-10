@@ -163,7 +163,7 @@ const ProductCategorys = () => {
                                                     <div className="vd-g-col vd-g-s-12">
                                                         <div className="vd-popover-tether-target-wrapper vd-popover-tether-target vd-popover-tether-abutted vd-popover-tether-abutted-left vd-popover-tether-element-attached-left vd-popover-tether-target-attached-left vd-popover-tether-pinned vd-popover-tether-pinned-top">
                                                             <div>
-                                                                <input placeholder="Select a category" disabled={pair.options.length === 0} style={{ width: '100%', cursor: pair.options.length === 0 ? 'not-allowed' : 'pointer' }} readOnly className="product-variant-select vd-dropdown-input " type="text" value={pair.heirarchyLabel} onClick={() => openModals(index, true)} onChange={() => { }} />
+                                                                <input placeholder="Select a category" disabled={pair?.key === null} style={{ width: '100%', cursor: pair.key === null ? 'not-allowed' : 'pointer' }} readOnly className="product-variant-select vd-dropdown-input " type="text" value={pair.heirarchyLabel} onClick={() => openModals(index, true)} onChange={() => { }} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -177,37 +177,46 @@ const ProductCategorys = () => {
                                                                                 <span className="vd-text-label vd-util-text-overflow-break-word vd-label">Search all categories</span>
                                                                                 <span><FontAwesomeIcon icon={faClose} onClick={() => openModals(index, false)} style={{ cursor: 'pointer' }} /></span>
                                                                             </label>
-                                                                            <input className="vd-input" type="text" id="search-input" placeholder="Enter a category name" />
                                                                         </div>
-                                                                        <div role="list">
-                                                                            <div role="listitem" className="vd-mt4">
-                                                                                <div className="vd-ml6 vd-mr6">
-                                                                                    <span className="vd-text-signpost vd-util-text-overflow-break-word">Level {pair.count}</span>
-                                                                                    <hr className="vd-hr vd-mt2" />
-                                                                                </div>
-                                                                                <div className='child-values'>
-                                                                                    {pair.options.map((cat) => (
-                                                                                        <ul className="vd-popover-list" key={cat.id}>
-                                                                                            <li
-                                                                                                tabIndex="0"
-                                                                                                className="vd-popover-list-item"
-                                                                                                onClick={() => selectcategory(index, cat)}
-                                                                                            >
-                                                                                                <div className="helios-c-PJLV helios-c-PJLV-icepvqO-css">
-                                                                                                    <div className="helios-c-PJLV helios-c-PJLV-iPJLV-css">
-                                                                                                        <div className="helios-c-PJLV helios-c-PJLV-ilkBNdM-css">
-                                                                                                            <span>
-                                                                                                                <span className="">{cat.name}</span>
-                                                                                                            </span>
+                                                                        {
+                                                                            !pair.value || pair.options.length > 0 ?
+                                                                                <div className="vd-mt6 vd-ml6 vd-mr6 vd-mb3">
+                                                                                    <input className="vd-input" type="text" id="search-input" placeholder="Enter a category name" />
+                                                                                </div> : ''
+                                                                        }
+
+                                                                        {
+                                                                            !pair.value || pair.options.length > 0 ?
+                                                                                <div role="list">
+                                                                                    <div role="listitem" className="vd-mt4">
+                                                                                        <div className="vd-ml6 vd-mr6">
+                                                                                            <span className="vd-text-signpost vd-util-text-overflow-break-word">Level {pair.count}</span>
+                                                                                            <hr className="vd-hr vd-mt2" />
+                                                                                        </div>
+                                                                                        <div className='child-values'>
+                                                                                            {pair.options.map((cat) => (
+                                                                                                <ul className="vd-popover-list" key={cat.id}>
+                                                                                                    <li
+                                                                                                        tabIndex="0"
+                                                                                                        className="vd-popover-list-item"
+                                                                                                        onClick={() => selectcategory(index, cat)}
+                                                                                                    >
+                                                                                                        <div className="helios-c-PJLV helios-c-PJLV-icepvqO-css">
+                                                                                                            <div className="helios-c-PJLV helios-c-PJLV-iPJLV-css">
+                                                                                                                <div className="helios-c-PJLV helios-c-PJLV-ilkBNdM-css">
+                                                                                                                    <span>
+                                                                                                                        <span className="">{cat.name}</span>
+                                                                                                                    </span>
+                                                                                                                </div>
+                                                                                                            </div>
                                                                                                         </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </li>
-                                                                                        </ul>
-                                                                                    ))}
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            ))}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div> : ''
+                                                                        }
                                                                     </div>
                                                                     {pair.heirarchyLabel && (
                                                                         <div className="vd-popover-actions">

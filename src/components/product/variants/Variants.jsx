@@ -168,7 +168,7 @@ const Variants = () => {
       {!createUser && (
         <>
           <div className='user--container'>
-            <Text size='lg'>Varient Details</Text>
+            <Text size='lg'>Variant Details</Text>
             <div className='right--section'>
               <B2BButton
                 style={{ color: '#000' }}

@@ -138,26 +138,26 @@ const Role = () => {
 
   const json = [
     {
-      label: "ROLL ID",
+      label: "Role ID",
       value: role.roleId,
       onChange: (event) => handleChange(event, 'roleId'),
       type: "text",
-      placeholder: "ROLL ID",
+      placeholder: "Role ID",
       disable: true
     },
     {
-      label: "ROLL Name",
+      label: "Role Name",
       value: role.name,
       onChange: (event) => handleChange(event, 'name'),
       type: "text",
-      placeholder: "ROLL Name"
+      placeholder: "Role Name"
     },
     {
-      label: "ROLL Description",
+      label: "Role Description",
       value: role.description,
       onChange: (event) => handleChange(event, 'description'),
       type: "text",
-      placeholder: "ROLL Description"
+      placeholder: "Role Description"
     },
     {
       label: "Status",

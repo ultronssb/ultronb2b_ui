@@ -10,8 +10,8 @@ import ProductTax from './ProductTax';
 import ProductVariant from './ProductVariant';
 import notify from '../../../utils/Notification';
 import ProductDimension from './ProductDimension';
-import _, { isEmpty, isNull } from 'lodash';
-
+import _, { constant, isEmpty, isNull } from 'lodash';
+import { validateProductDescription, validateProductName } from '../../../utils/Validation';
 export const ProductContext = createContext(null);
 
 const CreateProduct = () => {
@@ -56,7 +56,7 @@ const CreateProduct = () => {
 
     },
     fabricContent: {
-      fccCode: "",
+      value: "",
       composition: {}
     },
 
@@ -82,6 +82,8 @@ const CreateProduct = () => {
   const [inputError, setInputError] = useState({
     articleNameError: false,
     articleNameErrorMessage: '',
+    descError: false,
+    descErrorMessage: '',
     brandIdError: false,
     brandIdErrorMessage: '',
     barcodeError: false,
@@ -140,7 +142,10 @@ const CreateProduct = () => {
     //   setInputError((prev) => ({ ...prev, [fieldType + 'Error']: false, [fieldType + 'ErrorMessage']: '' }))
     // }
     setInputError("")
+    if (fieldType === "articleName") {
+      const { value } = event.target;
 
+    }
     if (fieldType === "UOM") {
       const { value, checked } = event.target;
       const { otherInformation } = product;
@@ -230,20 +235,54 @@ const CreateProduct = () => {
     }
   };
 
-  const handleNextTab = () => {
+  const handleNextTab = async () => {
     let isValid = true;
     const errors = {};
 
     switch (activeTab) {
       case "1": // Product Type Tab
+        // Validate article name
         if (isEmpty(product?.articleName)) {
           errors.articleNameError = true;
           errors.articleNameErrorMessage = "Product Name is Required!";
           isValid = false;
+        } else if (!validateProductName(product?.articleName)) {
+          errors.articleNameError = true;
+          errors.articleNameErrorMessage = "Special characters are not allowed!";
+          isValid = false;
+        } else {
+          try {
+            const result = await B2B_API.get(`product/productname/${product?.articleName}`).json();
+
+            // Check if product ID exists and validate product name
+            if (product?.id) {
+              isValid = true;
+            } else {
+              if (result?.response) {
+                errors.articleNameError = true;
+                errors.articleNameErrorMessage = "Product Name already exists";
+                isValid = false;
+              }
+            }
+          } catch (error) {
+            console.error("Error fetching product name:", error);
+            errors.articleNameError = true;
+            errors.articleNameErrorMessage = "An error occurred while validating the product name.";
+            isValid = false;
+          }
         }
+
+        // Validate brand ID
         if (isEmpty(product?.brandId)) {
           errors.brandIdError = true;
           errors.brandIdErrorMessage = "Brand Name is Required!";
+          isValid = false;
+        }
+
+        // Validate product description
+        if (!validateProductDescription(product?.description)) {
+          errors.descError = true;
+          errors.descErrorMessage = "Please use only letters, numbers, spaces, $, and ₹";
           isValid = false;
         }
         break;

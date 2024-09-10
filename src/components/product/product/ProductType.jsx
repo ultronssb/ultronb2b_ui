@@ -126,7 +126,8 @@ const ProductType = () => {
             fieldType: 'textAreaField',
             placeholder: "Enter Description",
             rows: 1,
-            cols: 50
+            cols: 50,
+            error: inputError.descErrorMessage
         },
         {
             label: "Barcode",
@@ -196,17 +197,22 @@ const ProductType = () => {
                         }
                         {
                             field.fieldType === 'textAreaField' && (
-                                <textarea
-                                    value={field.value}
-                                    className='form-input-textarea'
-                                    disabled={field.disabled}
-                                    onChange={field.onChange}
-                                    type={field.type}
-                                    required={field.required}
-                                    placeholder={field.placeholder}
-                                />
+                                <div style={{display:'flex', flexDirection:'column'}}>
+                                    <textarea
+                                        value={field.value}
+                                        className='form-input-textarea'
+                                        disabled={field.disabled}
+                                        onChange={field.onChange}
+                                        required={field.required}
+                                        placeholder={field.placeholder}
+                                    />
+                                    {field.error && (
+                                        <div className="error-message">{field.error}</div>
+                                    )}
+                                </div>
                             )
                         }
+
                         {field.fieldType === "checkBoxField" && (
                             <div className="checkbox-group">
                                 {field.options.map((option, idx) => (

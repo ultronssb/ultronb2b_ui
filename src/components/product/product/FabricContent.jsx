@@ -18,8 +18,6 @@ const FabricContent = () => {
     const [fCCValue, setFCCValue] = useState('');
 
     useEffect(() => {
-        setFCCValue(product?.fabricContent?.value
-        )
         fetchVariant();
         setFCCValue(product?.fabricContent?.value)
     }, []);
@@ -117,7 +115,6 @@ const FabricContent = () => {
         fabricContentCode(pairsObject);
         setInputError("")
     };
-
     const fabricContentCode = async (newPairs) => {
         try {
             const results = await Promise.all(
@@ -129,7 +126,14 @@ const FabricContent = () => {
                 })
             );
             const formattedFCC = results.join(' ');
-            setFCCValue(formattedFCC);
+            setProduct(prevState => ({
+                ...prevState,
+                fabricContent: {
+                    ...prevState.fabricContent,
+                   value:formattedFCC
+                }
+            }));
+            setFCCValue(formattedFCC)
         } catch (error) {
             console.error("Error fetching category data: ", error);
         }
@@ -144,6 +148,11 @@ const FabricContent = () => {
         const key = newPairs[index].key
         newPairs.splice(index, 1);
         setSelectedPairs(newPairs);
+        const pairsObject = newPairs.reduce((acc, pair) => {
+            acc[pair.key] = pair.value;
+            return acc;
+        }, {});
+        fabricContentCode(pairsObject)
         setProduct(prevState => {
             const { [key]: _, ...newComposition } = prevState.fabricContent.composition;
 
@@ -151,7 +160,8 @@ const FabricContent = () => {
                 ...prevState,
                 fabricContent: {
                     ...prevState.fabricContent,
-                    composition: newComposition
+                    composition: newComposition,
+                    value:fCCValue
                 }
             };
         });
