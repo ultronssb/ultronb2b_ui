@@ -414,15 +414,37 @@ const CreateProduct = () => {
 
         return result;
       };
-      const transformCategories = () => {
+      const fetchHeirarchy = async (parentId) => {
+        let heirarchy = [];
+        let currentId = parentId;
+        while (currentId) {
+          try {
+            const res = await B2B_API.get(`product-category/category/${currentId}`).json();
+            const category = res.response;
+            if (category) {
+              heirarchy.push(category.name);
+              currentId = category.parentId;
+            } else {
+              currentId = null;
+            }
+          } catch (error) {
+            console.error('Error category : ', error);
+            currentId = null;
+          }
+        }
+        return heirarchy.reverse();
+      }
+
+      const transformCategories = async () => {
         const result = [];
 
-        for (const [key, value] of Object.entries(product?.productCategories
-        )) {
+        for (const [key, value] of Object.entries(product?.productCategories || {})) {
+          const heirarchy = await fetchHeirarchy(value.categoryId);
+          const heirarchyLabel = heirarchy?.slice(1).join('/');
           result.push({
             key: key,
             value: value,
-            heirarchyLabel: '',
+            heirarchyLabel: heirarchyLabel,
             options: value.options || [],
             openModal: false
           });
@@ -445,7 +467,7 @@ const CreateProduct = () => {
         barcode: barcodeString,
         gstId: product?.gst?.gstId,
         image: `http://192.168.1.13:8080${product?.image}`,
-        productCategories: transformCategories(),
+        productCategories: await transformCategories(),
         prodVariants: transformData(),
         priceSetting: adjustPriceSetting(product?.priceSetting),
       });
