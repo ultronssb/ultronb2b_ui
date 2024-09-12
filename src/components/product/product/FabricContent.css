@@ -6,6 +6,11 @@
     padding: 24px 48px;
 }
 
+.fabric-content-inner-top {
+    display: flex;
+    gap: 5.2rem;
+}
+
 .fabric-content-inner-top .fabric-label {
     font-size: 14px;
     font-weight: 600;
