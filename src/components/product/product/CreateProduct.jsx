@@ -15,16 +15,17 @@ import { validateProductDescription, validateProductName } from '../../../utils/
 export const ProductContext = createContext(null);
 
 const CreateProduct = () => {
-  const [error, setError] = useState('');
-  const tabs = [
-    { id: "1", name: "Product Type" },
-    { id: "2", name: "Category Type" },
-    { id: "3", name: "Fabric Content" },
-    { id: "4", name: "Dimensions" },
-    { id: "5", name: "Price" },
-    { id: "6", name: "Variant" },
+  const initialTabs = [
+    { id: "1", name: "Product Type", disabled: false },
+    { id: "2", name: "Category Type", disabled: true },
+    { id: "3", name: "Fabric Content", disabled: true },
+    { id: "4", name: "Dimensions", disabled: true },
+    { id: "5", name: "Price", disabled: true },
+    { id: "6", name: "Variant", disabled: true },
 
   ];
+
+  const [tabs, setTabs] = useState(initialTabs)
 
   const initialState = {
     productId: '',
@@ -32,7 +33,7 @@ const CreateProduct = () => {
     articleCode: '',
     description: '',
     supplier: '',
-    isCreateBarcode: true,
+    barcode: '',
     tags: [],
     metrics: {
       weight: 0,
@@ -50,6 +51,9 @@ const CreateProduct = () => {
       }
     },
     prodVariants: {
+
+    },
+    productVariants:{
 
     },
     productCategories: {
@@ -78,18 +82,20 @@ const CreateProduct = () => {
   const [imageFile, setImageFile] = useState(null)
   const [activeTab, setActiveTab] = useState("1");
   const [isFormValid, setIsFormValid] = useState(false);
-  const [currentTab, setCurrentTab] = useState(0);
   const [inputError, setInputError] = useState({
     articleNameError: false,
     articleNameErrorMessage: '',
     descError: false,
     descErrorMessage: '',
+    uomError: false,
+    uomErrorMessage: '',
     brandIdError: false,
     brandIdErrorMessage: '',
     barcodeError: false,
     barcodeErrorMessage: '',
     categoryError: false,
     categoryErrorMessage: '',
+    categorysErrorMessage: '',
     fabricContentError: false,
     fabricContentErrorMessage: '',
     metricError: false,
@@ -108,7 +114,6 @@ const CreateProduct = () => {
     mrpErrorMessage: '',
     costPriceError: false,
     costPriceErrorMessage: '',
-
   })
 
   useEffect(() => {
@@ -124,7 +129,7 @@ const CreateProduct = () => {
     if (id) {
       fetchProduct(id);
     }
-  }, [location.search]);
+  }, [location.search])
 
   const validateProductVariants = () => {
     return !(
@@ -138,13 +143,9 @@ const CreateProduct = () => {
 
   const handleChange = (event, fieldType) => {
     const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
-    // if (value) {
-    //   setInputError((prev) => ({ ...prev, [fieldType + 'Error']: false, [fieldType + 'ErrorMessage']: '' }))
-    // }
     setInputError("")
     if (fieldType === "articleName") {
-      const { value } = event.target;
-
+      const { value } = event.target
     }
     if (fieldType === "UOM") {
       const { value, checked } = event.target;
@@ -162,16 +163,21 @@ const CreateProduct = () => {
           [child]: value
         }
       }));
+    } else if (fieldType === 'isCreateBarcode') {
+      setProduct(prev => ({
+        ...prev,
+        isCreateBarcode: event?.target?.value
+      }));
     } else {
       setProduct(prev => ({
         ...prev,
         [fieldType]: checkDirectValue(fieldType) ? event : event.target?.value,
       }));
     }
-    setInputError(prev => ({
-      ...prev,
-      [`${fieldType}ErrorMessage`]: ''
-    }));
+    // setInputError(prev => ({
+    //   ...prev,
+    //   [`${fieldType}ErrorMessage`]: ''
+    // }));
   };
 
   const addProduct = async (prod) => {
@@ -218,12 +224,11 @@ const CreateProduct = () => {
         return <ProductType />;
     }
   };
-  console.log(product, "pro");
 
   const handleTabClick = (index) => {
-    if (index === currentTab || index === currentTab + 1) {
-      setCurrentTab(index);
-      setActiveTab(tabs[index].id);
+    handleNextTab()
+    if (product.productId || !index.disabled) {
+      setActiveTab(index.id);
     }
   };
 
@@ -233,6 +238,24 @@ const CreateProduct = () => {
     if (prevTabIndex >= 0) {
       setActiveTab(tabs[prevTabIndex].id);
     }
+  };
+
+  const enableNextTab = (isDisabled) => {
+    setTabs((prevTabs) => {
+      const updatedTabs = prevTabs.map((tab, index) => {
+        // Find the tab with the matching id
+        if (tab.id === activeTab) {
+          const nextIndex = index + 1;
+          // If there is a next tab, enable it
+          if (nextIndex < prevTabs.length) {
+            prevTabs[nextIndex].disabled = isDisabled;
+          }
+        }
+        return tab;
+      });
+
+      return [...updatedTabs];
+    });
   };
 
   const handleNextTab = async () => {
@@ -271,20 +294,30 @@ const CreateProduct = () => {
             isValid = false;
           }
         }
-
-        // Validate brand ID
-        if (isEmpty(product?.brandId)) {
-          errors.brandIdError = true;
-          errors.brandIdErrorMessage = "Brand Name is Required!";
-          isValid = false;
-        }
-
         // Validate product description
         if (!validateProductDescription(product?.description)) {
           errors.descError = true;
           errors.descErrorMessage = "Please use only letters, numbers, spaces, $, and ₹";
           isValid = false;
         }
+        if (!product?.otherInformation?.unitOfMeasures?.isKg && !product?.otherInformation?.unitOfMeasures?.isRoll) {
+          errors.uomError = true,
+            errors.uomErrorMessage = "UOM Is Required !!"
+          isValid = false
+        }
+        if (isEmpty(product?.barcode)) {
+          errors.barcodeError = true;
+          errors.barcodeErrorMessage = "Barcode Is Required !!";
+          isValid = false
+
+        }
+
+        if (isValid) {
+          enableNextTab(false)
+        } else {
+          enableNextTab(true)
+        }
+        
         break;
 
       case "2": // Validate for category
@@ -296,11 +329,16 @@ const CreateProduct = () => {
           for (const pair of product.productCategories) {
             if (!pair.heirarchyLabel) {
               errors.categoryError = true;
-              errors.categoryErrorMessage = 'All Category-child fields are Required !!!';
+              errors.categorysErrorMessage = 'Child fields are Required !!!';
               isValid = false;
               break;
             }
           }
+        }
+        if (isValid) {
+          enableNextTab(false)
+        } else {
+          enableNextTab(true)
         }
         break;
       case "3": // Validate Fabric Content (FCC)
@@ -312,6 +350,11 @@ const CreateProduct = () => {
           errors.fabricContentError = true;
           errors.fabricContentErrorMessage = "FCC must be selected !!";
           isValid = false;
+        }
+        if (isValid) {
+          enableNextTab(false)
+        } else {
+          enableNextTab(true)
         }
         break;
 
@@ -328,6 +371,11 @@ const CreateProduct = () => {
         if (!metrics?.width || metrics.width <= 0) {
           errors.widthErrorMessage = 'Width must be greater than zero!';
           isValid = false;
+        }
+        if (isValid) {
+          enableNextTab(false)
+        } else {
+          enableNextTab(true)
         }
         break;
 
@@ -391,12 +439,15 @@ const CreateProduct = () => {
           errors.gstErrorMessage = "GST must be selected!";
           isValid = false;
         }
-        break;
-      case "6":
-        if (isEmpty(product.prodVariants)) {
-          errors.variantError = true;
-          errors.variantErrorMessage = 'At least one variant must be selected!';
-          isValid = false;
+        if (isValid) {
+          enableNextTab(false)
+        } else {
+          enableNextTab(true)
+        }
+        if (isValid) {
+          enableNextTab(false)
+        } else {
+          enableNextTab(true)
         }
         break;
     }
@@ -406,12 +457,31 @@ const CreateProduct = () => {
 
     // Only proceed to the next tab if there are no errors
     if (isValid) {
-      const nextTabIndex = tabs.findIndex(tab => tab.id === activeTab) + 1;
+      const currentTabIndex = tabs.findIndex((tab) => tab.id === activeTab);
+      const nextTabIndex = currentTabIndex + 1;
       if (nextTabIndex < tabs.length) {
         setActiveTab(tabs[nextTabIndex].id);
-        setCurrentTab(nextTabIndex)
+        // Enable the next tab
+        setTabs((prevTabs) =>
+          prevTabs.map((tab, index) =>
+            index === nextTabIndex ? { ...tab, disabled: false } : tab
+          )
+        );
       }
+    } else {
+      // Disable all subsequent tabs if validation fails
+      const currentTabIndex = tabs.findIndex((tab) => tab.id === activeTab);
+      setTabs((prevTabs) =>
+        prevTabs.map((tab, index) => ({
+          ...tab,
+          disabled: index > currentTabIndex, 
+        }))
+      );
+      
+      setActiveTab(activeTab); 
     }
+    console.log(activeTab,"act");
+    
   }
 
   const handleProductSave = async () => {
@@ -435,11 +505,17 @@ const CreateProduct = () => {
     addProduct(formData);
 
   };
+  const enableAllTabs = () => {
+    const updatedTabs = tabs.map((tab) => ({ ...tab, disabled: false }));
+    setTabs(updatedTabs);
+  };
+
   const fetchProduct = async (id) => {
     try {
-      const response = await B2B_API.get(`product/get/${id}`).json();
+      const response = await B2B_API.get(`product/${id}`).json();
       const product = response.response;
-      const barcodeString = product?.isCreateBarcode ? "true" : "false";;
+      const barcodeString = product?.isCreateBarcode ? "true" : "false";
+      enableAllTabs()
       const transformData = () => {
         const result = {};
         product?.productVariants.forEach(variant => {
@@ -453,6 +529,7 @@ const CreateProduct = () => {
 
         return result;
       };
+
       const fetchHeirarchy = async (parentId) => {
         let heirarchy = [];
         let currentId = parentId;
@@ -488,9 +565,9 @@ const CreateProduct = () => {
             openModal: false
           });
         }
-
         return result;
       };
+
       const adjustPriceSetting = (priceSetting) => {
         return {
           ...priceSetting,
@@ -543,12 +620,11 @@ const CreateProduct = () => {
       });
     }
   };
-
-  console.log(product);
+  console.log(product,"pro");
+  
 
   return (
     <ProductContext.Provider value={{ product, handleChange, addProduct, setProduct, imageFile, setImageFile, inputError, setInputError }}>
-      {error && <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>}
       <B2BTabs
         tabsData={tabs}
         justify={"flex-start"}
@@ -565,7 +641,8 @@ const CreateProduct = () => {
         {activeTab < "6" && <B2BButton name={'Next'} onClick={handleNextTab} />}
         {activeTab === "6" &&
           <B2BButton
-            name={'Save'}
+            name={product?.productId ? "Update" : "Save"}
+            id={product?.productId ? "Update" : "Save"}
             onClick={handleProductSave}
             disabled={!isFormValid} // Disable Save button if the form is not valid
           />

@@ -16,10 +16,12 @@ const FabricContent = () => {
     const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [], value: null }]);
     const [lastChild, setLastChild] = useState([]);
     const [fCCValue, setFCCValue] = useState('');
+    const [fabricValue, setFabricValue] = useState([]);
 
     useEffect(() => {
         fetchVariant();
         setFCCValue(product?.fabricContent?.value)
+        getfabricValues();
     }, []);
 
     useEffect(() => {
@@ -36,6 +38,7 @@ const FabricContent = () => {
             const category = categories.find(cat => cat.name === 'Fabric Content');
             setFabricContent(category);
             setSelectedPairsFromProduct()
+            
         } catch (error) {
             console.error('Error fetching variants:', error);
         }
@@ -78,44 +81,9 @@ const FabricContent = () => {
         return Object.keys(keyToNameMap).filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
     };
 
-    const handleSelectChange = (index, e) => {
-        const newPairs = [...selectedPairs];
-        newPairs[index].key = e;
-        setSelectedPairs(newPairs);
 
-        // clear FCC Error Message
-        setInputError(prev => ({
-            ...prev,
-            fabricContentError: false,
-            fabricContentErrorMessage: '',
-        }));
-
-    };
-
-    const handleMultiSelectChange = (index, e) => {
-        const newPairs = [...selectedPairs];
-        const value = e.target.value
-        newPairs[index].value = value;
-        const key = newPairs[index].key;
-        setSelectedPairs(newPairs)
-        setProduct(prevState => ({
-            ...prevState,
-            fabricContent: {
-                ...prevState.fabricContent,
-                composition: {
-                    ...prevState.fabricContent.composition,
-                    [key]: value
-                }
-            }
-        }));
-        const pairsObject = newPairs.reduce((acc, pair) => {
-            acc[pair.key] = pair.value;
-            return acc;
-        }, {});
-        fabricContentCode(pairsObject);
-        setInputError("")
-    };
     const fabricContentCode = async (newPairs) => {
+        
         try {
             const results = await Promise.all(
                 Object.entries(newPairs).map(async ([key, value]) => {
@@ -130,59 +98,234 @@ const FabricContent = () => {
                 ...prevState,
                 fabricContent: {
                     ...prevState.fabricContent,
-                   value:formattedFCC
+                    value: formattedFCC
                 }
             }));
-            setFCCValue(formattedFCC)
+            setFCCValue(formattedFCC);
         } catch (error) {
             console.error("Error fetching category data: ", error);
         }
     };
 
+    const handleSelectChange = (index, selectedValue) => {
+        const newPairs = [...selectedPairs];
+        const oldKey = newPairs[index].key;
+        newPairs[index].key = selectedValue || ''; 
+        if (!selectedValue) {
+            newPairs[index].value = '';
+        }
+    
+        setSelectedPairs(newPairs);
+    
+        setProduct(prevState => {
+            const updatedComposition = { ...prevState.fabricContent.composition };
+            if (oldKey && oldKey !== selectedValue) {
+                delete updatedComposition[oldKey];
+            }
+    
+      
+            if (selectedValue) {
+                updatedComposition[selectedValue] = newPairs[index].value || 0; 
+            }
+    
+            return {
+                ...prevState,
+                fabricContent: {
+                    ...prevState.fabricContent,
+                    composition: updatedComposition
+                }
+            };
+        });
+    
+        const pairsObject = newPairs.reduce((acc, pair) => {
+            if (pair.key && pair.value) {
+                acc[pair.key] = pair.value;
+            }
+            return acc;
+        }, {});
+    
+        if (Object.keys(pairsObject).length > 0) {
+            fabricContentCode(pairsObject);
+            setFCCValue(prev => {
+                const existingValues = prev ? prev.split(' ') : [];
+                const newValues = Object.entries(pairsObject).map(([key, value]) => {
+                    const fcc = keyToNameMap[key]?.substring(0, 3).toUpperCase() || '';
+                    return `${fcc}-${value}%`;
+                });
+                const updatedValues = [...new Set([...existingValues, ...newValues])].join(' ');
+                return updatedValues;
+            });
+        } else {
+            setFCCValue('');
+            setProduct(prevState => ({
+                ...prevState,
+                fabricContent: {
+                    ...prevState.fabricContent,
+                    value: ''
+                }
+            }));
+        }
+        setInputError(prev => ({
+            ...prev,
+            fabricContentError: false,
+            fabricContentErrorMessage: '',
+        }));
+    };
+
+    const handleMultiSelectChange = (index, e) => {
+        const newPairs = [...selectedPairs];
+        const value = e.target.value;
+        const key = newPairs[index].key;
+        if (key) {
+            newPairs[index].value = value;
+            setSelectedPairs(newPairs);
+            setProduct(prevState => ({
+                ...prevState,
+                fabricContent: {
+                    ...prevState.fabricContent,
+                    composition: {
+                        ...prevState.fabricContent.composition,
+                        [key]: value
+                    }
+                }
+            }));
+            const pairsObject = newPairs.reduce((acc, pair) => {
+                if (pair.key && pair.value) {
+                    acc[pair.key] = pair.value;
+                }
+                return acc;
+            }, {});
+            fabricContentCode(pairsObject);
+        }
+        setInputError("");
+    };
+
+
     const addNewPair = () => {
-        setSelectedPairs([...selectedPairs, { key: '', values: [] }]);
+        setSelectedPairs([...selectedPairs, { key: '', value: '' }]);
     };
 
     const removePair = (index) => {
         const newPairs = [...selectedPairs];
-        const key = newPairs[index].key
+        const removedKey = newPairs[index].key;
         newPairs.splice(index, 1);
         setSelectedPairs(newPairs);
         const pairsObject = newPairs.reduce((acc, pair) => {
-            acc[pair.key] = pair.value;
+            if (pair.key && pair.value) {
+                acc[pair.key] = pair.value;
+            }
             return acc;
         }, {});
-        fabricContentCode(pairsObject)
+        fabricContentCode(pairsObject);
         setProduct(prevState => {
-            const { [key]: _, ...newComposition } = prevState.fabricContent.composition;
-
+            const { [removedKey]: _, ...newComposition } = prevState.fabricContent.composition;
             return {
                 ...prevState,
                 fabricContent: {
                     ...prevState.fabricContent,
                     composition: newComposition,
-                    value:fCCValue
+                    value: fCCValue
                 }
             };
         });
     };
 
+
+    const getfabricValues = async () => {
+        try {
+            const res = await B2B_API.get(`fabric`).json();
+            setFabricValue(res?.response);
+        } catch (error) {
+            console.error("Error fetching fabric values: ", error);
+        }
+    };
+
+    const Changehandler = (selectedValue) => {
+        setFCCValue(prev => {
+            const existingValues = prev ? prev.split(' ').filter(v => v) : [];
+    
+            if (selectedValue) {
+                // Handle selection: Append the new value
+                if (!existingValues.includes(selectedValue)) {
+                    return `${prev ? prev + ' ' : ''}${selectedValue}`.trim();
+                }
+            } else {
+                // Handle deselection: Remove the value
+                if (existingValues.includes(selectedValue)) {
+                    const updatedValues = existingValues.filter(v => v !== selectedValue);
+                    return updatedValues.length > 0 ? updatedValues.join(' ') : '';
+                }
+            }
+    
+            return prev;
+        });
+    
+        // Handle any additional logic or errors
+        setInputError(prev => ({
+            ...prev,
+            fabricContentError: false,
+            fabricContentErrorMessage: '',
+        }));
+    
+        const pairsObject = newPairs.reduce((acc, pair) => {
+            if (pair.key && pair.value) {
+                acc[pair.key] = pair.value;
+            }
+            return acc;
+        }, {});
+    
+        if (Object.keys(pairsObject).length > 0) {
+            fabricContentCode(pairsObject);
+    
+            setFCCValue(prev => {
+                const existingValues = prev ? prev.split(' ').filter(v => v) : [];
+                const newValues = Object.values(pairsObject);
+                const updatedValues = [...new Set([...existingValues, ...newValues])].join(' ');
+                return updatedValues;
+            });
+        } else {
+            setFCCValue('');
+            setProduct(prevState => ({
+                ...prevState,
+                fabricContent: {
+                    ...prevState.fabricContent,
+                    value: ''
+                }
+            }));
+        }
+    };
+
     return (
         <section className="fabric-content-section">
             <div className='fabric-content-inner-top'>
-                <label className='fabric-label'>Fabric Content Code</label>
-                <B2BInput value={fCCValue} type='text' disabled='true' />
+                <div>
+                    <label className='fabric-label'>Fabric Content Code</label>
+                    <B2BInput value={fCCValue} type='text' disabled='true' />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'end' }}>
+                    <label className='fabric-label'></label>
+                    <B2BSelect
+                        value={product?.fabricValue}
+                        data={[...new Set(fabricValue.map(v => v?.value))]}
+                        onChange={(e) => Changehandler(e)}
+                        clearable={true}
+                        placeholder={"Select FCC Combination"}
+                    />
+
+                </div>
             </div>
             <div className='fabric-content-inner-bottom'>
                 <div className="fabric-content-g-row">
                     <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-4">
                         <label>
                             <span className="fabric-content-text-label">Fabric</span>
+                            <span className="error-message"> *</span>
                         </label>
                     </div>
                     <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-8">
                         <label>
                             <span className="fabric-content-text-label">Composition(%)</span>
+                            <span className="error-message"> *</span>
                         </label>
                     </div>
                 </div>
@@ -203,6 +346,7 @@ const FabricContent = () => {
                                 required={true}
                                 type="number"
                                 disabled={!pair.key}
+                                clearable={true}
                                 onChange={(e) => handleMultiSelectChange(index, e)}
                                 rightSection={<IconPercentage size={20} />}
                                 error={inputError?.fabricContentErrorMessage}
@@ -239,8 +383,3 @@ const FabricContent = () => {
 };
 
 export default FabricContent;
-
-
-
-
-

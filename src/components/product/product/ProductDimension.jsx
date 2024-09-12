@@ -36,7 +36,9 @@ const ProductDimension = () => {
         <form className='form-container' style={{ display: 'flex', gap: '5rem', justifyContent: 'center' }}>
             {json.map((field, index) => (
                 <div key={index} style={{ display: 'flex', flexDirection: 'column' }}>
-                    <label style={{ fontSize: '16px', fontWeight: '800' }}>{field.label}</label>
+                    <label style={{ fontSize: '16px', fontWeight: '800' }}>{field.label}
+                        <span className="error-message"> *</span>
+                    </label>
                     <B2BInput
                         value={field.value}
                         type={field.type}

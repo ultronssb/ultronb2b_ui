@@ -600,14 +600,19 @@ const ProductPrice = () => {
                                 />
                                 <div className="product-price-text-signpost product-price-util-text-overflow-break-word product-price-mb6">
                                     Mark Up
+                                    <span className="error-message"> *</span>
                                 </div>
                             </div>
                             <div className='table-container'>
                                 <table className="product-price-table-list">
                                     <thead>
                                         <tr className="product-price-table-list-row product-price-table-list-row--header">
-                                            <th className="product-price-table-list-head-cell">Cost Price</th>
-                                            <th className="product-price-table-list-head-cell">Markup %</th>
+                                            <th className="product-price-table-list-head-cell">Cost Price
+                                                <span className="error-message"> *</span>
+                                            </th>
+                                            <th className="product-price-table-list-head-cell">Markup %
+                                                <span className="error-message"> *</span>
+                                            </th>
                                             <th className="product-price-table-list-head-cell">Selling Price</th>
                                             <th className="product-price-table-list-head-cell">MRP</th>
                                             <th className="product-price-table-list-head-cell">Margin</th>
@@ -698,8 +703,12 @@ const ProductPrice = () => {
                                 <table className="product-price-table-list">
                                     <thead>
                                         <tr className="product-price-table-list-row product-price-table-list-row--header">
-                                            <th className="product-price-table-list-head-cell">MRP</th>
-                                            <th className="product-price-table-list-head-cell">Discount %</th>
+                                            <th className="product-price-table-list-head-cell">MRP
+                                                <span className="error-message"> *</span>
+                                            </th>
+                                            <th className="product-price-table-list-head-cell">Discount %
+                                                <span className="error-message"> *</span>
+                                            </th>
                                             <th className="product-price-table-list-head-cell">Cost Price</th>
                                             <th className="product-price-table-list-head-cell">Selling Price</th>
                                             <th className="product-price-table-list-head-cell">Margin</th>

@@ -21,6 +21,8 @@ const ProductCategorys = () => {
     }, []);
 
 
+    console.log("product : ", product);
+
     const fetchVariant = async () => {
         try {
             const res = await B2B_API.get('product-category').json();
@@ -35,11 +37,16 @@ const ProductCategorys = () => {
     };
 
     const setCategorysAndselectedPairs = () => {
-        const { productCategories } = product
+        const { productCategories } = product;
         if (_.size(productCategories) > 0) {
-            setSelectedPairs(productCategories)
+            const formattedCategories = productCategories.map(category => ({
+                ...category,
+                options: getParentChild(category.key) // Dynamically load child options
+            }));
+            setSelectedPairs(formattedCategories);
         }
     }
+
 
     const handleSelectChange = (index, selectedKey) => {
         const newPairs = [...selectedPairs];
@@ -48,14 +55,15 @@ const ProductCategorys = () => {
         newPairs[index].options = childCategory;
         setSelectedPairs(newPairs);
         setProduct(prev => ({ ...prev, productCategories: newPairs }));
-        setInputError("")
+        setInputError("");
     };
+
 
     const openModals = (index, value) => {
         const newPairs = [...selectedPairs];
-        newPairs[index].openModal = value
+        newPairs[index].openModal = value;
         setSelectedPairs(newPairs);
-    }
+    };
 
     const addNewPair = () => {
         setSelectedPairs([...selectedPairs, { ...initialState }]);
@@ -128,11 +136,13 @@ const ProductCategorys = () => {
                                 <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
                                     <label>
                                         <span className="product-variant-text-label">Category</span>
+                                        <span className="error-message"> *</span>
                                     </label>
                                 </div>
                                 <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-8">
                                     <label>
                                         <span className="product-variant-text-label">Level</span>
+                                        <span className="error-message"> *</span>
                                     </label>
                                 </div>
                             </div>
@@ -146,8 +156,6 @@ const ProductCategorys = () => {
                                                         <B2BSelect
                                                             value={pair.key}
                                                             data={getAvailableKeys(index)}
-                                                            scroll={false}
-                                                            styles={{ dropdown: { maxHeight: 250, overflowY: 'auto' } }}
                                                             onChange={(e) => handleSelectChange(index, e)}
                                                             error={inputError?.categoryErrorMessage}
                                                         />
@@ -158,6 +166,7 @@ const ProductCategorys = () => {
                                     </div>
                                     <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-8 product-variant-mb2">
                                         <div className="cn-attribute-values-row">
+
                                             <div className="cn-attribute-values">
                                                 <div className="product-variant-lozenge-group">
                                                     <div className="vd-g-col vd-g-s-12">
@@ -248,6 +257,9 @@ const ProductCategorys = () => {
                                                         )
                                                     }
                                                 </div>
+                                                <span className='error-message'>
+                                                    {inputError?.categorysErrorMessage}
+                                                </span>
                                             </div>
                                             {index > 0 && (
                                                 <button
