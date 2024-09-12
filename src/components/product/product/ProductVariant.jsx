@@ -1,8 +1,8 @@
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, FileInput, Group, Image, MultiSelect } from '@mantine/core';
+import { MultiSelect } from '@mantine/core';
 import _ from 'lodash';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
@@ -13,9 +13,7 @@ const ProductVariant = () => {
 
     const [attributes, setAttributes] = useState({});
     const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [] }]);
-    const [files, setFiles] = useState([]);
-    const [variantImages, setVariantImages] = useState({});
-    const inputRefs = useRef({});
+
     useEffect(() => {
         fetchVariant();
     }, []);
@@ -43,45 +41,18 @@ const ProductVariant = () => {
         }
     };
 
-    // const handleSelectChange = (index, selectedKey) => {
-    //     const newPairs = [...selectedPairs];
-    //     newPairs[index].key = selectedKey;
-    //     newPairs[index].values = [];
-    //     setSelectedPairs(newPairs);
-    //     setInputError(prev => ({
-    //         ...prev,
-    //         variantError: false,
-    //         variantErrorMessage: '',
-    //     }));
-    // };
-
-    const handleSelectChange = (index, selectedValue) => {
+    const handleSelectChange = (index, selectedKey) => {
         const newPairs = [...selectedPairs];
-        const oldKey = newPairs[index].key;
-        newPairs[index].key = selectedValue || '';
-        if (!selectedValue) {
-            newPairs[index].values = [];
-        }
-
+        newPairs[index].key = selectedKey;
+        newPairs[index].values = [];
         setSelectedPairs(newPairs);
-
-        setProduct(prevState => {
-            const updatedProdVariants = { ...prevState.prodVariants };
-            if (oldKey && oldKey !== selectedValue) {
-                delete updatedProdVariants[oldKey];
-            }
-
-
-            if (selectedValue) {
-                updatedProdVariants[selectedValue] = newPairs[index].values || 0;
-            }
-
-            return {
-                ...prevState,
-                prodVariants: updatedProdVariants
-            };
-        });
+        setInputError(prev => ({
+            ...prev,
+            variantError: false,
+            variantErrorMessage: '',
+        }));
     };
+
     const handleMultiSelectChange = (index, selectedValues) => {
         const newPairs = [...selectedPairs];
         newPairs[index].values = selectedValues;
@@ -112,75 +83,25 @@ const ProductVariant = () => {
         return Object.keys(attributes).filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
     };
 
-    // const handleFileChange = (e) => {
-    //     const selectedFiles = Array.from(e.target.files);
-    //     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
-    // };
-
-    // const handleRemove = (fileToRemove) => {
-    //     setFiles(files.filter((file) => file !== fileToRemove));
-    // };
-    // console.log(files, "files");
-    const handleFileChange = (e, variantId, productId) => {
-        const files = Array.from(e.target.files);
-
-        setVariantImages((prevImages) => {
-            const updatedImages = {
-                ...prevImages,
-                [variantId]: [...(prevImages[variantId] || []), ...files] // Add new files to existing files for this variant
-            };
-
-            // Update the productMedia in the response for the specific product and variant
-            const updatedResponse = product?.productVariants.map(product => {
-                if (product.id === productId) {
-                    return {
-                        ...product,
-                        productMedia: [...updatedImages[variantId]]
-                    };
-                }
-                return product;
-            });
-
-            console.log('Updated Response:', updatedResponse); // Log the updated response for debugging
-
-            return updatedImages;
-        });
-    };
-
-    // Handle removing images
-    const handleRemove = (variantId, fileToRemove) => {
-        setVariantImages((prevImages) => {
-            const updatedFiles = prevImages[variantId].filter((file) => file !== fileToRemove);
-
-            return {
-                ...prevImages,
-                [variantId]: updatedFiles
-            };
-        });
-    };
-
-
     return (
         <section className="product-variant-section">
             <div className="product-variant-section-wrap">
-                {/* <h2 className="product-variant-text-sub-heading">Variants</h2> */}
+                <h2 className="product-variant-text-sub-heading">Variants</h2>
                 <div className="product-variant-g-row">
-                    {/* <div className="product-variant-g-col product-variant-g-s-12 product-variant-g-m-3 product-variant-grid-settings-item">
+                    <div className="product-variant-g-col product-variant-g-s-12 product-variant-g-m-3 product-variant-grid-settings-item">
                         Choose up to three variable attributes for this product to create and manage SKUs and their inventory levels.
-                    </div> */}
+                    </div>
                     <div className="product-variant-g-col product-variant-g-s-12 product-variant-g-m-9">
                         <div>
                             <div className="product-variant-g-row">
                                 <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
                                     <label>
                                         <span className="product-variant-text-label">Variant Name (e.g. colour)</span>
-                                        <span className="error-message"> *</span>
                                     </label>
                                 </div>
                                 <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-8">
                                     <label>
                                         <span className="product-variant-text-label">Value (e.g. Green)</span>
-                                        <span className="error-message"> *</span>
                                     </label>
                                 </div>
                             </div>
@@ -196,7 +117,11 @@ const ProductVariant = () => {
                                                             data={getAvailableKeys(index)}
                                                             clearable={true}
                                                             onChange={(e) => handleSelectChange(index, e)}
+                                                            error={inputError.variantError ? inputError.variantError : null}
                                                         />
+                                                        {inputError?.variantError && (
+                                                            <div className="error-message">{inputError?.variantErrorMessage}</div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -213,7 +138,6 @@ const ProductVariant = () => {
                                                             : []}
                                                         onChange={(values) => handleMultiSelectChange(index, values)}
                                                         value={Array.isArray(pair.values) ? pair.values : []}
-                                                        clearable={true}
                                                     />
                                                 </div>
                                             </div>
@@ -244,76 +168,9 @@ const ProductVariant = () => {
                                     </div>
                                 )}
                             </div>
-
                         </div>
                     </div>
                 </div>
-            </div>
-            {/* <div>
-                <input
-                    type="file"
-                    ref={inputRef}
-                    style={{ display: 'none' }}
-                    accept="image/*"
-                    multiple
-                    onChange={(e)=>handleFileChange(e)}
-                />
-
-                <Button onClick={() => inputRef.current.click()}>Upload Images</Button>
-
-                <Group mt="md">
-                    {files.map((file, index) => (
-                        <div key={index}>
-                            <Image src={URL.createObjectURL(file)} alt={file.name} width={100} height={100} />
-                            <p>{file.name}</p> 
-                            <Button mt="sm" onClick={() => handleRemove(file)}>Remove</Button>
-                        </div>
-                    ))}
-                </Group>
-            </div> */}
-
-            <div>
-                <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                        <tr>
-                            <th>Variant</th>
-                            <th>Values</th>
-                            <th>Images</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {product?.productVariants.map(product =>
-                            product.variants.map(variant => (
-                                <tr key={variant.id}>
-                                    <td>{variant.name}</td>
-                                    <td>{variant.value}</td>
-                                    <td>
-                                        {variantImages[variant.id] && variantImages[variant.id].map((file, index) => (
-                                            <div key={index} style={{ display: 'inline-block', marginRight: '10px' }}>
-                                                <img src={URL.createObjectURL(file)} alt={file.name} width={50} height={50} />
-                                                <p>{file.name}</p>
-                                                <button onClick={() => handleRemove(variant.id, file)}>Remove</button>
-                                            </div>
-                                        ))}
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="file"
-                                            ref={ref => inputRefs.current[variant.id] = ref}
-                                            style={{ display: 'none' }}
-                                            accept="image/*"
-                                            multiple
-                                            onChange={(e) => handleFileChange(e, variant.id)}
-                                        />
-                                        <button onClick={() => inputRefs.current[variant.id].click()}>
-                                            Upload Images
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
             </div>
         </section>
     );

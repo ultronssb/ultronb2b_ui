@@ -12,7 +12,7 @@ import { head } from 'lodash';
 
 const ProductType = () => {
     const { stateData } = useContext(ActiveTabContext);
-    const [errorMessage, setErrorMessage] = useState('');
+
     const { product, handleChange, setProduct, setImageFile, imageFile, inputError } = useContext(ProductContext);
     const [brand, setBrand] = useState([]);
     const resetRef = useRef(null);
@@ -43,7 +43,7 @@ const ProductType = () => {
 
     const clearFile = () => {
         setProduct((prevProduct) => ({
-            ...prevProduct, image: ''
+            ...prevProduct,
         }));
         if (resetRef.current) {
             resetRef.current();
@@ -53,28 +53,18 @@ const ProductType = () => {
     };
 
     const fileChange = (file) => {
-        const MAX_SIZE_BYTES = 3 * 1024 * 1024;
-
         if (file) {
-            if (file.size > MAX_SIZE_BYTES) {
-                setImageFile(null);
+            setImageFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
                 setProduct((prevProduct) => ({
                     ...prevProduct,
-                    image: '',
+                    image: reader.result,
                 }));
-            } else {
-                setImageFile(file);
-                const reader = new FileReader()
-                reader.onloadend = () => {
-                    setProduct((prevProduct) => ({
-                        ...prevProduct,
-                        image: reader.result,
-                    }));
-                };
-                reader.readAsDataURL(file);
-            }
+            };
+            console.log(product.image)
+            reader.readAsDataURL(file);
         } else {
-            setErrorMessage('');
             setImageFile(null);
             setProduct((prevProduct) => ({
                 ...prevProduct,
@@ -100,7 +90,9 @@ const ProductType = () => {
             onChange: (event) => handleChange(event, "brandId"),
             type: "select",
             fieldType: 'selectField',
+            required: true,
             placeholder: "Enter Brand",
+            error: inputError.brandIdErrorMessage
         },
         {
             label: "Product Tag",
@@ -123,9 +115,8 @@ const ProductType = () => {
             ],
             name: 'UOM',
             placeholder: "Select UOM Type",
-            require: true,
+            required: true,
             className: "form-group",
-            error: inputError.uomErrorMessage,
         },
         {
             label: "Description",
@@ -143,7 +134,6 @@ const ProductType = () => {
             type: 'radio',
             value: product.isCreateBarcode,
             fieldType: 'radioField',
-            require: true,
             options: [
                 { label: "Yes", value: "true" },
                 { label: "No", value: "false" }
@@ -151,15 +141,12 @@ const ProductType = () => {
             placeholder: "Enter Description",
             onChange: (event) => handleChange(event, "barcode"),
             name: "barcode",
-            error: inputError?.barcodeErrorMessage
         }
     ];
 
     const handleCancel = () => {
         navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
     }
-    console.log(imageFile, "img");
-
     return (
         <div className='productType-container' style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -168,9 +155,7 @@ const ProductType = () => {
             <form className='form-container'>
                 {json?.map((field, index) => (
                     <div key={index} className={field.className ? field.className : "form-group"}>
-                        <label className='form-label'>{field.label}
-                            {field.require && <span className="error-message"> *</span>}
-                        </label>
+                        <label className='form-label'>{field.label}</label>
                         {
                             field.fieldType === 'textField' && (
                                 <B2BInput
@@ -180,6 +165,7 @@ const ProductType = () => {
                                     disabled={field.disabled}
                                     onChange={field.onChange}
                                     type={field.type}
+                                    required={field.required}
                                     placeholder={field.placeholder}
                                     error={field.error}
                                 />
@@ -211,12 +197,13 @@ const ProductType = () => {
                         }
                         {
                             field.fieldType === 'textAreaField' && (
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <div style={{display:'flex', flexDirection:'column'}}>
                                     <textarea
                                         value={field.value}
                                         className='form-input-textarea'
                                         disabled={field.disabled}
                                         onChange={field.onChange}
+                                        required={field.required}
                                         placeholder={field.placeholder}
                                     />
                                     {field.error && (
@@ -234,6 +221,7 @@ const ProductType = () => {
                                             type={field.type}
                                             value={option.value}
                                             onChange={field.onChange}
+                                            required={field.required}
                                             checked={
                                                 product?.otherInformation.unitOfMeasures?.[option.value] || false
                                             }
@@ -241,11 +229,6 @@ const ProductType = () => {
                                         <label className='checkbox-label'>{option.label}</label>
                                     </div>
                                 ))}
-                                {field?.error && (
-                                    <span className='error-message'>
-                                        {field?.error}
-                                    </span>
-                                )}
                             </div>
                         )}
                         {field.fieldType === "radioField" && (
@@ -256,17 +239,12 @@ const ProductType = () => {
                                             type="radio"
                                             value={option.value}
                                             name={field.name}
-                                            onChange={field?.onChange}
-                                            checked={product?.barcode === option?.value}
+                                            onChange={field.onChange}
+                                            checked={product.barcode === option.value}
                                         />
                                         <label className='radio-label'>{option.label}</label>
                                     </div>
                                 ))}
-                                {field?.error && (
-                                    <span className='error-message'>
-                                        {field?.error}
-                                    </span>
-                                )}
                             </div>
                         )}
 
@@ -286,12 +264,10 @@ const ProductType = () => {
                             <img
                                 src={imageFile ? URL.createObjectURL(imageFile) : ''
                                 }
-                                style={{ width: '150px', height: 'auto', marginTop: '10px' }}
+                                style={{ width: '300px', height: 'auto', marginTop: '10px' }}
                             />
-                            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                         </div>
                     )}
-                    {!product.image ? <p style={{color:'#ff6969'}}>Note * File Should be less than 3mb</p> : ""}
                 </div>
             </form>
         </div>

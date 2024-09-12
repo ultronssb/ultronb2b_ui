@@ -90,7 +90,7 @@ const Articles = () => {
 
   const editVarient = (varobj) => {
     setIsCreateProduct(true);
-    navigate(`/product/product/create?id=${varobj.productId}`, { state: { ...stateData, tabs: stateData.childTabs } });
+    navigate(`/product/product/create?id=${varobj.id}`, { state: { ...stateData, tabs: stateData.childTabs } });
     setProduct((prev => ({ ...prev, ...varobj })));
   };
 

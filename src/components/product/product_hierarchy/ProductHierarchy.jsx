@@ -16,7 +16,7 @@ const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children }) => 
   return (
     <div style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px`, display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        <label style={{ width: '9rem' }}>Level {level}</label>
+        <label style={{ width: '110px' }}>Level {level}</label>
         {level < 4 && level > 1 && (<FontAwesomeIcon icon={faArrowTurnUp} style={{ transform: 'rotate(90deg)', marginRight: '20px' }} />)}
         <input
           type="text"
@@ -91,7 +91,6 @@ const ProductHierarchy = () => {
   const [groups, setGroups] = useState([]);
   const [categoryRowCount, setCategoryRowCount] = useState(0);
   const [categoryPagination, setCategoryPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const [taxonomy, setTaxonomy] = useState([]);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -171,7 +170,6 @@ const ProductHierarchy = () => {
 
   useEffect(() => {
     fetchCategory();
-    getAllTaxonomy();
   }, []);
 
 
@@ -253,17 +251,11 @@ const ProductHierarchy = () => {
     navigate(`/product/product-hierarchy?id=${categoryId}`, { state: { ...stateData, tabs: stateData.childTabs } });
   };
 
-  const sortCategories = (categories) => {
-    return _.sortBy(categories, 'categoryId').map(category => ({
-      ...category, child: category.child ? sortCategories(category.child) : []
-    }));
-  }
-
   const fetchCategory = async () => {
     try {
       const response = await B2B_API.get('product-category').json();
-      const sortedData = sortCategories(response?.response);
-      setProductCategories(sortedData || []);
+      setProductCategories(response?.response || []);
+      console.log(response.response);
     } catch (error) {
       notify({
         title: "Error!!",
@@ -273,15 +265,6 @@ const ProductHierarchy = () => {
       });
     }
   };
-
-  const getAllTaxonomy = async () => {
-    const res = await B2B_API.get("taxonomy").json();
-    setTaxonomy(res.response);
-    console.log(res.response, "taxo");
-
-  }
-  console.log(productCategories, "cat");
-
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -310,15 +293,6 @@ const ProductHierarchy = () => {
           {
             isCreateCategory === true && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div className='group-input'>
-                  <label>Taxonomy Node</label>
-                  <B2BSelect
-                    data={taxonomy.map(t => t?.name)}
-                    required={true}
-                    onChange={(event) => handleSelectChange(event)}
-                    clearable={true}
-                  />
-                </div>
                 <div className='group-input'>
                   <label>Group Name</label>
                   <B2BSelect

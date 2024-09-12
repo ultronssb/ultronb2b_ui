@@ -22,7 +22,7 @@ const B2BTabs = ({ tabsData = [], grow, justify, onClick, variant, margin, activ
     <Tabs color="var(--tab-label)"  key={activeId} defaultValue={activeId} onChange={(value) => onClick(tabsData.find(tab => tab.id === value))} variant={variant} style={{ marginBottom: margin, '--tabs-list-border-width': '1px'}}>
       <Tabs.List grow={grow} justify={justify}>
         {tabsData.map((tab) => (
-          <StyledTab  key={tab.id} value={tab.id} disabled={tab.disabled}>
+          <StyledTab  key={tab.id} value={tab.id}>
             {tab.name}
           </StyledTab>
         ))}
