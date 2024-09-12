@@ -43,18 +43,6 @@ const ProductVariant = () => {
         }
     };
 
-    // const handleSelectChange = (index, selectedKey) => {
-    //     const newPairs = [...selectedPairs];
-    //     newPairs[index].key = selectedKey;
-    //     newPairs[index].values = [];
-    //     setSelectedPairs(newPairs);
-    //     setInputError(prev => ({
-    //         ...prev,
-    //         variantError: false,
-    //         variantErrorMessage: '',
-    //     }));
-    // };
-
     const handleSelectChange = (index, selectedValue) => {
         const newPairs = [...selectedPairs];
         const oldKey = newPairs[index].key;
@@ -112,62 +100,11 @@ const ProductVariant = () => {
         return Object.keys(attributes).filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
     };
 
-    // const handleFileChange = (e) => {
-    //     const selectedFiles = Array.from(e.target.files);
-    //     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
-    // };
-
-    // const handleRemove = (fileToRemove) => {
-    //     setFiles(files.filter((file) => file !== fileToRemove));
-    // };
-    // console.log(files, "files");
-    const handleFileChange = (e, variantId, productId) => {
-        const files = Array.from(e.target.files);
-
-        setVariantImages((prevImages) => {
-            const updatedImages = {
-                ...prevImages,
-                [variantId]: [...(prevImages[variantId] || []), ...files] // Add new files to existing files for this variant
-            };
-
-            // Update the productMedia in the response for the specific product and variant
-            const updatedResponse = product?.productVariants.map(product => {
-                if (product.id === productId) {
-                    return {
-                        ...product,
-                        productMedia: [...updatedImages[variantId]]
-                    };
-                }
-                return product;
-            });
-
-            console.log('Updated Response:', updatedResponse); // Log the updated response for debugging
-
-            return updatedImages;
-        });
-    };
-
-    // Handle removing images
-    const handleRemove = (variantId, fileToRemove) => {
-        setVariantImages((prevImages) => {
-            const updatedFiles = prevImages[variantId].filter((file) => file !== fileToRemove);
-
-            return {
-                ...prevImages,
-                [variantId]: updatedFiles
-            };
-        });
-    };
-
-
+   
     return (
         <section className="product-variant-section">
             <div className="product-variant-section-wrap">
-                {/* <h2 className="product-variant-text-sub-heading">Variants</h2> */}
                 <div className="product-variant-g-row">
-                    {/* <div className="product-variant-g-col product-variant-g-s-12 product-variant-g-m-3 product-variant-grid-settings-item">
-                        Choose up to three variable attributes for this product to create and manage SKUs and their inventory levels.
-                    </div> */}
                     <div className="product-variant-g-col product-variant-g-s-12 product-variant-g-m-9">
                         <div>
                             <div className="product-variant-g-row">
@@ -248,72 +185,6 @@ const ProductVariant = () => {
                         </div>
                     </div>
                 </div>
-            </div>
-            {/* <div>
-                <input
-                    type="file"
-                    ref={inputRef}
-                    style={{ display: 'none' }}
-                    accept="image/*"
-                    multiple
-                    onChange={(e)=>handleFileChange(e)}
-                />
-
-                <Button onClick={() => inputRef.current.click()}>Upload Images</Button>
-
-                <Group mt="md">
-                    {files.map((file, index) => (
-                        <div key={index}>
-                            <Image src={URL.createObjectURL(file)} alt={file.name} width={100} height={100} />
-                            <p>{file.name}</p> 
-                            <Button mt="sm" onClick={() => handleRemove(file)}>Remove</Button>
-                        </div>
-                    ))}
-                </Group>
-            </div> */}
-
-            <div>
-                <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                        <tr>
-                            <th>Variant</th>
-                            <th>Values</th>
-                            <th>Images</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {product?.productVariants.map(product =>
-                            product.variants.map(variant => (
-                                <tr key={variant.id}>
-                                    <td>{variant.name}</td>
-                                    <td>{variant.value}</td>
-                                    <td>
-                                        {variantImages[variant.id] && variantImages[variant.id].map((file, index) => (
-                                            <div key={index} style={{ display: 'inline-block', marginRight: '10px' }}>
-                                                <img src={URL.createObjectURL(file)} alt={file.name} width={50} height={50} />
-                                                <p>{file.name}</p>
-                                                <button onClick={() => handleRemove(variant.id, file)}>Remove</button>
-                                            </div>
-                                        ))}
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="file"
-                                            ref={ref => inputRefs.current[variant.id] = ref}
-                                            style={{ display: 'none' }}
-                                            accept="image/*"
-                                            multiple
-                                            onChange={(e) => handleFileChange(e, variant.id)}
-                                        />
-                                        <button onClick={() => inputRefs.current[variant.id].click()}>
-                                            Upload Images
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
             </div>
         </section>
     );
