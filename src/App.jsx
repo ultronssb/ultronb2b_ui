@@ -32,12 +32,12 @@ import HsnSac from './components/product/tax/HsnSac';
 import TaxMasters from './components/product/tax/TaxMasters';
 // import CreateVariant from './components/product/variants/CreateVariant';
 import Approved from './components/crm/Approved';
-import Create from './components/crm/Create';
-import CreateNew from './components/crm/CreateNew';
+import CustomerCreate from './components/crm/CustomerCreate';
+import LoyaltyCreate from './components/crm/LoyaltyCreate';
 import Customer from './components/crm/Customer';
-import Draft from './components/crm/Draft';
+import CustomerDraft from './components/crm/CustomerDraft';
 import Loyalty from './components/crm/Loyalty';
-import PointStatus from './components/crm/PointStatus';
+import LoyaltyPointStatus from './components/crm/LoyaltyPointStatus';
 import Salesman from './components/crm/Salesman';
 import ProductTags from './components/product/product/ProductTags';
 import Group from './components/product/product_hierarchy/Group';
@@ -162,13 +162,13 @@ function App() {
 
         {/* crm */}
         <Route path='/crm/customer' element={<ProtectedRoute element={Customer} />} />
+        <Route path='/crm/customer/create' element={<ProtectedRoute element={CustomerCreate} />} />
+        <Route path='/crm/customer/draft' element={<ProtectedRoute element={CustomerDraft} />} />
+        {/* <Route path='/crm/customer/approved' element={<Approved />} /> */}
         <Route path='/crm/loyalty' element={<ProtectedRoute element={Loyalty} />} />
+        <Route path='/crm/loyalty/create' element={<ProtectedRoute element={LoyaltyCreate} />} />
+        <Route path='/crm/loyalty/point-status' element={<ProtectedRoute element={LoyaltyPointStatus} />} />
         <Route path='/crm/salesman' element={<ProtectedRoute element={Salesman} />} />
-        <Route path='/crm/customer/draft' element={<ProtectedRoute element={Draft} />} />
-        <Route path='/crm/customer/approved' element={<ProtectedRoute element={Approved} />} />
-        <Route path='/crm/customer/create' element={<ProtectedRoute element={Create} />} />
-        <Route path='/crm/loyalty/create-new' element={<ProtectedRoute element={CreateNew} />} />
-        <Route path='/crm/loyalty/point-status' element={<ProtectedRoute element={PointStatus} />} />
 
         {/* E-Commerce */}
 

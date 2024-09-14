@@ -1,0 +1,74 @@
+.backBtn {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.loyalty-container {
+    width: 100%;
+    padding: 1rem 5rem;
+}
+
+.loyalty-header {
+    font-size: 28px;
+    font-weight: 800;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+    box-sizing: border-box;
+}
+
+.loyalty-form-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    box-sizing: border-box;
+}
+
+.loyalty-form-group {
+    flex: 1 1 calc(50% - 32px);
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    text-align: left;
+    gap: 5px;
+}
+
+.loyalty-form-group .loyalty-label,
+.loyalty-rule-input .loyalty-label {
+    margin-bottom: 8px;
+    font-weight: bold;
+    width: 225px;
+}
+
+.loyalty-rule-form-section {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.loyalty-rule-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.loyalty-rule-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.addRemoveField {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1.5rem;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.custBtn {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}

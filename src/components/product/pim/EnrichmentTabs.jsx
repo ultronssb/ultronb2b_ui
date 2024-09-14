@@ -6,7 +6,6 @@ import Hierarchy from './EnrichmentHierarchy';
 import Attributes from './EnrichmentAttributes';
 import EnrichmentProduct from './EnrichmentProduct';
 import EnrichmentVariants from './EnrichmentVariants';
-import Rules from './Rules';
 import EnrichmentPrice from './EnrichmentPrice';
 import EnrichmentMedia from './EnrichmentMedia';
 import EnrichmentSeo from './EnrichmentSeo';
@@ -104,8 +103,8 @@ const EnrichmentTabs = () => {
                     <B2BButton
                         name={"Save"}
                         id={"Save"}
-                        // onClick={"handleProductSave"}
-                        // disabled={!isFormValid} // Disable Save button if the form is not valid
+                    // onClick={"handleProductSave"}
+                    // disabled={!isFormValid} // Disable Save button if the form is not valid
                     />
                 }
             </div>

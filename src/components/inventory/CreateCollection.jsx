@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import B2BInput from '../../common/B2BInput';
 import B2BTextarea from '../../common/B2BTextarea';
 import './CreateCollection.css';
 import { Button, FileButton } from '@mantine/core';
+import B2BButton from '../../common/B2BButton';
+import { ActiveTabContext } from '../../layout/Layout';
+import { useNavigate } from 'react-router-dom';
+import { IconArrowLeft } from '@tabler/icons-react';
 
 const CreateCollection = () => {
+  const { stateData } = useContext(ActiveTabContext);
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const navigate = useNavigate();
 
   const handleFileChange = (newFiles) => {
     if (newFiles.length > 0) {
@@ -32,32 +38,43 @@ const CreateCollection = () => {
     { id: 4, name: 'Collection Image', type: 'image', disabled: false },
   ];
 
+
+
+  const handleCancel = () => {
+    navigate('/inventory/collections', { state: { ...stateData, tabs: stateData.childTabs } })
+  }
+
   return (
-    <div className="collection-form">
-      {collectionFields.map((field) => (
-        <div key={field.id} className="collection-form-group">
-          <label className='collection-label'>{field.name}</label>
-          {field.type === 'textField' && (
-            <B2BInput placeholder={field.name} disabled={field.disabled} />
-          )}
-          {field.type === 'textArea' && (
-            <B2BTextarea placeholder={field.name} disabled={field.disabled} />
-          )}
-          {field.type === 'image' && (
-            <div style={{border: '2px solid silver', padding:'10px 50px', display:'flex', flexDirection:'column', borderRadius:'10px'}}>
-              <FileButton onChange={handleFileChange} accept="image/png,image/jpeg" multiple>
-                {(props) => <Button {...props} bg='gray'>Add image</Button>}
-              </FileButton>
-              <label htmlFor="" style={{fontSize:'14px', textAlign:'center'}}>Or drop an image here</label>
-              {preview && (
-                <div>
-                  <img src={preview} alt="Preview" style={{ maxWidth: '100%', height: 'auto', marginTop: '1rem' }} />
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      ))}
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
+      </div>
+      <div className="collection-form">
+        {collectionFields.map((field) => (
+          <div key={field.id} className="collection-form-group">
+            <label className='collection-label'>{field.name}</label>
+            {field.type === 'textField' && (
+              <B2BInput placeholder={field.name} disabled={field.disabled} />
+            )}
+            {field.type === 'textArea' && (
+              <B2BTextarea placeholder={field.name} disabled={field.disabled} />
+            )}
+            {field.type === 'image' && (
+              <div style={{ border: '2px solid silver', padding: '10px 50px', display: 'flex', flexDirection: 'column', borderRadius: '10px' }}>
+                <FileButton onChange={handleFileChange} accept="image/png,image/jpeg" multiple>
+                  {(props) => <Button {...props} bg='gray'>Add image</Button>}
+                </FileButton>
+                <label htmlFor="" style={{ fontSize: '14px', textAlign: 'center' }}>Or drop an image here</label>
+                {preview && (
+                  <div>
+                    <img src={preview} alt="Preview" style={{ maxWidth: '100%', height: 'auto', marginTop: '1rem' }} />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

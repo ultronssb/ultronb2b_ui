@@ -84,17 +84,14 @@ const OtherSettings = () => {
 
   const otherSettingsJson = [
     {
-      type: 'input',
       label: 'Company',
       disabled: true,
       value: otherSettings.companyId,
       placeholder: "Company",
       inputType: 'text',
       required: true,
-      // onChange: (event) => handleChange(event, "companyId")
     },
     {
-      type: 'input',
       label: 'Currency',
       disabled: false,
       value: otherSettings.currency,
@@ -104,82 +101,60 @@ const OtherSettings = () => {
       onChange: (event) => handleChange(event, "currency")
     },
     {
-      type: 'input',
       label: 'Time Zone',
       disabled: false,
       required: true,
       value: otherSettings.timeZone,
       placeholder: "Time Zone",
-      // data: TimeZones.map(timeZone => timeZone?.value),
-      // inputType: 'select',
       inputType: 'text',
       onChange: (event) => handleChange(event, "timeZone")
     },
     {
-      type: 'input',
       label: 'Symbol',
       disabled: false,
       value: otherSettings.symbol,
       placeholder: "Symbol",
-      // data: currencies.map(currency => currency.value),
-      // inputType: 'select',
       inputType: 'text',
       required: true,
       onChange: (event) => handleChange(event, "symbol")
     },
     {
-      type: 'input',
       label: 'Time Display',
       disabled: false,
       value: otherSettings.timeDisplay,
       placeholder: "Time Display",
-      // data: TimeFormats,
-      // inputType: 'select',
       inputType: 'text',
       required: true,
       onChange: (event) => handleChange(event, "timeDisplay")
     },
     {
-      type: 'input',
       label: 'Weight',
       disabled: false,
       value: otherSettings.weight,
       placeholder: "Weight",
-      // data: ["Kilogram", "Gram", "Milligram"],
-      // inputType: 'select',
       inputType: 'text',
       required: true,
       onChange: (event) => handleChange(event, "weight")
     },
     {
-      type: 'input',
       label: 'Date Display',
       disabled: false,
       value: otherSettings.dateDisplay,
       required: true,
       placeholder: "Date Display",
-      // data: dateFormats.map(date => date?.value),
-      // inputType: 'select',
       inputType: 'text',
       onChange: (event) => handleChange(event, "dateDisplay")
     },
     {
-      type: 'input',
       label: 'Size',
       disabled: false,
       value: otherSettings.size,
       placeholder: "Size",
       required: true,
-      // data: clothMeasurementUnits,
-      // inputType: 'select',
       inputType: 'text',
       onChange: (event) => handleChange(event, "size")
-    }
-  ]
-
-  const regionsJson = [
+    },
     {
-      type: 'input',
       label: 'Region Name',
       disabled: false,
       required: true,
@@ -189,7 +164,6 @@ const OtherSettings = () => {
       onChange: (event) => handleChange(event, "regionName")
     },
     {
-      type: 'input',
       label: 'Display Price',
       disabled: false,
       required: true,
@@ -200,7 +174,6 @@ const OtherSettings = () => {
       onChange: (event) => handleChange(event, "displayPrice")
     },
     {
-      type: 'input',
       label: 'SKU Code Seq.',
       disabled: false,
       required: true,
@@ -210,7 +183,6 @@ const OtherSettings = () => {
       onChange: (event) => handleChange(event, "skuCodeSeq")
     },
     {
-      type: 'input',
       label: 'Varinat SKU',
       disabled: false,
       required: true,
@@ -220,7 +192,6 @@ const OtherSettings = () => {
       onChange: (event) => handleChange(event, "variantSKU")
     },
     {
-      type: 'input',
       label: 'Sample MOQ',
       disabled: false,
       required: true,
@@ -230,7 +201,6 @@ const OtherSettings = () => {
       onChange: (event) => handleChange(event, "sampleMOQ")
     },
     {
-      type: 'input',
       label: 'Wholesale MOQ',
       disabled: false,
       required: true,
@@ -247,74 +217,27 @@ const OtherSettings = () => {
         <div className="form-group" key={index}>
           <label className='form-label'>{settings.label}</label>
           {
-            (() => {
-              switch (settings.inputType) {
-                case 'date':
-                  return <B2BDateInput
-                    placeholder={settings.placeholder}
-                    required={settings.required}
-                    value={settings.value}
-                    onChange={settings.onChange}
-                  />
-                case 'text':
-                  return (
-                    <B2BInput
-                      value={settings.value}
-                      className='form-input'
-                      required={settings.required}
-                      disabled={settings.disabled}
-                      type={settings.type}
-                      placeholder={settings.placeholder}
-                      onChange={settings.onChange}
-                    />
-                  )
-                case 'select':
-                  return (
-                    <B2BSelect
-                      value={settings.value}
-                      onChange={settings.onChange}
-                      data={settings.data}
-                      placeholder={settings.placeholder}
-                    />
-                  )
-              }
-            })()
+            settings.inputType === 'text' && (
+              <B2BInput
+                value={settings.value}
+                className='form-input'
+                required={settings.required}
+                disabled={settings.disabled}
+                type={settings.inputType}
+                placeholder={settings.placeholder}
+                onChange={settings.onChange}
+              />
+            )
           }
-        </div>
-      ))}
-      {regionsJson.map((region, index) => (
-        <div className="form-group" key={index}>
-          <label className='form-label'>{region.label}</label>
           {
-            (() => {
-              switch (region.inputType) {
-                case 'date':
-                  return <B2BDateInput
-
-                  />
-                case 'text':
-                  return (
-                    <B2BInput
-                      value={region.value}
-                      className='form-input'
-                      required={region.required}
-                      disabled={region.disabled}
-                      type={region.type}
-                      placeholder={region.placeholder}
-                      onChange={region.onChange}
-                    />
-                  )
-                case 'select':
-                  return (
-                    <B2BSelect
-                      value={region.value}
-                      onChange={region.onChange}
-                      data={region.data}
-                      placeholder={region.placeholder}
-                    />
-                  )
-              }
-            })()
+            settings.inputType === 'select' && (
+              <B2BSelect
+                value={settings.value}
+                onChange={settings.onChange}
+                data={settings.data}
+                placeholder={settings.placeholder}
+              />
+            )
           }
         </div>
       ))}

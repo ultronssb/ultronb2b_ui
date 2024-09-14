@@ -20,10 +20,10 @@ export const B2B_API = ky.create({
         beforeError: [
             async (error) => {
                 const { response } = error
-                // if (response.status === 403 || response.status === 401) {
-                //     console.log(response.status, 'response.status');
-                //     window.location.href = "/"
-                // }
+                if (response.status === 403 || response.status === 401) {
+                    console.log(response.status, 'response.status');
+                    // window.location.href = "/"
+                }
                 return await response.json();
             }
         ],

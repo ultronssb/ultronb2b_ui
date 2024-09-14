@@ -241,25 +241,14 @@ const AddUsers = () => {
                 />
               </div>
               <div className="form-group">
-                <label className='form-label'>Address</label>
-                <B2BTextarea
-                  value={user.address}
+                <label className='form-label'>UserName</label>
+                <B2BInput
+                  value={user.firstName + ' ' + user.lastName || ''}
                   className='form-input'
                   required
                   type="text"
-                  onChange={(event) => handleChange(event, 'address')}
-                  placeholder="Address"
-                />
-              </div>
-              <div className="form-group">
-                <label className='form-label'>Phone</label>
-                <input
-                  value={user.mobileNumber || ''}
-                  className='form-input'
-                  required
-                  type="number"
-                  onChange={(event) => handleChange(event, 'mobileNumber')}
-                  placeholder="Phone Number"
+                  onChange={(event) => handleChange(event, 'userName')}
+                  placeholder="User Name"
                 />
               </div>
               <div className="form-group">
@@ -273,6 +262,32 @@ const AddUsers = () => {
                   required={true}
                 />
               </div>
+              <div className="form-group password">
+                <label className='form-label'>Password</label>
+                <PasswordInput
+                  name='Password'
+                  styles={{ innerInput: { fontSize: '13px', paddingLeft: '8px' } }}
+                  className='input-textField'
+                  required
+                  disabled={user.userId ? true : false}
+                  size='md'
+                  placeholder="Password"
+                  value={user.password}
+                  onChange={(event) => handleChange(event, 'password')}
+                />
+                {/* {user.password ? <B2BAnchor title='Change Password' content="Change" style={{ paddingLeft: '1rem' }} href="" /> : null} */}
+              </div>
+              <div className="form-group">
+                <label className='form-label'>Phone</label>
+                <input
+                  value={user.mobileNumber || ''}
+                  className='form-input'
+                  required
+                  type="number"
+                  onChange={(event) => handleChange(event, 'mobileNumber')}
+                  placeholder="Phone Number"
+                />
+              </div>
               <div className="form-group">
                 <label className='form-label'>Role</label>
                 <B2BSelect
@@ -283,6 +298,17 @@ const AddUsers = () => {
                   clearable={roles.length > 0 ? true : false}
                   onChange={(value) => changeRoles(value, "roleName")}
                   placeholder={"Select Role"}
+                />
+              </div>
+              <div className="form-group">
+                <label className='form-label'>Location</label>
+                <B2BInput
+                  value={user.assignedLocation || ''}
+                  className='form-input'
+                  required
+                  type="text"
+                  onChange={(event) => handleChange(event, 'assignedLocation')}
+                  placeholder="Location"
                 />
               </div>
               <div className="form-group status-container">
@@ -313,41 +339,15 @@ const AddUsers = () => {
                 </div>
               </div>
               <div className="form-group">
-                <label className='form-label'>Location</label>
-                <B2BInput
-                  value={user.assignedLocation || ''}
+                <label className='form-label'>Address</label>
+                <B2BTextarea
+                  value={user.address}
                   className='form-input'
                   required
                   type="text"
-                  onChange={(event) => handleChange(event, 'assignedLocation')}
-                  placeholder="Location"
+                  onChange={(event) => handleChange(event, 'address')}
+                  placeholder="Address"
                 />
-              </div>
-              <div className="form-group">
-                <label className='form-label'>UserName</label>
-                <B2BInput
-                  value={user.userName || ''}
-                  className='form-input'
-                  required
-                  type="text"
-                  onChange={(event) => handleChange(event, 'userName')}
-                  placeholder="User Name"
-                />
-              </div>
-              <div className="form-group password">
-                <label className='form-label'>Password</label>
-                <PasswordInput
-                  name='Password'
-                  styles={{ innerInput: { fontSize: '13px', paddingLeft: '8px' } }}
-                  className='input-textField'
-                  required
-                  disabled={user.password ? true : false}
-                  size='md'
-                  placeholder="Password"
-                  value={user.password}
-                  onChange={(event) => handleChange(event, 'password')}
-                />
-                {user.password ? <B2BAnchor title='Change Password' content="Change" style={{ paddingLeft: '1rem' }} href="" /> : null}
               </div>
               <div className='save-button-container'>
                 <B2BButton type='button' onClick={() => { setCreateUserArea(false); setUser(initialUserState) }} color={'red'} name="Cancel" />

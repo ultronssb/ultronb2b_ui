@@ -1,13 +1,10 @@
-import React, { useContext, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import B2BButton from '../../common/B2BButton';
 import { Text } from '@mantine/core';
+import React, { useContext, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import B2BTableGrid from '../../common/B2BTableGrid';
-import { IconPencil, IconPlus } from '@tabler/icons-react';
 import { ActiveTabContext } from '../../layout/Layout';
 
- const Collections = () => {
-
+const LoyaltyPointStatus = () => {
   const { stateData } = useContext(ActiveTabContext);
 
   const [isCustomer, setIsCustomer] = useState(false);
@@ -19,40 +16,32 @@ import { ActiveTabContext } from '../../layout/Layout';
 
   const columns = useMemo(() => [
     {
-      header: 'Collection Id',
-      accessorKey: 'collectionId'
+      header: 'Loyalty Type',
+      accessorKey: 'loyaltyType'
     },
     {
-      header: 'Collection Name',
-      accessorKey: 'collectionName'
+      header: 'Points Accumulate',
+      accessorKey: 'accumulatePoint'
     },
     {
-      header: 'Items Count',
-      accessorKey: 'itemsCount'
+      header: 'Points Redemption',
+      accessorKey: 'redemptionPoint'
     },
     {
-      header: 'Activation Dt.',
-      accessorKey: 'activationDate'
+      header: '%Uplift',
+      accessorKey: 'uplift'
     },
     {
-      header: 'Expiry Dt.',
+      header: 'Expiry Date',
       accessorKey: 'expiryDate'
     },
     {
-      header: 'Collection Desc',
-      accessorKey: 'collectionDescription'
+      header: 'Points Expiry',
+      accessorKey: 'pointsExpiry'
     },
     {
       header: 'Status',
       accessorKey: 'status'
-    },
-    {
-      header: 'Image 1',
-      accessorKey: 'image_1'
-    },
-    {
-      header: 'Image 2',
-      accessorKey: 'image_2'
     },
     // {
     //   header: 'Actions',
@@ -74,26 +63,13 @@ import { ActiveTabContext } from '../../layout/Layout';
     // }
   ], []);
 
-  const handleChange = (e) => {
-    setIsCustomer(true)
-    navigate('/inventory/collections/create', { state: { ...stateData, tabs: stateData.childTabs } })
-  }
 
   return (
     <>
       {!isCustomer && (
         <>
           <div className='user--container'>
-            <Text size='lg'>Collection Details</Text>
-            <div className='right--section'>
-              <B2BButton
-                style={{ color: '#000' }}
-                name={"Create Collection"}
-                onClick={(e) => handleChange(e)}
-                leftSection={<IconPlus size={15} />}
-                color={"rgb(207, 239, 253)"}
-              />
-            </div>
+            <Text size='lg'>Loyalty Points Status</Text>
           </div>
           <B2BTableGrid
             columns={columns}
@@ -113,4 +89,5 @@ import { ActiveTabContext } from '../../layout/Layout';
     </>
   )
 }
-export default Collections
+
+export default LoyaltyPointStatus

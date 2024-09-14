@@ -149,7 +149,7 @@ export const data = [
   { id: "68", name: "Bulk Upload", parent_id: "63", orderBy: 3, modal: true },
 
   { id: "69", name: "Collections", parent_id: "64", orderBy: 1, path: "/inventory/collections" },
-  { id: "70", name: "Create Collection", parent_id: "64", orderBy: 2, path: "/inventory/collections/create" },
+  // { id: "70", name: "Create Collection", parent_id: "64", orderBy: 2, path: "/inventory/collections/create" },
   { id: "71", name: "Bulk Upload", parent_id: "64", orderBy: 3, modal: true },
 
   { id: "72", name: "Discounts", parent_id: "65", orderBy: 1, path: "/inventory/discounts" },
@@ -163,12 +163,12 @@ export const data = [
 
   { id: "77", name: "Customer", parent_id: "74", orderBy: 1, path: "/crm/customer" },
   { id: "78", name: "Draft", parent_id: "74", orderBy: 2, path: "/crm/customer/draft" },
-  { id: "79", name: "Approved", parent_id: "74", orderBy: 3, path: "/crm/customer/approved" },
-  { id: "80", name: "Create", parent_id: "74", orderBy: 4, path: "/crm/customer/create" },
+  // { id: "79", name: "Approved", parent_id: "74", orderBy: 3, path: "/crm/customer/approved" },
+  // { id: "80", name: "Create", parent_id: "74", orderBy: 4, path: "/crm/customer/create" },
   { id: "81", name: "Bulk Uplaod", parent_id: "74", orderBy: 5, modal: true },
 
   { id: "82", name: "Loyalty", parent_id: "75", orderBy: 1, path: "/crm/loyalty" },
-  { id: "83", name: "Create New", parent_id: "75", orderBy: 2, path: "/crm/loyalty/create-new" },
+  // { id: "83", name: "Create New", parent_id: "75", orderBy: 2, path: "/crm/loyalty/create" },
   { id: "84", name: "Point Status", parent_id: "75", orderBy: 3, path: "/crm/loyalty/point-status" },
 
   { id: "85", name: "Sales Man", parent_id: "76", orderBy: 1, path: "/crm/salesman" },

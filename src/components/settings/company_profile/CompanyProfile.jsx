@@ -103,7 +103,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Company Name</label>
           <B2BInput
-            value={company.name}
+            value={company?.name}
             styles={{ input: { fontSize: '14px' } }}
             placeholder={'Company Name'}
             onChange={(event) => handleChange(event, 'name')}
@@ -114,7 +114,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Location Type</label>
           <B2BSelect
-            value={company.locationTypeId || company.locationType?.locationTypeId}
+            value={company?.locationTypeId || company?.locationType?.locationTypeId}
             styles={{ input: { fontSize: '14px' } }}
             data={companyLocations?.map(loc => ({ label: loc.name, value: loc.locationTypeId }))}
             placeholder={'Location Type'}
@@ -126,7 +126,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Address</label>
           <B2BTextarea
-            value={company.address}
+            value={company?.address}
             className='form-input'
             required
             type="text"
@@ -137,7 +137,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Company URL</label>
           <B2BInput
-            value={company.companyURL}
+            value={company?.companyURL}
             styles={{ input: { fontSize: '14px' } }}
             className='form-input'
             required
@@ -150,7 +150,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Company Zone</label>
           <B2BInput
-            value={company.zone}
+            value={company?.zone}
             styles={{ input: { fontSize: '14px' } }}
             className='form-input'
             required
@@ -162,7 +162,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Company Email</label>
           <B2BInput
-            value={company.email}
+            value={company?.email}
             styles={{ input: { fontSize: '14px' } }}
             placeholder={'Email'}
             onChange={(event) => handleChange(event, 'email')}
@@ -173,7 +173,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>City</label>
           <B2BInput
-            value={company.city}
+            value={company?.city}
             styles={{ input: { fontSize: '14px' } }}
             className='form-input'
             required
@@ -186,7 +186,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>State</label>
           <B2BInput
-            value={company.state}
+            value={company?.state}
             styles={{ input: { fontSize: '14px' } }}
             className='form-input'
             required
@@ -198,7 +198,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Pin Code</label>
           <B2BInput
-            value={company.pinCode}
+            value={company?.pinCode}
             styles={{ input: { fontSize: '14px' } }}
             className='form-input'
             required
@@ -211,7 +211,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Phone</label>
           <input
-            value={company.mobileNumber}
+            value={company?.mobileNumber}
             className='form-input'
             required
             type="number"
@@ -224,7 +224,7 @@ const CompanyProfile = () => {
           <label className='form-label'>Tin Number</label>
           <B2BInput
             styles={{ option: { fontSize: '13px' }, input: { fontSize: '13px' } }}
-            value={company.tinNumber}
+            value={company?.tinNumber}
             required={true}
             onChange={(value) => handleChange(value, "tinNumber")}
             type="text"
@@ -261,7 +261,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Latitude</label>
           <B2BInput
-            value={company.latitude}
+            value={company?.latitude}
             className='form-input'
             required
             type="number"
@@ -272,7 +272,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>Longitude</label>
           <B2BInput
-            value={company.longitude}
+            value={company?.longitude}
             className='form-input'
             required
             type="number"
@@ -283,7 +283,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>CIN Number</label>
           <B2BInput
-            value={company.cinNumber}
+            value={company?.cinNumber}
             className='form-input'
             required
             type="text"
@@ -294,7 +294,7 @@ const CompanyProfile = () => {
         <div className="form-group">
           <label className='form-label'>GST Number</label>
           <B2BInput
-            value={company.gstNumber}
+            value={company?.gstNumber}
             className='form-input'
             required
             type="text"
