@@ -63,7 +63,7 @@ const CreateProduct = () => {
       value: "",
       composition: {}
     },
-
+    totalProductPercent: 0,
     priceSetting: {
       isMarkUp: false,
       isMarkDown: false,
@@ -98,6 +98,8 @@ const CreateProduct = () => {
     categorysErrorMessage: '',
     fabricContentError: false,
     fabricContentErrorMessage: '',
+    fabricCompositionError:false,
+    fabricCompositionErrorMessage:'',
     metricError: false,
     metricErrorMessage: '',
     priceSettingsError: false,
@@ -345,7 +347,11 @@ const CreateProduct = () => {
         const isFabricContentValid = product?.fabricContent?.composition &&
           Object.keys(product.fabricContent.composition).length > 0 &&
           Object.values(product.fabricContent.composition).every(value => value);
-
+        if(product?.totalProductPercent>100 || product?.totalProductPercent<100){
+          errors.fabricCompositionError = true;
+          errors.fabricCompositionErrorMessage = "Overal composition Percentage must be 100";
+          isValid = false;
+        }
         if (!isFabricContentValid) {
           errors.fabricContentError = true;
           errors.fabricContentErrorMessage = "FCC must be selected !!";
@@ -529,7 +535,9 @@ const CreateProduct = () => {
 
         return result;
       };
-
+      const calculateTotalPercent = (composition) => {
+        return Object.values(composition).reduce((sum, value) => sum + parseInt(value, 10), 0);
+    };
       const fetchHeirarchy = async (parentId) => {
         let heirarchy = [];
         let currentId = parentId;
@@ -586,6 +594,7 @@ const CreateProduct = () => {
         productCategories: await transformCategories(),
         prodVariants: transformData(),
         priceSetting: adjustPriceSetting(product?.priceSetting),
+        totalProductPercent: calculateTotalPercent(product?.fabricContent.composition)
       });
       const initializeImage = async () => {
         try {

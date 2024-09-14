@@ -84,12 +84,13 @@
     font-weight: 700;
     line-height: 1.2;
     margin: 0;
-    padding: 12px 20px;
+    padding: 2px 20px;
     position: relative;
     text-align: center;
     transition-duration: .2s;
     transition-property: background, color, border, box-shadow;
     word-break: break-word;
+    background: none;
 }
 
 .fabric-content-mr2 {

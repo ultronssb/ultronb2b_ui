@@ -8,10 +8,11 @@ import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
 import './FabricContent.css';
+import { NumberInput } from '@mantine/core';
 
 const FabricContent = () => {
     const { product, setProduct, handleChange, inputError, setInputError } = useContext(ProductContext);
-
+    const [totalPercent, setTotalpercent] = useState(product?.totalProductPercent || 0)
     const [fabricContent, setFabricContent] = useState({});
     const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [], value: null }]);
     const [lastChild, setLastChild] = useState([]);
@@ -38,7 +39,7 @@ const FabricContent = () => {
             const category = categories.find(cat => cat.name === 'Fabric Content');
             setFabricContent(category);
             setSelectedPairsFromProduct()
-            
+
         } catch (error) {
             console.error('Error fetching variants:', error);
         }
@@ -83,7 +84,6 @@ const FabricContent = () => {
 
 
     const fabricContentCode = async (newPairs) => {
-        
         try {
             const results = await Promise.all(
                 Object.entries(newPairs).map(async ([key, value]) => {
@@ -101,33 +101,32 @@ const FabricContent = () => {
                     value: formattedFCC
                 }
             }));
-            setFCCValue(formattedFCC);
+                setFCCValue(formattedFCC);
         } catch (error) {
             console.error("Error fetching category data: ", error);
         }
     };
-
     const handleSelectChange = (index, selectedValue) => {
         const newPairs = [...selectedPairs];
         const oldKey = newPairs[index].key;
-        newPairs[index].key = selectedValue || ''; 
+        newPairs[index].key = selectedValue || '';
         if (!selectedValue) {
             newPairs[index].value = '';
         }
-    
+
         setSelectedPairs(newPairs);
-    
+
         setProduct(prevState => {
             const updatedComposition = { ...prevState.fabricContent.composition };
             if (oldKey && oldKey !== selectedValue) {
                 delete updatedComposition[oldKey];
             }
-    
-      
+
+
             if (selectedValue) {
-                updatedComposition[selectedValue] = newPairs[index].value || 0; 
+                updatedComposition[selectedValue] = newPairs[index].value || 0;
             }
-    
+
             return {
                 ...prevState,
                 fabricContent: {
@@ -136,14 +135,14 @@ const FabricContent = () => {
                 }
             };
         });
-    
+
         const pairsObject = newPairs.reduce((acc, pair) => {
             if (pair.key && pair.value) {
                 acc[pair.key] = pair.value;
             }
             return acc;
         }, {});
-    
+
         if (Object.keys(pairsObject).length > 0) {
             fabricContentCode(pairsObject);
             setFCCValue(prev => {
@@ -167,20 +166,25 @@ const FabricContent = () => {
         }
         setInputError(prev => ({
             ...prev,
+            fabricCompositionError:false,
             fabricContentError: false,
             fabricContentErrorMessage: '',
         }));
     };
-
-    const handleMultiSelectChange = (index, e) => {
+console.log(totalPercent)
+    const handleMultiSelectChange = (index, value) => {
         const newPairs = [...selectedPairs];
-        const value = e.target.value;
         const key = newPairs[index].key;
+        const previousValue = parseInt(newPairs[index].value, 10) || 0;
+        const updatedTotal = totalPercent - previousValue + value;
+    
+       
         if (key) {
             newPairs[index].value = value;
             setSelectedPairs(newPairs);
+            setTotalpercent(updatedTotal);
             setProduct(prevState => ({
-                ...prevState,
+                ...prevState,totalProductPercent:updatedTotal,
                 fabricContent: {
                     ...prevState.fabricContent,
                     composition: {
@@ -197,17 +201,39 @@ const FabricContent = () => {
             }, {});
             fabricContentCode(pairsObject);
         }
-        setInputError("");
+        setInputError(prev => ({
+            ...prev, 
+            fabricCompositionError:false,
+            fabricContentError: false,
+            fabricContentErrorMessage: '',
+        }));
     };
 
 
-    const addNewPair = () => {
+
+    
+
+const addNewPair = () => {
+    const totalSum = _.sumBy(selectedPairs, (item) => parseInt(item.value));
+     setTotalpercent(totalSum);
+    if (totalSum < 100) {
+       
         setSelectedPairs([...selectedPairs, { key: '', value: '' }]);
-    };
+        setInputError(prev => ({
+            ...prev,
+            fabricCompositionError:false,
+            fabricContentError: false,
+            fabricContentErrorMessage: '',
+        }));
+    }
+};
 
-    const removePair = (index) => {
+
+    const removePair = (index,value) => {
         const newPairs = [...selectedPairs];
         const removedKey = newPairs[index].key;
+        const updatedTotal = totalPercent - value;
+        setTotalpercent(updatedTotal);
         newPairs.splice(index, 1);
         setSelectedPairs(newPairs);
         const pairsObject = newPairs.reduce((acc, pair) => {
@@ -220,7 +246,7 @@ const FabricContent = () => {
         setProduct(prevState => {
             const { [removedKey]: _, ...newComposition } = prevState.fabricContent.composition;
             return {
-                ...prevState,
+                ...prevState,totalProductPercent:updatedTotal,
                 fabricContent: {
                     ...prevState.fabricContent,
                     composition: newComposition,
@@ -243,7 +269,7 @@ const FabricContent = () => {
     const Changehandler = (selectedValue) => {
         setFCCValue(prev => {
             const existingValues = prev ? prev.split(' ').filter(v => v) : [];
-    
+
             if (selectedValue) {
                 // Handle selection: Append the new value
                 if (!existingValues.includes(selectedValue)) {
@@ -256,27 +282,28 @@ const FabricContent = () => {
                     return updatedValues.length > 0 ? updatedValues.join(' ') : '';
                 }
             }
-    
+
             return prev;
         });
-    
+
         // Handle any additional logic or errors
         setInputError(prev => ({
             ...prev,
+            fabricCompositionError:false,
             fabricContentError: false,
             fabricContentErrorMessage: '',
         }));
-    
+
         const pairsObject = newPairs.reduce((acc, pair) => {
             if (pair.key && pair.value) {
                 acc[pair.key] = pair.value;
             }
             return acc;
         }, {});
-    
+
         if (Object.keys(pairsObject).length > 0) {
             fabricContentCode(pairsObject);
-    
+
             setFCCValue(prev => {
                 const existingValues = prev ? prev.split(' ').filter(v => v) : [];
                 const newValues = Object.values(pairsObject);
@@ -341,12 +368,14 @@ const FabricContent = () => {
                             />
                         </div>
                         <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-8 fabric-content-mb2" style={{ display: 'flex' }}>
-                            <B2BInput
+                            <NumberInput
                                 value={pair.value}
                                 required={true}
-                                type="number"
                                 disabled={!pair.key}
                                 clearable={true}
+                                className='input-textField'
+                                max={100}
+                                styles={{ input: { fontSize: '14px' } }}
                                 onChange={(e) => handleMultiSelectChange(index, e)}
                                 rightSection={<IconPercentage size={20} />}
                                 error={inputError?.fabricContentErrorMessage}
@@ -355,7 +384,7 @@ const FabricContent = () => {
                                 <button
                                     type="button"
                                     className="fabric-content-btn fabric-content-btn--icon-no fabric-content-ml2"
-                                    onClick={() => removePair(index)}
+                                    onClick={() => removePair(index ,pair.value)}
                                 >
                                     <FontAwesomeIcon className="fa fabric-content-icon" icon={faTrash} />
                                 </button>
@@ -364,7 +393,7 @@ const FabricContent = () => {
                     </div>
                 ))}
                 <div className="fabric-content-g-row">
-                    {_.size(lastChild) > _.size(selectedPairs) && (
+                    {totalPercent < 100 && (
                         <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-4">
                             <button
                                 type="button"
@@ -376,6 +405,14 @@ const FabricContent = () => {
                             </button>
                         </div>
                     )}
+                </div>
+                <div>
+                    <p className='fabric-label'>Overal Composition Percentage:  {totalPercent}</p>
+                    {inputError?.fabricCompositionError && (
+                <p className='error-message'>
+                    {inputError.fabricCompositionErrorMessage}
+                </p>
+            )}
                 </div>
             </div>
         </section>

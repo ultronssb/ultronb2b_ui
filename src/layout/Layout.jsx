@@ -13,10 +13,11 @@ import { ModuleJson } from '../moduleData/ModuleJson';
 import { LogOut } from '../utils/Utilities';
 import { B2B_API } from '../api/Interceptor';
 import B2BButton from '../common/B2BButton';
+import CustomPopup from '../utils/Custompopup';
+import UseInactivityLogout from '../utils/UseInactivityLogout';
 
 export const ScrollContext = createContext(null);
 export const ActiveTabContext = createContext(null)
-
 export default function Layout() {
   const [stateData, setStateData] = useState({
     parentId: null,
@@ -30,7 +31,7 @@ export default function Layout() {
   const [opened, setOpened] = useState(false);
   const openModal = () => setOpened(true);
   const closeModal = () => setOpened(false);
-
+  const { isPopupVisible,  handleLogout } = UseInactivityLogout();
   const navigate = useNavigate();
   const { state } = useLocation();
   const appShellRef = useRef(null)
@@ -161,6 +162,9 @@ export default function Layout() {
           </AppShell.Main>
           <AppShell.Footer h={5}></AppShell.Footer>
         </AppShell>
+         {isPopupVisible && (
+        <CustomPopup onLogout={handleLogout} />
+      )}
       </ScrollContext.Provider>
     </ActiveTabContext.Provider>
   );
