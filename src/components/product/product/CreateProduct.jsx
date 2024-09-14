@@ -6,7 +6,6 @@ import FabricContent from './FabricContent';
 import ProductCategorys from './ProductCategorys';
 import ProductPrice from './ProductPrice';
 import ProductType from './ProductType'
-import ProductTax from './ProductTax';
 import ProductVariant from './ProductVariant';
 import notify from '../../../utils/Notification';
 import ProductDimension from './ProductDimension';
@@ -53,7 +52,7 @@ const CreateProduct = () => {
     prodVariants: {
 
     },
-    productVariants:{
+    productVariants: {
 
     },
     productCategories: {
@@ -77,6 +76,7 @@ const CreateProduct = () => {
     categoryId: '',
     gstId: '',
     brandId: '',
+    taxonomy: ''
   }
   const [product, setProduct] = useState(initialState);
   const [imageFile, setImageFile] = useState(null)
@@ -124,6 +124,7 @@ const CreateProduct = () => {
 
   const checkDirectValue = (key) => {
     if (key === 'brandId') return true
+    if (key === 'taxonomy') return true
   }
   useEffect(() => {
     const query_param = new URLSearchParams(location.search);
@@ -144,6 +145,9 @@ const CreateProduct = () => {
 
 
   const handleChange = (event, fieldType) => {
+    console.log("event : ", event);
+    console.log("fieldType : ", fieldType);
+
     const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
     setInputError("")
     if (fieldType === "articleName") {
@@ -173,13 +177,9 @@ const CreateProduct = () => {
     } else {
       setProduct(prev => ({
         ...prev,
-        [fieldType]: checkDirectValue(fieldType) ? event : event.target?.value,
+        [fieldType]: checkDirectValue(fieldType) ? event : event?.target?.value,
       }));
     }
-    // setInputError(prev => ({
-    //   ...prev,
-    //   [`${fieldType}ErrorMessage`]: ''
-    // }));
   };
 
   const addProduct = async (prod) => {
@@ -319,7 +319,7 @@ const CreateProduct = () => {
         } else {
           enableNextTab(true)
         }
-        
+
         break;
 
       case "2": // Validate for category
@@ -480,14 +480,14 @@ const CreateProduct = () => {
       setTabs((prevTabs) =>
         prevTabs.map((tab, index) => ({
           ...tab,
-          disabled: index > currentTabIndex, 
+          disabled: index > currentTabIndex,
         }))
       );
-      
-      setActiveTab(activeTab); 
+
+      setActiveTab(activeTab);
     }
-    console.log(activeTab,"act");
-    
+    console.log(activeTab, "act");
+
   }
 
   const handleProductSave = async () => {
@@ -588,6 +588,7 @@ const CreateProduct = () => {
         ...product,
         tags: product?.productTags.split(",").map(tag => tag.trim()),
         brandId: product?.brand?.brandId,
+        taxonomy: product?.taxonomy?.name,
         barcode: barcodeString,
         gstId: product?.gst?.gstId,
         image: `http://192.168.1.13:8080${product?.image}`,
@@ -629,8 +630,8 @@ const CreateProduct = () => {
       });
     }
   };
-  console.log(product,"pro");
-  
+  console.log(product, "pro");
+
 
   return (
     <ProductContext.Provider value={{ product, handleChange, addProduct, setProduct, imageFile, setImageFile, inputError, setInputError }}>

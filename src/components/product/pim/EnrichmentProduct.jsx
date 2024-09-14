@@ -1,0 +1,81 @@
+import React, { useContext } from 'react';
+import B2BInput from '../../../common/B2BInput';
+import { EnrichProductContext } from './EnrichProduct';
+
+const EnrichmentProduct = () => {
+
+  const { handleChange, product } = useContext(EnrichProductContext);
+
+  return (
+    <div>
+      <form className='form-container'>
+        <div className={"form-group"}>
+          <label className='form-label'>Brand</label>
+          <B2BInput
+            value={product.brand?.name}
+            className='form-input'
+            onChange={(event) => handleChange(event)}
+            placeholder={"Garment Type"}
+          />
+        </div>
+        <div className={"form-group"}>
+          <label className='form-label'>Sample MOQ</label>
+          <B2BInput
+            value={product?.otherInformation?.sampleMOQ || ''}
+            className='form-input'
+            onChange={(event) => handleChange(event)}
+            placeholder={"sampleMOQ"}
+          />
+        </div>
+        <div className={"form-group"}>
+          <label className='form-label'>Wholesale MOQ </label>
+          <B2BInput
+            value={product?.otherInformation?.purchaseMOQ || ''}
+            className='form-input'
+            onChange={(event) => handleChange(event)}
+            placeholder={"purchaseMOQ"}
+          />
+        </div>
+
+        <div className={"form-group"}>
+          <label className='form-label'>UOM</label>
+          <B2BInput
+            value={product?.otherInformation?.unitOfMeasures?.id}
+            className='form-input'
+            onChange={(event) => handleChange(event)}
+            placeholder={"UOM"}
+          />
+        </div>
+        <div className={"form-group"}>
+          <label className='form-label'>Min Margin</label>
+          <B2BInput
+            value={product?.otherInformation?.minMargin || ''}
+            className='form-input'
+            onChange={(event) => handleChange(event)}
+            placeholder={"Min Margin"}
+          />
+        </div>
+        <div className={"form-group"}>
+          <label className='form-label'>Allow Loyalty</label>
+          <B2BInput
+            value={product?.otherInformation?.allowLoyalty || ''}
+            className='form-input'
+            onChange={(event) => handleChange(event)}
+            placeholder={"Allow Loyalty"}
+          />
+        </div>
+        <div className={"form-group"}>
+          <label className='form-label'>Design Number</label>
+          <B2BInput
+            value={''}
+            className='form-input'
+            onChange={(event) => handleChange(event)}
+            placeholder={"Design Number"}
+          />
+        </div>
+      </form>
+    </div>
+  )
+}
+
+export default EnrichmentProduct

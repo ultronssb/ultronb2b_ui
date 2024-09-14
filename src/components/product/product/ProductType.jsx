@@ -17,11 +17,13 @@ const ProductType = () => {
     const [brand, setBrand] = useState([]);
     const resetRef = useRef(null);
     const [productTags, setProductTags] = useState([]);
+    const [taxonomy, setTaxonomy] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchAllBrand();
         fetchAllTags();
+        getAllTaxonomy();
     }, []);
 
     const fetchAllBrand = async () => {
@@ -96,11 +98,13 @@ const ProductType = () => {
         },
         {
             label: "Brand",
-            value: brand.map(b => b?.name),
+            value: product?.brandId,
             onChange: (event) => handleChange(event, "brandId"),
             type: "select",
             fieldType: 'selectField',
             placeholder: "Enter Brand",
+            data: brand ? brand.map(b => ({ label: b.name, value: b.brandId })) : [],
+            clearable: true
         },
         {
             label: "Product Tag",
@@ -152,13 +156,35 @@ const ProductType = () => {
             onChange: (event) => handleChange(event, "barcode"),
             name: "barcode",
             error: inputError?.barcodeErrorMessage
-        }
+        },
+        {
+            label: "Taxonomy",
+            value: product?.taxonomy,
+            data: taxonomy ? taxonomy.map(b => ({ label: b.name, value: b.name })) : [],
+            onChange: (event) => handleChange(event, "taxonomy"),
+            type: "Select",
+            fieldType: 'selectField',
+            placeholder: "Enter Taxonomy",
+            clearable: true
+        },
     ];
 
     const handleCancel = () => {
         navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
     }
     console.log(imageFile, "img");
+
+    const handleSelectChange = (value) => {
+        const group = _.find(groups, gr => gr.name === value);
+        setCategoryTree(prevTree => [{ ...prevTree[0], productGroup: group }]);
+    };
+
+    const getAllTaxonomy = async () => {
+        const res = await B2B_API.get("taxonomy").json();
+        setTaxonomy(res.response);
+        console.log(res.response, "taxo");
+
+    }
 
     return (
         <div className='productType-container' style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem' }}>
@@ -188,11 +214,11 @@ const ProductType = () => {
                         {
                             field.fieldType === "selectField" && (
                                 <B2BSelect
-                                    data={brand ? brand.map(b => ({ label: b.name, value: b.brandId })) : []}
-                                    value={product?.brandId}
+                                    data={field.data}
+                                    value={field.value}
                                     onChange={field.onChange}
-                                    placeholder={"Select Brand Name"}
-                                    clearable={true}
+                                    placeholder={field.placeholder}
+                                    clearable={field.clearable}
                                     error={field.error}
                                     maxDropdownHeight={400}
                                 />
@@ -269,29 +295,33 @@ const ProductType = () => {
                                 )}
                             </div>
                         )}
-
                     </div>
                 ))}
                 <div className='form-group' style={{ display: 'flex', flexDirection: 'column' }}>
                     <Group justify="flex-start">
-                        <FileButton resetRef={resetRef} onChange={(file) => fileChange(file)} accept="image/png,image/jpeg">
-                            {(props) => <Button {...props}>Upload image</Button>}
+                        <FileButton resetRef={null} onChange={fileChange} accept="image/png,image/jpeg">
+                            {(props) => <Button {...props}>{product.id ? "Update Image " : "Add Image"}</Button>}
                         </FileButton>
                         <Button disabled={!imageFile} color="red" onClick={clearFile}>
                             Reset
                         </Button>
                     </Group>
-                    {product.image && (
-                        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+
+                    {/* Image Display Section */}
+                    <div style={{ textAlign: 'center', marginBottom: '1rem', border: '1px solid #ccc', padding: '10px', width: '150px', height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '10px' }}>
+                        {imageFile ? (
                             <img
-                                src={imageFile ? URL.createObjectURL(imageFile) : ''
-                                }
-                                style={{ width: '150px', height: 'auto', marginTop: '10px' }}
+                                src={URL.createObjectURL(imageFile)}
+                                alt="Uploaded"
+                                style={{ maxWidth: '100%', maxHeight: '100%' }}
                             />
-                            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-                        </div>
-                    )}
-                    {!product.image ? <p style={{color:'#ff6969'}}>Note * File Should be less than 3mb</p> : ""}
+                        ) : (
+                            <p style={{ color: '#888' }}>No image uploaded</p>
+                        )}
+                    </div>
+
+                    {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                    {!imageFile && <p style={{ color: '#ff6969' }}>Note * File Should be less than 3MB</p>}
                 </div>
             </form>
         </div>
@@ -299,8 +329,3 @@ const ProductType = () => {
 };
 
 export default ProductType;
-
-
-
-
-

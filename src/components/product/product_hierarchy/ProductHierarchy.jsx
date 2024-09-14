@@ -171,7 +171,6 @@ const ProductHierarchy = () => {
 
   useEffect(() => {
     fetchCategory();
-    getAllTaxonomy();
   }, []);
 
 
@@ -274,12 +273,6 @@ const ProductHierarchy = () => {
     }
   };
 
-  const getAllTaxonomy = async () => {
-    const res = await B2B_API.get("taxonomy").json();
-    setTaxonomy(res.response);
-    console.log(res.response, "taxo");
-
-  }
   console.log(productCategories, "cat");
 
 
@@ -310,15 +303,6 @@ const ProductHierarchy = () => {
           {
             isCreateCategory === true && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div className='group-input'>
-                  <label>Taxonomy Node</label>
-                  <B2BSelect
-                    data={taxonomy.map(t => t?.name)}
-                    required={true}
-                    onChange={(event) => handleSelectChange(event)}
-                    clearable={true}
-                  />
-                </div>
                 <div className='group-input'>
                   <label>Group Name</label>
                   <B2BSelect
