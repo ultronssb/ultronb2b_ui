@@ -40,8 +40,15 @@ const Variants = () => {
 
   const columns = useMemo(() => [
     {
-      header: 'VariantId',
-      accessorKey: 'variantId'
+      header: 'S.No',
+      accessorFn: (_, index) => index + 1,
+      size: 100,
+      mantineTableHeadCellProps: {
+        align: 'center'
+      },
+      mantineTableBodyCellProps: {
+        align: 'center'
+      },
     },
     {
       header: 'Name',

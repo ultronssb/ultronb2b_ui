@@ -18,8 +18,7 @@ import { AdminLogin } from './components/login/AdminLogin';
 import Barcode from './components/product/barcode/Barcode';
 import EnrichProduct from './components/product/pim/EnrichProduct';
 import MapChannel from './components/product/pim/MapChannel';
-import ParentProduct from './components/product/pim/ParentProduct';
-import ProductInfo from './components/product/pim/ProductInfo';
+import ProductInfoManagement from './components/product/pim/ProductInfoManagement';
 import CreatePriceBook from './components/product/pricebook/CreatePriceBook';
 import PriceBook from './components/product/pricebook/PriceBook';
 import Articles from './components/product/product/Articles';
@@ -30,8 +29,6 @@ import GST from './components/product/tax/GST';
 import GSTSlabs from './components/product/tax/GSTSlabs';
 import HsnSac from './components/product/tax/HsnSac';
 import TaxMasters from './components/product/tax/TaxMasters';
-// import CreateVariant from './components/product/variants/CreateVariant';
-import Approved from './components/crm/Approved';
 import CustomerCreate from './components/crm/CustomerCreate';
 import LoyaltyCreate from './components/crm/LoyaltyCreate';
 import Customer from './components/crm/Customer';
@@ -69,6 +66,8 @@ import RolePrivileges from './components/settings/users/RolePrivileges';
 import Users from './components/settings/users/Users';
 import Layout from './layout/Layout';
 import { useEffect } from 'react';
+import Taxonomy from './components/product/product_hierarchy/Taxonomy';
+import ProductHistory from './components/product/productHistory/ProductHistory';
 
 const ProtectedRoute = ({ element: Component }) => {
   const navigate = useNavigate();
@@ -90,12 +89,14 @@ function App() {
       <Route path='/' element={<AdminLogin />} />
 
       <Route element={<Layout />}>
-        <Route path='/dashboard' element={<ProtectedRoute element={Dashboard}/>} />
+        <Route path='/dashboard' element={<ProtectedRoute element={Dashboard} />} />
 
         <Route path='/product/product-hierarchy' element={<ProtectedRoute element={ProductHierarchy} />} />
-        <Route path='/product/brand' element={<ProtectedRoute element={Brand}/>} />
+        <Route path='/product/brand' element={<ProtectedRoute element={Brand} />} />
         <Route path='/product/group' element={<ProtectedRoute element={Group} />} />
         <Route path='/product/tags' element={<ProtectedRoute element={ProductTags} />} />
+        <Route path='/product/taxonomy' element={<ProtectedRoute element={Taxonomy} />} />
+
 
         <Route path='/product/tax/tax-masters' element={<ProtectedRoute element={TaxMasters} />} />
         <Route path='/product/tax/gst' element={<ProtectedRoute element={GST} />} />
@@ -107,15 +108,15 @@ function App() {
         <Route path='/product/product/create' element={<ProtectedRoute element={CreateProduct} />} />
 
         <Route path='/product/variants' element={<ProtectedRoute element={Variants} />} />
-        {/* <Route path='/product/variant/create' element={<CreateVariant />} /> */}
 
         <Route path='/product/price-book' element={<ProtectedRoute element={PriceBook} />} />
         <Route path='/product/price-book/create' element={<ProtectedRoute element={CreatePriceBook} />} />
 
         <Route path='/product/barcode' element={<ProtectedRoute element={Barcode} />} />
+        <Route path='/product/history' element={<ProtectedRoute element={ProductHistory} />} />
 
-        <Route path='/product/pim' element={<ProtectedRoute element={ProductInfo} />} />
-        <Route path='/product/pim/product-info' element={<ProtectedRoute element={ParentProduct} />} />
+
+        <Route path='/product/pim' element={<ProtectedRoute element={ProductInfoManagement} />} />
         <Route path='/product/pim/map-channel' element={<ProtectedRoute element={MapChannel} />} />
         <Route path='/product/pim/enrich-product' element={<ProtectedRoute element={EnrichProduct} />} />
 
@@ -164,7 +165,6 @@ function App() {
         <Route path='/crm/customer' element={<ProtectedRoute element={Customer} />} />
         <Route path='/crm/customer/create' element={<ProtectedRoute element={CustomerCreate} />} />
         <Route path='/crm/customer/draft' element={<ProtectedRoute element={CustomerDraft} />} />
-        {/* <Route path='/crm/customer/approved' element={<Approved />} /> */}
         <Route path='/crm/loyalty' element={<ProtectedRoute element={Loyalty} />} />
         <Route path='/crm/loyalty/create' element={<ProtectedRoute element={LoyaltyCreate} />} />
         <Route path='/crm/loyalty/point-status' element={<ProtectedRoute element={LoyaltyPointStatus} />} />

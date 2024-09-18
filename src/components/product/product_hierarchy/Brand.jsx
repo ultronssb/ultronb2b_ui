@@ -108,9 +108,6 @@ const Brand = () => {
       mantineTableBodyCellProps: {
         align: 'center'
       },
-    }, {
-      header: 'ID',
-      accessorKey: 'brandId',
     },
     {
       header: 'Name',

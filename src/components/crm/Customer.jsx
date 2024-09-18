@@ -1,34 +1,69 @@
-import React, { useContext, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import B2BButton from '../../common/B2BButton';
 import { Text } from '@mantine/core';
 import B2BTableGrid from '../../common/B2BTableGrid';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import { ActiveTabContext } from '../../layout/Layout';
+import { B2B_API } from '../../api/Interceptor';
+import notify from '../../utils/Notification';
 
- const Customer = () => {
-
+const Customer = () => {
   const { stateData } = useContext(ActiveTabContext);
 
   const [isCustomer, setIsCustomer] = useState(false);
+  const [customers, setCustomers] = useState([]);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [rowCount, setRowCount] = useState(5);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetchCustomers();
+  }, [pagination]);
+
+  const fetchCustomers = async () => {
+    try {
+      setIsLoading(true);
+      const response = await B2B_API.get(`customer?status=APPROVED&page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const data = response?.response?.content || [];
+      setRowCount(response?.response?.totalElements || 0);
+      
+      const customersWithLocation = await Promise.all(data.map(async (customer) => {
+        const locationResponse = await B2B_API.get(`locations/customer-location/${customer.customerId}`).json();
+        return { ...customer, location: locationResponse?.response || {} };
+      }));
+      
+      setCustomers(customersWithLocation);
+    } catch (error) {
+      setIsError(true);
+      notify({
+        error: true,
+        success: false,
+        title: error?.message
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
   const columns = useMemo(() => [
     {
-      header: 'Cust Id',
-      accessorKey: 'customerId'
+      header: 'S.No',
+      accessorFn: (_, index) => index + 1,
+      size: 100,
+      mantineTableHeadCellProps: {
+        align: 'center'
+      },
+      mantineTableBodyCellProps: {
+        align: 'center'
+      },
     },
     {
       header: 'Customer Name',
-      accessorKey: 'customerName'
-    },
-    {
-      header: 'Address',
-      accessorKey: 'address'
+      accessorKey: 'name'
     },
     {
       header: 'Email',
@@ -39,40 +74,47 @@ import { ActiveTabContext } from '../../layout/Layout';
       accessorKey: 'mobileNo'
     },
     {
-      header: 'Location',
-      accessorKey: 'location'
+      header: 'Address',
+      accessorFn: row => row.location?.address1 +' '+row.location?.address2 || 'N/A',
     },
     {
-      header: 'Source',
-      accessorKey: 'source'
+      header: 'Location',
+      accessorFn: row => row.location?.city || 'N/A',
     },
     {
       header: 'Status',
       accessorKey: 'status'
     },
-    // {
-    //   header: 'Actions',
-    //   mainTableHeaderCellProps: {
-    //     align: 'center'
-    //   },
-    //   mainTableBodyCellProps: {
-    //     align: 'center'
-    //   },
-    //   size: 100,
-    //   Cell: ({ row }) => {
-    //     const { original } = row;
-    //     return (
-    //       <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-    //         <IconPencil onClick={() => editVarient(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-    //       </div>
-    //     );
-    //   }
-    // }
+    {
+      header: 'Actions',
+      mainTableHeaderCellProps: {
+        align: 'center'
+      },
+      mainTableBodyCellProps: {
+        align: 'center'
+      },
+      size: 100,
+      Cell: ({ row }) => {
+        const { original } = row;
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <IconPencil onClick={() => editCustomer(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+          </div>
+        );
+      }
+    }
   ], []);
 
+  const editCustomer = (node) => {
+    const customerId = node.customerId;
+    navigate(`/crm/customer/create?id=${customerId}`, {
+      state: { ...stateData, tabs: stateData.childTabs }
+    });
+  };
+
   const handleChange = (e) => {
-    setIsCustomer(true)
-    navigate('/crm/customer/create', { state: { ...stateData, tabs: stateData.childTabs } })
+    setIsCustomer(true);
+    navigate('/crm/customer/create', { state: { ...stateData, tabs: stateData.childTabs } });
   }
 
   return (
@@ -80,12 +122,12 @@ import { ActiveTabContext } from '../../layout/Layout';
       {!isCustomer && (
         <>
           <div className='user--container'>
-            <Text size='lg' >Customer Details</Text>
+            <Text size='lg'>Customer Details</Text>
             <div className='right--section'>
               <B2BButton
                 style={{ color: '#000' }}
                 name={"Create Customer"}
-                onClick={(e) => handleChange(e)}
+                onClick={handleChange}
                 leftSection={<IconPlus size={15} />}
                 color={"rgb(207, 239, 253)"}
               />
@@ -93,7 +135,7 @@ import { ActiveTabContext } from '../../layout/Layout';
           </div>
           <B2BTableGrid
             columns={columns}
-            // data={products}
+            data={customers}
             isLoading={isLoading}
             isError={isError}
             enableTopToolbar={true}

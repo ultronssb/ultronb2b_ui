@@ -40,8 +40,6 @@ const LoyaltyCreate = () => {
     fetchLoyalty();
   }, [id]);
 
-  console.log("loyalty : ", loyalty);
-
   const handleChange = (event, key, groupIndex) => {
     const { value } = event.target;
     if (groupIndex !== undefined) {
