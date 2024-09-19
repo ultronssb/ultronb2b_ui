@@ -67,7 +67,10 @@ const CustomerCreate = () => {
 
 
   const handleChange = (event, key) => {
-    const { checked, type } = event.target;
+    const { checked, type, value } = event.target;
+    if (key === 'pincode' && value.length > 6) {
+      return;
+    }
     setCustomer(prev => {
       const newCustomer = {
         ...prev,
@@ -138,6 +141,7 @@ const CustomerCreate = () => {
       id: 1,
       name: "Customer Name",
       fieldType: "textField",
+      type: 'text',
       onChange: (event) => handleChange(event, 'name'),
       value: customer?.name,
       category: "customer"
@@ -146,6 +150,7 @@ const CustomerCreate = () => {
       id: 2,
       name: "Email",
       fieldType: "textField",
+      type: 'text',
       onChange: (event) => handleChange(event, 'email'),
       value: customer?.email,
       category: "customer"
@@ -154,6 +159,7 @@ const CustomerCreate = () => {
       id: 3,
       name: "Mobile No.",
       fieldType: "textField",
+      type: 'text',
       onChange: (event) => handleChange(event, 'mobileNo'),
       value: customer?.mobileNo,
       category: "customer"
@@ -162,6 +168,7 @@ const CustomerCreate = () => {
       id: 4,
       name: "Currency",
       fieldType: "textField",
+      type: 'text',
       onChange: (event) => handleChange(event, 'currency'),
       value: customer?.currency,
       category: "customer"
@@ -190,6 +197,7 @@ const CustomerCreate = () => {
       id: 7,
       name: "Credit Limit",
       fieldType: "textField",
+      type: 'text',
       onChange: (event) => handleChange(event, 'creditLimit'),
       value: customer?.creditLimit,
       category: "customer"
@@ -198,6 +206,7 @@ const CustomerCreate = () => {
       id: 8,
       name: "Credit Balance",
       fieldType: "textField",
+      type: 'text',
       onChange: (event) => handleChange(event, 'creditBalance'),
       value: customer?.creditBalance,
       category: "customer"
@@ -206,6 +215,7 @@ const CustomerCreate = () => {
       id: 9,
       name: "Credit days",
       fieldType: "textField",
+      type: 'text',
       onChange: (event) => handleChange(event, 'creditDays'),
       value: customer?.creditDays,
       category: "customer"
@@ -224,6 +234,7 @@ const CustomerCreate = () => {
       id: 11,
       name: "Status",
       fieldType: "textField",
+      type: 'text',
       onChange: (event) => handleChange(event, 'status'),
       value: customer?.status,
       category: "customer"
@@ -232,6 +243,7 @@ const CustomerCreate = () => {
       id: 12,
       name: "Check Print Name",
       fieldType: "textField",
+      type: 'text',
       onChange: (event) => handleChange(event, 'checkPrintName'),
       value: customer?.checkPrintName,
       category: "customer"
@@ -240,6 +252,7 @@ const CustomerCreate = () => {
       id: 13,
       name: "GSTN No",
       fieldType: "textField",
+      type: 'text',
       onChange: (event) => handleChange(event, 'gstnNo'),
       value: customer?.gstnNo,
       category: "customer"
@@ -258,6 +271,7 @@ const CustomerCreate = () => {
       id: 15,
       name: "Address 1",
       fieldType: "textField",
+      type: 'text',
       disabled: false,
       onChange: (event) => handleChange(event, 'address1'),
       value: customerLocation?.address1,
@@ -267,6 +281,7 @@ const CustomerCreate = () => {
       id: 16,
       name: "Address 2",
       fieldType: "textField",
+      type: 'text',
       disabled: false,
       onChange: (event) => handleChange(event, 'address2'),
       value: customerLocation?.address2,
@@ -276,6 +291,7 @@ const CustomerCreate = () => {
       id: 17,
       name: "Country",
       fieldType: "textField",
+      type: 'text',
       onChange: () => handleChange({ target: { value: 'INDIA' } }, 'country'),
       value: "INDIA",
       category: "address",
@@ -307,10 +323,12 @@ const CustomerCreate = () => {
       id: 20,
       name: "Pin Code",
       fieldType: "textField",
+      type: 'number',
       disabled: false,
       onChange: (event) => handleChange(event, 'pincode'),
       value: customerLocation?.pincode,
-      category: "address"
+      category: "address",
+      maxLength: 6,
     },
     {
       id: 21,
@@ -324,6 +342,7 @@ const CustomerCreate = () => {
       id: 22,
       name: "Activate Loyalty",
       fieldType: "textField",
+      type: 'text',
       disabled: false,
       onChange: (event) => handleChange(event, 'loyalty'),
       value: customerLocation?.loyalty,
@@ -362,7 +381,7 @@ const CustomerCreate = () => {
                     value={field.value}
                     className='customer-input'
                     required
-                    type="text"
+                    type={field.type}
                     placeholder={field.name}
                     onChange={field.onChange}
                     disabled={field.disabled}
@@ -393,10 +412,11 @@ const CustomerCreate = () => {
                     value={field.value}
                     className='customer-input'
                     required
-                    type="text"
+                    type={field.type}
                     placeholder={field.name}
                     onChange={field.onChange}
                     disabled={field.disabled}
+                    maxLength={field.maxLength}
                   />
                 )}
                 {field.fieldType === 'selectField' && (

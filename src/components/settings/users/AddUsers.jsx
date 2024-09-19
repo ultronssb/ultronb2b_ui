@@ -1,34 +1,31 @@
 import { PasswordInput, Text } from '@mantine/core';
-import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
+import B2BAnchor from '../../../common/B2BAnchor';
 import B2BButton from '../../../common/B2BButton';
+import B2BInput from '../../../common/B2BInput';
+import B2BSelect from '../../../common/B2BSelect';
 import B2BTableGrid from '../../../common/B2BTableGrid';
+import B2BTextarea from '../../../common/B2BTextarea';
 import { ERROR_MESSAGE } from '../../../common/CommonResponse';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
-import B2BSelect from '../../../common/B2BSelect';
-import B2BTextarea from '../../../common/B2BTextarea';
-import B2BInput from '../../../common/B2BInput';
-import B2BAnchor from '../../../common/B2BAnchor';
 
 const AddUsers = () => {
-
   const initialUserState = {
-    name: '',
     userId: '',
     firstName: '',
-    lastName: '',
-    address: '',
-    mobileNumber: '',
-    emailId: '',
-    roleName: '',
-    status: 'ACTIVE',
-    assignedLocation: '',
     userName: '',
-    password: ''
+    lastName: '',
+    emailId: '',
+    password: '',
+    mobileNumber: '',
+    roleName: '',
+    address: '',
+    assignedLocation: '',
+    status: 'ACTIVE',
   };
-
 
   const [user, setUser] = useState(initialUserState);
   const [users, setUsers] = useState([]);
@@ -52,24 +49,28 @@ const AddUsers = () => {
       },
     },
     {
-      header: 'User ID',
-      accessorKey: 'userId'
-    },
-    {
       header: 'User Name',
       accessorFn: (row) => row?.firstName + " " + row?.lastName
+    },
+    {
+      header: 'Email ID',
+      accessorKey: 'emailId'
+    },
+    {
+      header: 'Mobile No.',
+      accessorKey: 'mobileNumber'
     },
     {
       header: 'Role',
       accessorFn: (row) => row?.roleName
     },
     {
-      header: 'Status',
-      accessorKey: 'status'
-    },
-    {
       header: 'Location ID',
       accessorKey: 'assignedLocation'
+    },
+    {
+      header: 'Status',
+      accessorKey: 'status'
     },
     {
       header: 'Actions',
@@ -91,16 +92,21 @@ const AddUsers = () => {
     }
   ], [])
 
+  const editUser = async (userObj) => {
+    setCreateUserArea(true);
+    const res = await B2B_API.get(`user/${userObj.userId}`).json();
+    if (res.response && res.response.emailId) {
+      setUser({ ...res.response, userName: res.response.emailId });
+    } else {
+      setUser(res.response);
+    }
+  }
+
+
   useEffect(() => {
     fetchAllUsers();
     fetchAllRoles();
   }, [])
-
-  const editUser = (userObj) => {
-    setCreateUserArea(true)
-    setUser((prev => ({ ...prev, ...userObj, })))
-  }
-
 
   const fetchAllUsers = async () => {
     setIsLoading(true)
@@ -130,9 +136,14 @@ const AddUsers = () => {
     }
   };
 
-
   const handleChange = (event, key) => {
-    setUser(prev => ({ ...prev, [key]: event?.target?.value }))
+    setUser(prev => {
+      const newUser = { ...prev, [key]: event?.target?.value };
+      if (key === 'emailId') {
+        newUser.userName = newUser.emailId ? newUser.emailId : '';
+      }
+      return newUser;
+    });
   }
 
   const changeRoles = (value, key) => {
@@ -163,6 +174,19 @@ const AddUsers = () => {
     }
   }
 
+  const handleCreateUser = () => {
+    setCreateUserArea(true);
+    setUser(initialUserState);
+  };
+
+  const handleCancel = () => {
+    setCreateUserArea(false)
+    setUser(initialUserState)
+  };
+
+  console.log(user);
+
+
   return (
     <>
       {!createUserArea && (
@@ -178,7 +202,7 @@ const AddUsers = () => {
               <B2BButton
                 style={{ color: '#000' }}
                 name={"Create User"}
-                onClick={() => setCreateUserArea(true)}
+                onClick={handleCreateUser}
                 leftSection={<IconPlus size={15} />}
                 color={"rgb(207, 239, 253)"}
               />
@@ -202,26 +226,21 @@ const AddUsers = () => {
       {createUserArea && (
         <>
           <div className='user--container'>
-            <Text size='lg'>Create User</Text>
+            <Text size='lg' fw={800}>Create User</Text>
+            <B2BButton
+              style={{ color: '#000' }}
+              name="Back"
+              onClick={() => handleCancel()}
+              leftSection={<IconArrowLeft size={15} />}
+              color={"rgb(207, 239, 253)"}
+            />
           </div>
           <div className='grid-container'>
             <form onSubmit={createUser} className='form-container'>
               <div className="form-group">
-                <label className='form-label'>User ID</label>
-                <B2BInput
-                  value={user.userId}
-                  className='form-input'
-                  disabled
-                  style={{ cursor: 'not-allowed' }}
-                  onChange={(event) => handleChange(event, 'userId')}
-                  type="text"
-                  placeholder="User ID"
-                />
-              </div>
-              <div className="form-group">
                 <label className='form-label'>First Name</label>
                 <B2BInput
-                  value={user.firstName}
+                  value={user?.firstName || ''}
                   styles={{ input: { fontSize: '14px' } }}
                   placeholder={'First Name'}
                   onChange={(event) => handleChange(event, 'firstName')}
@@ -232,7 +251,7 @@ const AddUsers = () => {
               <div className="form-group">
                 <label className='form-label'>Last Name</label>
                 <B2BInput
-                  value={user.lastName}
+                  value={user?.lastName || ''}
                   styles={{ input: { fontSize: '14px' } }}
                   placeholder={'Last Name'}
                   onChange={(event) => handleChange(event, 'lastName')}
@@ -241,20 +260,9 @@ const AddUsers = () => {
                 />
               </div>
               <div className="form-group">
-                <label className='form-label'>UserName</label>
-                <B2BInput
-                  value={user.firstName + ' ' + user.lastName || ''}
-                  className='form-input'
-                  required
-                  type="text"
-                  onChange={(event) => handleChange(event, 'userName')}
-                  placeholder="User Name"
-                />
-              </div>
-              <div className="form-group">
                 <label className='form-label'>Email</label>
                 <B2BInput
-                  value={user.emailId}
+                  value={user?.emailId || ''}
                   styles={{ input: { fontSize: '14px' } }}
                   placeholder={'Email'}
                   onChange={(event) => handleChange(event, 'emailId')}
@@ -272,27 +280,31 @@ const AddUsers = () => {
                   disabled={user.userId ? true : false}
                   size='md'
                   placeholder="Password"
-                  value={user.password}
+                  value={user?.password || ''}
                   onChange={(event) => handleChange(event, 'password')}
                 />
-                {/* {user.password ? <B2BAnchor title='Change Password' content="Change" style={{ paddingLeft: '1rem' }} href="" /> : null} */}
+                {user?.password ? <B2BAnchor title='Change Password' content="Change" style={{ paddingLeft: '1rem' }} href="" /> : null}
               </div>
               <div className="form-group">
                 <label className='form-label'>Phone</label>
                 <input
-                  value={user.mobileNumber || ''}
+                  value={user?.mobileNumber || ''}
                   className='form-input'
                   required
-                  type="number"
+                  type="tel"
                   onChange={(event) => handleChange(event, 'mobileNumber')}
                   placeholder="Phone Number"
+                  pattern='[0-9]{10}'
+                  maxLength='10'
+                  minLength='10'
+                  onInput={(e) => e.target.value = e.target.value.replace(/\D/g, '')}
                 />
               </div>
               <div className="form-group">
                 <label className='form-label'>Role</label>
                 <B2BSelect
                   styles={{ option: { fontSize: '13px' }, input: { fontSize: '13px' } }}
-                  value={user.roleName}
+                  value={user?.roleName}
                   data={roles.map(r => r.name)}
                   required={true}
                   clearable={roles.length > 0 ? true : false}
@@ -303,7 +315,7 @@ const AddUsers = () => {
               <div className="form-group">
                 <label className='form-label'>Location</label>
                 <B2BInput
-                  value={user.assignedLocation || ''}
+                  value={user?.assignedLocation || ''}
                   className='form-input'
                   required
                   type="text"
@@ -319,7 +331,7 @@ const AddUsers = () => {
                       type="radio"
                       value="ACTIVE"
                       onChange={(event) => handleChange(event, 'status')}
-                      checked={user.status === "ACTIVE"}
+                      checked={user?.status === "ACTIVE"}
                       name="status"
                       id="status-active"
                     />
@@ -350,8 +362,8 @@ const AddUsers = () => {
                 />
               </div>
               <div className='save-button-container'>
-                <B2BButton type='button' onClick={() => { setCreateUserArea(false); setUser(initialUserState) }} color={'red'} name="Cancel" />
-                <B2BButton type={user.userId ? 'button' : 'submit'} name={user?.userId ? "Update" : "Save"} />
+                <B2BButton type='button' onClick={handleCancel} color={'red'} name="Cancel" />
+                <B2BButton type='submit' name={user?.userId ? "Update" : "Save"} />
               </div>
             </form>
           </div>
