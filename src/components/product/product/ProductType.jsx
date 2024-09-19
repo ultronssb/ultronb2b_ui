@@ -9,6 +9,7 @@ import { IconArrowLeft } from '@tabler/icons-react';
 import { ActiveTabContext } from '../../../layout/Layout';
 import B2BInput from '../../../common/B2BInput';
 import { head } from 'lodash';
+import notify from '../../../utils/Notification';
 
 const ProductType = () => {
     const { stateData } = useContext(ActiveTabContext);
@@ -59,12 +60,16 @@ const ProductType = () => {
 
         if (file) {
             if (file.size > MAX_SIZE_BYTES) {
-                setImageFile(null);
-                setProduct((prevProduct) => ({
-                    ...prevProduct,
-                    image: '',
-                }));
+                setErrorMessage(`File size exceeds the 3MB limit for the Image!! `);
+                if (file.size > MAX_SIZE_BYTES) {
+                    setImageFile(null);
+                    setProduct((prevProduct) => ({
+                        ...prevProduct,
+                        image: '',
+                    }));
+                }
             } else {
+                setErrorMessage("")
                 setImageFile(file);
                 const reader = new FileReader()
                 reader.onloadend = () => {
@@ -97,20 +102,19 @@ const ProductType = () => {
             error: inputError.articleNameErrorMessage,
         },
         {
-            label: "Brand",
-            value: product?.brandId,
-            onChange: (event) => handleChange(event, "brandId"),
-            type: "select",
-            fieldType: 'selectField',
-            placeholder: "Enter Brand",
-            data: brand ? brand.map(b => ({ label: b.name, value: b.brandId })) : [],
-            clearable: true
-        },
-        {
-            label: "Product Tag",
-            type: "multiselect",
-            fieldType: 'multiselectField',
-            placeholder: "Enter Tag"
+            label: "Barcode",
+            type: 'radio',
+            value: product.isCreateBarcode,
+            fieldType: 'radioField',
+            require: true,
+            options: [
+                { label: "Yes", value: "true" },
+                { label: "No", value: "false" }
+            ],
+            placeholder: "Enter Description",
+            onChange: (event) => handleChange(event, "barcode"),
+            name: "barcode",
+            error: inputError?.barcodeErrorMessage
         },
         {
             label: "UOM",
@@ -132,6 +136,22 @@ const ProductType = () => {
             error: inputError.uomErrorMessage,
         },
         {
+            label: "Brand",
+            value: product?.brandId,
+            onChange: (event) => handleChange(event, "brandId"),
+            type: "select",
+            fieldType: 'selectField',
+            placeholder: "Enter Brand",
+            data: brand ? brand.map(b => ({ label: b.name, value: b.brandId })) : [],
+            clearable: true
+        },
+        {
+            label: "Product Tag",
+            type: "multiselect",
+            fieldType: 'multiselectField',
+            placeholder: "Enter Tag"
+        },
+        {
             label: "Description",
             value: product.description,
             onChange: (event) => handleChange(event, "description"),
@@ -141,21 +161,6 @@ const ProductType = () => {
             rows: 1,
             cols: 50,
             error: inputError.descErrorMessage
-        },
-        {
-            label: "Barcode",
-            type: 'radio',
-            value: product.isCreateBarcode,
-            fieldType: 'radioField',
-            require: true,
-            options: [
-                { label: "Yes", value: "true" },
-                { label: "No", value: "false" }
-            ],
-            placeholder: "Enter Description",
-            onChange: (event) => handleChange(event, "barcode"),
-            name: "barcode",
-            error: inputError?.barcodeErrorMessage
         },
         {
             label: "Taxonomy",
@@ -319,9 +324,12 @@ const ProductType = () => {
                             <p style={{ color: '#888' }}>No image uploaded</p>
                         )}
                     </div>
-
-                    {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-                    {!imageFile && <p style={{ color: '#ff6969' }}>Note * File Should be less than 3MB</p>}
+                    {errorMessage && notify({
+                        title: 'Error!!',
+                        message: errorMessage || 'Failed to add Image.',
+                        error: true,
+                        success: false,
+                    })}
                 </div>
             </form>
         </div>

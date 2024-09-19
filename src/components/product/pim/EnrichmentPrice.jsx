@@ -70,7 +70,7 @@ const EnrichmentPrice = () => {
           <B2BInput
             value={product?.gst?.name|| ''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event,"name")}
             placeholder={"Tax"}
           />
         </div>
@@ -79,7 +79,7 @@ const EnrichmentPrice = () => {
           <B2BInput
             value={product?.priceSetting?.costPrice|| ''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event,"costPrice")}
             placeholder={"Cost Price"}
           />
         </div>
@@ -89,7 +89,7 @@ const EnrichmentPrice = () => {
           <B2BInput
             value={product?.priceSetting?.mrp||''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event,"mrp")}
             placeholder={"MRP"}
           />
         </div>

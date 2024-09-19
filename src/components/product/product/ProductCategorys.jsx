@@ -9,7 +9,7 @@ import { ProductContext } from './CreateProduct';
 import './ProductCategory.css'
 
 const ProductCategorys = () => {
-    const { product, setProduct, handleChange, inputError, setInputError } = useContext(ProductContext);
+    const { product, setProduct, inputError, setInputError } = useContext(ProductContext);
 
     const initialState = { key: '', value: {}, heirarchyLabel: "", options: [], openModal: false, count: 2 }
     const [categorys, setCategorys] = useState([]);
@@ -128,7 +128,7 @@ const ProductCategorys = () => {
                 <h2 className="product-variant-text-sub-heading">Category</h2>
                 <div className="product-variant-g-row">
                     <div className="product-variant-g-col product-variant-g-s-12 product-variant-g-m-3 product-variant-grid-settings-item">
-                        Choose the category attributes for this product to create and manage SKUs and their inventory levels.
+                        Choose atleast one category attributes for this product to create and manage SKUs and their inventory levels.
                     </div>
                     <div className="product-variant-g-col product-variant-g-s-12 product-variant-g-m-9">
                         <div>

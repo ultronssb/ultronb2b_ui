@@ -12,7 +12,9 @@ export const EnrichProductContext = createContext(null);
 
 const EnrichProduct = () => {
 
-  const [product, setProduct] = useState([]);
+  const [product, setProduct] = useState({
+    status: '',
+  });
   const resetRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -21,11 +23,11 @@ const EnrichProduct = () => {
   useEffect(() => {
     const query_param = new URLSearchParams(location.search);
     const id = query_param.get('id');
-    console.log(id)
     if (id) {
       fetchProduct(id)
     }
   }, [location.search])
+  
   const fetchProduct = async (id) => {
     try {
       const response = await B2B_API.get(`product/${id}`).json();
@@ -112,8 +114,9 @@ const EnrichProduct = () => {
         gstId: product?.gst?.gstId,
         image: `http://192.168.1.13:8080${product?.image}`,
         productCategories: await transformCategories(),
-        prodVariants: transformData(), // Assuming you have logic for prodVariants transformation
+        prodVariants: transformData(),
         priceSetting: adjustPriceSetting(product?.priceSetting),
+        status: product.status === "ACTIVE" ? "true" : "false",
 
         productVariants: product?.productVariants?.map(variant => ({
           ...variant,
@@ -121,7 +124,10 @@ const EnrichProduct = () => {
             ...v,
             variantId: v.variantId
           }))
-        }))
+        })),
+        otherInformation: {
+          ...product.otherInformation,
+        }
       });
 
       const initializeImage = async () => {
@@ -158,21 +164,77 @@ const EnrichProduct = () => {
     }
   };
 
+  // const handleChange = (event, field, index) => {
+  //   const { value } = event.target;
+  //   // if (field?.includes('.')) {
+  //   //   const [parent, child] = field.split('.');
+  //   //   setProduct((prev) => ({
+  //   //     ...prev,
+  //   //     [parent]: {
+  //   //       ...prev[parent],
+  //   //       [child]: value
+  //   //     }
+  //   //   }));
+  //   // }
+  //   setProduct(prevProduct => {
+  //     if (field === 'categoryName' && index !== undefined) {
+  //       const updatedCategories = [...prevProduct.productCategories];
+  //       updatedCategories[index] = {
+  //         ...updatedCategories[index],
+  //         categoryName: value
+  //       };
+  //       return {
+  //         ...prevProduct,
+  //         productCategories: updatedCategories
+  //       };
+  //     } 
+  //     else if (field === 'status') {
+  //       return {
+  //         ...prevProduct,
+  //         status: value
+  //       };
+  //     } 
+  //     else {
+  //       return {
+  //         ...prevProduct,
+  //         [field]: value
+  //       };
+  //     }
+  //   });
+  // };
 
-
-  // const handleChange = (event) => {
-  //   setProduct((prev) => ({
-  //     ...prev, [event.target.name]: event.target.value
-  //   }))
-  // }
-
-  const handleChange = (event, field) => {
-    const { value } = event.target;
-    setProduct(prevProduct => ({
-      ...prevProduct,
-      [field]: value
-    }));
+  const handleChange = (event, fieldType) => {
+    const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
+    if (fieldType.includes('.')) {
+      const [parent, child] = fieldType.split('.');
+      setProduct((prev) => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent],
+          [child]: value
+        }
+      }));
+    } else if (fieldType === 'status') {
+      setProduct(prevProduct => {
+        return {
+          ...prevProduct,
+          status: value
+        };
+      })
+    }
+    else {
+      setProduct(prev => ({
+        ...prev,
+        [fieldType]: event?.target?.value,
+      }));
+    }
   };
+
+
+
+
+
+
 
   console.log(product);
 
@@ -200,7 +262,7 @@ const EnrichProduct = () => {
       type: "text",
       fieldType: 'textField',
       placeholder: "Enter PIM Id",
-      onChange: (event) => handleChange(event, "PimId")
+      onChange: (event) => handleChange(event, "pimId")
     },
     {
       label: "Variant Id",
@@ -212,11 +274,15 @@ const EnrichProduct = () => {
     },
     {
       label: "Status",
+      type: 'radio',
       value: product?.status,
-      type: "text",
-      fieldType: 'textField',
-      placeholder: "Enter Status",
-      onChange: (event) => handleChange(event, "Status")
+      fieldType: 'radioField',
+      options: [
+        { label: "ACTIVE", value: "true" },
+        { label: "INACTIVE", value: "false" }
+      ],
+      onChange: (event) => handleChange(event, "status"),
+      name: "status",
     },
   ]
 
@@ -225,12 +291,16 @@ const EnrichProduct = () => {
 
     if (file) {
       if (file.size > MAX_SIZE_BYTES) {
-        setImageFile(null);
-        setProduct((prevProduct) => ({
-          ...prevProduct,
-          image: '',
-        }));
+        setErrorMessage(`File size exceeds the 3MB limit for the Image!! `);
+        if (file.size > MAX_SIZE_BYTES) {
+          setImageFile(null);
+          setProduct((prevProduct) => ({
+            ...prevProduct,
+            image: '',
+          }));
+        }
       } else {
+        setErrorMessage('')
         setImageFile(file);
         const reader = new FileReader()
         reader.onloadend = () => {
@@ -263,7 +333,7 @@ const EnrichProduct = () => {
   };
 
   return (
-    <EnrichProductContext.Provider value={{ handleChange, product }}>
+    <EnrichProductContext.Provider value={{ handleChange, product, setProduct }}>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <div className='form-group' style={{ display: 'flex', flexDirection: 'column', maxWidth: '49%', alignItems: 'center' }}>
           {/* Image Display Section */}
@@ -282,14 +352,10 @@ const EnrichProduct = () => {
             <FileButton resetRef={resetRef} onChange={(file) => fileChange(file)} accept="image/png,image/jpeg">
               {(props) => <Button {...props}>Upload image</Button>}
             </FileButton>
-            <Button color="red" onClick={clearFile}>
+            <Button disabled={!imageFile} color="red" onClick={clearFile}>
               Reset
             </Button>
           </Group>
-
-          {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-
-          {!product?.image && <p style={{ color: '#ff6969' }}>Note * File Should be less than 3mb</p>}
         </div>
 
         <form className='form-container' style={{ display: 'flex', flexDirection: 'row', maxWidth: '49%' }}>
@@ -321,8 +387,30 @@ const EnrichProduct = () => {
                   />
                 )
               }
+              {field.fieldType === "radioField" && (
+                <div className="radio-group">
+                  {field.options.map((option, idx) => (
+                    <div key={idx} className="radio-item" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                      <input
+                        type="radio"
+                        value={option.value}
+                        name={field.name}
+                        onChange={field.onChange}
+                        checked={field.value === option.value}
+                      />
+                      <label className='radio-label'>{option.label}</label>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
+          {errorMessage && notify({
+            title: 'Error!!',
+            message: errorMessage || 'Failed to add Image.',
+            error: true,
+            success: false,
+          })}
         </form>
       </div>
       <EnrichmentTabs />

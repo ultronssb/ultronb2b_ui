@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs } from '@mantine/core';
+import { colorsTuple, Tabs } from '@mantine/core';
 import B2BTabs from '../../../common/B2BTabs';
 import B2BButton from '../../../common/B2BButton';
 import Hierarchy from './EnrichmentHierarchy';
@@ -11,6 +11,7 @@ import EnrichmentMedia from './EnrichmentMedia';
 import EnrichmentSeo from './EnrichmentSeo';
 import EnrichmentHierarchy from './EnrichmentHierarchy';
 import EnrichmentAttributes from './EnrichmentAttributes';
+import EnrichmentTransaction from './EnrichmentTransaction';
 
 const EnrichmentTabs = () => {
     const [activeTab, setActiveTab] = useState("1");
@@ -19,9 +20,10 @@ const EnrichmentTabs = () => {
         { id: "1", name: "Hireachy", disabled: false },
         { id: "2", name: "Attributes", disabled: true },
         { id: "3", name: "Product", disabled: true },
-        { id: "4", name: "SEO", disabled: true },
-        { id: "5", name: "Price", disabled: true },
-        { id: "6", name: "Image/Video", disabled: true },
+        { id: "4", name: "Transaction", disabled: true },
+        { id: "5", name: "SEO", disabled: true },
+        { id: "6", name: "Price", disabled: true },
+        { id: "7", name: "Image/Video", disabled: true },
     ];
 
     const [tabs, setTabs] = useState(initialTabs);
@@ -35,10 +37,12 @@ const EnrichmentTabs = () => {
             case "3":
                 return <EnrichmentProduct />;
             case "4":
-                return <EnrichmentSeo />;
+                return <EnrichmentTransaction />;
             case "5":
-                return <EnrichmentPrice />;
+                return <EnrichmentSeo />;
             case "6":
+                return <EnrichmentPrice />;
+            case "7":
                 return <EnrichmentMedia />;
             default:
                 return <Hierarchy />;
@@ -98,12 +102,12 @@ const EnrichmentTabs = () => {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
                 {activeTab > "1" && <B2BButton name={'Back'} onClick={handleBackTab} />}
-                {activeTab < "6" && <B2BButton name={'Next'} onClick={handleNextTab} />}
-                {activeTab === "6" &&
+                {activeTab < "7" && <B2BButton name={'Next'} onClick={handleNextTab} />}
+                {activeTab === "7" &&
                     <B2BButton
+                        style={{ backgroundColor: 'green' }}
                         name={"Save"}
                         id={"Save"}
-                    // onClick={"handleProductSave"}
                     // disabled={!isFormValid} // Disable Save button if the form is not valid
                     />
                 }

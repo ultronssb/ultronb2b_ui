@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import B2BInput from '../../../common/B2BInput';
 import { EnrichProductContext } from './EnrichProduct';
+import B2BSelect from '../../../common/B2BSelect';
 
 const EnrichmentProduct = () => {
 
@@ -14,7 +15,7 @@ const EnrichmentProduct = () => {
           <B2BInput
             value={product.brand?.name}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event, "name")}
             placeholder={"Garment Type"}
           />
         </div>
@@ -23,7 +24,7 @@ const EnrichmentProduct = () => {
           <B2BInput
             value={product?.otherInformation?.sampleMOQ || ''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event, "otherInformation.sampleMOQ")}
             placeholder={"sampleMOQ"}
           />
         </div>
@@ -32,15 +33,24 @@ const EnrichmentProduct = () => {
           <B2BInput
             value={product?.otherInformation?.purchaseMOQ || ''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event, "otherInformation.purchaseMOQ")}
             placeholder={"purchaseMOQ"}
           />
         </div>
 
         <div className={"form-group"}>
-          <label className='form-label'>UOM</label>
+          <label className='form-label'>UOM-Roll</label>
           <B2BInput
-            value={product?.otherInformation?.unitOfMeasures?.id}
+            value={product?.otherInformation?.unitOfMeasures?.isRoll}
+            className='form-input'
+            onChange={(event) => handleChange(event)}
+            placeholder={"UOM"}
+          />
+        </div>
+        <div className={"form-group"}>
+          <label className='form-label'>UOM-KG</label>
+          <B2BInput
+            value={product?.otherInformation?.unitOfMeasures?.isKg}
             className='form-input'
             onChange={(event) => handleChange(event)}
             placeholder={"UOM"}
@@ -51,7 +61,7 @@ const EnrichmentProduct = () => {
           <B2BInput
             value={product?.otherInformation?.minMargin || ''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event, 'otherInformation.minMargin')}
             placeholder={"Min Margin"}
           />
         </div>
@@ -60,16 +70,16 @@ const EnrichmentProduct = () => {
           <B2BInput
             value={product?.otherInformation?.allowLoyalty || ''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event, 'otherInformation.allowLoyalty')}
             placeholder={"Allow Loyalty"}
           />
         </div>
         <div className={"form-group"}>
           <label className='form-label'>Design Number</label>
           <B2BInput
-            value={''}
+            value={product?.designNumber}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event,"designNumber")}
             placeholder={"Design Number"}
           />
         </div>

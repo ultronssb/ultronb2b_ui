@@ -110,7 +110,7 @@ export default function Layout() {
   return (
     <ActiveTabContext.Provider value={{ stateData }}>
       <ScrollContext.Provider value={scrollToTop}>
-        <AppShell header={{ height: 60 }} ref={appShellRef} padding="md" style={{ overflowY: 'auto', height: '100vh' }}>
+        <AppShell header={{ height: 60 }} ref={appShellRef} padding="md" style={{height: '100vh' }}>
           <AppShell.Header style={{ borderBottom: 'none' }}>
             <nav className='nav-bar'>
               <div style={{ display: 'flex' }}>

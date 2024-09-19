@@ -1,47 +1,39 @@
-
-import { Accordion } from '@mantine/core';
-import { IconPlus } from '@tabler/icons-react';
-import React, { useState, useEffect, ProductContext, useContext } from 'react';
+import { Accordion, InputError, Modal, Textarea } from '@mantine/core';
+import { IconPlus, IconTrash } from '@tabler/icons-react';
+import React, { useState, useEffect, useContext } from 'react';
 import B2BButton from '../../../common/B2BButton';
 import B2BSelect from '../../../common/B2BSelect';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { B2B_API } from '../../../api/Interceptor';
 import _ from 'lodash';
 import { EnrichProductContext } from './EnrichProduct';
+import B2BInput from '../../../common/B2BInput';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { useDisclosure } from '@mantine/hooks';
 
 const EnrichmentHierarchy = () => {
-  const { handleChange, product, setProduct } = useContext(EnrichProductContext);
-  const [fields, setFields] = useState([
-    {
-      id: 1,
-      description: '',
-      categorys: [],
-    },
-  ]);
+  const { product, setProduct } = useContext(EnrichProductContext);
+
   const initialState = { key: '', value: {}, heirarchyLabel: "", options: [], openModal: false, count: 2 };
-  const [openItem, setOpenItem] = useState('item-1');
-  const [selectedPairs, setSelectedPairs] = useState([{ ...initialState }]);
-  const [categoryName, setCategoryName] = useState([]);
   const [categorys, setCategorys] = useState([]);
+  const [categoryName, setCategoryName] = useState([]);
+  const [selectedPairs, setSelectedPairs] = useState([{ ...initialState }]);
+  const [expanded, setExpanded] = useState('category-0');
+  const [opened, { open, close }] = useDisclosure(false);
+
 
   useEffect(() => {
     fetchVariant();
   }, []);
 
-  useEffect(() => {
-    if (product?.productCategories) {
-      setCategorysAndselectedPairs();
-    }
-  }, [product]);
-
   const fetchVariant = async () => {
     try {
       const res = await B2B_API.get('product-category').json();
       const categories = res?.response?.filter(cat => cat.name?.toLowerCase() !== 'fabric content');
-      const categoryName = categories.map(res => res.name);
-      setCategoryName(categoryName);
-      setCategorys(categories);
+      const categoryName = categories.map(res => (res.name));
+      setCategoryName(categoryName)
+      setCategorys(categories)
+      setCategorysAndselectedPairs()
     } catch (error) {
       console.error('Error fetching variants:', error);
     }
@@ -52,19 +44,18 @@ const EnrichmentHierarchy = () => {
     if (_.size(productCategories) > 0) {
       const formattedCategories = productCategories.map(category => ({
         ...category,
-        options: getParentChild(category.key)
+        options: getParentChild(category.key) // Dynamically load child options
       }));
       setSelectedPairs(formattedCategories);
     }
-  };
+  }
+
 
   const handleSelectChange = (index, selectedKey) => {
     const newPairs = [...selectedPairs];
     newPairs[index] = { ...initialState, key: selectedKey };
     const childCategory = categorys.find(cat => cat.name === selectedKey)?.child || [];
     newPairs[index].options = childCategory;
-
-    newPairs[index].heirarchyLabel = "";
     setSelectedPairs(newPairs);
     setProduct(prev => ({ ...prev, productCategories: newPairs }));
   };
@@ -75,213 +66,181 @@ const EnrichmentHierarchy = () => {
     setSelectedPairs(newPairs);
   };
 
+  const addNewPair = () => {
+    const newIndex = selectedPairs.length;
+    setSelectedPairs([...selectedPairs, { ...initialState }]);
+    setExpanded(`category-${newIndex}`);
+  };
+
+  const removePair = (index) => {
+    const newPairs = [...selectedPairs];
+    newPairs.splice(index, 1);
+    setSelectedPairs(newPairs);
+    setProduct(prev => ({ ...prev, productCategories: newPairs }));
+  };
+
   const selectcategory = (index, cat) => {
     const newPairs = [...selectedPairs];
-    const label = newPairs[index]?.heirarchyLabel;
+    const label = newPairs[index]?.heirarchyLabel
     newPairs[index].value = cat || {};
-    const hasNoChild = _.size(cat?.child) === 0;
+    const hasNoChild = _.size(cat?.child) == 0;
     if (cat) {
       if (hasNoChild) {
         const splitLabel = label.split(" / ");
         if (splitLabel.length === (newPairs[index].count - 1)) {
-          splitLabel[splitLabel.length - 1] = cat.name;
-          newPairs[index].heirarchyLabel = _.join(splitLabel, " / ");
+          splitLabel[splitLabel.length - 1] = cat.name
+          newPairs[index].heirarchyLabel = _.join(splitLabel, " / ")
         } else {
-          newPairs[index].heirarchyLabel = label.concat(label ? " / " : "").concat(cat.name);
+          newPairs[index].heirarchyLabel = label.concat(label ? " / " : "").concat(cat.name)
         }
-        newPairs[index].openModal = false;
-        newPairs[index].lastChildName = cat.name;
+        newPairs[index].openModal = false
+        newPairs[index].lastChildName = cat.name
       } else {
-        newPairs[index].heirarchyLabel = label.concat(label ? " / " : "").concat(cat.name);
-        let count = newPairs[index].count;
+        newPairs[index].heirarchyLabel = label.concat(label ? " / " : "").concat(cat.name)
+        let count = newPairs[index].count
         newPairs[index].count = ++count;
-        newPairs[index].options = cat.child;
+        newPairs[index].options = cat.child
       }
     } else {
-      newPairs[index].heirarchyLabel = "";
+      newPairs[index].heirarchyLabel = ""
       newPairs[index].count = 2;
-      newPairs[index].options = getParentChild(newPairs[index].key);
+      newPairs[index].options = getParentChild(newPairs[index].key)
     }
     setSelectedPairs(newPairs);
-  };
+  }
+
+  const removeCategory = (index) => {
+    openModals(index, false)
+    selectcategory(index, null)
+  }
 
   const getParentChild = (key) => {
     const childCategory = categorys.find(cat => cat.name === key)?.child || [];
     return childCategory;
-  };
+  }
 
   const getAvailableKeys = (currentIndex) => {
     const selectedKeys = selectedPairs.map(pair => pair.key);
     return categoryName.filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
   };
 
-  // const handleAddField = () => {
-  //   const newId = fields.length + 1;
-  //   setFields(prevFields => [
-  //     ...prevFields,
-  //     {
-  //       id: newId,
-  //       description: '',
-  //       categorys: []
-  //     },
-  //   ]);
-  //   setOpenItem(`item-${newId}`);
-  // };
+  console.log(product, "pro");
 
-  const handleAddField = () => {
-    const newId = fields.length + 1;
-
-    // Reset selectedPairs with a new initial state for the new category
-    const newPair = {
-      ...initialState, // Reset to initial state
-      key: '', // Empty key for new selection
-      heirarchyLabel: '', // Empty label
-      value: {}, // Reset value
-      options: [] // Reset options
-    };
-
-    setFields(prevFields => [
-      ...prevFields,
-      {
-        id: newId,
-        description: '',
-        categorys: []
-      },
-    ]);
-    setOpenItem(`item-${newId}`);
-  };
-
-  const handleRemoveField = (index) => {
-    setFields(prevFields => {
-      const newFields = prevFields.filter((_, i) => i !== index);
-      if (openItem === `item-${fields[index].id}`) {
-        setOpenItem(newFields.length > 0 ? `item-${newFields[0].id}` : '');
-      }
-      return newFields;
-    });
-  };
 
   return (
-    <div className='EnrichmentContext.Provider '>
-      <B2BButton
-        name="Add Category"
-        onClick={handleAddField}
-        style={{ marginTop: '10px' }}
-        onChange={(e) => handleSelectChange(e)}
-      />
-      <Accordion
-        transitionDuration={300}
-        chevron={<IconPlus size={14} />}
-        value={openItem}
-        onChange={setOpenItem}
-        style={{ marginTop: '10px' }}
-      >
-        {fields.map((field, index) => (
-          <Accordion.Item key={field.id} value={`item-${field.id}`}>
-            <Accordion.Control>
-              Category {field.id}
-            </Accordion.Control>
-            <Accordion.Panel>
-              <div>
-                <div style={{ display: 'flex', flexFlow: 'row wrap', width: "100%" }}>
-                  <div style={{ display: 'flex', width: '25%' }}>
-                    <label>Category</label>
-                  </div>
-                  <div style={{ display: 'flex', flex: '1 1' }}>
-                    <label>Level</label>
-                  </div>
-                  <div style={{ display: 'flex', flex: '1 1' }}>
-                    <label>Description</label>
-                  </div>
+    <Accordion
+      value={expanded} // Controlled component
+      onChange={setExpanded} // Update expanded state
+      chevron={<IconPlus />}
+    >
+      {selectedPairs.map((pair, index) => (
+        <Accordion.Item key={`category-${index}`} value={`category-${index}`}>
+          <Accordion.Control>
+            {`Category ${index + 1}:${pair?.key}`}
+          </Accordion.Control>
+          <Accordion.Panel>
+            <div style={{ display: 'flex', flexFlow: 'row wrap', width: '100%' }}>
+              <div style={{ display: 'flex', width: '25%' }}>
+                <label>Category</label>
+              </div>
+              <div style={{ display: 'flex', flex: '1 1' }}>
+                <label>Level</label>
+              </div>
+              <div style={{ display: 'flex', flex: '1 1' }}>
+                <label>Description</label>
+              </div>
+            </div>
+            <div style={{ display: 'flex', width: '100%' }}>
+              <div style={{ display: 'flex', width: '25%' }}>
+                <B2BSelect
+                  value={pair.key}
+                  data={getAvailableKeys(index)}
+                  onChange={(e) => handleSelectChange(index, e)}
+                />
+              </div>
+              <div style={{ display: 'flex', flex: '1 1', flexDirection: 'column' }}>
+                <div style={{ width: '90%' }}>
+                  <input
+                    placeholder="Select a category"
+                    disabled={!pair.key}
+                    readOnly
+                    value={pair.heirarchyLabel}
+                    onClick={() => openModals(index, true)}
+                    className="product-variant-select"
+                    style={{ width: '100%', cursor: !pair.key ? 'not-allowed' : 'pointer' }}
+                  />
                 </div>
-
-                {selectedPairs.map((pair, pairIndex) => (
-                  <div key={pairIndex} style={{ display: 'flex', width: '100%' }}>
-                    <div style={{ display: 'flex', width: '25%' }}>
-                      <B2BSelect
-                        value={pair.key}
-                        data={getAvailableKeys(pairIndex)}
-                        onChange={(e) => handleSelectChange(pairIndex, e)}
-                      />
+                {pair.openModal && (
+                  <div style={{ width:'90%',boxShadow: '1px 1px 1px 2px rgba(0,0,0,0.5)', borderRadius: '10px', padding: '10px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 20px', marginBottom: '20px', }}>
+                      <span style={{ fontSize: '18px', fontWeight: '700' }}>Search all categories</span>
+                      <span><FontAwesomeIcon icon={faClose} onClick={() => openModals(index, false)} style={{ cursor: 'pointer', fontSize: '18px' }} /></span>
                     </div>
-                    <div style={{ display: 'flex', flex: '1 1' }}>
-                      <div style={{ width: '90%' }}>
-                        <div>
-                          <input
-                            placeholder="Select a category"
-                            disabled={pair?.key === null}
-                            style={{ width: '100%', cursor: pair.key === null ? 'not-allowed' : 'pointer' }}
-                            readOnly
-                            className="product-variant-select vd-dropdown-input"
-                            type="text"
-                            value={pair.heirarchyLabel}
-                            onClick={() => openModals(pairIndex, true)}
-                          />
-                        </div>
-                        {pair.openModal && (
-                          <div className="vd-popover-tether-element-wrapper">
-                            <div className="vd-popover-content">
-                              <div className="vd-mt6 vd-ml6 vd-mr6 vd-mb3">
-                                <label htmlFor="search-input" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                                  <span className="vd-text-label vd-util-text-overflow-break-word vd-label">Search all categories</span>
-                                  <span><FontAwesomeIcon icon={faClose} onClick={() => openModals(pairIndex, false)} style={{ cursor: 'pointer' }} /></span>
-                                </label>
-                              </div>
-                              {(!pair.value || pair.options.length > 0) && (
-                                <div className="vd-mt6 vd-ml6 vd-mr6 vd-mb3">
-                                  <input className="vd-input" type="text" id="search-input" placeholder="Enter a category name" />
-                                </div>
-                              )}
-                              {(!pair.value || pair.options.length > 0) && (
-                                <div role="list">
-                                  <div className="vd-ml6 vd-mr6">
-                                    <span className="vd-text-signpost vd-util-text-overflow-break-word">Level {pair.count}</span>
-                                    <hr className="vd-hr vd-mt6" />
-                                  </div>
-                                  {pair.options.map((cat, catIndex) => (
-                                    <div key={catIndex} className="vd-list-item" role="listitem" onClick={() => selectcategory(pairIndex, cat)}>
-                                      {cat.name}
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
+                    {!pair.value || pair.options.length > 0 ? <div style={{ padding: '0 20px', }}><input type="text" id="search-input" placeholder="Enter a category name" style={{ width: '100%', fontSize: '15px', fontWeight: '400', margin: '0', outline: 'none', padding: '11px 36px 11px 14px', border: '2px solid #e7e5e8' }} /></div> : ''}
+                    {
+                      !pair.value || pair.options.length > 0 ?
+                        <div role="list">
+                          <div style={{ padding: '10px 20px' }}>
+                            <span style={{ fontSize: '16px', fontWeight: '800' }}>Level {pair.count}</span>
+                            <hr />
                           </div>
-                        )}
+                          <div style={{ padding: '10px 20px' }}>
+                            {pair.options.map((cat) => (
+                              <ul key={cat.id} style={{ listStyle: 'none', padding: '0' }}>
+                                <li tabIndex="0" onClick={() => selectcategory(index, cat)} style={{ padding: '10px 0px', cursor: 'pointer' }}>
+                                  <span>{cat.name}</span>
+                                </li>
+                              </ul>
+                            ))}
+                          </div>
+                        </div> : ''
+                    }
+                    {pair.heirarchyLabel && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 20px', alignItems: 'center', borderTop: '2px solid silver' }}>
+                        <span>{pair.heirarchyLabel}</span>
+                        <button aria-label="Remove selected category" type="button" onClick={() => removeCategory(index)} style={{ padding: '10px 20px', background: 'none', cursor: 'pointer', border: 'none' }}>
+                          <FontAwesomeIcon className='fa' icon={faTrash} />
+                        </button>
                       </div>
-                    </div>
-                    <div style={{ display: 'flex', flex: '1 1' }}>
-                      <textarea
-                        value={field.description}
-                        className="form-input-textarea"
-                        onChange={(e) => {
-                          const newFields = [...fields];
-                          newFields[index].description = e.target.value;
-                          setFields(newFields);
-                        }}
-                        placeholder="Enter Description"
-                      />
-                    </div>
-                    {fields.length > 1 && (
-                      <B2BButton
-                        name="Remove"
-                        onClick={() => handleRemoveField(index)}
-                        style={{ marginTop: '10px', marginLeft: '3rem' }}
-                      />
                     )}
                   </div>
-                ))}
+                )}
               </div>
-            </Accordion.Panel>
-          </Accordion.Item>
-        ))}
-      </Accordion>
-    </div>
+              <div style={{ display: 'flex', flex: '1 1', }}>
+                <Textarea
+                  style={{ width: '75%', }}
+                  value={pair.description}
+                  placeholder="Enter Description"
+                  onChange={(e) => {
+                    const newPairs = [...selectedPairs];
+                    newPairs[index].description = e.target.value;
+                    setSelectedPairs(newPairs);
+                  }}
+                />
+              </div>
+            </div>
+          </Accordion.Panel>
+          {index > 0 && (
+            <B2BButton
+              leftIcon={<IconTrash />}
+              color="red"
+              name="Remove"
+              onClick={() => removePair(index)}
+            />
+          )}
+        </Accordion.Item>
+      ))}
+
+      {_.size(categorys) > _.size(selectedPairs) && (
+        <B2BButton
+          leftIcon={<IconPlus />}
+          name="Add Category"
+          onClick={addNewPair}
+        />
+      )}
+
+    </Accordion>
   );
 };
 
 export default EnrichmentHierarchy;
-
-
-
-

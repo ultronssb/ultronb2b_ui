@@ -9,32 +9,32 @@ const EnrichmentSeo = () => {
   return (
     <div>
       <form className='form-container'>
-        <div className={"form-group"}>
+        <div style={{display:'flex',textAlign:'left',alignItems:'baseline'}}>
           <label className='form-label'>Product URL</label>
           <B2BInput
-            value={product?.otherinformation?.url}
+            value={product?.otherInformation?.url || ''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event,'otherInformation.url')}
             placeholder={"Product URL"}
           />
         </div>
 
-        <div className={"form-group"}>
+        <div style={{display:'flex',textAlign:'left',alignItems:'baseline'}}>
           <label className='form-label'>Product Slug</label>
           <B2BInput
-            value={product?.otherinformation?.productSlug}
+            value={product?.otherInformation?.productSlug || ''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event,'otherInformation.productSlug')}
             placeholder={"Product Slug"}
           />
         </div>
 
-        <div className={"form-group"}>
+        <div style={{display:'flex',textAlign:'left',alignItems:'baseline'}}>
           <label className='form-label'>Page Title</label>
           <B2BInput
-            value={""}
+            value={product?.pageTitle}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event,"pageTitle")}
             placeholder={"Page Title"}
           />
         </div>
@@ -42,9 +42,9 @@ const EnrichmentSeo = () => {
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <label className='form-label'>Meta Description</label>
           <textarea
-            value={product?.otherinformation?.metaDescription || ''}
+            value={product.otherInformation?.metaDesc}
             className='form-input-textarea'
-            onChange={(event) => handleChange(event, 'metaDescription')}
+            onChange={(event) => handleChange(event, 'otherInformation.metaDesc')}
           />
         </div>
       </form>

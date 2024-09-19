@@ -10,12 +10,12 @@ import 'material-symbols';
 import { Notifications } from "@mantine/notifications";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  // <React.StrictMode>
+  <React.StrictMode>
   <BrowserRouter>
     <MantineProvider>
       <Notifications position="top-right" containerWidth={350}/>
       <App />
     </MantineProvider>
   </BrowserRouter>,
-  // </React.StrictMode>
+  </React.StrictMode> 
 );

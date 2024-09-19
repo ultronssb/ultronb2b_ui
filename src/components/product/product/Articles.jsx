@@ -90,9 +90,9 @@ const Articles = () => {
 
   const editVarient = (varobj) => {
     setIsCreateProduct(true);
-    navigate(`/product/product/create?id=${varobj.productId}`);
+    navigate(`/product/product/create?id=${varobj?.productId}`);
     setProduct((prev => ({ ...prev, ...varobj })));
-  };
+  };  
 
   const fetchAllProducts = async () => {
     try {
