@@ -11,6 +11,7 @@ import notify from '../../../utils/Notification';
 import ProductDimension from './ProductDimension';
 import _, { constant, isEmpty, isNull } from 'lodash';
 import { validateProductDescription, validateProductName } from '../../../utils/Validation';
+import { BASE_URL } from '../../../api/EndPoints';
 export const ProductContext = createContext(null);
 
 const CreateProduct = () => {
@@ -42,6 +43,20 @@ const CreateProduct = () => {
     },
     otherInformation: {
       skuPrefix: '',
+      sampleMOQ: '',
+      purchaseMOQ: '',
+      minMargin: '',
+      allowLoyalty: '',
+      productSlug: '',
+      url: '',
+      isStopGRN: '',
+      isStopPurchaseReturn: '',
+      isStopSale: '',
+      isAllowRefund: '',
+      isAllowNegative: '',
+      isAllowCostEditInGRN: '',
+      isEnableSerialNumber: '',
+      isNonTrading: '',
       unitOfMeasures:
       {
         type: 'UOM',
@@ -76,7 +91,10 @@ const CreateProduct = () => {
     categoryId: '',
     gstId: '',
     brandId: '',
-    taxonomy: ''
+    taxonomy: '',
+    performance: '',
+    designNumber: '',
+    pageTitle:'',
   }
   const [product, setProduct] = useState(initialState);
   const [imageFile, setImageFile] = useState(null)
@@ -98,8 +116,8 @@ const CreateProduct = () => {
     categorysErrorMessage: '',
     fabricContentError: false,
     fabricContentErrorMessage: '',
-    fabricCompositionError:false,
-    fabricCompositionErrorMessage:'',
+    fabricCompositionError: false,
+    fabricCompositionErrorMessage: '',
     metricError: false,
     metricErrorMessage: '',
     priceSettingsError: false,
@@ -245,10 +263,8 @@ const CreateProduct = () => {
   const enableNextTab = (isDisabled) => {
     setTabs((prevTabs) => {
       const updatedTabs = prevTabs.map((tab, index) => {
-        // Find the tab with the matching id
         if (tab.id === activeTab) {
           const nextIndex = index + 1;
-          // If there is a next tab, enable it
           if (nextIndex < prevTabs.length) {
             prevTabs[nextIndex].disabled = isDisabled;
           }
@@ -347,7 +363,7 @@ const CreateProduct = () => {
         const isFabricContentValid = product?.fabricContent?.composition &&
           Object.keys(product.fabricContent.composition).length > 0 &&
           Object.values(product.fabricContent.composition).every(value => value);
-        if(product?.totalProductPercent>100 || product?.totalProductPercent<100){
+        if (product?.totalProductPercent > 100 || product?.totalProductPercent < 100) {
           errors.fabricCompositionError = true;
           errors.fabricCompositionErrorMessage = "Overal composition Percentage must be 100";
           isValid = false;
@@ -537,7 +553,7 @@ const CreateProduct = () => {
       };
       const calculateTotalPercent = (composition) => {
         return Object.values(composition).reduce((sum, value) => sum + parseInt(value, 10), 0);
-    };
+      };
       const fetchHeirarchy = async (parentId) => {
         let heirarchy = [];
         let currentId = parentId;
@@ -591,7 +607,7 @@ const CreateProduct = () => {
         taxonomy: product?.taxonomy?.name,
         barcode: barcodeString,
         gstId: product?.gst?.gstId,
-        image: `http://192.168.1.13:8080${product?.image}`,
+        image: `${BASE_URL.replace("/api","")}${product?.image}`,
         productCategories: await transformCategories(),
         prodVariants: transformData(),
         priceSetting: adjustPriceSetting(product?.priceSetting),
@@ -654,6 +670,7 @@ const CreateProduct = () => {
             name={product?.productId ? "Update" : "Save"}
             id={product?.productId ? "Update" : "Save"}
             onClick={handleProductSave}
+            style={{ backgroundColor: 'green' }}
             disabled={!isFormValid} // Disable Save button if the form is not valid
           />
         }
