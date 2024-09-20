@@ -1,11 +1,11 @@
 import { TextInput } from '@mantine/core';
 import React from 'react';
 
-const B2BInput = ({ value, styles, onChange, placeholder, variant, required, error, type, radius, disabled, rightSection }) => {
+const B2BInput = ({ value, styles, edit, onChange, placeholder, variant, required, error, type, radius, disabled, rightSection }) => {
     return (
         <TextInput
             className='input-textField'
-            styles={{input: {fontSize: '14px'}, ...styles}}
+            styles={{input: {fontSize: '14px', cursor: edit === true ? 'not-allowed' : 'text'}, ...styles}}
             placeholder={placeholder}
             value={value}
             type={type}

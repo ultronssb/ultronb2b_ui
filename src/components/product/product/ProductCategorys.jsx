@@ -4,9 +4,8 @@ import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect';
-import './ProductVariant.css';
 import { ProductContext } from './CreateProduct';
-import './ProductCategory.css'
+import './ProductCategory.css';
 
 const ProductCategorys = () => {
     const { product, setProduct, inputError, setInputError } = useContext(ProductContext);
@@ -17,13 +16,13 @@ const ProductCategorys = () => {
     const [selectedPairs, setSelectedPairs] = useState([{ ...initialState }]);
 
     useEffect(() => {
-        fetchVariant();
+        fetchcategory();
     }, []);
 
 
     console.log("product : ", product);
 
-    const fetchVariant = async () => {
+    const fetchcategory = async () => {
         try {
             const res = await B2B_API.get('product-category').json();
             const categories = res?.response?.filter(cat => cat.name?.toLowerCase() !== 'fabric content');
@@ -32,7 +31,7 @@ const ProductCategorys = () => {
             setCategorys(categories)
             setCategorysAndselectedPairs()
         } catch (error) {
-            console.error('Error fetching variants:', error);
+            console.error('Error fetching categorys:', error);
         }
     };
 
@@ -123,172 +122,97 @@ const ProductCategorys = () => {
     };
 
     return (
-        <section className="product-variant-section">
-            <div className="product-variant-section-wrap">
-                <h2 className="product-variant-text-sub-heading">Category</h2>
-                <div className="product-variant-g-row">
-                    <div className="product-variant-g-col product-variant-g-s-12 product-variant-g-m-3 product-variant-grid-settings-item">
-                        Choose atleast one category attributes for this product to create and manage SKUs and their inventory levels.
-                    </div>
-                    <div className="product-variant-g-col product-variant-g-s-12 product-variant-g-m-9">
-                        <div>
-                            <div className="product-variant-g-row">
-                                <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
-                                    <label>
-                                        <span className="product-variant-text-label">Category</span>
-                                        <span className="error-message"> *</span>
-                                    </label>
-                                </div>
-                                <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-8">
-                                    <label>
-                                        <span className="product-variant-text-label">Level</span>
-                                        <span className="error-message"> *</span>
-                                    </label>
-                                </div>
+        <section className="product-category-section">
+            <h2 className="product-category-sub-heading">Category</h2>
+            <div className="" style={{ display: 'flex', flexDirection: 'row' }}>
+                <div className="" style={{ width: '30rem' }}>
+                    Choose the category attributes for this product to create and manage SKUs and their inventory levels.
+                </div>
+                <div className='input-field-container'>
+                    <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}>
+                        <div className="product-category-g-row">
+                            <div className="product-category-g-col" >
+                                <span className="product-category-text-label">Category</span>
+                                <span className="error-message"> *</span>
                             </div>
-                            {selectedPairs.map((pair, index) => (
-                                <div key={index} className="product-variant-g-row">
-                                    <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
-                                        <div className="product-variant-flex">
-                                            <div className="product-variant-flex-grow-1 product-variant-mr2">
-                                                <div className="product-variant-popover-tether-target-wrapper">
-                                                    <div className="product-variant-autocomplete-input-container">
-                                                        <B2BSelect
-                                                            value={pair.key}
-                                                            data={getAvailableKeys(index)}
-                                                            onChange={(e) => handleSelectChange(index, e)}
-                                                            error={inputError?.categoryErrorMessage}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-8 product-variant-mb2">
-                                        <div className="cn-attribute-values-row">
-
-                                            <div className="cn-attribute-values">
-                                                <div className="product-variant-lozenge-group">
-                                                    <div className="vd-g-col vd-g-s-12">
-                                                        <div className="vd-popover-tether-target-wrapper vd-popover-tether-target vd-popover-tether-abutted vd-popover-tether-abutted-left vd-popover-tether-element-attached-left vd-popover-tether-target-attached-left vd-popover-tether-pinned vd-popover-tether-pinned-top">
-                                                            <div>
-                                                                <input placeholder="Select a category" disabled={pair?.key === null} style={{ width: '100%', cursor: pair.key === null ? 'not-allowed' : 'pointer' }} readOnly className="product-variant-select vd-dropdown-input " type="text" value={pair.heirarchyLabel} onClick={() => openModals(index, true)} onChange={() => { }} />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    {
-                                                        pair.openModal && (
-                                                            <div className="vd-popover-tether-element-wrapper">
-                                                                <div className="vd-popover vd-category-select-popover vd-popover--with-list" style={{ width: '500px' }}>
-                                                                    <div className="vd-popover-content">
-                                                                        <div className="vd-mt6 vd-ml6 vd-mr6 vd-mb3">
-                                                                            <label htmlFor="search-input" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                                                                                <span className="vd-text-label vd-util-text-overflow-break-word vd-label">Search all categories</span>
-                                                                                <span><FontAwesomeIcon icon={faClose} onClick={() => openModals(index, false)} style={{ cursor: 'pointer' }} /></span>
-                                                                            </label>
-                                                                        </div>
-                                                                        {
-                                                                            !pair.value || pair.options.length > 0 ?
-                                                                                <div className="vd-mt6 vd-ml6 vd-mr6 vd-mb3">
-                                                                                    <input className="vd-input" type="text" id="search-input" placeholder="Enter a category name" />
-                                                                                </div> : ''
-                                                                        }
-
-                                                                        {
-                                                                            !pair.value || pair.options.length > 0 ?
-                                                                                <div role="list">
-                                                                                    <div role="listitem" className="vd-mt4">
-                                                                                        <div className="vd-ml6 vd-mr6">
-                                                                                            <span className="vd-text-signpost vd-util-text-overflow-break-word">Level {pair.count}</span>
-                                                                                            <hr className="vd-hr vd-mt2" />
-                                                                                        </div>
-                                                                                        <div className='child-values'>
-                                                                                            {pair.options.map((cat) => (
-                                                                                                <ul className="vd-popover-list" key={cat.id}>
-                                                                                                    <li
-                                                                                                        tabIndex="0"
-                                                                                                        className="vd-popover-list-item"
-                                                                                                        onClick={() => selectcategory(index, cat)}
-                                                                                                    >
-                                                                                                        <div className="helios-c-PJLV helios-c-PJLV-icepvqO-css">
-                                                                                                            <div className="helios-c-PJLV helios-c-PJLV-iPJLV-css">
-                                                                                                                <div className="helios-c-PJLV helios-c-PJLV-ilkBNdM-css">
-                                                                                                                    <span>
-                                                                                                                        <span className="">{cat.name}</span>
-                                                                                                                    </span>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                </ul>
-                                                                                            ))}
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div> : ''
-                                                                        }
-                                                                    </div>
-                                                                    {pair.heirarchyLabel && (
-                                                                        <div className="vd-popover-actions">
-                                                                            <div className="vd-action-bar vd-action-bar--inline category-list-footer vd-suggestion--footer">
-                                                                                <div className="helios-c-PJLV helios-c-PJLV-idMyiqo-css">
-                                                                                    <div className="helios-c-PJLV helios-c-PJLV-iPJLV-css">
-                                                                                        <div className="helios-c-PJLV helios-c-PJLV-ilkBNdM-css">
-                                                                                            <span className="vd-text-body vd-util-text-overflow-break-word">{pair.heirarchyLabel}</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div className="helios-c-PJLV helios-c-PJLV-iPJLV-css">
-                                                                                        <div className="helios-c-PJLV helios-c-PJLV-ilkBNdM-css">
-                                                                                            <button
-                                                                                                aria-label="Remove selected category"
-                                                                                                type="button"
-                                                                                                className="vd-btn vd-btn--icon-supplementary"
-                                                                                                onClick={() => removeCategory(index)}
-                                                                                            >
-                                                                                                <FontAwesomeIcon className='fa vd-icon' icon={faTrash} />
-                                                                                            </button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    }
-                                                </div>
-                                                <span className='error-message'>
-                                                    {inputError?.categorysErrorMessage}
-                                                </span>
-                                            </div>
-                                            {index > 0 && (
-                                                <button
-                                                    type="button"
-                                                    className="product-variant-btn product-variant-btn--icon-no product-variant-ml2"
-                                                    onClick={() => removePair(+index)}
-                                                >
-                                                    <FontAwesomeIcon className="fa product-variant-icon" icon={faTrash} />
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                            <div className="product-variant-g-row">
-                                {_.size(categorys) > _.size(selectedPairs) && (
-                                    <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
-                                        <button
-                                            type="button"
-                                            className="product-variant-btn product-variant-btn--text-go"
-                                            onClick={addNewPair}
-                                        >
-                                            <FontAwesomeIcon className="fa product-variant-icon product-variant-mr2" icon={faPlus} />
-                                            Add another category
-                                        </button>
-                                    </div>
-                                )}
+                            <div className="product-category-g-col" >
+                                <span className="product-category-text-label">Level</span>
+                                <span className="error-message"> *</span>
                             </div>
+                            <div className="product-category-g-col" style={{ width: '5rem', flex: 'none' }}></div>
                         </div>
+                        {selectedPairs.map((pair, index) => (
+                            <div key={index} className="product-category-g-row">
+                                <div className="product-category-g-col">
+                                    <B2BSelect
+                                        value={pair.key}
+                                        data={getAvailableKeys(index)}
+                                        onChange={(e) => handleSelectChange(index, e)}
+                                        error={inputError?.categoryErrorMessage}
+                                    />
+                                </div>
+                                <div className="product-category-g-col" style={{ flexDirection: 'column' }}>
+                                    <div className='product-category-inputField'>
+                                        <input placeholder="Select a category" disabled={pair?.key === null} style={{ cursor: pair.key === null ? 'not-allowed' : 'pointer' }} readOnly type="text" value={pair.heirarchyLabel} onClick={() => openModals(index, true)} onChange={() => { }} />
+                                    </div>
+                                    {
+                                        pair.openModal && (
+                                            <div className="product-category-modal-popup">
+                                                <div className="product-category-modal-popup-heading" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                                                    <span className="product-category-modal-popup-label">Search all categories</span>
+                                                    <span><FontAwesomeIcon icon={faClose} onClick={() => openModals(index, false)} style={{ cursor: 'pointer', fontSize: '18px' }} /></span>
+                                                </div>
+                                                {!pair.value || pair.options.length > 0 ? <div style={{ padding: '0 20px', }}> <input type="text" id="product-category-search-input" placeholder="Enter a category name" /> </div> : ''}
+                                                {
+                                                    !pair.value || pair.options.length > 0 ?
+                                                        <div role="list">
+                                                            <div className='product-category-child'>
+                                                                <span className='product-category-child-level'>Level {pair.count}</span>
+                                                                <hr />
+                                                            </div>
+                                                            <div className='product-category-child'>
+                                                                {pair.options.map((cat) => (
+                                                                    <ul className="product-category-child-list" key={cat.id}>
+                                                                        <li tabIndex="0" onClick={() => selectcategory(index, cat)}>
+                                                                            <span className="">{cat.name}</span>
+                                                                        </li>
+                                                                    </ul>
+                                                                ))}
+                                                            </div>
+                                                        </div> : ''
+                                                }
+                                                {pair.heirarchyLabel && (
+                                                    <div className="product-category-heirarchyLevel">
+                                                        <span className="vd-text-body vd-util-text-overflow-break-word">{pair.heirarchyLabel}</span>
+                                                        <button aria-label="Remove selected category" type="button" className="vd-btn vd-btn--icon-supplementary" onClick={() => removeCategory(index)} >
+                                                            <FontAwesomeIcon className='fa' icon={faTrash} />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )
+                                    }
+                                    <span className='error-message'>
+                                        {inputError?.categorysErrorMessage}
+                                    </span>
+                                </div>
+                                <div className="product-category-g-col" style={{ width: '5rem', flex: 'none', justifyContent: 'center' }}>
+                                    {!pair.openModal && index > 0 && (
+                                        <button type="button" className="product-category-btn" onClick={() => removePair(+index)}>
+                                            <FontAwesomeIcon className="fa product-category-icon" icon={faTrash} />
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div>
+                        {_.size(categorys) > _.size(selectedPairs) && (
+                            <button type="button" className="product-category-btn product-category-btn--text-go" onClick={addNewPair} >
+                                <FontAwesomeIcon className="fa" icon={faPlus} />
+                                Add another category
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

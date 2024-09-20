@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { colorsTuple, Tabs } from '@mantine/core';
+import React, { useContext, useState } from 'react';
+import { colorsTuple, Slider, Tabs } from '@mantine/core';
 import B2BTabs from '../../../common/B2BTabs';
 import B2BButton from '../../../common/B2BButton';
 import Hierarchy from './EnrichmentHierarchy';
@@ -12,9 +12,13 @@ import EnrichmentSeo from './EnrichmentSeo';
 import EnrichmentHierarchy from './EnrichmentHierarchy';
 import EnrichmentAttributes from './EnrichmentAttributes';
 import EnrichmentTransaction from './EnrichmentTransaction';
+import { B2B_API } from '../../../api/Interceptor';
+import { EnrichProductContext } from './EnrichProduct';
 
 const EnrichmentTabs = () => {
+    const { product } = useContext(EnrichProductContext);
     const [activeTab, setActiveTab] = useState("1");
+    const [sliderValue, setSliderValue] = useState(0)
 
     const initialTabs = [
         { id: "1", name: "Hireachy", disabled: false },
@@ -50,7 +54,6 @@ const EnrichmentTabs = () => {
     };
 
     const handleTabClick = (index) => {
-        handleNextTab();
         if (!index.disabled) {
             setActiveTab(index.id);
         }
@@ -60,6 +63,7 @@ const EnrichmentTabs = () => {
         const prevTabIndex = tabs.findIndex((tab) => tab.id === activeTab) - 1;
         if (prevTabIndex >= 0) {
             setActiveTab(tabs[prevTabIndex].id);
+            setSliderValue((prev) => Math.max(0, prev - 17));
         }
     };
 
@@ -84,11 +88,30 @@ const EnrichmentTabs = () => {
         const nextIndex = currentIndex + 1;
         if (nextIndex < tabs.length && !tabs[nextIndex].disabled) {
             setActiveTab(tabs[nextIndex].id);
+            setSliderValue((prev) => Math.min(100, prev + 17));
+        } else if (nextIndex === tabs.length - 1) {
+            setSliderValue(100);
         }
     };
 
+    const handlePimSave = async () => {
+        try {
+            const res = await B2B_API.post(`pim`, { body: product }).json();
+        } catch (err) {
+            console.log("Fail to add Pim", err);
+        }
+    }
+
+
+
     return (
         <div>
+
+            <div style={{ textAlign: 'right', marginBottom: '10px' }}>
+                <strong>{sliderValue}% Completed</strong>
+            </div>
+
+            <Slider value={sliderValue} marks={[{ value: 0 }, { value: 17 }, { value: 34 }, { value: 51 }, { value: 68 }, { value: 85 }, { value: 100 }]} />
             <B2BTabs
                 tabsData={tabs}
                 justify={"flex-start"}
@@ -108,7 +131,7 @@ const EnrichmentTabs = () => {
                         style={{ backgroundColor: 'green' }}
                         name={"Save"}
                         id={"Save"}
-                    // disabled={!isFormValid} // Disable Save button if the form is not valid
+                        onClick={(e) => handlePimSave(e)}
                     />
                 }
             </div>

@@ -1,15 +1,14 @@
-import { Accordion, InputError, Modal, Textarea } from '@mantine/core';
+import { faClose, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Accordion, Textarea } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
-import React, { useState, useEffect, useContext } from 'react';
+import _ from 'lodash';
+import React, { useContext, useEffect, useState } from 'react';
+import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BSelect from '../../../common/B2BSelect';
-import { B2B_API } from '../../../api/Interceptor';
-import _ from 'lodash';
 import { EnrichProductContext } from './EnrichProduct';
-import B2BInput from '../../../common/B2BInput';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { useDisclosure } from '@mantine/hooks';
 
 const EnrichmentHierarchy = () => {
   const { product, setProduct } = useContext(EnrichProductContext);
@@ -20,19 +19,29 @@ const EnrichmentHierarchy = () => {
   const [selectedPairs, setSelectedPairs] = useState([{ ...initialState }]);
   const [expanded, setExpanded] = useState('category-0');
   const [opened, { open, close }] = useDisclosure(false);
+  const [loading, setLoading] = useState(true);
+  const [isAddingNew, setIsAddingNew] = useState(false);
+
+  useEffect(() => {
+    fetchCategory();
+  }, []);
 
 
   useEffect(() => {
-    fetchVariant();
-  }, []);
+    if (!loading && product?.productCategories) {
+      setSelectedPairs(product.productCategories.length > 0 ? product.productCategories : [{ ...initialState }]);
+    }
+  }, [loading, product?.productCategories]);
 
-  const fetchVariant = async () => {
+
+  const fetchCategory = async () => {
     try {
       const res = await B2B_API.get('product-category').json();
       const categories = res?.response?.filter(cat => cat.name?.toLowerCase() !== 'fabric content');
       const categoryName = categories.map(res => (res.name));
       setCategoryName(categoryName)
       setCategorys(categories)
+      setLoading(false)
       setCategorysAndselectedPairs()
     } catch (error) {
       console.error('Error fetching variants:', error);
@@ -44,12 +53,11 @@ const EnrichmentHierarchy = () => {
     if (_.size(productCategories) > 0) {
       const formattedCategories = productCategories.map(category => ({
         ...category,
-        options: getParentChild(category.key) // Dynamically load child options
+        options: getParentChild(category.key)
       }));
       setSelectedPairs(formattedCategories);
     }
   }
-
 
   const handleSelectChange = (index, selectedKey) => {
     const newPairs = [...selectedPairs];
@@ -66,10 +74,16 @@ const EnrichmentHierarchy = () => {
     setSelectedPairs(newPairs);
   };
 
+  // const addNewPair = () => {
+  //   const newIndex = selectedPairs.length;
+  //   setSelectedPairs([...selectedPairs, { ...initialState }]);
+  //   setExpanded(`category-${newIndex}`);
+  // };
   const addNewPair = () => {
     const newIndex = selectedPairs.length;
     setSelectedPairs([...selectedPairs, { ...initialState }]);
     setExpanded(`category-${newIndex}`);
+    setIsAddingNew(true); // Set to true when adding a new pair
   };
 
   const removePair = (index) => {
@@ -171,7 +185,7 @@ const EnrichmentHierarchy = () => {
                   />
                 </div>
                 {pair.openModal && (
-                  <div style={{ width:'90%',boxShadow: '1px 1px 1px 2px rgba(0,0,0,0.5)', borderRadius: '10px', padding: '10px' }}>
+                  <div style={{ width: '90%', boxShadow: '1px 1px 1px 2px rgba(0,0,0,0.5)', borderRadius: '10px', padding: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 20px', marginBottom: '20px', }}>
                       <span style={{ fontSize: '18px', fontWeight: '700' }}>Search all categories</span>
                       <span><FontAwesomeIcon icon={faClose} onClick={() => openModals(index, false)} style={{ cursor: 'pointer', fontSize: '18px' }} /></span>

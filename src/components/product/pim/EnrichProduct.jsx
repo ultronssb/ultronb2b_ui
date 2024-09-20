@@ -246,31 +246,34 @@ const EnrichProduct = () => {
       type: "text",
       fieldType: 'textField',
       placeholder: "Enter SKU Id",
-      onChange: (event) => handleChange(event, "articleCode")
+      onChange: (event) => handleChange(event, "articleCode"),
+      edit: true
     },
     {
       label: "Product Name",
       value: product?.articleName,
       type: "text",
       fieldType: 'textField',
-      placeholder: "Enter Product Name",
-      onChange: (event) => handleChange(event, "articleName")
+      placeholder: "Enter Product Name",  
+      onChange: (event) => handleChange(event, "articleName"),
+      edit: true
     },
-    {
-      label: "PIM Id",
-      value: product.pimId,
-      type: "text",
-      fieldType: 'textField',
-      placeholder: "Enter PIM Id",
-      onChange: (event) => handleChange(event, "pimId")
-    },
+    // {
+    //   label: "PIM Id",
+    //   value: product.pimId,
+    //   type: "text",
+    //   fieldType: 'textField',
+    //   placeholder: "Enter PIM Id",
+    //   onChange: (event) => handleChange(event, "pimId")
+    // },
     {
       label: "Variant Id",
       value: product?.productVariants?.[0]?.variants?.[0]?.variantId || '',
       type: "text",
       fieldType: 'textField',
       placeholder: "Enter Variant Id",
-      onChange: (event) => handleChange(event, "variantId", 0)
+      onChange: (event) => handleChange(event, "variantId", 0),
+      edit: true
     },
     {
       label: "Status",
@@ -368,10 +371,10 @@ const EnrichProduct = () => {
                   <B2BInput
                     value={field.value}
                     className='form-input'
-                    disabled={field.disabled}
-                    onChange={field.onChange}
+                    // onChange={field.onChange}
                     type={field.type}
                     placeholder={field.placeholder}
+                    edit={field.edit}
                   />
                 )
               }

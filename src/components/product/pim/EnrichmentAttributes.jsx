@@ -9,21 +9,13 @@ const EnrichmentAttributes = () => {
     <div>
       <form className='form-container'>
         <div className={"form-group"}>
-          <label className='form-label'>Garment Types</label>
-          <B2BInput
-            value={""}
-            className='form-input'
-            onChange={(event) => handleChange(event)}
-            placeholder={"Garment Type"}
-          />
-        </div>
-        <div className={"form-group"}>
           <label className='form-label'>Weight</label>
           <B2BInput
             value={product?.metrics?.weight || ''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            // onChange={(event) => handleChange(event,"metrics.weight")}
             placeholder={"weight"}
+            edit={true}
           />
         </div>
         <div className={"form-group"}>
@@ -31,17 +23,26 @@ const EnrichmentAttributes = () => {
           <B2BInput
             value={product?.metrics?.width || ''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            // onChange={(event) => handleChange(event,"metrics.width")}
             placeholder={"width"}
+            edit={true}
           />
         </div>
-
+        <div className={"form-group"}>
+          <label className='form-label'>Garment Types</label>
+          <B2BInput
+            value={""}
+            className='form-input'
+            onChange={(event) => handleChange(event,"garmenType")}
+            placeholder={"Garment Type"}
+          />
+        </div>
         <div className={"form-group"}>
           <label className='form-label'>Solid / Pattern</label>
           <B2BInput
             value={''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event,"solidOrPattern")}
             placeholder={"Solid"}
           />
         </div>
@@ -59,7 +60,7 @@ const EnrichmentAttributes = () => {
           <B2BInput
             value={''}
             className='form-input'
-            onChange={(event) => handleChange(event)}
+            onChange={(event) => handleChange(event,"fabricType")}
             placeholder={"Fabric Type"}
           />
         </div>

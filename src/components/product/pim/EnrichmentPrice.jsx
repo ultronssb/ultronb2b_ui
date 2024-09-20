@@ -1,9 +1,10 @@
 import React, { useContext } from 'react'
 import B2BInput from '../../../common/B2BInput'
 import { EnrichProductContext } from './EnrichProduct';
+import { Slider, RangeSlider } from '@mantine/core';
 
 const EnrichmentPrice = () => {
-  const { handleChange,product } = useContext(EnrichProductContext);
+  const { handleChange, product } = useContext(EnrichProductContext);
   const json = [
     {
       label: "HSN Code",
@@ -62,35 +63,39 @@ const EnrichmentPrice = () => {
       onChange: (event) => handleChange(event, "Discount")
     },
   ]
+
   return (
     <div>
       <form className='form-container'>
         <div className={"form-group"}>
           <label className='form-label'>Tax</label>
           <B2BInput
-            value={product?.gst?.name|| ''}
+            value={product?.gst?.name || ''}
             className='form-input'
-            onChange={(event) => handleChange(event,"name")}
+            // onChange={(event) => handleChange(event,"gst.name")}
             placeholder={"Tax"}
+            edit={true}
           />
         </div>
         <div className={"form-group"}>
           <label className='form-label'>Cost Price</label>
           <B2BInput
-            value={product?.priceSetting?.costPrice|| ''}
+            value={product?.priceSetting?.costPrice || ''}
             className='form-input'
-            onChange={(event) => handleChange(event,"costPrice")}
+            // onChange={(event) => handleChange(event,"priceSetting.costPrice")}
             placeholder={"Cost Price"}
+            edit={true}
           />
         </div>
 
         <div className={"form-group"}>
           <label className='form-label'>MRP</label>
           <B2BInput
-            value={product?.priceSetting?.mrp||''}
+            value={product?.priceSetting?.mrp || ''}
             className='form-input'
-            onChange={(event) => handleChange(event,"mrp")}
+            // onChange={(event) => handleChange(event,"priceSetting.mrp")}
             placeholder={"MRP"}
+            edit={true}
           />
         </div>
         <div className={"form-group"}>

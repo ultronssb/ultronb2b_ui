@@ -12,25 +12,23 @@ import states from '../crm/StatesAndDistricts.json';
 
 const CustomerCreate = () => {
   const { stateData } = useContext(ActiveTabContext);
-  const initialState = {
-    customer: {
-      name: '',
-      email: '',
-      mobileNo: '',
-      currency: '',
-      purchaseType: '',
-      purchaseMode: '',
-      creditLimit: '',
-      creditBalance: '',
-      creditDays: '',
-      gstType: '',
-      status: '',
-      checkPrintName: '',
-      gstnNo: '',
-      agents: '',
-      approveStatus: '',
-      approvalRequired: false,
-    },
+  const initialCustomerState = {
+    name: '',
+    email: '',
+    mobileNo: '',
+    currency: '',
+    purchaseType: '',
+    purchaseMode: '',
+    creditLimit: '',
+    creditBalance: '',
+    creditDays: '',
+    gstType: '',
+    status: '',
+    checkPrintName: '',
+    gstnNo: '',
+    agents: '',
+    approveStatus: '',
+    approvalRequired: false,
     location: {
       address1: '',
       address2: '',
@@ -41,10 +39,8 @@ const CustomerCreate = () => {
       activateLoyalty: '',
       isPrimary: true
     }
-
   };
-  const [customer, setCustomer] = useState(initialState.customer);
-  const [customerLocation, setCustomerLocation] = useState(initialState.location);
+  const [customer, setCustomer] = useState(initialCustomerState);
   const [cities, setCities] = React.useState([]);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -54,87 +50,97 @@ const CustomerCreate = () => {
   useEffect(() => {
     const fetchCustomerData = async () => {
       if (!id) return;
-      const customerRes = await B2B_API.get(`customer/${id}`).json();
-      const customerData = customerRes.response;
-      setCustomer(customerData);
-      const locationRes = await B2B_API.get(`locations/customer-location/${id}`).json();
-      const locationData = locationRes.response;
-      setCustomerLocation(locationData || initialState.location);
-      setCities(states[locationData.state] || []);
+
+      try {
+        const [customerRes, locationRes] = await Promise.all([
+          B2B_API.get(`customer/${id}`).json(),
+          B2B_API.get(`locations/customer-location/${id}`).json(),
+        ]);
+
+        setCustomer(prev => ({
+          ...prev,
+          ...customerRes.response,
+          location: locationRes.response || initialCustomerState.location,
+        }));
+
+        setCities(states[locationRes.response.state] || []);
+      } catch (error) {
+        console.error('Error fetching customer data:', error);
+      }
     };
+
     fetchCustomerData();
   }, [id]);
 
-
   const handleChange = (event, key) => {
-    const { checked, type, value } = event.target;
-    if (key === 'pincode' && value.length > 6) {
-      return;
-    }
-    setCustomer(prev => {
-      const newCustomer = {
+    const { value, checked, type } = event.target;
+    if (key.includes('.')) {
+      const [parent, child] = key.split('.');
+      setCustomer((prev) => ({
         ...prev,
-        [key]: type === 'checkbox' ? checked : event.target.value
-      };
-      if (key === 'gstnNo') {
-        newCustomer.approveStatus = newCustomer.gstnNo ? 'APPROVED' : 'DRAFT';
-      }
-      return newCustomer;
-    });
-    setCustomerLocation(prev => ({
-      ...prev,
-      [key]: type === 'checkbox' ? checked : event.target.value
-    }));
+        [parent]: {
+          ...prev[parent],
+          [child]: value
+        }
+      }));
+    }
+    else {
+      setCustomer(prev => ({
+        ...prev,
+        [key]: type === 'checkbox' ? checked : value,
+        ...(key === 'gstnNo' && { approveStatus: value ? 'APPROVED' : 'DRAFT' }),
+      }));
+    }
   };
 
+
   const handleStateChange = (event) => {
-    const newState = event.target.value;
-    setCustomerLocation(prevLocation => ({
-      ...prevLocation,
-      state: newState,
-      city: ''
+    const value = event.target.value;
+    setCustomer(prev => ({
+      ...prev,
+      location: { ...prev.location, state: value, city: '' },
     }));
-    setCities(states[newState] || []);
+    setCities(states[value] || []);
   };
 
   const handleCityChange = (event) => {
-    const newCity = event.target.value;
-    setCustomerLocation(prevLocation => ({
-      ...prevLocation,
-      city: newCity
+    const value = event.target.value;
+    setCustomer(prev => ({
+      ...prev,
+      location: { ...prev.location, city: value },
     }));
   };
 
   const handleSave = async () => {
     try {
       const customerResponse = await B2B_API.post('customer/save', { json: customer }).json();
-      if (customerResponse.response.id !== '') {
-        const customerId = customer?.customerId;
-        const locationData = { ...customerLocation, customerId };
-        const locationResponse = await B2B_API.post('locations/save', { json: locationData }).json();
-
-        if (locationResponse.message !== '') {
-          navigate('/crm/customer', { state: { ...stateData, tabs: stateData.childTabs } });
-        } else {
-          notify({
-            title: 'Error!!',
-            message: customerResponse?.message || 'Customer updated successfully',
-            error: false,
-            success: true
-          });
-        }
+      if (customerResponse.response.id) {
+        navigate('/crm/customer', { state: { ...stateData, tabs: stateData.childTabs } });
+        notify({
+          title: 'Success!',
+          message: customerResponse?.message || 'Customer update Successful.',
+          error: false,
+          success: true,
+        });
       } else {
         notify({
-          title: 'Error!!',
-          message: locationResponse?.message,
-          error: false,
-          success: true
+          title: 'Error!',
+          message: customerResponse?.message || 'Customer update failed.',
+          error: true,
+          success: false,
         });
       }
     } catch (error) {
       console.error('An error occurred while saving:', error);
+      notify({
+        title: 'Error!',
+        message: error?.message,
+        error: true,
+        success: false,
+      });
     }
   };
+
 
   const customerFields = [
     {
@@ -273,8 +279,8 @@ const CustomerCreate = () => {
       fieldType: "textField",
       type: 'text',
       disabled: false,
-      onChange: (event) => handleChange(event, 'address1'),
-      value: customerLocation?.address1,
+      onChange: (event) => handleChange(event, 'location.address1'),
+      value: customer?.location?.address1,
       category: "address"
     },
     {
@@ -283,8 +289,8 @@ const CustomerCreate = () => {
       fieldType: "textField",
       type: 'text',
       disabled: false,
-      onChange: (event) => handleChange(event, 'address2'),
-      value: customerLocation?.address2,
+      onChange: (event) => handleChange(event, 'location.address2'),
+      value: customer?.location?.address2,
       category: "address"
     },
     {
@@ -292,7 +298,7 @@ const CustomerCreate = () => {
       name: "Country",
       fieldType: "textField",
       type: 'text',
-      onChange: () => handleChange({ target: { value: 'INDIA' } }, 'country'),
+      onChange: () => handleChange({ target: { value: 'INDIA' } }, 'location.country'),
       value: "INDIA",
       category: "address",
       disabled: true
@@ -301,9 +307,8 @@ const CustomerCreate = () => {
       id: 18,
       name: "State",
       fieldType: "selectField",
-      disabled: false,
-      onChange: (event) => handleStateChange(event, 'state'),
-      value: customerLocation?.state,
+      onChange: (event) => handleStateChange(event),
+      value: customer?.location?.state,
       category: "address",
       options: Object.keys(states),
       clearable: false
@@ -312,10 +317,9 @@ const CustomerCreate = () => {
       id: 19,
       name: "City",
       fieldType: "selectField",
-      disabled: false,
+      onChange: (event) => handleCityChange(event),
+      value: customer?.location?.city,
       category: "address",
-      onChange: (event) => handleCityChange(event, 'city'),
-      value: customerLocation?.city,
       options: cities,
       clearable: false
     },
@@ -325,8 +329,8 @@ const CustomerCreate = () => {
       fieldType: "textField",
       type: 'number',
       disabled: false,
-      onChange: (event) => handleChange(event, 'pincode'),
-      value: customerLocation?.pincode,
+      onChange: (event) => handleChange(event, 'location.pincode'),
+      value: customer?.location?.pincode,
       category: "address",
       maxLength: 6,
     },
@@ -344,8 +348,8 @@ const CustomerCreate = () => {
       fieldType: "textField",
       type: 'text',
       disabled: false,
-      onChange: (event) => handleChange(event, 'loyalty'),
-      value: customerLocation?.loyalty,
+      onChange: (event) => handleChange(event, 'location.loyalty'),
+      value: customer?.location?.loyalty,
       category: "address"
     }
   ];
@@ -355,8 +359,6 @@ const CustomerCreate = () => {
   };
 
   console.log('customer : ', customer);
-  console.log('customerLocation : ', customerLocation);
-
 
   return (
     <div>
