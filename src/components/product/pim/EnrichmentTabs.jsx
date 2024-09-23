@@ -70,12 +70,12 @@ const EnrichmentTabs = () => {
     const enableNextTab = () => {
         setTabs((prevTabs) => {
             const updatedTabs = prevTabs.map((tab, index) => {
-                if (tab.id === activeTab) {
+                // if (tab.id === activeTab) {
                     const nextIndex = index + 1;
                     if (nextIndex < prevTabs.length) {
                         prevTabs[nextIndex].disabled = false; // Enable the next tab
                     }
-                }
+                // }
                 return tab;
             });
             return [...updatedTabs];

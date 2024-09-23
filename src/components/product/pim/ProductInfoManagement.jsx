@@ -6,6 +6,7 @@ import { IconPencil } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox } from '@mantine/core';
 import B2BButton from '../../../common/B2BButton';
+import _ from 'lodash';
 
 const ProductInfoManagement = () => {
   const [product, setProduct] = useState([]);
@@ -94,27 +95,27 @@ const onSave = async () =>{
   const productColumns = [
     {
       header: 'Product Code',
-      accessorKey: 'articleCode'
+      accessorKey: 'product.articleCode'
     },
     {
       id: 'ProductName',
       header: 'Product Name',
-      accessorKey: 'articleName'
+      accessorKey: 'product.articleName'
     },
     {
       id: 'FabricType',
       header: 'Fabric Type',
-      accessorFn: row => row.productCategories["Fabric Type"]?.name || '',
+      accessorFn: row => row.product.productCategories["Fabric Type"]?.name || '',
     },
     {
       id: 'GSM',
       header: 'GSM',
-      accessorFn: row => row.productVariants?.flatMap(pv => pv.variants.map(v => v.value)).join(', ') || '',
+      accessorFn: row => row.product.productVariants?.flatMap(pv => pv.variants.map(v => v.value)).join(', ') || '',
     },
     {
       id: 'Width',
       header: 'Width',
-      accessorKey: 'metrics.width'
+      accessorKey: 'product.metrics.width'
     },
     {
       header: 'Actions',
@@ -133,8 +134,8 @@ const onSave = async () =>{
     }
   ];
   const editVarient = (varobj) => {
-    navigate(`/product/pim/enrich-product?id=${varobj.productId}`);
-    setProduct((prev => ({ ...prev, ...varobj })));
+    navigate(`/product/pim/enrich-product?id=${varobj.id}`);
+    // setProduct((prev => ({ ...prev, ...varobj })));
   };
 
   // const handleSelectPair = (product) => {

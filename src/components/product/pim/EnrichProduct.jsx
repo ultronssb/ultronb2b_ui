@@ -30,8 +30,8 @@ const EnrichProduct = () => {
   
   const fetchProduct = async (id) => {
     try {
-      const response = await B2B_API.get(`product/${id}`).json();
-      const product = response.response;
+      const response = await B2B_API.get(`pim/product/${id}`).json();
+      const product = response.response.product;
       const barcodeString = product?.isCreateBarcode ? "true" : "false";
       const transformData = () => {
         const result = {};
@@ -258,14 +258,14 @@ const EnrichProduct = () => {
       onChange: (event) => handleChange(event, "articleName"),
       edit: true
     },
-    // {
-    //   label: "PIM Id",
-    //   value: product.pimId,
-    //   type: "text",
-    //   fieldType: 'textField',
-    //   placeholder: "Enter PIM Id",
-    //   onChange: (event) => handleChange(event, "pimId")
-    // },
+    {
+      label: "PIM Id",
+      value: product.pimId,
+      type: "text",
+      fieldType: 'textField',
+      placeholder: "Enter PIM Id",
+      onChange: (event) => handleChange(event, "pimId")
+    },
     {
       label: "Variant Id",
       value: product?.productVariants?.[0]?.variants?.[0]?.variantId || '',

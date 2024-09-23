@@ -213,12 +213,12 @@ const CustomerDraft = () => {
       </Modal.Root>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div className='user--container'>
-          <Text size='lg' fw={800}>Customer Details {user === 'SALESMAN' ? '' : (salesmanAssigned ? '- Salesman Assigned' : '- Salesman Not Assigned')}</Text>
+          <Text size='lg' fw={800}>Customer Details {user === 'SALESMAN' ? '' : (salesmanAssigned ? '- Verification pending' : '- Salesman Pending')}</Text>
         </div>
         {user !== 'SALESMAN' && (
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '2rem' }}>
-            <B2BButton onClick={handleSalesmanNotAssigned} disabled={!salesmanAssigned ? true : false} name='Salesman Not Assigned' />
-            <B2BButton onClick={handleSalesmanAssigned} disabled={salesmanAssigned ? true : false} name='Salesman Assigned' />
+            <B2BButton onClick={handleSalesmanNotAssigned} disabled={!salesmanAssigned ? true : false} name='Salesman Pending' />
+            <B2BButton onClick={handleSalesmanAssigned} disabled={salesmanAssigned ? true : false} name='Verification pending' />
           </div>
         )}
       </div>
