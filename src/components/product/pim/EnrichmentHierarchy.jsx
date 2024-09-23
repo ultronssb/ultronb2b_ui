@@ -74,11 +74,6 @@ const EnrichmentHierarchy = () => {
     setSelectedPairs(newPairs);
   };
 
-  // const addNewPair = () => {
-  //   const newIndex = selectedPairs.length;
-  //   setSelectedPairs([...selectedPairs, { ...initialState }]);
-  //   setExpanded(`category-${newIndex}`);
-  // };
   const addNewPair = () => {
     const newIndex = selectedPairs.length;
     setSelectedPairs([...selectedPairs, { ...initialState }]);
@@ -143,8 +138,8 @@ const EnrichmentHierarchy = () => {
 
   return (
     <Accordion
-      value={expanded} // Controlled component
-      onChange={setExpanded} // Update expanded state
+      value={expanded} 
+      onChange={setExpanded}
       chevron={<IconPlus />}
     >
       {selectedPairs.map((pair, index) => (

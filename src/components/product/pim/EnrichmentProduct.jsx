@@ -11,6 +11,26 @@ const EnrichmentProduct = () => {
     <div>
       <form className='form-container'>
         <div className={"form-group"}>
+          <label className='form-label'>Weight</label>
+          <B2BInput
+            value={product?.metrics?.weight || ''}
+            className='form-input'
+            // onChange={(event) => handleChange(event,"metrics.weight")}
+            placeholder={"weight"}
+            edit={true}
+          />
+        </div>
+        <div className={"form-group"}>
+          <label className='form-label'>Width</label>
+          <B2BInput
+            value={product?.metrics?.width || ''}
+            className='form-input'
+            // onChange={(event) => handleChange(event,"metrics.width")}
+            placeholder={"width"}
+            edit={true}
+          />
+        </div>
+        <div className={"form-group"}>
           <label className='form-label'>Brand</label>
           <B2BInput
             value={product.brand?.name}

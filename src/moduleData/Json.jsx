@@ -85,9 +85,9 @@ export const data = [
   { id: "24", name: "Packaging", parent_id: "9", orderBy: 3, path: "/product/product/package" },
   { id: "25", name: "Upload", parent_id: "9", orderBy: 4, path: "/product/product/upload" },
 
-  { id: "26", name: "PIM", parent_id: "10", orderBy: 1, path: "/product/pim" },
+  { id: "26", name: "Product Information", parent_id: "10", orderBy: 1, path: "/product/pim" },
   { id: "27", name: "Map Channel", parent_id: "10", orderBy: 3, path: "/product/pim/map-channel" },
-  { id: "28", name: "Enrich Product", parent_id: "10", orderBy: 4, path: "/product/pim/enrich-product" },
+  // { id: "28", name: "Enrich Product", parent_id: "10", orderBy: 4, path: "/product/pim/enrich-product" },
 
   { id: "29", name: "Price Book", parent_id: "11", orderBy: 1, path: "/product/price-book" },
   { id: "30", name: "Create", parent_id: "11", orderBy: 2, path: "/product/price-book/create" },

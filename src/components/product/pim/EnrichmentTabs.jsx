@@ -22,12 +22,12 @@ const EnrichmentTabs = () => {
 
     const initialTabs = [
         { id: "1", name: "Hireachy", disabled: false },
-        { id: "2", name: "Attributes", disabled: true },
-        { id: "3", name: "Product", disabled: true },
-        { id: "4", name: "Transaction", disabled: true },
-        { id: "5", name: "SEO", disabled: true },
-        { id: "6", name: "Price", disabled: true },
-        { id: "7", name: "Image/Video", disabled: true },
+        { id: "2", name: "Attributes", disabled: false },
+        { id: "3", name: "Product", disabled: false },
+        { id: "4", name: "Transaction", disabled: false },
+        { id: "5", name: "SEO", disabled: false },
+        { id: "6", name: "Price", disabled: false },
+        { id: "7", name: "Image/Video", disabled: false },
     ];
 
     const [tabs, setTabs] = useState(initialTabs);
@@ -70,12 +70,12 @@ const EnrichmentTabs = () => {
     const enableNextTab = () => {
         setTabs((prevTabs) => {
             const updatedTabs = prevTabs.map((tab, index) => {
-                // if (tab.id === activeTab) {
+                if (tab.id === activeTab) {
                     const nextIndex = index + 1;
                     if (nextIndex < prevTabs.length) {
-                        prevTabs[nextIndex].disabled = false; // Enable the next tab
+                        prevTabs[nextIndex].disabled = false;
                     }
-                // }
+                }
                 return tab;
             });
             return [...updatedTabs];
@@ -140,3 +140,5 @@ const EnrichmentTabs = () => {
 };
 
 export default EnrichmentTabs;
+
+

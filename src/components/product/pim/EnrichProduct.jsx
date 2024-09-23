@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useRef, useState } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import B2BButton from '../../../common/B2BButton'
 import B2BInput from '../../../common/B2BInput'
 import B2BSelect from '../../../common/B2BSelect'
@@ -7,6 +7,9 @@ import { every } from 'lodash'
 import { Button, FileButton, Group } from '@mantine/core'
 import EnrichmentTabs from './EnrichmentTabs'
 import notify from '../../../utils/Notification'
+import { IconArrowLeft } from '@tabler/icons-react'
+import { useNavigate } from 'react-router-dom'
+import { ActiveTabContext } from '../../../layout/Layout'
 
 export const EnrichProductContext = createContext(null);
 
@@ -18,20 +21,38 @@ const EnrichProduct = () => {
   const resetRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
-
-
+  const [store, setStore] = useState('')
+  const [channel, setChannel] = useState('')
+  const navigate = useNavigate();
+  const query_param = new URLSearchParams(location.search);
+  const id = query_param.get('id');
+  const from = query_param.get('from');
+  const [users, setUsers] = useState('');
+  const [pim, setPim] = useState();
+  
   useEffect(() => {
-    const query_param = new URLSearchParams(location.search);
-    const id = query_param.get('id');
     if (id) {
       fetchProduct(id)
     }
   }, [location.search])
-  
+  useEffect(() => {
+    fetchStoreAndLocation()
+
+  }, [])
+  const fetchStoreAndLocation = async () => {
+    const queryParams = new URLSearchParams(from.split('?')[1]);
+    const channelId = queryParams.get('channel');
+    const storeId = queryParams.get('store');
+    const chan = await B2B_API.get(`channel/${channelId}`).json()
+    const location = await B2B_API.get(`company-location/${storeId}`).json()
+    setChannel(chan.response.name)
+    setStore(location.response.name)
+  }
   const fetchProduct = async (id) => {
     try {
       const response = await B2B_API.get(`pim/product/${id}`).json();
       const product = response.response.product;
+      setPim(response.response);
       const barcodeString = product?.isCreateBarcode ? "true" : "false";
       const transformData = () => {
         const result = {};
@@ -46,6 +67,7 @@ const EnrichProduct = () => {
 
         return result;
       };
+      getUserById(response.response.updatedBy);
 
       const fetchHeirarchy = async (parentId) => {
         let heirarchy = [];
@@ -92,19 +114,6 @@ const EnrichProduct = () => {
           isMarkUp: priceSetting.markUpPercent > 0 ? true : false,
         };
       };
-
-      // setProduct({
-      //   ...product,
-      //   tags: product?.productTags.split(",").map(tag => tag.trim()),
-      //   brandId: product?.brand?.brandId,
-      //   taxonomy: product?.taxonomy?.name,
-      //   barcode: barcodeString,
-      //   gstId: product?.gst?.gstId,
-      //   image: `http://192.168.1.13:8080${product?.image}`,
-      //   productCategories: await transformCategories(),
-      //   prodVariants: transformData(),
-      //   priceSetting: adjustPriceSetting(product?.priceSetting),
-      // });
 
       setProduct({
         ...product,
@@ -164,45 +173,6 @@ const EnrichProduct = () => {
     }
   };
 
-  // const handleChange = (event, field, index) => {
-  //   const { value } = event.target;
-  //   // if (field?.includes('.')) {
-  //   //   const [parent, child] = field.split('.');
-  //   //   setProduct((prev) => ({
-  //   //     ...prev,
-  //   //     [parent]: {
-  //   //       ...prev[parent],
-  //   //       [child]: value
-  //   //     }
-  //   //   }));
-  //   // }
-  //   setProduct(prevProduct => {
-  //     if (field === 'categoryName' && index !== undefined) {
-  //       const updatedCategories = [...prevProduct.productCategories];
-  //       updatedCategories[index] = {
-  //         ...updatedCategories[index],
-  //         categoryName: value
-  //       };
-  //       return {
-  //         ...prevProduct,
-  //         productCategories: updatedCategories
-  //       };
-  //     } 
-  //     else if (field === 'status') {
-  //       return {
-  //         ...prevProduct,
-  //         status: value
-  //       };
-  //     } 
-  //     else {
-  //       return {
-  //         ...prevProduct,
-  //         [field]: value
-  //       };
-  //     }
-  //   });
-  // };
-
   const handleChange = (event, fieldType) => {
     const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
     if (fieldType.includes('.')) {
@@ -254,17 +224,18 @@ const EnrichProduct = () => {
       value: product?.articleName,
       type: "text",
       fieldType: 'textField',
-      placeholder: "Enter Product Name",  
+      placeholder: "Enter Product Name",
       onChange: (event) => handleChange(event, "articleName"),
       edit: true
     },
     {
       label: "PIM Id",
-      value: product.pimId,
+      value: pim?.pimId,
       type: "text",
       fieldType: 'textField',
       placeholder: "Enter PIM Id",
-      onChange: (event) => handleChange(event, "pimId")
+      onChange: (event) => handleChange(event, "pimId"),
+      edit: true
     },
     {
       label: "Variant Id",
@@ -334,9 +305,55 @@ const EnrichProduct = () => {
     setImageFile(null)
     setCurrentImage(null)
   };
+  const formatDate = (timestamp) => {
+    const date = new Date(Number(timestamp));
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
+
+  const updatedDate = product?.updatedDate ? formatDate(product.updatedDate) : null;
+  const createdDate = product?.createdDate ? formatDate(product.createdDate) : null;
+
+
+  // const getLocationAndChannel = () => {
+  //   const channel = B2B_API.get(`pim/product`).json()
+  //   setPims(res);
+  // }
+  const handleBack = () => {
+
+    navigate(from)
+  }
+
+  const getUserById = async (userId) => {
+    try {
+      if (userId) {
+        const res = await B2B_API.get(`user/${userId}`).json();
+        setUsers(res.response.firstName);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
   return (
-    <EnrichProductContext.Provider value={{ handleChange, product, setProduct }}>
+    <EnrichProductContext.Provider value={{ handleChange, product, setProduct, pim, setPim }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <B2BButton style={{ color: '#000'}} name="Back" onClick={handleBack} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+        <div>
+          <h3>Created Date: {users} - {createdDate ? createdDate : "No date available"}</h3>
+          <h3>Updated Date: {users} - {updatedDate ? updatedDate : "No date available"}</h3>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <h3> Channel Name : {channel}</h3>
+          <h3> Store : {store}</h3>
+        </div>
+      </div>
+
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <div className='form-group' style={{ display: 'flex', flexDirection: 'column', maxWidth: '49%', alignItems: 'center' }}>
           {/* Image Display Section */}

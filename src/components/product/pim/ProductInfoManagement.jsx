@@ -1,12 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
-import B2BTableGrid from '../../../common/B2BTableGrid';
-import B2BSelect from '../../../common/B2BSelect'; // Ensure you import B2BSelect
 import { IconPencil } from '@tabler/icons-react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Checkbox } from '@mantine/core';
-import B2BButton from '../../../common/B2BButton';
-import _ from 'lodash';
+import { B2B_API } from '../../../api/Interceptor';
+import B2BSelect from '../../../common/B2BSelect'; // Ensure you import B2BSelect
+import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
 
 const ProductInfoManagement = () => {
@@ -76,24 +73,18 @@ useEffect(()=>{
       console.log("Error fetching channels:", error);
     }
   };
-const onSave = async () =>{
-  const prod ={ channelId: selectedChannel,
-    locationId:selectedStore,
-    productIds: selectedPairs
-  }
+
+  const onSave = async () => {
+    const prod = {
+      channelId: selectedChannel,
+      locationId: selectedStore,
+      productIds: selectedPairs
+    }
     console.log(prod)
     const response = await B2B_API.post(`map-channel`, { json: prod }).json();
-    console.log(response);
-    
-  // setMapChannel(prev => ({
-  //   ...prev,
-  //   channelId: selectedChannel,
-  //   locationId:selectedStore,
-  //   productIds:selectedPairs
+    console.log(response)
+  }
 
-  // }))
-
-}
   const fetchAllProducts = async () => {
     setIsLoading(true);
     try {
@@ -135,6 +126,11 @@ const onSave = async () =>{
       accessorKey: 'product.metrics.width'
     },
     {
+      id: 'Status',
+      header: 'Status',
+      accessorKey: 'product.status'
+    },
+    {
       header: 'Actions',
       mainTableHeaderCellProps: { align: 'center' },
       mainTableBodyCellProps: { align: 'center' },
@@ -144,12 +140,13 @@ const onSave = async () =>{
         const { original } = row;
         return (
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <IconPencil onClick={() => editVarient(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+            <IconPencil onClick={() => editVarient(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
           </div>
         );
       }
     }
   ];
+
   const editVarient = (varobj) => {
     navigate(`/product/pim/enrich-product?id=${varobj.pimId}&from=${encodeURIComponent(`${window.location.pathname}?channel=${selectedChannel}&store=${selectedStore}`)}`,{ state: { ...stateData, tabs: stateData.childTabs }});
   };
@@ -190,6 +187,7 @@ const onSave = async () =>{
           data={storeOptions}
           placeholder="Select a store"
         />
+        <label htmlFor="channel-select" >Status:</label>
          <B2BSelect
           id="store-select"
           value={status}

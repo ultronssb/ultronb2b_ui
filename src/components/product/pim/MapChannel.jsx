@@ -79,7 +79,6 @@ const onSave = async () =>{
   //   channelId: selectedChannel,
   //   locationId:selectedStore,
   //   productIds:selectedPairs
-
   // }))
 
 }

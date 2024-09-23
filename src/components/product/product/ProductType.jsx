@@ -114,6 +114,7 @@ const ProductType = () => {
             placeholder: "Enter Description",
             onChange: (event) => handleChange(event, "barcode"),
             name: "barcode",
+            checked: product?.barcode,
             error: inputError?.barcodeErrorMessage
         },
         {
@@ -171,6 +172,19 @@ const ProductType = () => {
             fieldType: 'selectField',
             placeholder: "Enter Taxonomy",
             clearable: true
+        },
+        {
+            label: "Status",
+            type: 'radio',
+            value: product?.status,
+            fieldType: 'radioField',
+            options: [
+                { label: "ACTIVE", value: "true" },
+                { label: "INACTIVE", value: "false" }
+            ],
+            onChange: (event) => handleChange(event, "status"),
+            name: "status",
+            checked: product?.status
         },
     ];
 
@@ -288,7 +302,7 @@ const ProductType = () => {
                                             value={option.value}
                                             name={field.name}
                                             onChange={field?.onChange}
-                                            checked={product?.barcode === option?.value}
+                                            checked={field.checked === option?.value || field.checked === option?.label}
                                         />
                                         <label className='radio-label'>{option.label}</label>
                                     </div>

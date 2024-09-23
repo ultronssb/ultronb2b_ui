@@ -17,11 +17,11 @@ export const ProductContext = createContext(null);
 const CreateProduct = () => {
   const initialTabs = [
     { id: "1", name: "Product Type", disabled: false },
-    { id: "2", name: "Category Type", disabled: true },
-    { id: "3", name: "Fabric Content", disabled: true },
-    { id: "4", name: "Dimensions", disabled: true },
-    { id: "5", name: "Price", disabled: true },
-    { id: "6", name: "Variant", disabled: true },
+    { id: "2", name: "Category Type", disabled: false },
+    { id: "3", name: "Fabric Content", disabled: false },
+    { id: "4", name: "Dimensions", disabled: false },
+    { id: "5", name: "Price", disabled: false },
+    { id: "6", name: "Variant", disabled: false },
 
   ];
 
@@ -94,7 +94,7 @@ const CreateProduct = () => {
     taxonomy: '',
     performance: '',
     designNumber: '',
-    pageTitle:'',
+    pageTitle: '',
   }
   const [product, setProduct] = useState(initialState);
   const [imageFile, setImageFile] = useState(null)
@@ -607,7 +607,7 @@ const CreateProduct = () => {
         taxonomy: product?.taxonomy?.name,
         barcode: barcodeString,
         gstId: product?.gst?.gstId,
-        image: `${BASE_URL.replace("/api","")}${product?.image}`,
+        image: `${BASE_URL.replace("/api", "")}${product?.image}`,
         productCategories: await transformCategories(),
         prodVariants: transformData(),
         priceSetting: adjustPriceSetting(product?.priceSetting),
