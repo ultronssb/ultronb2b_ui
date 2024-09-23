@@ -18,15 +18,22 @@ const MapChannel = () => {
   const [selectedPairs, setSelectedPairs] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState('');
   const [selectedStore, setSelectedStore] = useState('');
-
+  const [status,SetStatus]=useState('ACTIVE')
+  const statusOption = [
+    { value: 'ACTIVE', label: 'ACTIVE' },
+    { value: 'INACTIVE', label: 'INACTIVE' },
+  ]
 
   useEffect(() => {
     if(selectedChannel&&selectedStore){
     fetchAllProducts();
+    setSelectedPairs([])
+  }else{
+    setProduct([])
   }
     fetchAllCompanyLocations();
     fetchAllChannels();
-  }, [pagination,selectedChannel,selectedStore]);
+  }, [pagination,selectedChannel,selectedStore,status]);
 
   const fetchAllCompanyLocations = async () => {
     try {
@@ -62,7 +69,7 @@ const onSave = async () =>{
     locationId:selectedStore,
     productIds: selectedPairs
   }
-    
+    console.log(prod)
     const response = await B2B_API.post(`map-channel`, { json: prod }).json();
     fetchAllProducts()
 
@@ -79,7 +86,7 @@ const onSave = async () =>{
   const fetchAllProducts = async () => {
     setIsLoading(true);
     try {
-      const response = await B2B_API.get(`map-channel/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}`).json();
+      const response = await B2B_API.get(`map-channel/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}`).json();
       const data = response?.response?.content || [];
       setRowCount(response?.response?.totalElements || 0);
       setProduct(data);
@@ -142,13 +149,17 @@ const onSave = async () =>{
     }
   };
 
-
+console.log(selectedChannel)
   return (
     <div>
     <div className='user--container'>
       
-      <div className="channel-selection">
-        <label htmlFor="channel-select">Select Channel:</label>
+    <div className="channel-selection" style={{   display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center', 
+  gap: '1rem', 
+  marginBottom: '1rem'}}>
+        <label htmlFor="channel-select" >Select Channel:</label>
         <B2BSelect
           id="channel-select"
           value={selectedChannel}
@@ -156,13 +167,20 @@ const onSave = async () =>{
           data={channelOptions}
           placeholder="Select a channel"
         />
-        <label htmlFor="store-select">Store:</label>
+        <label htmlFor="store-select" >Store:</label>
         <B2BSelect
           id="store-select"
           value={selectedStore}
           onChange={(value) => setSelectedStore(value)}
           data={storeOptions}
           placeholder="Select a store"
+        />
+          <B2BSelect
+          id="store-select"
+          value={status}
+          onChange={(value) => SetStatus(value)}
+          data={statusOption}
+          clearable={false}
         />
       </div>
       <div className='right--section'>

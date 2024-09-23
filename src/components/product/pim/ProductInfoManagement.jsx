@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import B2BSelect from '../../../common/B2BSelect'; // Ensure you import B2BSelect
@@ -7,8 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import { Checkbox } from '@mantine/core';
 import B2BButton from '../../../common/B2BButton';
 import _ from 'lodash';
+import { ActiveTabContext } from '../../../layout/Layout';
 
 const ProductInfoManagement = () => {
+  const { stateData } = useContext(ActiveTabContext);
   const [product, setProduct] = useState([]);
   const [rowCount, setRowCount] = useState(0);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
@@ -19,17 +21,32 @@ const ProductInfoManagement = () => {
   const [selectedPairs, setSelectedPairs] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState('');
   const [selectedStore, setSelectedStore] = useState('');
+  const [status,SetStatus]=useState('ACTIVE')
   const navigate =useNavigate()
-  const [mapChannel,setMapChannel] = useState({channelId:'',storeId:'',productsIds:[]})
 
+  const statusOption = [
+    { value: 'ACTIVE', label: 'ACTIVE' },
+    { value: 'INACTIVE', label: 'INACTIVE' },
+  ]
   useEffect(() => {
     if(selectedChannel&&selectedStore){
     fetchAllProducts();
+  }else{
+    setProduct([])
   }
     fetchAllCompanyLocations();
     fetchAllChannels();
-  }, [pagination,selectedChannel,selectedStore]);
+  }, [pagination,selectedChannel,selectedStore,status]);
+useEffect(()=>{
+  const query_param = new URLSearchParams(location.search);
+  const channel=query_param.get('channel')
+  const store =query_param.get('store')
+  if(channel){
+    setSelectedChannel(channel);
+    setSelectedStore(store);
+  }
 
+},[location.search])
   const fetchAllCompanyLocations = async () => {
     try {
       const response = await B2B_API.get(`company-location/get-all`).json();
@@ -80,7 +97,7 @@ const onSave = async () =>{
   const fetchAllProducts = async () => {
     setIsLoading(true);
     try {
-      const response = await B2B_API.get(`pim/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}`).json();
+      const response = await B2B_API.get(`pim/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}`).json();
       const data = response?.response?.content || [];
       setRowCount(response?.response?.totalElements || 0);
       setProduct(data);
@@ -134,8 +151,7 @@ const onSave = async () =>{
     }
   ];
   const editVarient = (varobj) => {
-    navigate(`/product/pim/enrich-product?id=${varobj.id}`);
-    // setProduct((prev => ({ ...prev, ...varobj })));
+    navigate(`/product/pim/enrich-product?id=${varobj.pimId}&from=${encodeURIComponent(`${window.location.pathname}?channel=${selectedChannel}&store=${selectedStore}`)}`,{ state: { ...stateData, tabs: stateData.childTabs }});
   };
 
   // const handleSelectPair = (product) => {
@@ -153,8 +169,12 @@ const onSave = async () =>{
     <div>
     <div className='user--container'>
       
-      <div className="channel-selection">
-        <label htmlFor="channel-select">Select Channel:</label>
+      <div className="channel-selection" style={{   display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center', 
+  gap: '1rem', 
+  marginBottom: '1rem'}}>
+        <label htmlFor="channel-select" >Select Channel:</label>
         <B2BSelect
           id="channel-select"
           value={selectedChannel}
@@ -162,7 +182,7 @@ const onSave = async () =>{
           data={channelOptions}
           placeholder="Select a channel"
         />
-        <label htmlFor="store-select">Store:</label>
+        <label htmlFor="store-select" >Store:</label>
         <B2BSelect
           id="store-select"
           value={selectedStore}
@@ -170,15 +190,14 @@ const onSave = async () =>{
           data={storeOptions}
           placeholder="Select a store"
         />
+         <B2BSelect
+          id="store-select"
+          value={status}
+          onChange={(value) => SetStatus(value)}
+          data={statusOption}
+          clearable={false}
+        />
       </div>
-      <div className='right--section'>
-              <B2BButton
-                style={{ color: '#000' }}
-                name={"Save"}
-                onClick={() => onSave()}
-                color={"rgb(207, 239, 253)"}
-              />
-            </div>
             </div>
       {isError && <div className="error">Failed to load products. Please try again.</div>}
       <B2BTableGrid
