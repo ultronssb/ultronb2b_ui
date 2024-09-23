@@ -6,7 +6,7 @@ import B2BTableGrid from '../../common/B2BTableGrid';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import { ActiveTabContext } from '../../layout/Layout';
 
-const Loyalty = () => {
+export const Loyalty = () => {
   const { stateData } = useContext(ActiveTabContext);
 
   const [isCustomer, setIsCustomer] = useState(false);
@@ -43,7 +43,7 @@ const Loyalty = () => {
     {
       header: 'Redemption Point',
       accessorKey: 'redemptionPoint'
-    },
+    },  
     {
       header: 'Created By',
       accessorKey: 'createdBy'
@@ -115,5 +115,3 @@ const Loyalty = () => {
     </>
   )
 }
-
-export default Loyalty

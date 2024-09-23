@@ -33,7 +33,6 @@ import CustomerCreate from './components/crm/CustomerCreate';
 import LoyaltyCreate from './components/crm/LoyaltyCreate';
 import Customer from './components/crm/Customer';
 import CustomerDraft from './components/crm/CustomerDraft';
-import Loyalty from './components/crm/Loyalty';
 import LoyaltyPointStatus from './components/crm/LoyaltyPointStatus';
 import Salesman from './components/crm/Salesman';
 import ProductTags from './components/product/product/ProductTags';
@@ -68,6 +67,8 @@ import Layout from './layout/Layout';
 import { useEffect } from 'react';
 import Taxonomy from './components/product/product_hierarchy/Taxonomy';
 import ProductHistory from './components/product/productHistory/ProductHistory';
+import { Loyalty } from './components/crm/Loyalty';
+import { Attribute } from './components/product/product_hierarchy/Attribute';
 
 const ProtectedRoute = ({ element: Component }) => {
   const navigate = useNavigate();
@@ -96,6 +97,7 @@ function App() {
         <Route path='/product/group' element={<ProtectedRoute element={Group} />} />
         <Route path='/product/tags' element={<ProtectedRoute element={ProductTags} />} />
         <Route path='/product/taxonomy' element={<ProtectedRoute element={Taxonomy} />} />
+        <Route path='/product/attribute' element={<ProtectedRoute element={Attribute} />} />
 
 
         <Route path='/product/tax/tax-masters' element={<ProtectedRoute element={TaxMasters} />} />
