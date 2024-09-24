@@ -191,7 +191,6 @@ const ProductType = () => {
     const handleCancel = () => {
         navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
     }
-    console.log(imageFile, "img");
 
     const handleSelectChange = (value) => {
         const group = _.find(groups, gr => gr.name === value);
@@ -201,8 +200,6 @@ const ProductType = () => {
     const getAllTaxonomy = async () => {
         const res = await B2B_API.get("taxonomy").json();
         setTaxonomy(res.response);
-        console.log(res.response, "taxo");
-
     }
 
     return (

@@ -30,8 +30,9 @@ const CompanyProfile = () => {
     mobileNumber: '',
     latitude: '',
     longitude: '',
-    locationTypeId: '',
-    locationType: {},
+    locationType: {
+      locationTypeId: '',
+    },
   }
   const payload = useMemo(() => getpayLoadFromToken(), [])
   const user = payload?.ROLE
@@ -46,14 +47,21 @@ const CompanyProfile = () => {
   const [isLoading, setIsLoading] = useState(false);
 
 
-  console.log(user);
-
   useEffect(() => {
     if (user === 'COMPANY_ADMIN') {
-      fetchAllCompanyLocations();
       fetchCompany()
     }
+    if (user === 'SUPER_ADMIN') {
+      fetchCompanyDetails()
+    }
+    fetchAllCompanyLocations();
   }, [])
+
+  useEffect(() => {
+    if (user === 'SUPER_ADMIN') {
+      fetchCompanyDetails()
+    }
+  }, [pagination.pageIndex, pagination.pageSize])
 
   const fetchAllCompanyLocations = async () => {
     const response = await B2B_API.get('location-type/get-all').json();
@@ -61,25 +69,68 @@ const CompanyProfile = () => {
   }
 
   const fetchCompany = async () => {
-    // const payload = await getpayLoadFromToken()
-    // console.log(payload);
-
     const response = await B2B_API.get(`company/${payload.iss}`).json();
     setCompany(response?.response)
+  }
+
+  const fetchCompanyDetails = async () => {
+    try {
+      const res = await B2B_API.get(`company/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const data = res?.response?.content || [];
+      setRowCount(res?.response?.totalElements || 0);
+      setCompanyProfile(data);
+    } catch (error) {
+      setIsError(true);
+      notify({
+        error: true,
+        success: false,
+        title: error?.message
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   const handleChange = (event, key) => {
     const { value } = event?.target
     setCompany((prev) => ({ ...prev, [key]: value }))
   }
+  
+  // const handleChange = (event, field, value) => {
+  //   if (field === 'pinCode') {
+  //     if (value.length <= 6 && /^[0-9]*$/.test(value)) {
+  //       setCompany((prevCompany) => ({
+  //         ...prevCompany,
+  //         [field]: value,
+  //       }));
+  //     }
+  //   } else {
+  //     setCompany((prev) => ({ ...prev, [field]: event.target.value }))
+  //   }
+  // };
+
 
   const handleLocationTypeChange = (value, key) => {
-    setCompany(prev => ({ ...prev, [key]: value }));
+    if (key.includes('.')) {
+      const [parent, child] = key.split('.');
+      setCompany((prev) => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent],
+          [child]: value
+        }
+      }));
+    }
   };
 
   const createCompanyProfile = async (event) => {
     event.preventDefault();
-    const locationType = _.find(companyLocations, cl => cl.locationId === company.locationTypeId)
+    console.log(companyLocations);
+    
+    const locationType = _.find(companyLocations, cl => cl?.locationTypeId === company?.locationType?.locationTypeId);
+    // if (!locationType) {
+    //   return;
+    // }
     company.locationType = locationType;
     const isUpdate = company.id;
     const successMessage = isUpdate ? 'updated' : 'added';
@@ -91,6 +142,7 @@ const CompanyProfile = () => {
         success: true,
         error: false
       })
+      setIsCompany(false)
     } catch (error) {
       notify({
         title: "Oops!!! ",
@@ -105,7 +157,7 @@ const CompanyProfile = () => {
   const columns = useMemo(() => [
     {
       header: 'Company Name',
-      accessorKey: 'companyName'
+      accessorKey: 'name'
     },
     {
       header: 'Email',
@@ -156,6 +208,8 @@ const CompanyProfile = () => {
     setIsCompany(false)
   }
 
+  console.log("company : ", company);
+
   return (
     <div className='grid-container'>
       {
@@ -163,7 +217,7 @@ const CompanyProfile = () => {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div style={{ fontSize: '28px', fontWeight: '700' }}>Create Company Profile</div>
-              {user !== 'COMPANY_ADMIN' && <B2BButton style={{ color: '#000' }} name="Back" onClick={handleBack} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />}
+              {user === 'SUPER_ADMIN' && <B2BButton style={{ color: '#000' }} name="Back" onClick={handleBack} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />}
             </div>
             <form onSubmit={createCompanyProfile} className='form-container'>
               <div className="form-group">
@@ -191,11 +245,11 @@ const CompanyProfile = () => {
               <div className="form-group">
                 <label className='form-label'>Location Type</label>
                 <B2BSelect
-                  value={company?.locationTypeId || company?.locationType?.locationTypeId}
+                  value={company?.locationType?.locationTypeId}
                   styles={{ input: { fontSize: '14px' } }}
                   data={companyLocations?.map(loc => ({ label: loc.name, value: loc.locationTypeId }))}
                   placeholder={'Location Type'}
-                  onChange={(value) => handleLocationTypeChange(value, 'locationTypeId')}
+                  onChange={(value) => handleLocationTypeChange(value, 'locationType.locationTypeId')}
                   type={'text'}
                   clearable={companyLocations.length > 0 ? true : false}
                 />
@@ -280,8 +334,15 @@ const CompanyProfile = () => {
                   className='form-input'
                   required
                   type="number"
-                  onChange={(event) => handleChange(event, 'pinCode')}
+                  onChange={(event) => {
+                    const value = event.target.value.replace(/\D/g, '').slice(0, 6);
+                    handleChange(event, 'pinCode', value)
+                  }}
                   placeholder="Pin Code"
+                  pattern="[0-9]{6}"
+                  maxLength="6"
+                  minLength="6"
+                  onInput={(e) => e.target.value = e.target.value.replace(/\D/g, '')}
                 />
               </div>
 
@@ -291,9 +352,13 @@ const CompanyProfile = () => {
                   value={company?.mobileNumber}
                   className='form-input'
                   required
-                  type="number"
+                  type="tel"
                   onChange={(event) => handleChange(event, 'mobileNumber')}
                   placeholder="Phone Number"
+                  pattern='[0-9]{10}'
+                  maxLength='10'
+                  minLength='10'
+                  onInput={(e) => e.target.value = e.target.value.replace(/\D/g, '')}
                 />
               </div>
 
@@ -380,14 +445,14 @@ const CompanyProfile = () => {
                 </div>
               </div> */}
               <div className='save-button-container'>
-                {user !== 'COMPANY_ADMIN' && <B2BButton type='button' color={'red'} onClick={handleBack} name="Cancel" />}
+                {user === 'SUPER_ADMIN' && <B2BButton type='button' color={'red'} onClick={handleBack} name="Cancel" />}
                 <B2BButton type='submit' name={company?.companyId ? "Update" : "Save"} />
               </div>
             </form>
           </div>
         )
       }
-      {!isCompany && user !== 'COMPANY_ADMIN' && (
+      {!isCompany && user === 'SUPER_ADMIN' && (
         <div>
           <div className='user--container'>
             <Text size='lg' fw={800}>Company Profile Details</Text>

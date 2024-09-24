@@ -73,7 +73,7 @@ const Taxonomy = () => {
   const addTaxonomy = async (event) => {
     event.preventDefault();
     try {
-      const response = await B2B_API.post(`taxonomy`, { json: group }).json();
+      const response = await B2B_API.post(`taxonomy`, { json: taxonomy }).json();
       setTaxonomy(initialData);
       fetchTaxonomys()
       notify({
@@ -96,7 +96,10 @@ const Taxonomy = () => {
       setTaxonomys(response?.response?.content);
       setRowCount(response?.response?.totalElements)
     } catch (error) {
-      console.error('Failed to fetch groups:', error);
+      setIsError(true);
+      notify({ error: true, success: false, title: error?.message });
+    } finally {
+      setIsLoading(false);
     }
   };
 

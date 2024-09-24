@@ -43,20 +43,6 @@ const CreateProduct = () => {
     },
     otherInformation: {
       skuPrefix: '',
-      sampleMOQ: '',
-      purchaseMOQ: '',
-      minMargin: '',
-      allowLoyalty: '',
-      productSlug: '',
-      url: '',
-      isStopGRN: '',
-      isStopPurchaseReturn: '',
-      isStopSale: '',
-      isAllowRefund: '',
-      isAllowNegative: '',
-      isAllowCostEditInGRN: '',
-      isEnableSerialNumber: '',
-      isNonTrading: '',
       unitOfMeasures:
       {
         type: 'UOM',
@@ -67,9 +53,9 @@ const CreateProduct = () => {
     prodVariants: {
 
     },
-    productVariants: {
+    productVariants: [
 
-    },
+    ],
     productCategories: {
 
     },
@@ -92,9 +78,6 @@ const CreateProduct = () => {
     gstId: '',
     brandId: '',
     taxonomy: '',
-    performance: '',
-    designNumber: '',
-    pageTitle: '',
   }
   const [product, setProduct] = useState(initialState);
   const [imageFile, setImageFile] = useState(null)
@@ -163,9 +146,6 @@ const CreateProduct = () => {
 
 
   const handleChange = (event, fieldType) => {
-    console.log("event : ", event);
-    console.log("fieldType : ", fieldType);
-
     const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
     setInputError("")
     if (fieldType === "articleName") {
@@ -502,8 +482,6 @@ const CreateProduct = () => {
 
       setActiveTab(activeTab);
     }
-    console.log(activeTab, "act");
-
   }
 
   const handleProductSave = async () => {
@@ -646,7 +624,7 @@ const CreateProduct = () => {
       });
     }
   };
-  console.log(product, "pro");
+  console.log("pro : ",product);
 
 
   return (

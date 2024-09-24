@@ -23,7 +23,7 @@ export const data = [
     orderBy: 3, 
     path: "/sales/order-management", 
     icon: <span className="material-symbols-outlined">shopping_cart</span>,
-    defaultChildId: "34",
+    defaultChildId: "35",
   },
   {
     id: "4",
@@ -32,7 +32,7 @@ export const data = [
     orderBy: 4,
     path: "/inventory/stocks",
     icon: <span className="material-symbols-outlined">inventory</span>,
-    defaultChildId: "52",
+    defaultChildId: "53",
   },
   {
     id: "5",
@@ -41,7 +41,7 @@ export const data = [
     orderBy: 5,
     path: "/crm/customer",
     icon: <span className="material-symbols-outlined">volunteer_activism</span>,
-    defaultChildId: "61"
+    defaultChildId: "62"
   },
   {
     id: "6",
@@ -50,7 +50,7 @@ export const data = [
     orderBy: 6,
     path: "/e-commerce/mobile",
     icon: <span className="material-symbols-outlined">shoppingmode</span>,
-    defaultChildId: "70",
+    defaultChildId: "71",
   },
   {
     id: "7",
@@ -58,7 +58,7 @@ export const data = [
     parent_id: null,
     orderBy: 7, path: "/settings/company-profile", icon: <span className="material-symbols-outlined">
       settings</span>,
-      defaultChildId: "80",
+      defaultChildId: "81",
   },
 
 
@@ -77,7 +77,7 @@ export const data = [
   { id: "18", name: "Brand", parent_id: "8", orderBy: 6, path: "/product/brand" },
   { id: "19", name: "Group", parent_id: "8", orderBy: 7, path: "/product/group" },
   { id: "20", name: "Taxonomy", parent_id: "8", orderBy: 8, path: "/product/taxonomy" },
-  { id: "100", name: "Attribute", parent_id: "8", orderBy: 9, path: "/product/attribute" },
+  { id: "21", name: "Attribute", parent_id: "8", orderBy: 9, path: "/product/attribute" },
 
 
   { id: "22", name: "Product", parent_id: "9", orderBy: 1, path: "/product/product/articles" },
@@ -183,22 +183,22 @@ export const data = [
   { id: "83", name: "Payment", parent_id: "7", orderBy: 3, path: "/settings/payment" },
   { id: "84", name: "Shipment", parent_id: "7", orderBy: 4, path: "/settings/shipment" },
   { id: "85", name: "Users", parent_id: "7", orderBy: 5, path: "/settings/user-management" },
+  { id: "86", name: "Location Type", parent_id: "7", orderBy: 6, path: "/settings/location-type" },
 
-  { id: "86", name: "Company Profile", parent_id: "81", orderBy: 1, path: '/settings/company-profile' },
-  { id: "87", name: "Channels", parent_id: "81", orderBy: 2, path: '/settings/company-profile/channels' },
-  { id: "88", name: "Other Settings", parent_id: "81", orderBy: 3, path: '/settings/company-profile/other-settings' },
-  { id: "89", name: "Legal", parent_id: "81", orderBy: 4,path: '/settings/company-profile/legal' },
-  { id: "90", name: "Business Rules", parent_id: "81", orderBy: 5, path: '/settings/company-profile/business-rules' },
+  { id: "87", name: "Company Profile", parent_id: "8q", orderBy: 1, path: '/settings/company-profile' },
+  { id: "88", name: "Channels", parent_id: "8q", orderBy: 2, path: '/settings/company-profile/channels' },
+  { id: "89", name: "Other Settings", parent_id: "8q", orderBy: 3, path: '/settings/company-profile/other-settings' },
+  { id: "90", name: "Legal", parent_id: "8q", orderBy: 4,path: '/settings/company-profile/legal' },
+  { id: "91", name: "Business Rules", parent_id: "8q", orderBy: 5, path: '/settings/company-profile/business-rules' },
 
-  { id: "91", name: "Location Details", parent_id: "82", orderBy: 1, path: "/settings/location" },
-  { id: "92", name: "Bulk Upload", parent_id: "82", orderBy: 3, modal: true },
+  { id: "92", name: "Location Details", parent_id: "82", orderBy: 1, path: "/settings/location" },
+  { id: "93", name: "Bulk Upload", parent_id: "82", orderBy: 3, modal: true },
 
-  { id: "93", name: "Payment Mode", parent_id: "83", orderBy: 1, path: "/settings/payment" },
+  { id: "94", name: "Payment Mode", parent_id: "83", orderBy: 1, path: "/settings/payment" },
 
-  { id: "94", name: "Shipment Mode", parent_id: "84", orderBy: 1, path: "/settings/shipment" },
+  { id: "95", name: "Shipment Mode", parent_id: "84", orderBy: 1, path: "/settings/shipment" },
 
-  { id: "95", name: "User Management", parent_id: "85", orderBy: 1, path: "/settings/user-management" },
+  { id: "98", name: "Users", parent_id: "85", orderBy: 1, path: "/settings/user-management" },
   { id: "96", name: "Role", parent_id: "85", orderBy: 2, path: "/settings/user/role" },
   { id: "97", name: "Role Privileges", parent_id: "85", orderBy: 3, path: "/settings/user/role-privileges" },
-  { id: "98", name: "Users", parent_id: "85", orderBy: 4, path: "/settings/user" },
 ];

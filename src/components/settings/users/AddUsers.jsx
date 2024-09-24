@@ -36,6 +36,43 @@ const AddUsers = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    fetchAllUsers();
+    fetchAllRoles();
+  }, [pagination.pageIndex, pagination.pageSize])
+
+  useEffect(() => {
+    fetchAllRoles();
+  }, [])
+
+  const fetchAllUsers = async () => {
+    setIsLoading(true)
+    try {
+      const response = await B2B_API.get(`user/get-all-user?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const data = response?.response?.content || [];
+      setRowCount(response?.response?.totalElements || 0);
+      setUsers(data);
+      setIsLoading(false)
+    } catch (error) {
+      setIsError(true)
+      notify({
+        id: "fetch_users",
+        error: true,
+        success: false,
+        title: error?.message || ERROR_MESSAGE
+      })
+    }
+  }
+
+  const fetchAllRoles = async () => {
+    try {
+      const response = await B2B_API.get('role/get-all').json();
+      setRoles(response.response);
+    } catch (error) {
+      console.error('Failed to fetch roles:', error);
+    }
+  };
+
   const columns = useMemo(() => [
     {
       header: 'S.No',
@@ -50,7 +87,7 @@ const AddUsers = () => {
     },
     {
       header: 'User Name',
-      accessorFn: (row) => row?.firstName + " " + row?.lastName
+      accessorFn: (row) => row?.firstName + " " + (row?.lastName === null ? '' : row?.lastName)
     },
     {
       header: 'Email ID',
@@ -101,40 +138,6 @@ const AddUsers = () => {
       setUser(res.response);
     }
   }
-
-
-  useEffect(() => {
-    fetchAllUsers();
-    fetchAllRoles();
-  }, [])
-
-  const fetchAllUsers = async () => {
-    setIsLoading(true)
-    try {
-      const response = await B2B_API.get(`user/get-all-user?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
-      const data = response?.response?.content;
-      setRowCount(response?.response?.totalElements)
-      setUsers(data);
-      setIsLoading(false)
-    } catch (error) {
-      setIsError(true)
-      notify({
-        id: "fetch_users",
-        error: true,
-        success: false,
-        title: error?.message || ERROR_MESSAGE
-      })
-    }
-  }
-
-  const fetchAllRoles = async () => {
-    try {
-      const response = await B2B_API.get('role/get-all').json();
-      setRoles(response.response);
-    } catch (error) {
-      console.error('Failed to fetch roles:', error);
-    }
-  };
 
   const handleChange = (event, key) => {
     setUser(prev => {
