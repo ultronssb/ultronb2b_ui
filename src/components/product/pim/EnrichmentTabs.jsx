@@ -1,20 +1,17 @@
+import { Slider } from '@mantine/core';
 import React, { useContext, useState } from 'react';
-import { colorsTuple, Slider, Tabs } from '@mantine/core';
-import B2BTabs from '../../../common/B2BTabs';
-import B2BButton from '../../../common/B2BButton';
-import Hierarchy from './EnrichmentHierarchy';
-import Attributes from './EnrichmentAttributes';
-import EnrichmentProduct from './EnrichmentProduct';
-import EnrichmentVariants from './EnrichmentVariants';
-import EnrichmentPrice from './EnrichmentPrice';
-import EnrichmentMedia from './EnrichmentMedia';
-import EnrichmentSeo from './EnrichmentSeo';
-import EnrichmentHierarchy from './EnrichmentHierarchy';
-import EnrichmentAttributes from './EnrichmentAttributes';
-import EnrichmentTransaction from './EnrichmentTransaction';
+import { useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../../api/Interceptor';
+import B2BButton from '../../../common/B2BButton';
+import B2BTabs from '../../../common/B2BTabs';
+import EnrichmentAttributes from './EnrichmentAttributes';
+import { default as EnrichmentHierarchy, default as Hierarchy } from './EnrichmentHierarchy';
+import EnrichmentMedia from './EnrichmentMedia';
+import EnrichmentPrice from './EnrichmentPrice';
+import EnrichmentProduct from './EnrichmentProduct';
+import EnrichmentSeo from './EnrichmentSeo';
+import EnrichmentTransaction from './EnrichmentTransaction';
 import { EnrichProductContext } from './EnrichProduct';
-import { Navigate, useNavigate } from 'react-router-dom';
 
 const EnrichmentTabs = () => {
     const { product, pim, videoFile, multimedia } = useContext(EnrichProductContext);

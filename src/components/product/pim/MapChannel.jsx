@@ -1,11 +1,9 @@
+import { Checkbox } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
-import B2BTableGrid from '../../../common/B2BTableGrid';
-import B2BSelect from '../../../common/B2BSelect'; // Ensure you import B2BSelect
-import { IconPencil } from '@tabler/icons-react';
-import { useNavigate } from 'react-router-dom';
-import { Checkbox } from '@mantine/core';
 import B2BButton from '../../../common/B2BButton';
+import B2BSelect from '../../../common/B2BSelect'; // Ensure you import B2BSelect
+import B2BTableGrid from '../../../common/B2BTableGrid';
 
 const MapChannel = () => {
   const [product, setProduct] = useState([]);
@@ -72,16 +70,8 @@ const onSave = async () =>{
     console.log(prod)
     const response = await B2B_API.post(`map-channel`, { json: prod }).json();
     fetchAllProducts()
-
-    
-  // setMapChannel(prev => ({
-  //   ...prev,
-  //   channelId: selectedChannel,
-  //   locationId:selectedStore,
-  //   productIds:selectedPairs
-  // }))
-
 }
+
   const fetchAllProducts = async () => {
     setIsLoading(true);
     try {

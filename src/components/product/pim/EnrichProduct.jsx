@@ -50,15 +50,6 @@ const EnrichProduct = () => {
     setStore(location.response.name)
   }
 
-  // const initializeVideo = async () => {
-  //   try {
-  //     const videoFile = await fetchVideoAsBlob(); // Changed function name
-  //     setVideoFile(videoFile);
-  //   } catch (error) {
-  //     console.error("Failed to fetch and set video file:", error); // Updated error message
-  //   }
-  // };
-
   const fetchVideoAsBlob = async (url) => {
     try {
       const response = await fetch(`${BASE_URL.replace('/api', '')}${url}`);
@@ -204,72 +195,6 @@ const EnrichProduct = () => {
       });
     }
   };
-
-  // const handleChange = (event, fieldType) => {
-  //   const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
-  //   if (fieldType.includes('.')) {
-  //     const [parent, child] = fieldType.split('.');
-  //     setProduct((prev) => ({
-  //       ...prev,
-  //       [parent]: {
-  //         ...prev[parent],
-  //         [child]: value
-  //       }
-  //     }));
-  //   } else if (fieldType === 'status') {
-  //     setProduct(prevProduct => {
-  //       return {
-  //         ...prevProduct,
-  //         status: value
-  //       };
-  //     })
-  //   }
-  //   else if (fieldType === 'performance') {
-  //     setPim((pre => {
-  //       return {
-  //         ...pre,
-  //         performance: value
-  //       }
-  //     }))
-  //   }
-  //   else if (fieldType === 'designNumber') {
-  //     setPim((pre => {
-  //       return {
-  //         ...pre,
-  //         designNumber: value
-  //       }
-  //     }))
-  //   } else if (fieldType === 'channelPrice') {
-  //     setPim((pre => {
-  //       return {
-  //         ...pre,
-  //         channelPrice: value
-  //       }
-  //     }))
-  //   }
-  //   else if (fieldType === 'discount') {
-  //     setPim((pre => {
-  //       return {
-  //         ...pre,
-  //         discount: value,
-  //       }
-  //     }))
-  //   }
-  //   else if (fieldType === 'WSP') {
-  //     setPim((pre => {
-  //       return {
-  //         ...pre,
-  //         WSP: value,
-  //       }
-  //     }))
-  //   }
-  //   else {
-  //     setProduct(prev => ({
-  //       ...prev,
-  //       [fieldType]: event?.target?.value,
-  //     }));
-  //   }
-  // };
 
   const handleChange = (event, fieldType) => {
     const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;

@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { EnrichProductContext } from './EnrichProduct';
-import B2BInput from '../../../common/B2BInput';
 
 const EnrichmentTransaction = () => {
 

@@ -151,17 +151,6 @@ useEffect(()=>{
     navigate(`/product/pim/enrich-product?id=${varobj.pimId}&from=${encodeURIComponent(`${window.location.pathname}?channel=${selectedChannel}&store=${selectedStore}`)}`,{ state: { ...stateData, tabs: stateData.childTabs }});
   };
 
-  // const handleSelectPair = (product) => {
-  //   const isAlreadySelected = selectedPairs.some(pair => pair === product.productId);
-    
-  //   if (!isAlreadySelected) {
-  //     setSelectedPairs(prev => [...prev, product.productId]);
-  //   } else {
-  //     setSelectedPairs(prev => prev.filter(pair => pair !== product.productId));
-  //   }
-  // };
-
-
   return (
     <div>
     <div className='user--container'>
