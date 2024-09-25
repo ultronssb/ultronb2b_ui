@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { ActiveTabContext } from '../../../layout/Layout';
 import B2BInput from '../../../common/B2BInput';
-import { head } from 'lodash';
+import _ from 'lodash';
 import notify from '../../../utils/Notification';
 
 const ProductType = () => {
@@ -165,9 +165,9 @@ const ProductType = () => {
         },
         {
             label: "Taxonomy",
-            value: product?.taxonomy,
-            data: taxonomy ? taxonomy.map(b => ({ label: b.name, value: b.name })) : [],
-            onChange: (event) => handleChange(event, "taxonomy"),
+            value: product?.taxonomyNode?.id,
+            data: taxonomy ? taxonomy.map(b => ({ label: b.name, value: b.id })) : [],
+            onChange: (event) => handleChange(_.find(taxonomy, tax => tax.id === event), "taxonomyNode"),
             type: "Select",
             fieldType: 'selectField',
             placeholder: "Enter Taxonomy",

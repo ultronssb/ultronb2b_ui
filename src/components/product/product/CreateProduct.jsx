@@ -77,7 +77,7 @@ const CreateProduct = () => {
     categoryId: '',
     gstId: '',
     brandId: '',
-    taxonomy: '',
+    taxonomyNode: {},
   }
   const [product, setProduct] = useState(initialState);
   const [imageFile, setImageFile] = useState(null)
@@ -125,7 +125,7 @@ const CreateProduct = () => {
 
   const checkDirectValue = (key) => {
     if (key === 'brandId') return true
-    if (key === 'taxonomy') return true
+    if (key === 'taxonomyNode') return true
   }
   useEffect(() => {
     const query_param = new URLSearchParams(location.search);
@@ -580,7 +580,7 @@ const CreateProduct = () => {
 
       setProduct({
         ...product,
-        tags: product?.productTags.split(",").map(tag => tag.trim()),
+        tags: product?.productTags?.split(",").map(tag => tag.trim()),
         brandId: product?.brand?.brandId,
         taxonomy: product?.taxonomy?.name,
         barcode: barcodeString,

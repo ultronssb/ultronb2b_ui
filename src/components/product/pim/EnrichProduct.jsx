@@ -30,6 +30,7 @@ const EnrichProduct = () => {
   const [users, setUsers] = useState('');
   const [pim, setPim] = useState({});
   const [multimedia, setMultimedia] = useState([])
+  const [sliderValue, setSliderValue] = useState(0);
 
   useEffect(() => {
     if (id) {
@@ -172,7 +173,7 @@ const EnrichProduct = () => {
       };
       const fetchImageAsBlob = async () => {
         try {
-          const response = await fetch(`${BASE_URL.replace('/api', '')}${product?.image}`);
+          const response = await fetch(`${BASE_URL?.replace('/api', '')}${product?.image}`);
           const contentType = response.headers.get('Content-Type');
           if (!contentType || !contentType.startsWith('image/')) {
             throw new Error('Expected an image, but received: ' + contentType);
@@ -206,30 +207,68 @@ const EnrichProduct = () => {
       }));
     };
 
+    // Function to count the filled fields
+    const countFilledFields = (obj) => {
+      let filledCount = 0;
+      Object.values(obj).forEach((val) => {
+        if (val) filledCount++; // Increase count if field is filled (non-empty or checked)
+      });
+      return filledCount;
+    };
+
+    // Updating the relevant state based on fieldType
     if (fieldType.includes('.')) {
       const [parent, child] = fieldType.split('.');
-      setProduct((prev) => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value,
-        },
-      }));
+      setProduct((prev) => {
+        const updatedState = {
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [child]: value,
+          },
+        };
+        // Update slider value based on the number of filled fields
+        const filledCount = countFilledFields(updatedState[parent]);
+        setSliderValue((filledCount / totalFields) * 100); // Calculate percentage for slider
+        return updatedState;
+      });
     } else if (['status', 'performance', 'designNumber', 'channelPrice', 'discount', 'wsp', 'pageTitle'].includes(fieldType)) {
-      updateState(setPim, fieldType, value, event);
+      setPim((prev) => {
+        const updatedState = {
+          ...prev,
+          [fieldType]: value,
+        };
+        const filledCount = countFilledFields(updatedState);
+        setSliderValue((filledCount / totalFields) * 100);
+        return updatedState;
+      });
     } else if (['sampleMOQ', 'wholesaleMOQ', 'minMargin', 'allowLoyalty', 'isStopGRN', 'isStopPurchaseReturn', 'isStopSale',
       'isAllowRefund', 'isAllowNegative', 'isAllowCostEditInGRN', 'isEnableSerialNumber', 'isNonTrading', 'metaDescription', 'productSlug', 'url'].includes(fieldType)) {
-      setPim((prev) => ({
-        ...prev,
-        pimOtherInformation: {
-          ...prev.pimOtherInformation,
-          [fieldType]: event?.target?.value,
-        },
-      }));
+      setPim((prev) => {
+        const updatedState = {
+          ...prev,
+          pimOtherInformation: {
+            ...prev.pimOtherInformation,
+            [fieldType]: value,
+          },
+        };
+        const filledCount = countFilledFields(updatedState.pimOtherInformation);
+        setSliderValue((filledCount / totalFields) * 100);
+        return updatedState;
+      });
     } else {
-      updateState(setProduct, fieldType, value);
+      setProduct((prev) => {
+        const updatedState = {
+          ...prev,
+          [fieldType]: value,
+        };
+        const filledCount = countFilledFields(updatedState);
+        setSliderValue((filledCount / totalFields) * 100);
+        return updatedState;
+      });
     }
   };
+
 
 
 
@@ -274,6 +313,15 @@ const EnrichProduct = () => {
       edit: true
     },
     {
+      label: "Taxonomy",
+      value: product.taxonomyNode?.name,
+      type: "text",
+      fieldType: 'textField',
+      placeholder: "Enter Variant Id",
+      onChange: (event) => handleChange(event, "name", 0),
+      edit: true
+    },
+    {
       label: "Status",
       type: 'radio',
       value: product?.status,
@@ -286,41 +334,6 @@ const EnrichProduct = () => {
       name: "status",
     },
   ]
-
-  // const fileChange = (file) => {
-  //   const MAX_SIZE_BYTES = 3 * 1024 * 1024;
-
-  //   if (file) {
-  //     if (file.size > MAX_SIZE_BYTES) {
-  //       setErrorMessage(`File size exceeds the 3MB limit for the Image!! `);
-  //       if (file.size > MAX_SIZE_BYTES) {
-  //         setImageFile(null);
-  //         setProduct((prevProduct) => ({
-  //           ...prevProduct,
-  //           image: '',
-  //         }));
-  //       }
-  //     } else {
-  //       setErrorMessage('')
-  //       setImageFile(file);
-  //       const reader = new FileReader()
-  //       reader.onloadend = () => {
-  //         setProduct((prevProduct) => ({
-  //           ...prevProduct,
-  //           image: reader.result,
-  //         }));
-  //       };
-  //       reader.readAsDataURL(file);
-  //     }
-  //   } else {
-  //     setErrorMessage('');
-  //     setImageFile(null);
-  //     setProduct((prevProduct) => ({
-  //       ...prevProduct,
-  //       image: '',
-  //     }));
-  //   }
-  // };
 
   const videoChange = (file, sku, type) => {
     const MAX_SIZE_BYTES = 3 * 1024 * 1024; // 3MB size limit for videos
@@ -412,19 +425,11 @@ const EnrichProduct = () => {
               <p style={{ color: '#888' }}>No image uploaded</p>
             )}
           </div>
-          {/* <Group justify="flex-start">
-            <FileButton resetRef={resetRef} onChange={(file) => fileChange(file)} accept="image/png,image/jpeg">
-              {(props) => <Button {...props}>Upload image</Button>}
-            </FileButton>
-            <Button disabled={!imageFile} color="red" onClick={clearFile}>
-              Reset
-            </Button>
-          </Group> */}
         </div>
         <div className='form-group' style={{ display: 'flex', flexDirection: 'column', maxWidth: '49%', alignItems: 'center' }}>
           <div style={{ textAlign: 'center', marginBottom: '1rem', border: '1px solid #ccc', padding: '10px', width: '200px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '10px' }}>
             {videoFile ? (
-              <div style={{backgroundColor:'black', height:'100%', display:'flex',alignItems:'center'}}>
+              <div style={{ backgroundColor: 'black', height: '100%', display: 'flex', alignItems: 'center' }}>
                 <video
                   controls
                   // style={{width:'100%',height:'250px',marginBottom:'70px' }}

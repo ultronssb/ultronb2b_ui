@@ -154,5 +154,3 @@ const EnrichmentTabs = () => {
 };
 
 export default EnrichmentTabs;
-
-
