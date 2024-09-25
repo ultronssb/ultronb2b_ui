@@ -52,7 +52,7 @@ const EnrichProduct = () => {
 
   const fetchVideoAsBlob = async (url) => {
     try {
-      const response = await fetch(`${BASE_URL.replace('/api', '')}${url}`);
+      const response = await fetch(`${BASE_URL}${url}`);
       const contentType = response.headers.get('Content-Type');
       if (!contentType || !contentType.startsWith('video/')) {
         throw new Error('Expected a video, but received: ' + contentType);
