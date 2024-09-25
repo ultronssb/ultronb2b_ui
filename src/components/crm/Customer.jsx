@@ -11,7 +11,6 @@ import notify from '../../utils/Notification';
 const Customer = () => {
   const { stateData } = useContext(ActiveTabContext);
 
-  const [isCustomer, setIsCustomer] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [rowCount, setRowCount] = useState(5);
@@ -29,12 +28,12 @@ const Customer = () => {
       const response = await B2B_API.get(`customer?status=APPROVED&page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
       const data = response?.response?.content || [];
       setRowCount(response?.response?.totalElements || 0);
-      
+
       const customersWithLocation = await Promise.all(data.map(async (customer) => {
         const locationResponse = await B2B_API.get(`locations/customer-location/${customer.customerId}`).json();
         return { ...customer, location: locationResponse?.response || {} };
       }));
-      
+
       setCustomers(customersWithLocation);
     } catch (error) {
       setIsError(true);
@@ -75,7 +74,7 @@ const Customer = () => {
     },
     {
       header: 'Address',
-      accessorFn: row => row.location?.address1 +' '+row.location?.address2 || 'N/A',
+      accessorFn: row => row.location?.address1 + ' ' + row.location?.address2 || 'N/A',
     },
     {
       header: 'Location',
@@ -107,48 +106,42 @@ const Customer = () => {
 
   const editCustomer = (node) => {
     const customerId = node.customerId;
-    navigate(`/crm/customer/create?id=${customerId}`, {
-      state: { ...stateData, tabs: stateData.childTabs }
-    });
+    navigate(`/crm/customer/create?id=${customerId}`);
   };
 
   const handleChange = (e) => {
-    setIsCustomer(true);
     navigate('/crm/customer/create', { state: { ...stateData, tabs: stateData.childTabs } });
   }
 
   return (
-    <>
-      {!isCustomer && (
-        <>
-          <div className='user--container'>
-            <Text size='lg'>Customer Details</Text>
-            <div className='right--section'>
-              <B2BButton
-                style={{ color: '#000' }}
-                name={"Create Customer"}
-                onClick={handleChange}
-                leftSection={<IconPlus size={15} />}
-                color={"rgb(207, 239, 253)"}
-              />
-            </div>
-          </div>
-          <B2BTableGrid
-            columns={columns}
-            data={customers}
-            isLoading={isLoading}
-            isError={isError}
-            enableTopToolbar={true}
-            enableGlobalFilter={true}
-            manualPagination={true}
-            pagination={pagination}
-            rowCount={rowCount}
-            onPaginationChange={setPagination}
-            enableFullScreenToggle={true}
+
+    <div>
+      <div className='user--container'>
+        <Text size='lg'>Customer Details</Text>
+        <div className='right--section'>
+          <B2BButton
+            style={{ color: '#000' }}
+            name={"Create Customer"}
+            onClick={handleChange}
+            leftSection={<IconPlus size={15} />}
+            color={"rgb(207, 239, 253)"}
           />
-        </>
-      )}
-    </>
+        </div>
+      </div>
+      <B2BTableGrid
+        columns={columns}
+        data={customers}
+        isLoading={isLoading}
+        isError={isError}
+        enableTopToolbar={true}
+        enableGlobalFilter={true}
+        manualPagination={true}
+        pagination={pagination}
+        rowCount={rowCount}
+        onPaginationChange={setPagination}
+        enableFullScreenToggle={true}
+      />
+    </div>
   )
 }
 export default Customer

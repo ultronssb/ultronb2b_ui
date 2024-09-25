@@ -125,7 +125,7 @@ const LoyaltyCreate = () => {
       "name": "Points Expiry Days",
       "key": "pointsExpiryDays",
       "fieldType": "selectField",
-      "options": [ "30", "60", "90", "180", "270", "360", "540" ],
+      "options": ["30", "60", "90", "180", "270", "360", "540"],
       "category": "loyalty",
     },
     {
@@ -219,12 +219,12 @@ const LoyaltyCreate = () => {
                   </div>
                 )))}
               <div className='addRemoveField'>
-                <FontAwesomeIcon icon={faCircleMinus} onClick={() => removeGroup(groupIndex)} title='Remove'/>
+                <FontAwesomeIcon icon={faCircleMinus} onClick={() => removeGroup(groupIndex)} title='Remove' />
               </div>
             </div>
           ))}
           <div className='addRemoveField'>
-            <FontAwesomeIcon icon={faCirclePlus} onClick={addNewGroup} title='Add'/>
+            <FontAwesomeIcon icon={faCirclePlus} onClick={addNewGroup} title='Add' />
           </div>
         </div>
       </div>

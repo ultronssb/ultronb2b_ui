@@ -183,9 +183,7 @@ const CustomerDraft = () => {
 
   const editCustomer = (node) => {
     const customerId = node.customerId;
-    navigate(`/crm/customer/create?id=${customerId}`, {
-      state: { ...stateData, tabs: stateData.childTabs }
-    });
+    navigate(`/crm/customer/create?id=${customerId}`);
   };
 
   const handleSalesmanAssigned = () => setSalesmanAssigned(true);

@@ -29,16 +29,18 @@ const CustomerCreate = () => {
     agents: '',
     approveStatus: '',
     approvalRequired: false,
-    location: {
-      address1: '',
-      address2: '',
-      city: '',
-      state: '',
-      pincode: '',
-      country: 'INDIA',
-      activateLoyalty: '',
-      isPrimary: true
-    }
+    activateLoyalty: '',
+    location: [
+      {
+        address1: '',
+        address2: '',
+        city: '',
+        state: '',
+        pincode: '',
+        country: 'INDIA',
+        isPrimary: true
+      }
+    ]
   };
   const [customer, setCustomer] = useState(initialCustomerState);
   const [cities, setCities] = React.useState([]);
@@ -275,6 +277,24 @@ const CustomerCreate = () => {
     },
     {
       id: 15,
+      name: "Approval required",
+      fieldType: "checkBox",
+      onChange: (event) => handleChange(event, 'approvalRequired'),
+      checked: customer?.approvalRequired,
+      category: "customer"
+    },
+    {
+      id: 16,
+      name: "Activate Loyalty",
+      fieldType: "textField",
+      type: 'text',
+      disabled: false,
+      onChange: (event) => handleChange(event, 'location.activateLoyalty'),
+      value: customer?.activateLoyalty,
+      category: "customer"
+    },
+    {
+      id: 17,
       name: "Address 1",
       fieldType: "textField",
       type: 'text',
@@ -284,7 +304,7 @@ const CustomerCreate = () => {
       category: "address"
     },
     {
-      id: 16,
+      id: 18,
       name: "Address 2",
       fieldType: "textField",
       type: 'text',
@@ -294,7 +314,7 @@ const CustomerCreate = () => {
       category: "address"
     },
     {
-      id: 17,
+      id: 19,
       name: "Country",
       fieldType: "textField",
       type: 'text',
@@ -304,7 +324,7 @@ const CustomerCreate = () => {
       disabled: true
     },
     {
-      id: 18,
+      id: 20,
       name: "State",
       fieldType: "selectField",
       onChange: (event) => handleStateChange(event),
@@ -314,7 +334,7 @@ const CustomerCreate = () => {
       clearable: false
     },
     {
-      id: 19,
+      id: 21,
       name: "City",
       fieldType: "selectField",
       onChange: (event) => handleCityChange(event),
@@ -324,7 +344,7 @@ const CustomerCreate = () => {
       clearable: false
     },
     {
-      id: 20,
+      id: 22,
       name: "Pin Code",
       fieldType: "textField",
       type: 'number',
@@ -334,24 +354,6 @@ const CustomerCreate = () => {
       category: "address",
       maxLength: 6,
     },
-    {
-      id: 21,
-      name: "Approval required",
-      fieldType: "checkBox",
-      onChange: (event) => handleChange(event, 'approvalRequired'),
-      checked: customer?.approvalRequired,
-      category: "address"
-    },
-    {
-      id: 22,
-      name: "Activate Loyalty",
-      fieldType: "textField",
-      type: 'text',
-      disabled: false,
-      onChange: (event) => handleChange(event, 'location.loyalty'),
-      value: customer?.location?.loyalty,
-      category: "address"
-    }
   ];
 
   const handleCancel = () => {
@@ -399,6 +401,12 @@ const CustomerCreate = () => {
                     clearable={field.clearable}
                   />
                 )}
+                {field.fieldType === 'checkBox' && (
+                  <Checkbox
+                    checked={customer.approvalRequired}
+                    onChange={(event) => handleChange(event, 'approvalRequired')}
+                  />
+                )}
               </div>
             )
           ))}
@@ -429,12 +437,6 @@ const CustomerCreate = () => {
                     placeholder={field.name}
                     onChange={(value) => field.onChange({ target: { value } })}
                     clearable={field.clearable}
-                  />
-                )}
-                {field.fieldType === 'checkBox' && (
-                  <Checkbox
-                    checked={customer.approvalRequired}
-                    onChange={(event) => handleChange(event, 'approvalRequired')}
                   />
                 )}
               </div>
