@@ -64,7 +64,7 @@ import { ActionIcon, Button, Modal, TextInput } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 
 const EnrichmentAttributes = () => {
-  const { handleChange, product } = useContext(EnrichProductContext);
+  const { handleChange, product, pim, setPim } = useContext(EnrichProductContext);
   const [opened, setOpened] = useState(false);
   const [variants, setVariants] = useState([]);
   const [variantName, setVariantName] = useState('');
@@ -93,7 +93,15 @@ const EnrichmentAttributes = () => {
     const updatedVariants = [...variants];
     updatedVariants[index][field] = value;
     setVariants(updatedVariants);
+    setPim((pre => {
+      return {
+        ...pre,
+        variants: updatedVariants
+      }
+    }));
   };
+
+  console.log(pim, "pim");
 
 
   return (
@@ -138,7 +146,7 @@ const EnrichmentAttributes = () => {
         <div className="form-group">
           <label className="form-label">Performance</label>
           <B2BInput
-            value={product?.performance}
+            value={pim?.performance}
             className="form-input"
             onChange={(event) => handleChange(event, "performance")}
             placeholder={"Performance"}

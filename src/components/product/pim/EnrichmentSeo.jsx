@@ -4,7 +4,7 @@ import { EnrichProductContext } from './EnrichProduct';
 
 const EnrichmentSeo = () => {
 
-  const { handleChange, product } = useContext(EnrichProductContext);
+  const { handleChange, product, pim} = useContext(EnrichProductContext);
 
   return (
     <div>
@@ -12,9 +12,9 @@ const EnrichmentSeo = () => {
         <div style={{display:'flex',textAlign:'left',alignItems:'baseline'}}>
           <label className='form-label'>Product URL</label>
           <B2BInput
-            value={product?.otherInformation?.url || ''}
+            value={pim?.pimOtherInformation?.url || ''}
             className='form-input'
-            onChange={(event) => handleChange(event,'otherInformation.url')}
+            onChange={(event) => handleChange(event,'url')}
             placeholder={"Product URL"}
           />
         </div>
@@ -22,9 +22,9 @@ const EnrichmentSeo = () => {
         <div style={{display:'flex',textAlign:'left',alignItems:'baseline'}}>
           <label className='form-label'>Product Slug</label>
           <B2BInput
-            value={product?.otherInformation?.productSlug || ''}
+            value={pim?.pimOtherInformation?.productSlug || ''}
             className='form-input'
-            onChange={(event) => handleChange(event,'otherInformation.productSlug')}
+            onChange={(event) => handleChange(event,'productSlug')}
             placeholder={"Product Slug"}
           />
         </div>
@@ -32,7 +32,7 @@ const EnrichmentSeo = () => {
         <div style={{display:'flex',textAlign:'left',alignItems:'baseline'}}>
           <label className='form-label'>Page Title</label>
           <B2BInput
-            value={product?.pageTitle}
+            value={pim?.pageTitle}
             className='form-input'
             onChange={(event) => handleChange(event,"pageTitle")}
             placeholder={"Page Title"}
@@ -42,9 +42,9 @@ const EnrichmentSeo = () => {
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <label className='form-label'>Meta Description</label>
           <textarea
-            value={product.otherInformation?.metaDesc}
+            value={pim?.pimOtherInformation?.metaDescription}
             className='form-input-textarea'
-            onChange={(event) => handleChange(event, 'otherInformation.metaDesc')}
+            onChange={(event) => handleChange(event, 'metaDescription')}
           />
         </div>
       </form>

@@ -134,12 +134,15 @@ import { Button, FileButton, Group } from '@mantine/core';
 import React, { useContext, useState } from 'react';
 import { EnrichProductContext } from './EnrichProduct';
 import notify from '../../../utils/Notification';
+import { BASE_URL } from '../../../api/EndPoints';
 
 const EnrichmentMedia = () => {
   const [errorMessage, setErrorMessage] = useState('');
-  const { product, setProduct } = useContext(EnrichProductContext);
+  const { product, setProduct, setMultimedia } = useContext(EnrichProductContext);
+  const [variants,setVariants]= useState({})
+  const [media, setMedia] = useState({})
 
-  const fileChange = (file, sku, type) => {
+  const fileChange = (file, sku, type, variant) => {
     const MAX_SIZE_BYTES = 3 * 1024 * 1024; // 3MB size limit
 
     if (file) {
@@ -157,11 +160,12 @@ const EnrichmentMedia = () => {
         const fileName = `${sku}_${file.name}`;
         const reader = new FileReader();
         reader.onloadend = () => {
+          // setMultimedia((prev) => [...prev, med])
           setProduct((prevProduct) => ({
             ...prevProduct,
             productVariants: prevProduct.productVariants.map((variant) =>
               variant.variantSku === sku
-                ? { ...variant, [type]: reader.result, name: fileName }
+                ? { ...variant, [type]: reader.result, name: fileName,file: file }
                 : variant
             ),
           }));
@@ -197,8 +201,8 @@ const EnrichmentMedia = () => {
           <th style={{ border: '1px solid #ccc', padding: '10px' }}>Variant Colour</th>
           <th style={{ border: '1px solid #ccc', padding: '10px' }}>Image</th>
           <th style={{ border: '1px solid #ccc', padding: '10px' }}>Image Actions</th>
-          <th style={{ border: '1px solid #ccc', padding: '10px' }}>Video</th>
-          <th style={{ border: '1px solid #ccc', padding: '10px' }}>Video Actions</th>
+          {/* <th style={{ border: '1px solid #ccc', padding: '10px' }}>Video</th>
+          <th style={{ border: '1px solid #ccc', padding: '10px' }}>Video Actions</th> */}
         </tr>
       </thead>
       <tbody>
@@ -215,18 +219,18 @@ const EnrichmentMedia = () => {
             <td style={{ border: '1px solid #ccc', padding: '10px', textAlign:'center'}}>
               {variant.image ? (
                 <img
-                  src={variant.image}
+                  src={variant.image.includes('/resources')?`${BASE_URL}${variant.image}?time=${Date.now()}`: variant.image}
                   alt="Uploaded"
                   style={{ maxWidth: '50%', maxHeight: '70px'}}
                 />
-              ) : (
+              ) :(
                 <p style={{ color: '#888' }}>No image uploaded</p>
               )}
             </td>
 
             <td style={{ border: '1px solid #ccc', padding: '10px',alignItems:'center' }}>
               <Group justify="flex-start">
-                <FileButton onChange={(file) => fileChange(file, variant.variantSku, 'image')} multiple={false}>
+                <FileButton onChange={(file) => fileChange(file, variant.variantSku, 'image', variant)} multiple={false}>
                   {(props) => <Button {...props}>Upload Image</Button>}
                 </FileButton>
                 <Button disabled={!variant.image} color="red" onClick={() => clearFile(variant.variantSku, 'image')}>
@@ -235,7 +239,7 @@ const EnrichmentMedia = () => {
               </Group>
             </td>
 
-            <td style={{ border: '1px solid #ccc', padding: '10px',textAlign:'center' }}>
+            {/* <td style={{ border: '1px solid #ccc', padding: '10px',textAlign:'center' }}>
               {variant.video ? (
                 <video controls width="100" height="100">
                   <source src={variant.video} type="video/mp4" />
@@ -255,7 +259,7 @@ const EnrichmentMedia = () => {
                   Reset
                 </Button>
               </Group>
-            </td>
+            </td> */}
           </tr>
         ))}
         {errorMessage && notify({

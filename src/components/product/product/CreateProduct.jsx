@@ -601,7 +601,7 @@ const CreateProduct = () => {
       };
       const fetchImageAsBlob = async () => {
         try {
-          const response = await fetch(`http://192.168.1.13:8080${product?.image}`);
+          const response = await fetch(`${BASE_URL.replace('/api','')}${product?.image}`);
           const contentType = response.headers.get('Content-Type');
           if (!contentType || !contentType.startsWith('image/')) {
             throw new Error('Expected an image, but received: ' + contentType);

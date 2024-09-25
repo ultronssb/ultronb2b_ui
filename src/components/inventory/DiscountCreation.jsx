@@ -2,10 +2,10 @@ import React from 'react';
 import B2BDateInput from '../../common/B2BDateInput';
 import B2BInput from '../../common/B2BInput';
 import B2BSelect from '../../common/B2BSelect';
-import './CreateDiscounts.css';
+import './DiscountCreation.css';
 import B2BButton from '../../common/B2BButton';
 
-const CreateDiscounts = () => {
+const DiscountCreation = () => {
 
   const discountFields = [
     { id: 1, name: 'Discount ID', type: 'textField', disabled: false, },
@@ -95,6 +95,6 @@ const CreateDiscounts = () => {
   );
 }
 
-export default CreateDiscounts;
+export default DiscountCreation;
 
 

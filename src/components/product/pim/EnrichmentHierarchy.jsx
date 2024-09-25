@@ -11,7 +11,7 @@ import B2BSelect from '../../../common/B2BSelect';
 import { EnrichProductContext } from './EnrichProduct';
 
 const EnrichmentHierarchy = () => {
-  const { product, setProduct } = useContext(EnrichProductContext);
+  const { product, setProduct,pim } = useContext(EnrichProductContext);
 
   const initialState = { key: '', value: {}, heirarchyLabel: "", options: [], openModal: false, count: 2 };
   const [categorys, setCategorys] = useState([]);

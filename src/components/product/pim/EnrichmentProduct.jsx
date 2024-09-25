@@ -5,7 +5,7 @@ import B2BSelect from '../../../common/B2BSelect';
 
 const EnrichmentProduct = () => {
 
-  const { handleChange, product } = useContext(EnrichProductContext);
+  const { handleChange, product,pim } = useContext(EnrichProductContext);
 
   return (
     <div>
@@ -63,43 +63,43 @@ const EnrichmentProduct = () => {
         <div className={"form-group"}>
           <label className='form-label'>Sample MOQ</label>
           <B2BInput
-            value={product?.otherInformation?.sampleMOQ || ''}
+            value={pim?.pimOtherInformation?.sampleMOQ || ''}
             className='form-input'
-            onChange={(event) => handleChange(event, "otherInformation.sampleMOQ")}
+            onChange={(event) => handleChange(event, "sampleMOQ")}
             placeholder={"sampleMOQ"}
           />
         </div>
         <div className={"form-group"}>
           <label className='form-label'>Wholesale MOQ </label>
           <B2BInput
-            value={product?.otherInformation?.purchaseMOQ || ''}
+            value={pim?.pimOtherInformation?.wholesaleMOQ || ''}
             className='form-input'
-            onChange={(event) => handleChange(event, "otherInformation.purchaseMOQ")}
-            placeholder={"purchaseMOQ"}
+            onChange={(event) => handleChange(event, "wholesaleMOQ")}
+            placeholder={"wholesaleMOQ"}
           />
         </div>
         <div className={"form-group"}>
           <label className='form-label'>Min Margin</label>
           <B2BInput
-            value={product?.otherInformation?.minMargin || ''}
+            value={pim?.pimOtherInformation?.minMargin || ''}
             className='form-input'
-            onChange={(event) => handleChange(event, 'otherInformation.minMargin')}
+            onChange={(event) => handleChange(event, 'minMargin')}
             placeholder={"Min Margin"}
           />
         </div>
         <div className={"form-group"}>
           <label className='form-label'>Allow Loyalty</label>
           <B2BInput
-            value={product?.otherInformation?.allowLoyalty || ''}
+            value={pim?.pimOtherInformation?.allowLoyalty || ''}
             className='form-input'
-            onChange={(event) => handleChange(event, 'otherInformation.allowLoyalty')}
+            onChange={(event) => handleChange(event, 'allowLoyalty')}
             placeholder={"Allow Loyalty"}
           />
         </div>
         <div className={"form-group"}>
           <label className='form-label'>Design Number</label>
           <B2BInput
-            value={product?.designNumber}
+            value={pim?.designNumber}
             className='form-input'
             onChange={(event) => handleChange(event, "designNumber")}
             placeholder={"Design Number"}

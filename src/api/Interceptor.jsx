@@ -9,7 +9,7 @@ const getToken = () => {
 export const B2B_API = ky.create({
     prefixUrl: BASE_URL,
     headers: {
-        Accept: "application/json",
+        // Accept: "application/json",
     },
     hooks: {
         beforeRequest: [

@@ -4,103 +4,105 @@ import B2BInput from '../../../common/B2BInput';
 
 const EnrichmentTransaction = () => {
 
-    const { handleChange, product } = useContext(EnrichProductContext);
+    const { handleChange, product ,pim} = useContext(EnrichProductContext);
 
+    console.log(pim,"pim");
+    
     const json = [
         {
             label: "Stop GRN",
             type: 'radio',
-            value: product.otherInformation.isStopGRN,
+            value:String( pim?.pimOtherInformation?.isStopGRN),
             fieldType: 'radioField',
             options: [
                 { label: "Yes", value: "true" },
                 { label: "No", value: "false" }
             ],
-            onChange: (event) => handleChange(event, "otherInformation.isStopGRN"),
+            onChange: (event) => handleChange(event, "isStopGRN"),
             name: "isStopGRN",
         },
         {
             label: "Stop Purchase Return",
             type: 'radio',
-            value: product.otherInformation.isStopPurchaseReturn,
+            value: String(pim?.pimOtherInformation?.isStopPurchaseReturn),
             fieldType: 'radioField',
             options: [
                 { label: "Yes", value: "true" },
-                { label: "No", value: "false" }
+                { label: "No", value: "false"}
             ],
-            onChange: (event) => handleChange(event, "otherInformation.isStopPurchaseReturn"),
+            onChange: (event) => handleChange(event, "isStopPurchaseReturn"),
             name: "isStopPurchaseReturn",
         },
         {
             label: "Stop Sale",
             type: 'radio',
-            value: product.otherInformation.isStopSale,
+            value:String(pim?.pimOtherInformation?.isStopSale),
             fieldType: 'radioField',
             options: [
-                { label: "Yes", value: "true" },
+                { label: "Yes", value: "true"},
                 { label: "No", value: "false" }
             ],
-            onChange: (event) => handleChange(event, "otherInformation.isStopSale"),
+            onChange: (event) => handleChange(event, "isStopSale"),
             name: "isStopSale",
         },
         {
             label: "Allow Refund",
             type: 'radio',
-            value: product.otherInformation.isAllowRefund,
+            value: String(pim?.pimOtherInformation?.isAllowRefund),
             fieldType: 'radioField',
             options: [
                 { label: "Yes", value: "true" },
                 { label: "No", value: "false" }
             ],
-            onChange: (event) => handleChange(event, "otherInformation.isAllowRefund"),
+            onChange: (event) => handleChange(event, "isAllowRefund"),
             name: "isAllowRefund",
         },
         {
             label: "Allow Negative",
             type: 'radio',
-            value: product.otherInformation.isAllowNegative,
+            value: String(pim?.pimOtherInformation?.isAllowNegative),
             fieldType: 'radioField',
             options: [
                 { label: "Yes", value: "true" },
                 { label: "No", value: "false" }
             ],
-            onChange: (event) => handleChange(event, "otherInformation.isAllowNegative"),
+            onChange: (event) => handleChange(event, "isAllowNegative"),
             name: "isAllowNegative",
         },
         {
             label: "Allow Cost Edit",
             type: 'radio',
-            value: product.otherInformation.isAllowCostEdit,
+            value: String(pim?.pimOtherInformation?.isAllowCostEditInGRN),
             fieldType: 'radioField',
             options: [
                 { label: "Yes", value: "true" },
-                { label: "No", value: "false" }
+                { label: "No", value: "false"}
             ],
-            onChange: (event) => handleChange(event, "otherInformation.isAllowCostEdit"),
-            name: "isAllowCostEdit",
+            onChange: (event) => handleChange(event, "isAllowCostEditInGRN"),
+            name: "isAllowCostEditInGRN",
         },
         {
             label: "Enable Serial Number",
             type: 'radio',
-            value: product.otherInformation.isEnableSerialNumber,
+            value: String(pim?.pimOtherInformation?.isEnableSerialNumber),
             fieldType: 'radioField',
             options: [
                 { label: "Yes", value: "true" },
                 { label: "No", value: "false" }
             ],
-            onChange: (event) => handleChange(event, "otherInformation.isEnableSerialNumber"),
+            onChange: (event) => handleChange(event, "isEnableSerialNumber"),
             name: "isEnableSerialNumber",
         },
         {
             label: "Non-trading",
             type: 'radio',
-            value: product.otherInformation.isNonTrading,
+            value: String(pim?.pimOtherInformation?.isNonTrading),
             fieldType: 'radioField',
             options: [
                 { label: "Yes", value: "true" },
                 { label: "No", value: "false" }
             ],
-            onChange: (event) => handleChange(event, "otherInformation.isNonTrading"),
+            onChange: (event) => handleChange(event, "isNonTrading"),
             name: "isNonTrading",
         },
     ];

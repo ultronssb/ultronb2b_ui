@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import B2BInput from '../../common/B2BInput';
 import B2BTextarea from '../../common/B2BTextarea';
-import './CreateCollection.css';
+import './CollectionCreation.css';
 import { Button, FileButton } from '@mantine/core';
 import B2BButton from '../../common/B2BButton';
 import { ActiveTabContext } from '../../layout/Layout';
 import { useNavigate } from 'react-router-dom';
 import { IconArrowLeft } from '@tabler/icons-react';
 
-const CreateCollection = () => {
+const CollectionCreation = () => {
   const { stateData } = useContext(ActiveTabContext);
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -79,7 +79,7 @@ const CreateCollection = () => {
   );
 };
 
-export default CreateCollection;
+export default CollectionCreation;
 
 
 

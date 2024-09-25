@@ -14,11 +14,15 @@ import EnrichmentAttributes from './EnrichmentAttributes';
 import EnrichmentTransaction from './EnrichmentTransaction';
 import { B2B_API } from '../../../api/Interceptor';
 import { EnrichProductContext } from './EnrichProduct';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const EnrichmentTabs = () => {
-    const { product } = useContext(EnrichProductContext);
+    const { product, pim, videoFile, multimedia } = useContext(EnrichProductContext);
     const [activeTab, setActiveTab] = useState("1");
     const [sliderValue, setSliderValue] = useState(0)
+    const navigate = useNavigate();
+    const query_param = new URLSearchParams(location.search);
+    const from = query_param.get('from');
 
     const initialTabs = [
         { id: "1", name: "Hireachy", disabled: false },
@@ -96,12 +100,25 @@ const EnrichmentTabs = () => {
 
     const handlePimSave = async () => {
         try {
-            const res = await B2B_API.post(`pim`, { body: product }).json();
-        } catch (err) {
-            console.log("Fail to add Pim", err);
-        }
-    }
+            const formData = new FormData();
+            formData.append("pim", JSON.stringify(pim));  // Stringify the JSON data
+            formData.append("video", videoFile);  // Append the video file
 
+            product.productVariants.forEach((file, index) => {
+                if (file.file) {
+                    formData.append(`files`, file.file);  // Append each multimedia file
+                    formData.append(`productVarId`, file.id);  // Append the productVariantId
+                }
+            });
+
+            const res = await B2B_API.post(`pim`, {
+                body: formData,
+            }).json();
+            navigate(from);
+        } catch (err) {
+            console.error("Failed to add Pim", err);
+        }
+    };
 
 
     return (
