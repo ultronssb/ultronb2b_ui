@@ -1,6 +1,6 @@
 import { Button, FileButton, Group } from '@mantine/core'
 import { IconArrowLeft } from '@tabler/icons-react'
-import React, { createContext, useEffect, useRef, useState } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../../../api/EndPoints'
 import { B2B_API } from '../../../api/Interceptor'
@@ -9,11 +9,12 @@ import B2BInput from '../../../common/B2BInput'
 import B2BSelect from '../../../common/B2BSelect'
 import notify from '../../../utils/Notification'
 import EnrichmentTabs from './EnrichmentTabs'
+import { ActiveTabContext } from '../../../layout/Layout'
 
 export const EnrichProductContext = createContext(null);
 
 const EnrichProduct = () => {
-
+  const { stateData} = useContext(ActiveTabContext);
   const [product, setProduct] = useState({
     status: '',
   });
@@ -37,6 +38,7 @@ const EnrichProduct = () => {
       fetchProduct(id)
     }
   }, [location.search])
+  
   useEffect(() => {
     fetchStoreAndLocation()
 
@@ -70,7 +72,7 @@ const EnrichProduct = () => {
     try {
       const response = await B2B_API.get(`pim/product/${id}`).json();
       const product = response.response.product;
-      setPim(response.response);
+      const pims =response.response;
       const barcodeString = product?.isCreateBarcode ? "true" : "false";
       const transformData = () => {
         const result = {};
@@ -138,7 +140,26 @@ const EnrichProduct = () => {
           isMarkUp: priceSetting.markUpPercent > 0 ? true : false,
         };
       };
+      const transformAttributes = async () => {
+        const result = [];
 
+        for (const [key, value] of Object.entries(pims?.attributes || {})) {
+          const heirarchy = await fetchHeirarchy(value.categoryId);
+          const heirarchyLabel = heirarchy?.slice(1).join('/');
+          result.push({
+            key: key,
+            value: value,
+            heirarchyLabel: heirarchyLabel,
+            options: value.options || [],
+            openModal: false
+          });
+        }
+        return result;
+      };
+      setPim({...pims,
+        attributes: await transformAttributes(),
+       
+      })
       setProduct({
         ...product,
         tags: product?.productTags.split(",").map(tag => tag.trim()),
@@ -149,7 +170,7 @@ const EnrichProduct = () => {
         productCategories: await transformCategories(),
         prodVariants: transformData(),
         priceSetting: adjustPriceSetting(product?.priceSetting),
-        status: product.status === "ACTIVE" ? "true" : "false",
+      
 
         productVariants: product?.productVariants?.map(variant => ({
           ...variant,
@@ -324,11 +345,11 @@ const EnrichProduct = () => {
     {
       label: "Status",
       type: 'radio',
-      value: product?.status,
+      value: pim?.status,
       fieldType: 'radioField',
       options: [
-        { label: "ACTIVE", value: "true" },
-        { label: "INACTIVE", value: "false" }
+        { label: "ACTIVE", value: "ACTIVE" },
+        { label: "INACTIVE", value: "INACTIVE" }
       ],
       onChange: (event) => handleChange(event, "status"),
       name: "status",
@@ -380,8 +401,7 @@ const EnrichProduct = () => {
   const createdDate = product?.createdDate ? formatDate(product.createdDate) : null;
 
   const handleBack = () => {
-
-    navigate(from)
+    navigate(from,{ state: { ...stateData, tabs: stateData.childTabs , }})
   }
 
   const getUserById = async (userId) => {

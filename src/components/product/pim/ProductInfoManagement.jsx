@@ -74,17 +74,6 @@ useEffect(()=>{
     }
   };
 
-  const onSave = async () => {
-    const prod = {
-      channelId: selectedChannel,
-      locationId: selectedStore,
-      productIds: selectedPairs
-    }
-    console.log(prod)
-    const response = await B2B_API.post(`map-channel`, { json: prod }).json();
-    console.log(response)
-  }
-
   const fetchAllProducts = async () => {
     setIsLoading(true);
     try {
@@ -128,7 +117,7 @@ useEffect(()=>{
     {
       id: 'Status',
       header: 'Status',
-      accessorKey: 'product.status'
+      accessorKey: 'status'
     },
     {
       header: 'Actions',

@@ -98,13 +98,23 @@ const EnrichmentTabs = () => {
     const handlePimSave = async () => {
         try {
             const formData = new FormData();
-            formData.append("pim", JSON.stringify(pim));  // Stringify the JSON data
-            formData.append("video", videoFile);  // Append the video file
+            let updatedPim = {
+                ...pim,
+                attributes: [...pim.attributes]
+              };
+              updatedPim.attributes = updatedPim.attributes
+            ? updatedPim.attributes.reduce((acc, item) => {
+              acc[item.key] = item.value;
+              return acc;
+            }, {})
+            : {};
+            formData.append("pim", JSON.stringify(updatedPim));  
+            formData.append("video", videoFile);  
 
             product.productVariants.forEach((file, index) => {
                 if (file.file) {
-                    formData.append(`files`, file.file);  // Append each multimedia file
-                    formData.append(`productVarId`, file.id);  // Append the productVariantId
+                    formData.append(`files`, file.file); 
+                    formData.append(`productVarId`, file.id);  
                 }
             });
 
