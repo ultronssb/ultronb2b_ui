@@ -77,7 +77,7 @@ export const data = [
   { id: "18", name: "Brand", parent_id: "8", orderBy: 6, path: "/product/brand" },
   { id: "19", name: "Group", parent_id: "8", orderBy: 7, path: "/product/group" },
   { id: "20", name: "Taxonomy", parent_id: "8", orderBy: 8, path: "/product/taxonomy" },
-  { id: "21", name: "Attribute", parent_id: "8", orderBy: 9, path: "/product/attribute" },
+  // { id: "21", name: "Attribute", parent_id: "8", orderBy: 9, path: "/product/attribute" },
 
 
   { id: "22", name: "Product", parent_id: "9", orderBy: 1, path: "/product/product/articles" },

@@ -11,22 +11,20 @@ import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
 import notify from '../../../utils/Notification';
 import './ProductHierarchy.css';
-import B2BInput from '../../../common/B2BInput';
 
-const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children ,disable}) => {
+const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children }) => {
   return (
     <div style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px`, display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
         <label style={{ width: '9rem' }}>Level {level}</label>
         {level < 4 && level > 1 && (<FontAwesomeIcon icon={faArrowTurnUp} style={{ transform: 'rotate(90deg)', marginRight: '20px' }} />)}
-        <B2BInput
+        <input
           type="text"
           value={name}
-          onChange={(e) => !disable && onChange(e.target.value)} // Prevent change when disabled
+          onChange={(e) => onChange(e.target.value)}
           placeholder={`Level ${level} Category`}
           required
           style={{ padding: '12px', outline: 'none', width: '250px', border: '1px solid silver', borderRadius: '4px' }}
-          disable={disable}
         />
         {level > 1 && (<FontAwesomeIcon icon={faTrashCan} onClick={onRemove} style={{ cursor: 'pointer', marginLeft: '1rem', fontSize: '18px', color: '#FF6E61' }} />)}
       </div>
@@ -94,6 +92,7 @@ const ProductHierarchy = () => {
   const [categoryRowCount, setCategoryRowCount] = useState(0);
   const [categoryPagination, setCategoryPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [taxonomy, setTaxonomy] = useState([]);
+  const [productCount, setProductCount] = useState({})
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -110,12 +109,18 @@ const ProductHierarchy = () => {
 
     fetchCategory();
     fetchGroup();
+    fetchProductCount()
   }, [id]);
 
   const fetchGroup = async () => {
     const response = await B2B_API.get(`group`).json();
     setGroups(response.response);
   };
+
+  const fetchProductCount = async () => {
+    const res = await B2B_API.get('product/count-by-category').json()
+    setProductCount(res.response)
+  }
 
   const handleSelectChange = (value) => {
     const group = _.find(groups, gr => gr.name === value);
@@ -218,6 +223,14 @@ const ProductHierarchy = () => {
       accessorFn: (row) => {
         const category = counts.find(c => c.name === row.name);
         return category ? category.count : 0;
+      },
+      size: 150,
+    },
+    {
+      id: 'productCount',
+      header: 'Product Count',
+      accessorFn: (row) => {
+        return productCount[row.name]|| 0;
       },
       size: 150,
     },
