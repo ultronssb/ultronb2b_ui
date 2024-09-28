@@ -11,6 +11,7 @@ import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
 import notify from '../../../utils/Notification';
 import './ProductHierarchy.css';
+import B2BInput from '../../../common/B2BInput';
 
 const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children ,disable}) => {
   return (
