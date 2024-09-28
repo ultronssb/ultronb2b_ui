@@ -8,6 +8,7 @@ import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ERROR_MESSAGE } from '../../../common/CommonResponse';
 import { ActiveTabContext } from '../../../layout/Layout';
 import notify from '../../../utils/Notification';
+import _ from 'lodash';
 
 const Articles = () => {
   const initialState = {
@@ -49,11 +50,17 @@ const Articles = () => {
     },
     {
       header: 'Product Price',
-      accessorKey: 'priceSetting.sellingPrice'
+      accessorKey: 'priceSetting.sellingPrice',
+      enableColumnFilter: false,
     },
     {
       header: 'Product Tags',
       accessorKey: 'productTags'
+    },
+    {
+      header: 'No of Variants',
+      accessorFn: (row) => _.size(row.productVariants),
+      size: 120
     },
     // {
     //   header: 'Product Category',
@@ -66,7 +73,8 @@ const Articles = () => {
     // },
     {
       header: 'Status',
-      accessorKey: 'status'
+      accessorKey: 'status',
+      size: 100
     },
     {
       header: 'Actions',

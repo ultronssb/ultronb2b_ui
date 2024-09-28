@@ -35,6 +35,8 @@ const AddUsers = () => {
   const [rowCount, setRowCount] = useState(5)
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [globalSearch, setGlobalSearch] = useState("");
 
   useEffect(() => {
     fetchAllUsers();
@@ -45,14 +47,38 @@ const AddUsers = () => {
     fetchAllRoles();
   }, [])
 
+  const onGlobalFilterChange = (value) => {
+    setGlobalSearch(value)
+  }
+
+  useEffect(() => {
+    console.log(columnFilters, "columnFilters");
+    filterUsers();
+  }, [columnFilters,globalSearch])
+
+  const filterUsers = async () => {
+    const filter = columnFilters && columnFilters.map(filter => {
+      return {
+        name: filter.id,
+        value: filter.value
+      }
+    })
+    try {
+      const response = await B2B_API.post(`user/search?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&search=${globalSearch}`, {
+        json: filter,
+      }).json();
+      setUserFromResponse(response?.response)
+      console.log('Filtered Users:', response);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  }
+
   const fetchAllUsers = async () => {
     setIsLoading(true)
     try {
-      const response = await B2B_API.get(`user/get-all-user?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
-      const data = response?.response?.content || [];
-      setRowCount(response?.response?.totalElements || 0);
-      setUsers(data);
-      setIsLoading(false)
+      const response = await B2B_API.get(`user/get-all-user?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&search=${globalSearch}`).json();
+      setUserFromResponse(response?.response)
     } catch (error) {
       setIsError(true)
       notify({
@@ -62,6 +88,12 @@ const AddUsers = () => {
         title: error?.message || ERROR_MESSAGE
       })
     }
+  }
+
+  const setUserFromResponse = (response) => {
+    setRowCount(response?.totalElements || 0)
+    setUsers(response.content);
+    setIsLoading(false)
   }
 
   const fetchAllRoles = async () => {
@@ -87,7 +119,8 @@ const AddUsers = () => {
     },
     {
       header: 'User Name',
-      accessorFn: (row) => row?.firstName + " " + (row?.lastName === null ? '' : row?.lastName)
+      accessorFn: (row) => row?.firstName + " " + (row?.lastName === null ? '' : row?.lastName),
+      accessorKey:"userName"
     },
     {
       header: 'Email ID',
@@ -99,7 +132,8 @@ const AddUsers = () => {
     },
     {
       header: 'Role',
-      accessorFn: (row) => row?.roleName
+      accessorFn: (row) => row?.roleName,
+      accessorKey:'roleName'
     },
     {
       header: 'Location ID',
@@ -223,6 +257,10 @@ const AddUsers = () => {
             rowCount={rowCount}
             onPaginationChange={setPagination}
             enableFullScreenToggle={true}
+            manualFiltering={true}
+            columnFilters={columnFilters}
+            onColumnFiltersChange={setColumnFilters}
+            onGlobalFilterChange={onGlobalFilterChange}
           />
         </>
       )}
@@ -345,7 +383,7 @@ const AddUsers = () => {
                       type="radio"
                       value="INACTIVE"
                       onChange={(event) => handleChange(event, 'status')}
-                      checked={user.status === "INACTIVE"}
+                      checked={user?.status === "INACTIVE"}
                       name="status"
                       id="status-inactive"
                     />
