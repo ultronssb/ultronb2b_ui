@@ -17,11 +17,11 @@ export const ProductContext = createContext(null);
 const CreateProduct = () => {
   const initialTabs = [
     { id: "1", name: "Product Type", disabled: false },
-    { id: "2", name: "Category Type", disabled: false },
-    { id: "3", name: "Fabric Content", disabled: false },
-    { id: "4", name: "Dimensions", disabled: false },
-    { id: "5", name: "Price", disabled: false },
-    { id: "6", name: "Variant", disabled: false },
+    { id: "2", name: "Category Type", disabled: true },
+    { id: "3", name: "Fabric Content", disabled: true },
+    { id: "4", name: "Dimensions", disabled: true },
+    { id: "5", name: "Price", disabled: true },
+    { id: "6", name: "Variant", disabled: true },
 
   ];
 
@@ -440,11 +440,6 @@ const CreateProduct = () => {
           errors.gstError = true;
           errors.gstErrorMessage = "GST must be selected!";
           isValid = false;
-        }
-        if (isValid) {
-          enableNextTab(false)
-        } else {
-          enableNextTab(true)
         }
         if (isValid) {
           enableNextTab(false)

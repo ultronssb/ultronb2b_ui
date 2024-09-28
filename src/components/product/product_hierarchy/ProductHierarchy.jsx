@@ -12,19 +12,20 @@ import { ActiveTabContext } from '../../../layout/Layout';
 import notify from '../../../utils/Notification';
 import './ProductHierarchy.css';
 
-const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children }) => {
+const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children ,disable}) => {
   return (
     <div style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px`, display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
         <label style={{ width: '9rem' }}>Level {level}</label>
         {level < 4 && level > 1 && (<FontAwesomeIcon icon={faArrowTurnUp} style={{ transform: 'rotate(90deg)', marginRight: '20px' }} />)}
-        <input
+        <B2BInput
           type="text"
           value={name}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => !disable && onChange(e.target.value)} // Prevent change when disabled
           placeholder={`Level ${level} Category`}
           required
           style={{ padding: '12px', outline: 'none', width: '250px', border: '1px solid silver', borderRadius: '4px' }}
+          disable={disable}
         />
         {level > 1 && (<FontAwesomeIcon icon={faTrashCan} onClick={onRemove} style={{ cursor: 'pointer', marginLeft: '1rem', fontSize: '18px', color: '#FF6E61' }} />)}
       </div>

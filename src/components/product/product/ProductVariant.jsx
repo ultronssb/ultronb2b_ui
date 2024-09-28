@@ -168,7 +168,7 @@ const ProductVariant = () => {
                                 </div>
                             ))}
                             <div className="product-variant-g-row">
-                                {_.size(attributes) >= _.size(selectedPairs) && (
+                                {_.size(attributes) > _.size(selectedPairs) && (
                                     <div className="product-variant-g-col product-variant-g-s-6 product-variant-g-m-4">
                                         <button
                                             type="button"

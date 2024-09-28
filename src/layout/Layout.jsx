@@ -108,7 +108,7 @@ export default function Layout() {
   }
 
   return (
-    <ActiveTabContext.Provider value={{ stateData }}>
+    <ActiveTabContext.Provider value={{ stateData ,setStateData}}>
       <ScrollContext.Provider value={scrollToTop}>
         <AppShell header={{ height: 60 }} ref={appShellRef} padding="md" style={{height: '100vh' }}>
           <AppShell.Header style={{ borderBottom: 'none' }}>

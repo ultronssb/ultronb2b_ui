@@ -109,13 +109,13 @@ const FabricContent = () => {
     const handleSelectChange = (index, selectedValue) => {
         const newPairs = [...selectedPairs];
         const oldKey = newPairs[index].key;
+        const  oldvalue = parseInt(newPairs[index].value, 10) || 0;
         newPairs[index].key = selectedValue || '';
-        if (!selectedValue) {
-            newPairs[index].value = '';
-        }
-
+        newPairs[index].value = selectedValue ? newPairs[index].value : '';
+        const newValue = parseInt(newPairs[index].value, 10) || 0;
+        const updatedTotal = totalPercent - oldvalue + newValue;
+        setTotalpercent(updatedTotal)
         setSelectedPairs(newPairs);
-
         setProduct(prevState => {
             const updatedComposition = { ...prevState.fabricContent.composition };
             if (oldKey && oldKey !== selectedValue) {
@@ -128,7 +128,7 @@ const FabricContent = () => {
             }
 
             return {
-                ...prevState,
+                ...prevState,totalProductPercent:updatedTotal,
                 fabricContent: {
                     ...prevState.fabricContent,
                     composition: updatedComposition
@@ -171,7 +171,6 @@ const FabricContent = () => {
             fabricContentErrorMessage: '',
         }));
     };
-console.log(totalPercent)
     const handleMultiSelectChange = (index, value) => {
         const newPairs = [...selectedPairs];
         const key = newPairs[index].key;
@@ -215,9 +214,7 @@ console.log(totalPercent)
 
 const addNewPair = () => {
     const totalSum = _.sumBy(selectedPairs, (item) => parseInt(item.value));
-     setTotalpercent(totalSum);
     if (totalSum < 100) {
-       
         setSelectedPairs([...selectedPairs, { key: '', value: '' }]);
         setInputError(prev => ({
             ...prev,
@@ -260,6 +257,7 @@ const addNewPair = () => {
     const getfabricValues = async () => {
         try {
             const res = await B2B_API.get(`fabric`).json();
+            console.log(res?.response,'fa')
             setFabricValue(res?.response);
         } catch (error) {
             console.error("Error fetching fabric values: ", error);
@@ -267,59 +265,49 @@ const addNewPair = () => {
     };
 
     const Changehandler = (selectedValue) => {
-        setFCCValue(prev => {
-            const existingValues = prev ? prev.split(' ').filter(v => v) : [];
 
-            if (selectedValue) {
-                // Handle selection: Append the new value
-                if (!existingValues.includes(selectedValue)) {
-                    return `${prev ? prev + ' ' : ''}${selectedValue}`.trim();
+        const selectedFabric = fabricValue.find(fabric => fabric.value === selectedValue);
+        const selectedPairs = selectedFabric ? Object.entries(selectedFabric.composition) : [];
+    
+        setSelectedPairs(selectedPairs.map(([key, value]) => ({ key, value })));
+        const totalSum = _.sumBy(selectedPairs, (item) => parseInt(item[1], 10) || 0);
+        setTotalpercent(totalSum)
+        const pairsObject = Object.fromEntries(selectedPairs);
+    
+        if (Object.keys(pairsObject).length > 0) {
+            setProduct(prevState => ({
+                ...prevState,totalProductPercent:totalSum,
+                fabricContent: {
+                    ...prevState.fabricContent,
+                    composition:pairsObject
                 }
-            } else {
-                // Handle deselection: Remove the value
-                if (existingValues.includes(selectedValue)) {
-                    const updatedValues = existingValues.filter(v => v !== selectedValue);
-                    return updatedValues.length > 0 ? updatedValues.join(' ') : '';
+            }));
+    
+            fabricContentCode(pairsObject);
+        }
+        if (Object.keys(pairsObject).length > 0) {
+            fabricContentCode(pairsObject)
+        
+        } else {
+            setFCCValue('');
+            setSelectedPairs([{ key: '', values: [], value: null }])
+            setProduct(prevState => ({
+                ...prevState,totalProductPercent:0,
+                fabricContent: {
+                    ...prevState.fabricContent,
+                    composition:{},
+                    value: ''
                 }
-            }
+            }));
+          
 
-            return prev;
-        });
-
-        // Handle any additional logic or errors
+        }
         setInputError(prev => ({
-            ...prev,
+            ...prev, 
             fabricCompositionError:false,
             fabricContentError: false,
             fabricContentErrorMessage: '',
         }));
-
-        const pairsObject = newPairs.reduce((acc, pair) => {
-            if (pair.key && pair.value) {
-                acc[pair.key] = pair.value;
-            }
-            return acc;
-        }, {});
-
-        if (Object.keys(pairsObject).length > 0) {
-            fabricContentCode(pairsObject);
-
-            setFCCValue(prev => {
-                const existingValues = prev ? prev.split(' ').filter(v => v) : [];
-                const newValues = Object.values(pairsObject);
-                const updatedValues = [...new Set([...existingValues, ...newValues])].join(' ');
-                return updatedValues;
-            });
-        } else {
-            setFCCValue('');
-            setProduct(prevState => ({
-                ...prevState,
-                fabricContent: {
-                    ...prevState.fabricContent,
-                    value: ''
-                }
-            }));
-        }
     };
 
     return (
@@ -360,7 +348,7 @@ const addNewPair = () => {
                     <div key={index} className="fabric-content-g-row">
                         <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-4">
                             <B2BSelect
-                                value={selectedPairs[index].key}
+                                value={selectedPairs[index]?.key||''}
                                 data={getAvailableKeys(index).map(key => ({ value: key, label: keyToNameMap[key] }))}
                                 clearable={true}
                                 onChange={(e) => handleSelectChange(index, e)}
@@ -369,7 +357,7 @@ const addNewPair = () => {
                         </div>
                         <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-8 fabric-content-mb2" style={{ display: 'flex' }}>
                             <NumberInput
-                                value={pair.value}
+                                value={pair.value || 0}
                                 required={true}
                                 disabled={!pair.key}
                                 clearable={true}
