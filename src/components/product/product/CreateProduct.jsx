@@ -226,7 +226,7 @@ const CreateProduct = () => {
   };
 
   const handleTabClick = (index) => {
-    handleNextTab()
+    handleNextTab(false)
     if (product.productId || !index.disabled) {
       setActiveTab(index.id);
     }
@@ -256,7 +256,7 @@ const CreateProduct = () => {
     });
   };
 
-  const handleNextTab = async () => {
+  const handleNextTab = async (fromNext = ture) => {
     let isValid = true;
     const errors = {};
 
@@ -453,29 +453,31 @@ const CreateProduct = () => {
     setInputError(prev => ({ ...prev, ...errors }));
 
     // Only proceed to the next tab if there are no errors
-    if (isValid) {
-      const currentTabIndex = tabs.findIndex((tab) => tab.id === activeTab);
-      const nextTabIndex = currentTabIndex + 1;
-      if (nextTabIndex < tabs.length) {
-        setActiveTab(tabs[nextTabIndex].id);
-        // Enable the next tab
+    if (fromNext) {
+      if (isValid) {
+        const currentTabIndex = tabs.findIndex((tab) => tab.id === activeTab);
+        const nextTabIndex = currentTabIndex + 1;
+        if (nextTabIndex < tabs.length) {
+          setActiveTab(tabs[nextTabIndex].id);
+          // Enable the next tab
+          setTabs((prevTabs) =>
+            prevTabs.map((tab, index) =>
+              index === nextTabIndex ? { ...tab, disabled: false } : tab
+            )
+          );
+        }
+      } else {
+        // Disable all subsequent tabs if validation fails
+        const currentTabIndex = tabs.findIndex((tab) => tab.id === activeTab);
         setTabs((prevTabs) =>
-          prevTabs.map((tab, index) =>
-            index === nextTabIndex ? { ...tab, disabled: false } : tab
-          )
+          prevTabs.map((tab, index) => ({
+            ...tab,
+            disabled: index > currentTabIndex,
+          }))
         );
-      }
-    } else {
-      // Disable all subsequent tabs if validation fails
-      const currentTabIndex = tabs.findIndex((tab) => tab.id === activeTab);
-      setTabs((prevTabs) =>
-        prevTabs.map((tab, index) => ({
-          ...tab,
-          disabled: index > currentTabIndex,
-        }))
-      );
 
-      setActiveTab(activeTab);
+        setActiveTab(activeTab);
+      }
     }
   }
 
@@ -596,7 +598,7 @@ const CreateProduct = () => {
       };
       const fetchImageAsBlob = async () => {
         try {
-          const response = await fetch(`${BASE_URL.replace('/api','')}${product?.image}`);
+          const response = await fetch(`${BASE_URL.replace('/api', '')}${product?.image}`);
           const contentType = response.headers.get('Content-Type');
           if (!contentType || !contentType.startsWith('image/')) {
             throw new Error('Expected an image, but received: ' + contentType);
@@ -619,7 +621,7 @@ const CreateProduct = () => {
       });
     }
   };
-  console.log("pro : ",product);
+  console.log("pro : ", product);
 
 
   return (
