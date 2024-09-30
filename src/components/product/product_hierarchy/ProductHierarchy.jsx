@@ -127,7 +127,9 @@ const ProductHierarchy = () => {
 
   const fetchProductCount = async () => {
     const res = await B2B_API.get('product/count-by-category').json()
-    setProductCount(res.response)
+    const response = res.response
+    response['Fabric Content'] = res.response['Fabric Type']
+    setProductCount(response)
   }
 
   const handleSelectChange = (value) => {
