@@ -9,11 +9,11 @@
 
 .product-variant-theme--light,
 :root {
-    --hs-color-bg-go-default: #3f32f5;
+    --hs-color-bg-go-default: #ff6f61;
     --hs-color-bg-go-default-rgb: 63, 50, 245;
     --hs-color-bg-go-highlight-default: rgba(128, 140, 255, .102);
-    --hs-color-bg-go-soft: #6054ff;
-    --hs-color-bg-go-strong: #352acf;
+    --hs-color-bg-go-soft: #ff6f61;
+    --hs-color-bg-go-strong: #ff6f61;
     --hs-color-bg-neutral-backdrop: #f4f2f5;
     --hs-color-bg-neutral-dark-default: #0b0b0b;
     --hs-color-bg-neutral-edge: #e7e5e8;
@@ -30,14 +30,14 @@
     --hs-color-bg-supplementary-default-rgb: 50, 87, 125;
     --hs-color-bg-supplementary-soft: #3c6996;
     --hs-color-bg-supplementary-strong: #284563;
-    --hs-color-border-go-default: #3f32f5;
+    --hs-color-border-go-default: #ff6f61;
     --hs-color-border-neutral-inverted-soft: #27252a;
     --hs-color-border-neutral-inverted-strong: #37353a;
     --hs-color-border-neutral-soft: #e7e5e8;
     --hs-color-border-neutral-strong: #c9c7ca;
     --hs-color-border-no-default: #bb2a1a;
     --hs-color-border-success-default: #0e7b1d;
-    --hs-color-fg-go-default: #3f32f5;
+    --hs-color-fg-go-default: #ff6f61;
     --hs-color-fg-neutral-default: #27252a;
     --hs-color-fg-neutral-inverted-default: #fff;
     --hs-color-fg-neutral-ondark-default: #fff;
@@ -46,13 +46,13 @@
     --hs-color-fg-supplementary-default: #32577d;
     --hs-color-overlay-neutral-strong: rgba(0, 0, 0, .349);
     --hs-color-select-arrows-bg: url(data:image/svg+xml;charset=utf-8,%3Csvg width='20' height='46' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%2327252A' d='M10 0 0 10h20zM0 36h20L10 46z'/%3E%3C/svg%3E);
-    --product-variant-colour--solar: #e6b03d;
-    --product-variant-colour--mars: #ed6b44;
-    --product-variant-colour--farout-pink: #de3cec;
-    --product-variant-colour--galaxy: #a02fb6;
-    --product-variant-colour--deep-purple: #501897;
-    --product-variant-colour--neptune: #6952f6;
-    --product-variant-colour--shuttle-grey: #5d5d5d;
+    --product-info-variant-colour--solar: #e6b03d;
+    --product-info-variant-colour--mars: #ed6b44;
+    --product-info-variant-colour--farout-pink: #de3cec;
+    --product-info-variant-colour--galaxy: #a02fb6;
+    --product-info-variant-colour--deep-purple: #501897;
+    --product-info-variant-colour--neptune: #6952f6;
+    --product-info-variant-colour--shuttle-grey: #5d5d5d;
     color-scheme: light;
 }
 

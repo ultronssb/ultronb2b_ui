@@ -232,10 +232,10 @@ const EnrichProduct = () => {
     const countFilledFields = (obj) => {
       let filledCount = 0;
       Object.values(obj).forEach((val) => {
-        if (val) filledCount++; // Increase count if field is filled (non-empty or checked)
+          if (val || val === true) filledCount++; // Increase count if field is filled (non-empty or checked)
       });
       return filledCount;
-    };
+  };  
 
     // Updating the relevant state based on fieldType
     if (fieldType.includes('.')) {
@@ -290,6 +290,11 @@ const EnrichProduct = () => {
     }
   };
 
+  const updateCompletionPercentage = (filledCount) => {
+    const totalFields = 30; // Set your total fields accurately
+    const completionPercentage = Math.min(Math.round((filledCount / totalFields) * 100), 100);
+    setSliderValue(completionPercentage); // Use this to set a state or display it
+};
 
 
 

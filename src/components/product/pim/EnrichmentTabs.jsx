@@ -12,6 +12,7 @@ import EnrichmentProduct from './EnrichmentProduct';
 import EnrichmentSeo from './EnrichmentSeo';
 import EnrichmentTransaction from './EnrichmentTransaction';
 import { EnrichProductContext } from './EnrichProduct';
+import EnrichmentProductVariant from './EnrichmentProductVariant';
 
 const EnrichmentTabs = () => {
     const { product, pim, videoFile, multimedia } = useContext(EnrichProductContext);
@@ -28,7 +29,7 @@ const EnrichmentTabs = () => {
         { id: "4", name: "Transaction", disabled: false },
         { id: "5", name: "SEO", disabled: false },
         { id: "6", name: "Price", disabled: false },
-        { id: "7", name: "Image/Video", disabled: false },
+        { id: "7", name: "Variants", disabled: false },
     ];
 
     const [tabs, setTabs] = useState(initialTabs);
@@ -48,7 +49,7 @@ const EnrichmentTabs = () => {
             case "6":
                 return <EnrichmentPrice />;
             case "7":
-                return <EnrichmentMedia />;
+                return <EnrichmentProductVariant />;
             default:
                 return <Hierarchy />;
         }
@@ -162,5 +163,10 @@ const EnrichmentTabs = () => {
         </div>
     );
 };
-
 export default EnrichmentTabs;
+
+
+
+
+
+
