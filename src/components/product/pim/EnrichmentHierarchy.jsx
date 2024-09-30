@@ -41,8 +41,11 @@ const EnrichmentHierarchy = () => {
   const fetchCategory = async () => {
     try {
       const res = await B2B_API.get('product-category').json();
-      const categories = res?.response?.filter(cat => cat.name?.toLowerCase());
+      console.log(res?.response,'res');
+      
+      const categories = res?.response?.filter(cat => cat.type?.toLowerCase()=='others');
       const categoryName = categories.map(res => (res.name));
+      console.log(categories,'categories')
       setCategoryName(categoryName)
       setCategorys(categories)
       setLoading(false)
@@ -135,6 +138,11 @@ const EnrichmentHierarchy = () => {
     setSelectedPairs(newPairs);
   }
 
+  const setDescription=(index,e)=>{
+ const newPairs = [...selectedPairs];
+ newPairs[index].value.description = e.target.value;
+   setPim(prev => ({ ...prev, attributes: newPairs.slice(_.size(product.productCategories)) }));
+  }
   const removeCategory = (index) => {
     openModals(index, false)
     selectcategory(index, null)
@@ -150,7 +158,7 @@ const EnrichmentHierarchy = () => {
     return categoryName.filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
   };
 
-  console.log(product, "pro");
+  console.log(pim, "pim");
 
 
   return (<div>
@@ -203,7 +211,7 @@ const EnrichmentHierarchy = () => {
                         </div>
                         <div className="product-category-g-col" style={{ flexDirection: 'column' }}>
                             <div className='product-category-inputField'>
-                                <input placeholder="Select a category" disabled={pair?.key === null} style={{ cursor: pair.key === null ? 'not-allowed' : 'pointer' }} readOnly type="text" value={pair.heirarchyLabel} onClick={() => openModals(index, true)} onChange={() => { }} />
+                                <input placeholder="Select a category" disabled={index <(_.size(product.productCategories))} style={{ cursor: pair.key === null ? 'not-allowed' : 'pointer' }} readOnly type="text" value={pair.heirarchyLabel} onClick={() => openModals(index, true)} onChange={() => { }} />
                             </div>
                           
                             {
@@ -248,7 +256,7 @@ const EnrichmentHierarchy = () => {
                         </div>
                         {index >=(_.size(product.productCategories))  ?<div className="product-category-g-col" style={{ flexDirection: 'column' ,marginLeft:'1rem'}}>
                         <div className='product-category-inputField'>
-                                <input placeholder="Description"  />
+                                <input placeholder="Description"   value={pair.value.description}  onChange={(e) => setDescription(index,e)} />
                             </div>
                             </div>:""}
                         <div className="product-category-g-col" style={{ width: '5rem', flex: 'none', justifyContent: 'center' }}>
@@ -263,7 +271,7 @@ const EnrichmentHierarchy = () => {
                 ))}
             </div>
             <div>
-                {_.size(categorys) > _.size(selectedPairs) && (
+                {_.size(categorys) > _.size(selectedPairs.slice(_.size(product.productCategories))) && (
                     <button type="button" className="product-category-btn product-category-btn--text-go" onClick={addNewPair} >
                         <FontAwesomeIcon className="fa" icon={faPlus} />
                         Add Attributes

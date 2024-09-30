@@ -7,7 +7,7 @@ const B2BInput = ({ value, styles, edit, onChange, placeholder, variant, require
             className='input-textField'
             styles={{input: {fontSize: '14px', cursor: edit === true ? 'not-allowed' : 'text'}, ...styles}}
             placeholder={placeholder}
-            value={value}
+            value={value ||''}
             type={type}
             variant={variant}
             required={required}
