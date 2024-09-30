@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import B2BSelect from '../../../common/B2BSelect';
 import './Variant.css';
 import B2BInput from '../../../common/B2BInput';
-import { Button, ColorInput, ColorSwatch, FileButton, Group, Text } from '@mantine/core';
+import { Button, ColorInput, ColorSwatch, FileButton, Group, Tabs, Text } from '@mantine/core';
 import B2BButton from '../../../common/B2BButton';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import B2BTableGrid from '../../../common/B2BTableGrid';
@@ -25,22 +25,25 @@ const Variants = () => {
   const [variant, setVariant] = useState(initialState);
   const [variants, setVariants] = useState([]);
   const [variantType, setVariantType] = useState('');
-  const variantOptions = ['Colour', 'Solid', 'Others'];
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [rowCount, setRowCount] = useState(5);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
+  const variantOptions = ['Colour', 'Solid', 'Others'];
+  const [activeTab, setActiveTab] = useState(variantOptions[0]);
+
 
   useEffect(() => {
     fetchAllVariants();
-  }, [pagination.pageIndex, pagination.pageSize]);
+  }, [pagination.pageIndex, pagination.pageSize, activeTab]);
 
   const fetchAllVariants = async () => {
     try {
       setIsLoading(true);
-      const res = await B2B_API.get(`variant/get-All?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const res = await B2B_API.get(`variant/get-All?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&type=${activeTab}`).json();
+      console.log("res : ", res);
       const data = res?.response?.content || [];
       setRowCount(res?.response?.totalElements || 0);
       setVariants(data);
@@ -57,6 +60,10 @@ const Variants = () => {
     }
   };
 
+  const handleTabChange = (tabValue) => {
+    setActiveTab(tabValue);
+  };
+
   const initializeImage = async (imagePath) => {
     try {
       const imageFile = await fetchImageAsBlob(imagePath);
@@ -67,7 +74,7 @@ const Variants = () => {
   };
 
   const fetchImageAsBlob = async (imagePath) => {
-    const response = await fetch(`${BASE_URL.replace('/api','')}${imagePath}`);
+    const response = await fetch(`${BASE_URL.replace('/api', '')}${imagePath}`);
     const contentType = response.headers.get('Content-Type');
 
     if (!contentType?.startsWith('image/')) {
@@ -80,7 +87,7 @@ const Variants = () => {
 
   const handleSelect = (value) => {
     setVariantType(value || '');
-    if(value !== 'Solid') {
+    if (value !== 'Solid') {
       setImageFile(null)
     }
     setVariant(prev => ({
@@ -264,7 +271,7 @@ const Variants = () => {
   };
 
   console.log(variant);
-  
+
 
   return (
     <div>
@@ -282,19 +289,33 @@ const Variants = () => {
               />
             </div>
           </div>
-          <B2BTableGrid
-            columns={columns}
-            data={variants}
-            isLoading={isLoading}
-            isError={isError}
-            enableTopToolbar={true}
-            enableGlobalFilter={true}
-            manualPagination={true}
-            pagination={pagination}
-            rowCount={rowCount}
-            onPaginationChange={setPagination}
-            enableFullScreenToggle={true}
-          />
+          <div>
+            <Tabs value={activeTab} onTabChange={setActiveTab}>
+              <Tabs.List>
+                {variantOptions.map((item, index) => (
+                  <Tabs.Tab key={index} value={item} onClick={() => handleTabChange(item)}>
+                    {item}
+                  </Tabs.Tab>
+                ))}
+              </Tabs.List>
+              <Tabs.Panel value={activeTab}>
+                <B2BTableGrid
+                  columns={columns}
+                  data={variants}
+                  isLoading={isLoading}
+                  isError={isError}
+                  enableTopToolbar={true}
+                  enableGlobalFilter={true}
+                  manualPagination={true}
+                  pagination={pagination}
+                  rowCount={rowCount}
+                  onPaginationChange={setPagination}
+                  enableFullScreenToggle={true}
+                />
+              </Tabs.Panel>
+            </Tabs>
+          </div>
+
         </>
       )}
       {isVariant && (

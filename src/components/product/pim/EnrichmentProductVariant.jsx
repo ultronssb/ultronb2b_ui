@@ -175,63 +175,145 @@ const EnrichmentProductVariant = () => {
                                         </label>
                                     </div>
                                 </div>
-                                {selectedPairs.map((pair, index) => (
-                                    <div key={index} className="product-info-variant-g-row">
-                                        <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-4">
-                                            <div className="product-info-variant-flex">
-                                                <div className="product-info-variant-flex-grow-1 product-info-variant-mr2">
-                                                    <div className="product-info-variant-popover-tether-target-wrapper">
-                                                        <div className="product-info-variant-autocomplete-input-container">
-                                                            {
-                                                                Object.keys(variantValues).map((key, index) => {
-                                                                    return (
-                                                                        <B2BInput
-                                                                            key={index}
-                                                                            value={key || ""}
-                                                                            data={getAvailableKeys(index)}
-                                                                            clearable={true}
-                                                                            onChange={(e) => handleUniqueChange(index, e)}
-                                                                        />
-                                                                    );
-                                                                })
-                                                            }
+                                {/* {selectedPairs.map((pair, index) => (
+                                    // <div key={index} className="product-info-variant-g-row">
+                                    //     <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-4">
+                                    //         <div className="product-info-variant-flex">
+                                    //             <div className="product-info-variant-flex-grow-1 product-info-variant-mr2">
+                                    //                 <div className="product-info-variant-popover-tether-target-wrapper">
+                                    //                     <div className="product-info-variant-autocomplete-input-container">
+                                    //                         {
+                                    //                             Object.keys(variantValues).map((key, index) => {
+                                    //                                 return (
+                                    //                                     <B2BInput
+                                    //                                         key={index}
+                                    //                                         value={key || ""}
+                                    //                                         data={getAvailableKeys(index)}
+                                    //                                         clearable={true}
+                                    //                                         onChange={(e) => handleUniqueChange(index, e)}
+                                    //                                     />
+                                    //                                 );
+                                    //                             })
+                                    //                         }
+                                    //                     </div>
+                                    //                 </div>
+                                    //             </div>
+                                    //         </div>
+                                    //     </div>
+                                    //     <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-8 product-info-variant-mb2">
+                                    //         <div className="cn-attribute-values-row">
+                                    //             <div className="cn-attribute-values">
+                                    //                 <div className="product-info-variant-lozenge-group">
+                                    //                     {
+                                    //                         Object.keys(variantValues).map((key, index) => {
+                                    //                             return (
+                                    //                                 <B2BInput
+                                    //                                     key={index}
+                                    //                                     value={variantValues[key] || ""}
+                                    //                                     data={getAvailableKeys(index)}
+                                    //                                     clearable={true}
+                                    //                                     onChange={(e) => handleUniqueChange(index, e)}
+                                    //                                 />
+                                    //                             );
+                                    //                         })
+                                    //                     }
+                                    //                 </div>
+                                    //             </div>
+                                    //             {index > 0 && (
+                                    //                 <button
+                                    //                     type="button"
+                                    //                     className="product-info-variant-btn product-info-variant-btn--icon-no product-info-variant-ml2"
+                                    //                     onClick={() => removePair(index)}
+                                    //                 >
+                                    //                     <FontAwesomeIcon className="fa product-info-variant-icon" icon={faTrash} />
+                                    //                 </button>
+                                    //             )}
+                                    //         </div>
+                                    //     </div>
+                                    // </div>
+                                    <div>
+                                        <div className="product-info-variant-g-row">
+                                            <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-4">
+                                                <div className="product-info-variant-flex">
+                                                    <div className="cn-attribute-drag-handle product-info-variant-mt3 product-info-variant-mr3" draggable="true" role="button" tabindex="0" aria-disabled="false" aria-roledescription="sortable" aria-describedby="DndDescribedBy-0"></div>
+                                                    <div className="product-info-variant-flex-grow-1 product-info-variant-mr2" data-cy="select-attribute">
+                                                        <div className="product-info-variant-popover-tether-target-wrapper">
+                                                            <div className="product-info-variant-autocomplete-input-container product-info-variant-flex--column" data-testid="dropdown-input-container">
+                                                                {
+                                                                    Object.keys(variantValues).map((key, index) => {
+                                                                        return (
+                                                                            <input readonly="" type="text" className="product-info-variant-select product-info-variant-dropdown-input" spellcheck="false" placeholder="Choose a variant attribute" value={key || ""} />
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-8 product-info-variant-mb2">
-                                            <div className="cn-attribute-values-row">
-                                                <div className="cn-attribute-values">
-                                                    <div className="product-info-variant-lozenge-group">
+                                            <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-8 product-info-variant-mb2">
+                                                <div className="cn-attribute-values-row">
+                                                    <div className="cn-attribute-values" data-cy="variant-value">
                                                         {
                                                             Object.keys(variantValues).map((key, index) => {
                                                                 return (
-                                                                    <B2BInput
-                                                                        key={index}
-                                                                        value={variantValues[key] || ""}
-                                                                        data={getAvailableKeys(index)}
-                                                                        clearable={true}
-                                                                        onChange={(e) => handleUniqueChange(index, e)}
-                                                                    />
+                                                                    <div className="product-info-variant-lozenge-group" data-testid="tag-input-lozenges-container">
+                                                                        <span className="product-info-variant-lozenge product-info-variant-lozenge--interactive">
+                                                                            <span className="product-info-variant-lozenge-value">{variantValues[key]}</span>
+                                                                        </span>
+                                                                        <input className="product-info-variant-lozenge-group-input" value="" style={{ flexBasis: '0ch' }} />
+                                                                    </div>
                                                                 );
                                                             })
                                                         }
                                                     </div>
                                                 </div>
-                                                {index > 0 && (
-                                                    <button
-                                                        type="button"
-                                                        className="product-info-variant-btn product-info-variant-btn--icon-no product-info-variant-ml2"
-                                                        onClick={() => removePair(index)}
-                                                    >
-                                                        <FontAwesomeIcon className="fa product-info-variant-icon" icon={faTrash} />
-                                                    </button>
-                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))} */}
+                                {selectedPairs.map((pair, index) => (
+                                    <div key={index}>
+                                        <div className="product-info-variant-g-row">
+                                            <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-4">
+                                                <div className="product-info-variant-flex">
+                                                    <div className="product-info-variant-flex-grow-1 product-info-variant-mr2" data-cy="select-attribute">
+                                                        <div className="product-info-variant-popover-tether-target-wrapper">
+                                                            <div className="product-info-variant-autocomplete-input-container product-info-variant-flex--column" data-testid="dropdown-input-container">
+                                                                {
+                                                                    Object.keys(variantValues).map((key, index) => {
+                                                                        return (
+                                                                            <input readonly="" type="text" className="product-info-variant-select product-info-variant-dropdown-input" spellcheck="false" placeholder="Choose a variant attribute" value={key || ""} />
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-8 product-info-variant-mb2">
+                                                <div className="cn-attribute-values-row">
+                                                    <div className="cn-attribute-values" data-cy="variant-value">
+                                                        {
+                                                            Object.keys(variantValues).map((key, index) => {
+                                                                return (
+                                                                    <div className="product-info-variant-lozenge-group" data-testid="tag-input-lozenges-container">
+                                                                        <span className="product-info-variant-lozenge product-info-variant-lozenge--interactive">
+                                                                            <span className="product-info-variant-lozenge-value">{variantValues[key]+' '}</span>
+                                                                        </span>
+                                                                        <input className="product-info-variant-lozenge-group-input" value="" style={{ flexBasis: '0ch' }} />
+                                                                    </div>
+                                                                );
+                                                            })
+                                                        }
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
+
                                 {/* <div className="product-info-variant-g-row">
                                     {_.size(attributes) > _.size(selectedPairs) && (
                                         <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-4">
