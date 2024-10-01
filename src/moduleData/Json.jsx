@@ -17,11 +17,11 @@ export const data = [
     defaultChildId: "8",
   },
   {
-    id: "3", 
-    name: "Sales", 
-    parent_id: null, 
-    orderBy: 3, 
-    path: "/sales/order-management", 
+    id: "3",
+    name: "Sales",
+    parent_id: null,
+    orderBy: 3,
+    path: "/sales/order-management",
     icon: <span className="material-symbols-outlined">shopping_cart</span>,
     defaultChildId: "35",
   },
@@ -69,8 +69,8 @@ export const data = [
   { id: "11", name: "Price Book", parent_id: "2", orderBy: 4, path: "/product/price-book" },
   { id: "12", name: "Barcode", parent_id: "2", orderBy: 5, path: "/product/barcode" },
   { id: "13", name: "History", parent_id: "2", orderBy: 6, path: "/product/history" },
-  
-  { id: "14", name: "Product Category", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy",},
+
+  { id: "14", name: "Product Category", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy", },
   { id: "15", name: "Product Tags", parent_id: "8", orderBy: 2, path: "/product/tags" },
   { id: "16", name: "Tax", parent_id: "8", orderBy: 3, path: "/product/tax/gst" },
   { id: "17", name: "Variants", parent_id: "8", orderBy: 4, path: "/product/variants" },
@@ -105,11 +105,12 @@ export const data = [
 
   /* Sales Child Component */
   { id: "35", name: "Order Management", parent_id: "3", orderBy: 1, path: "/sales/order-management" },
-  { id: "36", name: "Sales Order", parent_id: "3", orderBy: 2, path: "/sales/sales-order" },
-  { id: "37", name: "Invoice", parent_id: "3", orderBy: 3, path: "/sales/invoice" },
-  { id: "38", name: "Shippment Note", parent_id: "3", orderBy: 4, path: "/sales/shippment-note" },
-  { id: "39", name: "Return Note", parent_id: "3", orderBy: 5, path: "/sales/return-note" },
-  { id: "40", name: "Packing", parent_id: "3", orderBy: 6, path: "/sales/packing" },
+  { id: "101", name: "Enquiry", parent_id: "3", orderBy: 2, path: "/sales/enquiry" },
+  { id: "36", name: "Sales Order", parent_id: "3", orderBy: 3, path: "/sales/sales-order" },
+  { id: "37", name: "Invoice", parent_id: "3", orderBy: 4, path: "/sales/invoice" },
+  { id: "38", name: "Shippment Note", parent_id: "3", orderBy: 5, path: "/sales/shippment-note" },
+  { id: "39", name: "Return Note", parent_id: "3", orderBy: 6, path: "/sales/return-note" },
+  { id: "40", name: "Packing", parent_id: "3", orderBy: 7, path: "/sales/packing" },
 
   { id: "41", name: "Order Management", parent_id: "35", orderBy: 1, path: "/sales/order-management" },
   { id: "42", name: "Open Order", parent_id: "35", orderBy: 2, path: "/sales/open-order" },
@@ -129,14 +130,14 @@ export const data = [
 
   { id: "52", name: "Packing", parent_id: "40", orderBy: 1, path: "/sales/packing" },
 
-  
+
   /* Inventory Child Component */
-  { id: "53", name: "Stocks", parent_id: "4", orderBy: 1, path:'/inventory/stocks' },
-  { id: "54", name: "Collections", parent_id: "4", orderBy: 2, path: "/inventory/collections"},
+  { id: "53", name: "Stocks", parent_id: "4", orderBy: 1, path: '/inventory/stocks' },
+  { id: "54", name: "Collections", parent_id: "4", orderBy: 2, path: "/inventory/collections" },
   { id: "55", name: "Discounts", parent_id: "4", orderBy: 3, path: "/inventory/discounts" },
 
-  { id: "56", name: "Stocks", parent_id: "53", orderBy: 1, path:'/inventory/stocks' },
-  { id: "57", name: "Opening Stock", parent_id: "53", orderBy: 2, path:'/inventory/stocks/opening-stocks'},
+  { id: "56", name: "Stocks", parent_id: "53", orderBy: 1, path: '/inventory/stocks' },
+  { id: "57", name: "Opening Stock", parent_id: "53", orderBy: 2, path: '/inventory/stocks/opening-stocks' },
   { id: "58", name: "Bulk Upload", parent_id: "53", orderBy: 3, modal: true },
 
   { id: "59", name: "Collections", parent_id: "54", orderBy: 1, path: "/inventory/collections" },

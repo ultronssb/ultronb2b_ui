@@ -66,6 +66,7 @@ import AddUsers from './components/settings/users/AddUsers';
 import Role from './components/settings/users/Role';
 import RolePrivileges from './components/settings/users/RolePrivileges';
 import Layout from './layout/Layout';
+import Enquiry from './components/sales/Enquiry';
 
 const ProtectedRoute = ({ element: Component }) => {
   const navigate = useNavigate();
@@ -123,6 +124,7 @@ function App() {
 
         {/* sales */}
         <Route path='/sales/order-management' element={<ProtectedRoute element={OrderManagement} />} />
+        <Route path='/sales/enquiry' element={<ProtectedRoute element={Enquiry} />} />
         <Route path='/sales/open-order' element={<ProtectedRoute element={OpenOrder} />} />
         <Route path='/sales/delivery' element={<ProtectedRoute element={Delivered} />} />
         <Route path='/sales/cancel' element={<ProtectedRoute element={Cancelled} />} />

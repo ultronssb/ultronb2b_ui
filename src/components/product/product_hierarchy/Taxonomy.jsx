@@ -60,7 +60,7 @@ const Taxonomy = () => {
         )
       }
     }
-  ])
+  ],[])
 
   const editTaxonomy = (roleObj) => {
     setTaxonomy((prev => ({ ...prev, ...roleObj })))
