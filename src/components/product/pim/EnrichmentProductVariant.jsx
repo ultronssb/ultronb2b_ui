@@ -1,24 +1,28 @@
-import { faAngleRight, faCheck, faPlus, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faAngleRight, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useContext, useEffect, useState } from 'react'
-import B2BSelect from '../../../common/B2BSelect'
-import './EnrichmentProductVariant.css'
-import { MultiSelect } from '@mantine/core'
+import { Button, FileButton, Group, Text, rem } from '@mantine/core'
+import { IconPhoto, IconUpload, IconX } from '@tabler/icons-react'
 import _ from 'lodash'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { B2B_API } from '../../../api/Interceptor'
+import './EnrichmentProductVariant.css'
 import { EnrichProductContext } from './EnrichProduct'
-import B2BInput from '../../../common/B2BInput'
+import '@mantine/dropzone/styles.css';
+import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 
-const EnrichmentProductVariant = () => {
+
+const EnrichmentProductVariant = (props) => {
     const { product, setProduct, pim, setPim } = useContext(EnrichProductContext);
     const [activeTab, setActiveTab] = useState('Price');
     const [expandedRows, setExpandedRows] = useState([]);
     const isRowExpanded = (index) => expandedRows.includes(index);
-    const [attributes, setAttributes] = useState({});
-    const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [] }]);
     const [isChecked, setIsChecked] = useState([]);
     const [variantValues, setVariantValues] = useState([]);
     const [productPims, setProductPims] = useState([]);
+    const [file, setFile] = useState();
+    const openRef = useRef(null); // Ref to open the Dropzone
+    const resetRef = useRef(null);
+    const [imageUrl, setImageUrl] = useState(null);
 
     useEffect(() => {
         if (pim?.pimVariants) {
@@ -40,79 +44,10 @@ const EnrichmentProductVariant = () => {
     }, [pim]);
 
     useEffect(() => {
-        fetchVariant();
         getAllPimVariants();
     }, []);
 
-    console.log(pim, "pim");
-
-
-    const fetchVariant = async () => {
-        try {
-            const response = await B2B_API.get('variant').json();
-            const groupedVariants = _.groupBy(response.response, 'name');
-            setAttributes(groupedVariants);
-        } catch (error) {
-            console.error('Error fetching variants:', error);
-        }
-    };
-
-    const handleSelectChange = (index, selectedValue) => {
-        const newPairs = [...selectedPairs];
-        const oldKey = newPairs[index].key;
-        newPairs[index].key = selectedValue || '';
-        if (!selectedValue) {
-            newPairs[index].values = [];
-        }
-
-        setSelectedPairs(newPairs);
-
-        // setProduct(prevState => {
-        //     const updatedProdVariants = { ...prevState.prodVariants };
-        //     if (oldKey && oldKey !== selectedValue) {
-        //         delete updatedProdVariants[oldKey];
-        //     }
-
-
-        //     if (selectedValue) {
-        //         updatedProdVariants[selectedValue] = newPairs[index].values || 0;
-        //     }
-
-        //     return {
-        //         ...prevState,
-        //         prodVariants: updatedProdVariants
-        //     };
-        // });
-    };
-    const handleMultiSelectChange = (index, selectedValues) => {
-        const newPairs = [...selectedPairs];
-        newPairs[index].values = selectedValues;
-        setSelectedPairs(newPairs);
-
-        const updatedVariants = { ...product.prodVariants };
-        updatedVariants[newPairs[index].key] = selectedValues;
-        // setProduct(prev => ({ ...prev, prodVariants: updatedVariants }));
-    };
-
-    const addNewPair = () => {
-        setSelectedPairs([...selectedPairs, { key: '', values: [] }]);
-    };
-
-    const removePair = (index) => {
-        const newPairs = [...selectedPairs];
-        const removedPairKey = newPairs[index].key;
-        newPairs.splice(index, 1);
-        setSelectedPairs(newPairs);
-        const updatedVariants = { ...product.prodVariants };
-        delete updatedVariants[removedPairKey];
-
-        // setProduct(prev => ({ ...prev, prodVariants: updatedVariants }));
-    };
-
-    const getAvailableKeys = (currentIndex) => {
-        const selectedKeys = selectedPairs.map(pair => pair.key);
-        return Object.keys(attributes).filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
-    };
+    console.log("productPims : ", productPims);
 
     const handleToggle = (index) => {
         if (expandedRows.includes(index)) {
@@ -129,7 +64,7 @@ const EnrichmentProductVariant = () => {
     const handleEnable = (index) => {
         setIsChecked((prevChecked) => {
             const newChecked = [...prevChecked];
-            newChecked[index] = !newChecked[index]; // Toggle the checked state
+            newChecked[index] = !newChecked[index];
             return newChecked;
         });
     };
@@ -138,19 +73,26 @@ const EnrichmentProductVariant = () => {
         const res = await B2B_API.get(`pim/product/${pim?.pimId}`).json()
         const pims = res?.response?.pimVariants
         setProductPims(pims);
-        console.log(pims, "pimsssss");
+        console.log("pimsssss : ", pims);
     }
-    console.log(variantValues, "variantValues");
 
-    const [allVariants, setAllVariants] = useState([]);
-    useEffect(() => {
-        const flattenedVariants = productPims.map((item) => item.variants).flat();
-        setAllVariants(flattenedVariants);
-    }, []);
+    const handleDrop = (acceptedFiles, index) => {
+        const uploadedFile = acceptedFiles[0];
+        const fileUrl = URL.createObjectURL(uploadedFile);
+        setProductPims((prevState) =>
+            prevState.map((item, i) =>
+                i === index ? { ...item, file: uploadedFile, imageUrl: fileUrl } : item
+            )
+        );
+    };
 
-    console.log("allVariants : ", allVariants);
-    console.log("productPims : ", productPims);
-
+    const handleReset = (index) => {
+        setProductPims((prevState) =>
+            prevState.map((item, i) =>
+                i === index ? { ...item, file: null, imageUrl: null } : item
+            )
+        );
+    };
 
 
 
@@ -160,195 +102,74 @@ const EnrichmentProductVariant = () => {
                 <div className="helios-c-PJLV product-info-variant-section-wrap">
                     <h2 className="product-info-variant-text-sub-heading product-info-variant-mb4" role="heading" aria-level="2">Variants</h2>
                     <div className="product-info-variant-g-row">
-                        <div className="product-info-variant-g-col product-info-variant-g-s-12 product-info-variant-g-m-3 product-info-variant-grid-settings-item" data-testid="sr-settings-about">Choose up to three variable attributes for this product to create and manage SKUs and their inventory levels.</div>
+                        <div className="product-info-variant-g-col product-info-variant-g-s-12 product-info-variant-g-m-3 product-info-variant-grid-settings-item" data-testid="sr-settings-about"></div>
                         <div className="product-info-variant-g-col product-info-variant-g-s-12 product-info-variant-g-m-9" data-testid="sr-settings-content">
                             <div>
                                 <div className="product-info-variant-g-row">
                                     <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-4">
                                         <label>
-                                            <span className="product-info-variant-text-label">Variant Name (e.g. colour)</span>
+                                            <span className="product-info-variant-text-label">Variant Name</span>
                                         </label>
                                     </div>
                                     <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-8">
                                         <label>
-                                            <span className="product-info-variant-text-label">Value (e.g. Green)</span>
+                                            <span className="product-info-variant-text-label">Variant Value</span>
                                         </label>
                                     </div>
                                 </div>
-                                {/* {selectedPairs.map((pair, index) => (
-                                    // <div key={index} className="product-info-variant-g-row">
-                                    //     <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-4">
-                                    //         <div className="product-info-variant-flex">
-                                    //             <div className="product-info-variant-flex-grow-1 product-info-variant-mr2">
-                                    //                 <div className="product-info-variant-popover-tether-target-wrapper">
-                                    //                     <div className="product-info-variant-autocomplete-input-container">
-                                    //                         {
-                                    //                             Object.keys(variantValues).map((key, index) => {
-                                    //                                 return (
-                                    //                                     <B2BInput
-                                    //                                         key={index}
-                                    //                                         value={key || ""}
-                                    //                                         data={getAvailableKeys(index)}
-                                    //                                         clearable={true}
-                                    //                                         onChange={(e) => handleUniqueChange(index, e)}
-                                    //                                     />
-                                    //                                 );
-                                    //                             })
-                                    //                         }
-                                    //                     </div>
-                                    //                 </div>
-                                    //             </div>
-                                    //         </div>
-                                    //     </div>
-                                    //     <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-8 product-info-variant-mb2">
-                                    //         <div className="cn-attribute-values-row">
-                                    //             <div className="cn-attribute-values">
-                                    //                 <div className="product-info-variant-lozenge-group">
-                                    //                     {
-                                    //                         Object.keys(variantValues).map((key, index) => {
-                                    //                             return (
-                                    //                                 <B2BInput
-                                    //                                     key={index}
-                                    //                                     value={variantValues[key] || ""}
-                                    //                                     data={getAvailableKeys(index)}
-                                    //                                     clearable={true}
-                                    //                                     onChange={(e) => handleUniqueChange(index, e)}
-                                    //                                 />
-                                    //                             );
-                                    //                         })
-                                    //                     }
-                                    //                 </div>
-                                    //             </div>
-                                    //             {index > 0 && (
-                                    //                 <button
-                                    //                     type="button"
-                                    //                     className="product-info-variant-btn product-info-variant-btn--icon-no product-info-variant-ml2"
-                                    //                     onClick={() => removePair(index)}
-                                    //                 >
-                                    //                     <FontAwesomeIcon className="fa product-info-variant-icon" icon={faTrash} />
-                                    //                 </button>
-                                    //             )}
-                                    //         </div>
-                                    //     </div>
-                                    // </div>
-                                    <div>
-                                        <div className="product-info-variant-g-row">
-                                            <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-4">
-                                                <div className="product-info-variant-flex">
-                                                    <div className="cn-attribute-drag-handle product-info-variant-mt3 product-info-variant-mr3" draggable="true" role="button" tabindex="0" aria-disabled="false" aria-roledescription="sortable" aria-describedby="DndDescribedBy-0"></div>
-                                                    <div className="product-info-variant-flex-grow-1 product-info-variant-mr2" data-cy="select-attribute">
-                                                        <div className="product-info-variant-popover-tether-target-wrapper">
-                                                            <div className="product-info-variant-autocomplete-input-container product-info-variant-flex--column" data-testid="dropdown-input-container">
+                                <div>
+                                    {
+                                        Object.keys(variantValues).map((key, index) => (
+                                            <div className="product-info-variant-g-row">
+                                                <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-4">
+                                                    <div className="product-info-variant-flex">
+                                                        <div className="product-info-variant-flex-grow-1 product-info-variant-mr2" data-cy="select-attribute">
+                                                            <div className="product-info-variant-popover-tether-target-wrapper">
+                                                                <div className="product-info-variant-autocomplete-input-container product-info-variant-flex--column" data-testid="dropdown-input-container">
+                                                                    <input readonly="" type="text" className="product-info-variant-select product-info-variant-dropdown-input" spellcheck="false" placeholder="Choose a variant attribute" value={key} />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-8 product-info-variant-mb2">
+                                                    <div className="cn-attribute-values-row">
+                                                        <div className="cn-attribute-values" data-cy="variant-value">
+                                                            <div className="product-info-variant-lozenge-group" data-testid="tag-input-lozenges-container">
                                                                 {
-                                                                    Object.keys(variantValues).map((key, index) => {
-                                                                        return (
-                                                                            <input readonly="" type="text" className="product-info-variant-select product-info-variant-dropdown-input" spellcheck="false" placeholder="Choose a variant attribute" value={key || ""} />
-                                                                        )
-                                                                    })
+                                                                    variantValues[key].map((val, valIndex) => (
+                                                                        <span
+                                                                            key={`${index}-${valIndex}`}
+                                                                            className="product-info-variant-lozenge product-info-variant-lozenge--interactive"
+                                                                        >
+                                                                            <span className="product-info-variant-lozenge-value">{val}</span>
+                                                                        </span>
+                                                                    ))
                                                                 }
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-8 product-info-variant-mb2">
-                                                <div className="cn-attribute-values-row">
-                                                    <div className="cn-attribute-values" data-cy="variant-value">
-                                                        {
-                                                            Object.keys(variantValues).map((key, index) => {
-                                                                return (
-                                                                    <div className="product-info-variant-lozenge-group" data-testid="tag-input-lozenges-container">
-                                                                        <span className="product-info-variant-lozenge product-info-variant-lozenge--interactive">
-                                                                            <span className="product-info-variant-lozenge-value">{variantValues[key]}</span>
-                                                                        </span>
-                                                                        <input className="product-info-variant-lozenge-group-input" value="" style={{ flexBasis: '0ch' }} />
-                                                                    </div>
-                                                                );
-                                                            })
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))} */}
-                                {selectedPairs.map((pair, index) => (
-                                    <div key={index}>
-                                        <div className="product-info-variant-g-row">
-                                            <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-4">
-                                                <div className="product-info-variant-flex">
-                                                    <div className="product-info-variant-flex-grow-1 product-info-variant-mr2" data-cy="select-attribute">
-                                                        <div className="product-info-variant-popover-tether-target-wrapper">
-                                                            <div className="product-info-variant-autocomplete-input-container product-info-variant-flex--column" data-testid="dropdown-input-container">
-                                                                {
-                                                                    Object.keys(variantValues).map((key, index) => {
-                                                                        return (
-                                                                            <input readonly="" type="text" className="product-info-variant-select product-info-variant-dropdown-input" spellcheck="false" placeholder="Choose a variant attribute" value={key || ""} />
-                                                                        )
-                                                                    })
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-8 product-info-variant-mb2">
-                                                <div className="cn-attribute-values-row">
-                                                    <div className="cn-attribute-values" data-cy="variant-value">
-                                                        {
-                                                            Object.keys(variantValues).map((key, index) => {
-                                                                return (
-                                                                    <div className="product-info-variant-lozenge-group" data-testid="tag-input-lozenges-container">
-                                                                        <span className="product-info-variant-lozenge product-info-variant-lozenge--interactive">
-                                                                            <span className="product-info-variant-lozenge-value">{variantValues[key]+' '}</span>
-                                                                        </span>
-                                                                        <input className="product-info-variant-lozenge-group-input" value="" style={{ flexBasis: '0ch' }} />
-                                                                    </div>
-                                                                );
-                                                            })
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-
-                                {/* <div className="product-info-variant-g-row">
-                                    {_.size(attributes) > _.size(selectedPairs) && (
-                                        <div className="product-info-variant-g-col product-info-variant-g-s-6 product-info-variant-g-m-4">
-                                            <button
-                                                type="button"
-                                                className="product-info-variant-btn product-info-variant-btn--text-go"
-                                                onClick={addNewPair}
-                                            >
-                                                <FontAwesomeIcon className="fa product-info-variant-icon product-info-variant-mr2" icon={faPlus} />
-                                                Add another attribute
-                                            </button>
-                                        </div>
-                                    )}
-                                </div> */}
-
+                                        ))
+                                    }
+                                    <div class="product-info-variant-g-row product-info-variant-mt10"></div>
+                                </div>
                             </div>
                             <div className="product-info-variant-mb1">
-                                <h3 className="product-info-variant-text-sub-heading product-info-variant-mb1" role="heading" aria-level="3">This product has 1 variant</h3>                            </div>
+                                <h3 className="product-info-variant-text-sub-heading product-info-variant-mb1" role="heading" aria-level="3">This product has {_.size(productPims)} variant</h3>
+                            </div>
                             <div data-cy="variants-table-content">
                                 <table data-testid="table" className="product-info-variant-table-list">
                                     <thead>
                                         <tr data-testid="table-row" className="product-info-variant-table-list-row product-info-variant-table-list-row--header">
                                             <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell cn-variant-name-column" aria-sort="none">Variant name</th>
                                             <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell" aria-sort="none">
-                                                <div>SKU<br />code</div>
+                                                <div>SKU Code</div>
                                             </th>
-                                            <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell input-columns supplier-code" aria-sort="none">
-                                                <div>Supplier<br />code</div>
-                                            </th>
-                                            <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-right input-columns" aria-sort="none">
-                                                <div>Supplier<br />price</div>
-                                            </th>
-                                            <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-right input-columns" aria-sort="none">
-                                                <div>Retail<br />price</div>
-                                                {/* <p className="product-info-variant-text-supplementary product-info-variant-util-text-overflow-break-word">Excluding tax</p> */}
+                                            <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant input-columns" aria-sort="none">
+                                                <div>Retail Price</div>
+                                                <p className="product-info-variant-text-supplementary product-info-variant-util-text-overflow-break-word">Excluding tax</p>
                                             </th>
                                             <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-center enabled-column" aria-sort="none">Enabled</th>
                                             {/* <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-table-list-cell--action product-info-variant-pr0" aria-sort="none"></th> */}
@@ -357,11 +178,15 @@ const EnrichmentProductVariant = () => {
                                     {
                                         productPims?.map((item, index) => (
                                             <tbody>
-                                                <tr key={index} data-testid="table-row" data-cy="variantSummary" className={`product-info-variant-table-list-row product-info-variant-table-list-row--expandable ${isRowExpanded(index) ? 'expanded' : ''}`}>
-                                                    <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--compact product-info-variant-pt2 product-info-variant-pl0 product-info-variant-flex product-info-variant-flex--align-center">
+                                                <tr key={index} data-testid="table-row" data-cy="variantSummary" className={`product-info-variant-table-list-row product-info-variant-table-list-row--expandable ${isRowExpanded(index) ? 'product-info-variant-table-list-row--expanded' : ''}`}>
+                                                    <td onClick={() => handleToggle(index)} data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--compact product-info-variant-pt2 product-info-variant-pl0 product-info-variant-flex product-info-variant-flex--align-center">
                                                         <FontAwesomeIcon icon={faAngleRight} className={`i fa product-info-variant-icon product-info-variant-table-list-toggle-icon ${isRowExpanded(index) ? 'product-info-variant-table-list-toggle-icon--toggled' : ''}`} onClick={() => handleToggle(index)} />
                                                         <div className="product-info-variant-id-badge product-info-variant-id-badge--small">
-                                                            <div className="product-info-variant-id-badge__image" data-cy="badgeImage" data-testid="badgeImage" style={{ backgroundImage: 'url(https://vendfrontendassets.freetls.fastly.net/images/products/placeholder.svg)' }}></div>
+                                                            <div key={index} className="product-info-variant-id-badge__image" data-cy="badgeImage" data-testid="badgeImage">
+                                                                {item.imageUrl ? (
+                                                                    <img src={item.imageUrl} alt="Uploaded Badge" style={{ maxWidth: '100px', maxHeight: '100px' }} />
+                                                                ) : null}
+                                                            </div>
                                                             <div className="product-info-variant-id-badge__content">
                                                                 <div className="product-info-variant-id-badge__header-title" data-cy="badgeHeader" data-testid="badgeHeader">
                                                                     <h5>
@@ -373,18 +198,7 @@ const EnrichmentProductVariant = () => {
                                                     </td>
                                                     <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--input input-columns sku">
                                                         <div className="product-info-variant-util-pos-relative">
-                                                            <input className="product-info-variant-input variant-sku-input" type="text" data-cy="variant-sku-input" value={item.SKUCode} placeholder="Enter SKU" />
-                                                        </div>
-                                                    </td>
-                                                    <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--input supplier-code input-columns" data-cy="supplier-code">
-                                                        <div className="product-info-variant-util-pos-relative">
-                                                            <input className="product-info-variant-input" type="text" data-cy="supplier-code-2e133e1c-cf29-9ddc-11ef-7c9796da503b-2e133e1c-cf29-9ddc-11ef-7c9796d742e8" value={item.SupplierCode} placeholder="Enter code" />
-                                                        </div>
-                                                    </td>
-                                                    <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--input product-info-variant-align-left input-columns" data-cy="supplier-price">
-                                                        <div className="product-info-variant-util-pos-relative">
-                                                            <input className="product-info-variant-input product-info-variant-align-right" type="text" id="supply-price-input-2e133e1c-cf29-9ddc-11ef-7c9796da503b-2e133e1c-cf29-9ddc-11ef-7c9796d742e8" data-cy="supply-price-input-2e133e1c-cf29-9ddc-11ef-7c9796da503b-2e133e1c-cf29-9ddc-11ef-7c9796d742e8" value={item.SupplierPrice} placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)' }} />
-                                                            <span className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol">₹</span>
+                                                            <input className="product-info-variant-input variant-sku-input" type="text" data-cy="variant-sku-input" value={item.variantSku} placeholder="Enter SKU" disabled />
                                                         </div>
                                                     </td>
                                                     <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--input input-columns">
@@ -408,11 +222,6 @@ const EnrichmentProductVariant = () => {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    {/* <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--action product-info-variant-align-center product-info-variant-valign-t product-info-variant-pt2 enabled-column">
-                                                        <button type="button" className="product-info-variant-btn product-info-variant-btn--icon-no">
-                                                            <FontAwesomeIcon icon={faTrash} className="i fa product-info-variant-icon" />
-                                                        </button>
-                                                    </td> */}
                                                 </tr>
                                                 {isRowExpanded(index) && (
                                                     <tr data-testid="table-row" className="product-info-variant-table-list-row product-info-variant-table-list-row--expanded-content">
@@ -452,7 +261,7 @@ const EnrichmentProductVariant = () => {
                                                                                 <thead>
                                                                                     <tr data-testid="table-row" className="product-info-variant-table-list-row product-info-variant-table-list-row--header">
                                                                                         <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell" aria-sort="none">Price point</th>
-                                                                                        <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-right" aria-sort="none">Supply price</th>
+                                                                                        <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-right" aria-sort="none">Cost price</th>
                                                                                         <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-right" aria-sort="none">Markup</th>
                                                                                         <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-right" aria-sort="none">Margin</th>
                                                                                         <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-right" aria-sort="none">Retail price</th>
@@ -488,17 +297,33 @@ const EnrichmentProductVariant = () => {
                                                                         </div>
                                                                     )}
                                                                     {activeTab === 'Image' && (
-                                                                        <div>
+                                                                        <div key={index}>
                                                                             <div className="cn-variant-image-container">
-                                                                                <label className="cn-variant-image-button" data-cy="chooseImageForVariant">
-                                                                                    <img alt="" src="//vendfrontendassets.freetls.fastly.net/images/upload/tap-to-select-v6.svg" />
-                                                                                    <span className="product-info-variant-mt2 cn-variant-image-button-text">
-                                                                                        <button type="button" className="product-info-variant-btn product-info-variant-btn--link">Choose</button> an image for this variant
-                                                                                    </span>
-                                                                                </label>
+                                                                                <Dropzone
+                                                                                    onDrop={(acceptedFiles) => handleDrop(acceptedFiles, index)}
+                                                                                    openRef={openRef}
+                                                                                >
+                                                                                    {!item.imageUrl ? (
+                                                                                        <>
+                                                                                            <IconUpload size={50} />
+                                                                                            <Text size="md">Drag images here or click to select files</Text>
+                                                                                        </>
+                                                                                    ) : null}
+
+                                                                                    {item.imageUrl && (
+                                                                                        <img src={item.imageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: 100 }} />
+                                                                                    )}
+                                                                                    {item.file && (
+                                                                                        <Text size="sm" mt={10}>
+                                                                                            Selected file: {item.file.name}
+                                                                                        </Text>
+                                                                                    )}
+                                                                                </Dropzone>
                                                                             </div>
                                                                             <div data-testid="inline-action-bar" className="product-info-variant-action-bar product-info-variant-action-bar--inline react-variant-image-action-bar product-info-variant-pl5 product-info-variant-pr5">
-                                                                                <button data-cy="chooseImageForVariant" type="button" className="product-info-variant-btn product-info-variant-btn--supplementary">Choose variant image</button>
+                                                                                <Group spacing="sm">
+                                                                                    <Button onClick={() => handleReset(index)} color="red">Reset</Button>
+                                                                                </Group>
                                                                             </div>
                                                                         </div>
                                                                     )}
@@ -509,13 +334,12 @@ const EnrichmentProductVariant = () => {
                                                 )}
                                             </tbody>
                                         ))}
-
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section >
+            </section>
         </div>
     )
 }

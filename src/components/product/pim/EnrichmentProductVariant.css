@@ -9,11 +9,11 @@
 
 .product-info-variant-theme--light,
 :root {
-    --hs-color-bg-go-default: #ff6f61;
+    --hs-color-bg-go-default: #32577d;
     --hs-color-bg-go-default-rgb: 63, 50, 245;
     --hs-color-bg-go-highlight-default: rgba(128, 140, 255, .102);
-    --hs-color-bg-go-soft: #ff6f61;
-    --hs-color-bg-go-strong: #ff6f61;
+    --hs-color-bg-go-soft: #32577d;
+    --hs-color-bg-go-strong: #32577d;
     --hs-color-bg-neutral-backdrop: #f4f2f5;
     --hs-color-bg-neutral-dark-default: #0b0b0b;
     --hs-color-bg-neutral-edge: #e7e5e8;
@@ -30,14 +30,14 @@
     --hs-color-bg-supplementary-default-rgb: 50, 87, 125;
     --hs-color-bg-supplementary-soft: #3c6996;
     --hs-color-bg-supplementary-strong: #284563;
-    --hs-color-border-go-default: #ff6f61;
+    --hs-color-border-go-default: #32577d;
     --hs-color-border-neutral-inverted-soft: #27252a;
     --hs-color-border-neutral-inverted-strong: #37353a;
     --hs-color-border-neutral-soft: #e7e5e8;
     --hs-color-border-neutral-strong: #c9c7ca;
     --hs-color-border-no-default: #bb2a1a;
     --hs-color-border-success-default: #0e7b1d;
-    --hs-color-fg-go-default: #ff6f61;
+    --hs-color-fg-go-default: #32577d;
     --hs-color-fg-neutral-default: #27252a;
     --hs-color-fg-neutral-inverted-default: #fff;
     --hs-color-fg-neutral-ondark-default: #fff;
@@ -322,7 +322,7 @@
 }
 
 .product-info-variant-btn--text-go:hover {
-    background-color: #ff6f61;
+    background-color: #32577d;
     color: #fff;
 }
 
@@ -458,8 +458,34 @@ table {
     border-bottom: 1px solid var(--hs-color-border-neutral-soft);
 }
 
+.product-info-variant-table-list-row--expandable:hover {
+    background-color: #f9eeff;
+    cursor: pointer;
+}
 .product-info-variant-table-list-head-cell:first-child:not(.product-info-variant-table-list-cell--toggle):not(.product-info-variant-table-list-cell--info) {
     padding-left: 0;
+}
+
+.product-info-variant-table-list-row--expanded-content>.product-info-variant-table-list-cell:first-child:before {
+    background-color: var(--hs-color-border-go-default);
+    bottom: 0;
+    content: "";
+    left: 0;
+    position: absolute;
+    top: -1px;
+    width: 4px;
+    z-index: 1;
+}
+
+.product-info-variant-table-list-row--expanded .product-info-variant-table-list-cell:first-child:before {
+    background-color: var(--hs-color-border-go-default);
+    bottom: 0;
+    content: "";
+    left: 0;
+    position: absolute;
+    top: -1px;
+    width: 4px;
+    z-index: 1;
 }
 
 .cn-variant-name-column {
@@ -558,6 +584,11 @@ table {
     justify-content: center;
     transition: transform 50ms ease-in-out 0s;
     width: 16px;
+    margin-left: 0.3rem;
+}
+
+.product-info-variant-table-list-toggle-icon--toggled {
+    transform: rotate(90deg);
 }
 
 .product-info-variant-id-badge {
@@ -792,7 +823,7 @@ table {
 @media only screen and (min-width: 769px) {
     .product-info-variant-g-m-3 {
         flex: 0 0 25%;
-        max-width: 25%;
+        max-width: 15%;
     }
 
     .product-info-variant-g-m-4 {
@@ -854,7 +885,7 @@ table {
     display: inline-block;
 }
 
-.product-info-variant-tab .active-tab{
+.product-info-variant-tab .active-tab {
     color: var(--hs-color-bg-go-default);
     border-bottom: 3px solid var(--hs-color-bg-go-default);
     font-size: 16px;
@@ -876,6 +907,7 @@ table {
     outline: none;
     padding: 0;
     transition: background .2s;
+    cursor: pointer;
 }
 
 .product-info-variant-tab.product-info-variant-tab--active .product-info-variant-tab-button {
@@ -1144,15 +1176,18 @@ table {
 .product-info-variant-input-symbol {
     line-height: 1;
 }
+
 .product-info-variant-input-icon--right {
     right: 12px;
 }
+
 .product-info-variant-input-icon {
     color: var(--hs-color-fg-supplementary-default);
     pointer-events: none;
     position: absolute;
     top: 14px;
 }
+
 /* price css end */
 /* image css start */
 .cn-variant-image-container {
@@ -1161,9 +1196,6 @@ table {
 }
 
 .cn-variant-image-button {
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     align-items: center;
     background-color: var(--hs-color-border-neutral-soft);
     cursor: pointer;

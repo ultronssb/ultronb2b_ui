@@ -112,7 +112,7 @@ const EnrichmentTabs = () => {
             formData.append("pim", JSON.stringify(updatedPim));  
             formData.append("video", videoFile);  
 
-            product.productVariants.forEach((file, index) => {
+            pim.pimVariants.forEach((file, index) => {
                 if (file.file) {
                     formData.append(`files`, file.file); 
                     formData.append(`productVarId`, file.id);  

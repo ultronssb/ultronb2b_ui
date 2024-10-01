@@ -9,11 +9,11 @@
 
 .product-variant-theme--light,
 :root {
-    --hs-color-bg-go-default: #ff6f61;
+    --hs-color-bg-go-default: #32577d;
     --hs-color-bg-go-default-rgb: 63, 50, 245;
     --hs-color-bg-go-highlight-default: rgba(128, 140, 255, .102);
-    --hs-color-bg-go-soft: #ff6f61;
-    --hs-color-bg-go-strong: #ff6f61;
+    --hs-color-bg-go-soft: #32577d;
+    --hs-color-bg-go-strong: #32577d;
     --hs-color-bg-neutral-backdrop: #f4f2f5;
     --hs-color-bg-neutral-dark-default: #0b0b0b;
     --hs-color-bg-neutral-edge: #e7e5e8;
@@ -30,14 +30,14 @@
     --hs-color-bg-supplementary-default-rgb: 50, 87, 125;
     --hs-color-bg-supplementary-soft: #3c6996;
     --hs-color-bg-supplementary-strong: #284563;
-    --hs-color-border-go-default: #ff6f61;
+    --hs-color-border-go-default: #32577d;
     --hs-color-border-neutral-inverted-soft: #27252a;
     --hs-color-border-neutral-inverted-strong: #37353a;
     --hs-color-border-neutral-soft: #e7e5e8;
     --hs-color-border-neutral-strong: #c9c7ca;
     --hs-color-border-no-default: #bb2a1a;
     --hs-color-border-success-default: #0e7b1d;
-    --hs-color-fg-go-default: #ff6f61;
+    --hs-color-fg-go-default: #32577d;
     --hs-color-fg-neutral-default: #27252a;
     --hs-color-fg-neutral-inverted-default: #fff;
     --hs-color-fg-neutral-ondark-default: #fff;
