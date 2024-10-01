@@ -74,7 +74,7 @@ const MapChannel = () => {
       const data = response?.response?.content || [];
       setRowCount(response?.response?.totalElements || 0);
       setProduct(data.map(item => mapStatus ? item.product : item));
-      
+
       // Update selected pairs if all are selected
       if (selectedPairs.length === rowCount && rowCount > 0) {
         setAreAllSelected(true);
@@ -109,19 +109,19 @@ const MapChannel = () => {
   };
 
   const onSave = async () => {
-    const prod = { 
+    const prod = {
       channelId: selectedChannel,
       locationId: selectedStore,
       productIds: selectedPairs,
     };
-    
+
     console.log(prod);
     await B2B_API.post('map-channel', { json: prod }).json();
     fetchAllProducts();
   };
 
   const unMap = async () => {
-    const prod = { 
+    const prod = {
       channelId: selectedChannel,
       locationId: selectedStore,
       productIds: selectedPairs,
@@ -133,9 +133,9 @@ const MapChannel = () => {
   const productColumns = [
     {
       header: (
-        <Checkbox 
+        <Checkbox
           checked={areAllSelected}
-          onChange={handleSelectAllPairs} 
+          onChange={handleSelectAllPairs}
         />
       ),
       mainTableHeaderCellProps: { align: 'center' },
@@ -191,6 +191,12 @@ const MapChannel = () => {
             placeholder="Select a store"
           />
         </div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '2rem', marginBottom: '0.5rem' }}>
+        <div className='left--section'>
+          <B2BButton onClick={() => { setMapStatus(!mapStatus); setSelectedPairs([]) }} disabled={!mapStatus} name='UnMapped' />
+          <B2BButton onClick={() => { setMapStatus(!mapStatus); setSelectedPairs([]) }} disabled={mapStatus} name='Mapped' />
+        </div>
         <div className='right--section'>
           <B2BButton
             style={{ color: '#000' }}
@@ -201,11 +207,7 @@ const MapChannel = () => {
           />
         </div>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '2rem', marginBottom: '0.5rem' }}>
-        <B2BButton onClick={() => { setMapStatus(false); setSelectedPairs([]); }} disabled={!mapStatus} name='UnMapped' />
-        <B2BButton onClick={() => { setMapStatus(true); setSelectedPairs([]); }} disabled={mapStatus} name='Mapped' />
-      </div>
-      <ProductGrid 
+      <ProductGrid
         data={product}
         map={"mapStatus"}
         selectedPairs={selectedPairs}

@@ -158,6 +158,7 @@
   margin-block: 1rem;
 }
 
+.left--section,
 .right--section {
   display: flex;
   gap: 1rem;

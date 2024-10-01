@@ -189,7 +189,7 @@ useEffect(()=>{
         enableGlobalFilter={true}
         enableFullScreenToggle={true}
       /> */}
-         <ProductGrid data={product} editVarient={editVarient}
+         <ProductGrid data={product} editVariant={editVarient}
          />
     </div>
   );

@@ -251,7 +251,7 @@ const Articles = () => {
             onPaginationChange={setPagination}
             enableFullScreenToggle={true}
           /> */}
-          <ProductGrid data={products} editVarient={editVarient}
+          <ProductGrid data={products} editVariant={editVarient}
          />
         </>
       )}

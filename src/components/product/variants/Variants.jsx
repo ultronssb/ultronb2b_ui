@@ -4,7 +4,7 @@ import './Variant.css';
 import B2BInput from '../../../common/B2BInput';
 import { Button, ColorInput, ColorSwatch, FileButton, Group, Tabs, Text } from '@mantine/core';
 import B2BButton from '../../../common/B2BButton';
-import { IconPencil, IconPlus } from '@tabler/icons-react';
+import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import { B2B_API } from '../../../api/Interceptor';
 import notify from '../../../utils/Notification';
@@ -43,7 +43,6 @@ const Variants = () => {
     try {
       setIsLoading(true);
       const res = await B2B_API.get(`variant/get-All?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&type=${activeTab}`).json();
-      console.log("res : ", res);
       const data = res?.response?.content || [];
       setRowCount(res?.response?.totalElements || 0);
       setVariants(data);
@@ -58,10 +57,6 @@ const Variants = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleTabChange = (tabValue) => {
-    setActiveTab(tabValue);
   };
 
   const initializeImage = async (imagePath) => {
@@ -123,57 +118,84 @@ const Variants = () => {
     </div>
   );
 
-  const columns = useMemo(() => [
-    {
-      header: 'S.No',
-      accessorFn: (_, index) => index + 1,
-      size: 100,
-      mantineTableHeadCellProps: { align: 'center' },
-      mantineTableBodyCellProps: { align: 'center' },
-    },
-    {
-      header: 'Name',
-      accessorKey: 'name',
-    },
-    {
-      header: 'Value',
-      accessorKey: 'value',
-    },
-    {
-      header: 'HexaColorCode',
-      accessorKey: 'hexaColorCode',
-      Cell: ({ row }) => {
-        const { original } = row;
-        return original.hexaColorCode ? <ColorSwatch size={20} color={original.hexaColorCode} /> : "-";
+
+  const columns =  {
+    "Colour": [
+      { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
+      { header: 'Colour', accessorKey: 'value' },
+      {
+        header: 'Hexa Color Code', accessorKey: 'hexaColorCode', Cell: ({ row }) => {
+          const { original } = row;
+          return original.hexaColorCode ? (
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <ColorSwatch size={20} color={original.hexaColorCode} />
+              <span>{original.hexaColorCode.toUpperCase()}</span>
+            </div>
+          ) : (
+            "-"
+          );
+        }
       },
-    },
-    {
-      header: 'Solid Pattern',
-      accessorKey: 'solid',
-      Cell: ({ row }) => {
-        const { original } = row;
-        return original.image ? <img src={`${BASE_URL.replace('/api', '')}${original.image}`} alt='solid' style={{ width: '75px', height: '50px' }} /> : "-";
+      { header: 'Status', accessorKey:'status' },
+      {
+        header: 'Actions', mainTableHeaderCellProps: { align: 'center' }, mainTableBodyCellProps: { align: 'center' }, size: 100, Cell: ({ row }) => {
+          const { original } = row;
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+              <IconPencil onClick={() => editVariant(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+            </div>
+          );
+        },
       },
-    },
-    {
-      header: 'Status',
-      accessorKey: 'status',
-    },
-    {
-      header: 'Actions',
-      mainTableHeaderCellProps: { align: 'center' },
-      mainTableBodyCellProps: { align: 'center' },
-      size: 100,
-      Cell: ({ row }) => {
-        const { original } = row;
-        return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <IconPencil onClick={() => editVariant(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-          </div>
-        );
+    ],
+
+    "Solid":[
+      { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
+      { header: 'Solid', accessorKey: 'value' },
+      {
+        header: 'Solid Pattern', accessorKey:'solid', Cell: ({ row }) => {
+          const { original } = row;
+          return original.image ? <img src={`${BASE_URL.replace('/api', '')}${original.image}`} alt='solid' style={{ width: '75px', height: '50px' }} /> : "-";
+        },
       },
-    },
-  ], []);
+      { header: 'Status', accessorKey:'status' },
+      {
+        header: 'Actions', mainTableHeaderCellProps: { align: 'center' }, mainTableBodyCellProps: { align: 'center' }, size: 100, Cell: ({ row }) => {
+          const { original } = row;
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+              <IconPencil onClick={() => editVariant(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+            </div>
+          );
+        },
+        accessorKey:"actions"
+      },
+    ],
+    "Others" :[
+      { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
+      { header: 'Name', accessorKey: 'name' },
+      { header: 'Value', accessorKey: 'value' },
+      { header: 'Status', accessorKey:'status' },
+      {
+        header: 'Actions', mainTableHeaderCellProps: { align: 'center' }, mainTableBodyCellProps: { align: 'center' }, size: 100, Cell: ({ row }) => {
+          const { original } = row;
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+              <IconPencil onClick={() => editVariant(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+            </div>
+          );
+        },
+        accessorKey:"actions"
+      },
+    ]
+  }
+
+  
+
+  const handleTabChange = (option) => {
+    setActiveTab(option);
+  };
+
 
   const editVariant = (varobj) => {
     setIsVariant(true);
@@ -270,7 +292,6 @@ const Variants = () => {
     }
   };
 
-  console.log(variant);
 
 
   return (
@@ -300,7 +321,7 @@ const Variants = () => {
               </Tabs.List>
               <Tabs.Panel value={activeTab}>
                 <B2BTableGrid
-                  columns={columns}
+                  columns={columns[activeTab]}
                   data={variants}
                   isLoading={isLoading}
                   isError={isError}
@@ -320,6 +341,15 @@ const Variants = () => {
       )}
       {isVariant && (
         <div className='container'>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <B2BButton
+              style={{ color: '#000' }}
+              name="Back"
+              onClick={handleCancel}
+              leftSection={<IconArrowLeft size={15} />}
+              color={"rgb(207, 239, 253)"}
+            />
+          </div>
           <div className='variant-container'>
             <h1 style={{ width: '250px' }}>{variant.variantId ? 'Update Variant' : 'New Variant'}</h1>
             <div className='variant-group'>
