@@ -5,6 +5,7 @@ import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect'; // Ensure you import B2BSelect
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
+import ProductGrid from '../../../common/ProductGrid';
 
 const ProductInfoManagement = () => {
   const { stateData } = useContext(ActiveTabContext);
@@ -176,7 +177,7 @@ useEffect(()=>{
       </div>
             </div>
       {isError && <div className="error">Failed to load products. Please try again.</div>}
-      <B2BTableGrid
+      {/* <B2BTableGrid
         columns={productColumns}
         data={product}
         isLoading={isLoading}
@@ -187,7 +188,9 @@ useEffect(()=>{
         enableTopToolbar={true}
         enableGlobalFilter={true}
         enableFullScreenToggle={true}
-      />
+      /> */}
+         <ProductGrid data={product} editVarient={editVarient}
+         />
     </div>
   );
 };
