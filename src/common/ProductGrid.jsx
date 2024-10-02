@@ -3,10 +3,23 @@ import { IconPencil } from '@tabler/icons-react';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { useMemo } from 'react';
 import B2BTableGrid from './B2BTableGrid';
+import _ from 'lodash';
 
-const ProductGrid = ({ data, editVariant, map, areAllSelected, handleSelectAllPairs, selectedPairs, handleSelectPair  }) => {
+const ProductGrid = ({ data,
+     editVariant,
+      map,
+       areAllSelected, 
+       handleSelectAllPairs,
+        selectedPairs, 
+        handleSelectPair ,
+        isLoading ,
+        isError,
+      
+    onPaginationChange = () => { },  pagination,  pageCount,manualPagination,
+    rowCount, isFetching}) => {
     const { pimId } = data[0] || {};
-    console.log(selectedPairs)
+    
+    
     const columns = useMemo(() => [
         {
             id: 'product',
@@ -41,11 +54,6 @@ const ProductGrid = ({ data, editVariant, map, areAllSelected, handleSelectAllPa
                     },
                 },
                 {
-                    accessorFn: (row) => (pimId ? row.product.productVariants : row.productVariants)?.length || 0,
-                    header:pimId ? 'No of  Variants':'No of Variants',
-                    size: 120,
-                },
-                {
                     accessorKey: pimId ? 'product.status' : 'status',
                     header: 'Status',
                     size: 100,
@@ -59,7 +67,7 @@ const ProductGrid = ({ data, editVariant, map, areAllSelected, handleSelectAllPa
                     header: map ? (
                         <Checkbox 
                             checked={areAllSelected}
-                            onChange={handleSelectAllPairs} 
+                            onChange={()=>handleSelectAllPairs(data)} 
                         />
                     ) : (
                          pimId ? ' Actions':'Actions'
@@ -88,13 +96,12 @@ const ProductGrid = ({ data, editVariant, map, areAllSelected, handleSelectAllPa
                 },
             ],
         },
-    ], [pimId, editVariant, map, areAllSelected, selectedPairs]);
+    ], [pimId, map, areAllSelected, selectedPairs,data]);
     
 
     const renderDetailPanel = ({ row }) => {
         const variants = pimId ? row.original.product.productVariants : row.original.productVariants;
         const variantGroups = {};
-
         variants?.forEach(variantItem => {
             variantItem.variants?.forEach(variant => {
                 if (!variantGroups[variant.name]) {
@@ -115,7 +122,8 @@ const ProductGrid = ({ data, editVariant, map, areAllSelected, handleSelectAllPa
 
         const output = generateVariantCombinations(formattedVariants);
 
-        return (
+        return (<>
+           <p>Total Variants: {_.size(variants)}</p>
             <B2BTableGrid
                 columns={productColumns}
                 data={output}
@@ -124,6 +132,7 @@ const ProductGrid = ({ data, editVariant, map, areAllSelected, handleSelectAllPa
                 manualPagination={false}
                 enableFullScreenToggle={false}
             />
+            </>
         );
     };
 
@@ -163,7 +172,17 @@ const ProductGrid = ({ data, editVariant, map, areAllSelected, handleSelectAllPa
         mantineSearchTextInputProps: {
             placeholder: 'Search Products',
         },
+        onPaginationChange:onPaginationChange,
+        manualPagination:manualPagination,
+        pageCount: pageCount,
+        rowCount: rowCount,
         renderDetailPanel,
+        state:{
+            pagination,
+            isLoading,
+            showAlertBanner: isError,
+            showProgressBars: isFetching,
+        }
     });
 
     return <MantineReactTable table={table} />;

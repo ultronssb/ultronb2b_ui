@@ -34,7 +34,7 @@ const MapChannel = () => {
       setProduct([]);
     }
   }, [pagination, selectedChannel, selectedStore, mapStatus]);
-
+  
   const fetchAllCompanyLocations = async () => {
     try {
       const response = await B2B_API.get('company-location/get-all').json();
@@ -74,8 +74,7 @@ const MapChannel = () => {
       const data = response?.response?.content || [];
       setRowCount(response?.response?.totalElements || 0);
       setProduct(data.map(item => mapStatus ? item.product : item));
-
-      // Update selected pairs if all are selected
+      
       if (selectedPairs.length === rowCount && rowCount > 0) {
         setAreAllSelected(true);
       } else {
@@ -87,16 +86,6 @@ const MapChannel = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleSelectAllPairs = () => {
-    if (!areAllSelected) {
-      const allProductIds = product.map(item => item.productId);
-      setSelectedPairs(allProductIds);
-    } else {
-      setSelectedPairs([]);
-    }
-    setAreAllSelected(!areAllSelected);
   };
 
   const handleSelectPair = (product) => {
@@ -130,45 +119,21 @@ const MapChannel = () => {
     fetchAllProducts();
   };
 
-  const productColumns = [
-    {
-      header: (
-        <Checkbox
-          checked={areAllSelected}
-          onChange={handleSelectAllPairs}
-        />
-      ),
-      mainTableHeaderCellProps: { align: 'center' },
-      mainTableBodyCellProps: { align: 'center' },
-      size: 100,
-      Cell: ({ row }) => (
-        <Checkbox
-          checked={selectedPairs.includes(row.original.productId)}
-          onChange={() => handleSelectPair(row.original)}
-        />
-      ),
-    },
-    {
-      header: 'Product Code',
-      accessorKey: 'articleCode',
-    },
-    {
-      header: 'Product Name',
-      accessorKey: 'articleName',
-    },
-    {
-      header: 'Fabric Type',
-      accessorFn: row => row.productCategories["Fabric Type"]?.name || '',
-    },
-    {
-      header: 'Variants',
-      accessorFn: row => row.productVariants?.flatMap(pv => pv.variants.map(v => v.value)).join(', ') || '',
-    },
-    {
-      header: 'Width',
-      accessorKey: 'metrics.width',
-    },
-  ];
+  const handleSelectAllPairs = () => {
+    if (!areAllSelected) {
+      const allProductIds = product.map(item => item.productId);
+      console.log(product,"prod inside")
+    
+      
+      setSelectedPairs(allProductIds);
+      setAreAllSelected(!areAllSelected);
+    } else {
+      setSelectedPairs([]);
+      setAreAllSelected(!areAllSelected);
+    }
+   
+  };
+
 
   return (
     <div>
@@ -214,6 +179,11 @@ const MapChannel = () => {
         areAllSelected={areAllSelected}
         handleSelectAllPairs={handleSelectAllPairs}
         handleSelectPair={handleSelectPair}
+        isLoading={isLoading}
+        manualPagination={true}
+        pagination={pagination}
+        rowCount={rowCount}
+        onPaginationChange={setPagination}
       />
     </div>
   );

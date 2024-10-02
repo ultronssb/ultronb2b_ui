@@ -16,7 +16,6 @@ const ProductInfoManagement = () => {
   const [isError, setIsError] = useState(false);
   const [storeOptions, setStoreOption] = useState([]);
   const [channelOptions, setChannelOption] = useState([]);
-  const [selectedPairs, setSelectedPairs] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState('');
   const [selectedStore, setSelectedStore] = useState('');
   const [status,SetStatus]=useState('ACTIVE')
@@ -90,52 +89,6 @@ useEffect(()=>{
     }
   };
 
-  const productColumns = [
-    {
-      header: 'Product Code',
-      accessorKey: 'product.articleCode'
-    },
-    {
-      id: 'ProductName',
-      header: 'Product Name',
-      accessorKey: 'product.articleName'
-    },
-    {
-      id: 'FabricType',
-      header: 'Fabric Type',
-      accessorFn: row => row.product.productCategories["Fabric Type"]?.name || '',
-    },
-    {
-      id: 'GSM',
-      header: 'GSM',
-      accessorFn: row => row.product.productVariants?.flatMap(pv => pv.variants.map(v => v.value)).join(', ') || '',
-    },
-    {
-      id: 'Width',
-      header: 'Width',
-      accessorKey: 'product.metrics.width'
-    },
-    {
-      id: 'Status',
-      header: 'Status',
-      accessorKey: 'status'
-    },
-    {
-      header: 'Actions',
-      mainTableHeaderCellProps: { align: 'center' },
-      mainTableBodyCellProps: { align: 'center' },
-      size: 100,
-      Cell: ({ row }) => {
-        console.log(row)
-        const { original } = row;
-        return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <IconPencil onClick={() => editVarient(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-          </div>
-        );
-      }
-    }
-  ];
 
   const editVarient = (varobj) => {
     navigate(`/product/pim/enrich-product?id=${varobj.pimId}&from=${encodeURIComponent(`${window.location.pathname}?channel=${selectedChannel}&store=${selectedStore}`)}`,{ state: { ...stateData, tabs: stateData.childTabs }});
@@ -177,19 +130,14 @@ useEffect(()=>{
       </div>
             </div>
       {isError && <div className="error">Failed to load products. Please try again.</div>}
-      {/* <B2BTableGrid
-        columns={productColumns}
-        data={product}
-        isLoading={isLoading}
-        manualPagination={true}
-        pagination={pagination}
-        rowCount={rowCount}
-        onPaginationChange={setPagination}
-        enableTopToolbar={true}
-        enableGlobalFilter={true}
-        enableFullScreenToggle={true}
-      /> */}
-         <ProductGrid data={product} editVariant={editVarient}
+         <ProductGrid 
+          data={product}
+          editVariant={editVarient}
+          isLoading={isLoading}
+          manualPagination={true}
+          pagination={pagination}
+          rowCount={rowCount}
+          onPaginationChange={setPagination}
          />
     </div>
   );
