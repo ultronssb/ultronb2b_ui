@@ -156,6 +156,7 @@
   align-items: center;
   justify-content: space-between;
   margin-block: 1rem;
+  gap: 1rem;
 }
 
 .left--section,

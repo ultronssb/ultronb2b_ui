@@ -164,11 +164,11 @@ const MapChannel = () => {
         </div>
         <div className='right--section'>
           <B2BButton
-            style={{ color: '#000' }}
+            style={{ color: selectedPairs.length === 0 ? '#000' : (mapStatus ? '#fff' : '#fff') }}
             name={mapStatus ? "UnMap" : "Map"}
             onClick={mapStatus ? unMap : onSave}
-            disabled={selectedPairs.length === 0}
-            color={"rgb(207, 239, 253)"}
+            disabled={selectedPairs.length == 0}
+            color={mapStatus ? "rgb(255, 0, 0)" : "rgb(0, 125, 0)"}
           />
         </div>
       </div>

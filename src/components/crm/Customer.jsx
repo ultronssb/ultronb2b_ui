@@ -106,7 +106,7 @@ const Customer = () => {
 
   const editCustomer = (node) => {
     const customerId = node.customerId;
-    navigate(`/crm/customer/create?id=${customerId}`);
+    navigate(`/crm/customer/create?id=${customerId}`, { state: { ...stateData, tabs: stateData.childTabs } });
   };
 
   const handleChange = (e) => {

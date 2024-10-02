@@ -31,7 +31,7 @@ const Articles = () => {
   const editVarient = (varobj) => {
     setIsCreateProduct(true);
     navigate(`/product/product/create?id=${varobj?.productId}`);
-  };  
+  };
 
   const fetchAllProducts = async () => {
     try {
@@ -62,11 +62,11 @@ const Articles = () => {
   return (
     <>
       {!isCreateProduct && (
-        <>
+        <div>
           <div className='user--container'>
-            <div className='right--section'>
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'end' }}>
               <B2BButton
-                style={{ color: '#000' }}
+                style={{ color: '#000', }}
                 name={"Create Product"}
                 onClick={(e) => handleChange(e)}
                 leftSection={<IconPlus size={15} />}
@@ -74,17 +74,17 @@ const Articles = () => {
               />
             </div>
           </div>
-          <ProductGrid 
-           isLoading={isLoading}
-           isError={isError}
-          data={products}
-           editVariant={editVarient} 
-           onPaginationChange={setPagination}
+          <ProductGrid
+            isLoading={isLoading}
+            isError={isError}
+            data={products}
+            editVariant={editVarient}
+            onPaginationChange={setPagination}
             pagination={pagination}
-             rowCount={rowCount}
-               manualPagination={true}
-         />
-        </>
+            rowCount={rowCount}
+            manualPagination={true}
+          />
+        </div>
       )}
     </>
   );

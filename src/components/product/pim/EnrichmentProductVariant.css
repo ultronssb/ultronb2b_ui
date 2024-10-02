@@ -462,6 +462,7 @@ table {
     background-color: #f9eeff;
     cursor: pointer;
 }
+
 .product-info-variant-table-list-head-cell:first-child:not(.product-info-variant-table-list-cell--toggle):not(.product-info-variant-table-list-cell--info) {
     padding-left: 0;
 }
@@ -681,6 +682,11 @@ table {
     transition-property: border-color, box-shadow;
     width: 100%;
     word-break: normal;
+}
+
+.product-info-variant-input:focus {
+    border-color: var(--hs-color-border-go-default);
+    box-shadow: 0 0 3px var(--hs-color-border-go-default);
 }
 
 .product-info-variant-table-list * {

@@ -341,7 +341,7 @@ const Variants = () => {
       )}
       {isVariant && (
         <div className='container'>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', width:'100%' }}>
             <B2BButton
               style={{ color: '#000' }}
               name="Back"
