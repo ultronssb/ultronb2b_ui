@@ -1,5 +1,5 @@
 import { Slider } from '@mantine/core';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
@@ -21,7 +21,7 @@ const EnrichmentTabs = () => {
     const navigate = useNavigate();
     const query_param = new URLSearchParams(location.search);
     const from = query_param.get('from');
-
+    
     const initialTabs = [
         { id: "1", name: "Hireachy", disabled: false },
         { id: "2", name: "Attributes", disabled: false },
@@ -102,20 +102,20 @@ const EnrichmentTabs = () => {
             let updatedPim = {
                 ...pim,
                 attributes: [...pim.attributes]
-              };
-              updatedPim.attributes = updatedPim.attributes
-            ? updatedPim.attributes.reduce((acc, item) => {
-              acc[item.key] = item.value;
-              return acc;
-            }, {})
-            : {};
-            formData.append("pim", JSON.stringify(updatedPim));  
-            formData.append("video", videoFile);  
+            };
+            updatedPim.attributes = updatedPim.attributes
+                ? updatedPim.attributes.reduce((acc, item) => {
+                    acc[item.key] = item.value;
+                    return acc;
+                }, {})
+                : {};
+            formData.append("pim", JSON.stringify(updatedPim));
+            formData.append("video", videoFile);
 
             pim.pimVariants.forEach((file, index) => {
                 if (file.file) {
-                    formData.append(`files`, file.file); 
-                    formData.append(`productVarId`, file.id);  
+                    formData.append(`files`, file.file);
+                    formData.append(`productVarId`, file.id);
                 }
             });
 
@@ -164,9 +164,3 @@ const EnrichmentTabs = () => {
     );
 };
 export default EnrichmentTabs;
-
-
-
-
-
-

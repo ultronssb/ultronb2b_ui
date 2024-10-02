@@ -1,28 +1,24 @@
 import { faAngleRight, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, FileButton, Group, Text, rem } from '@mantine/core'
-import { IconPhoto, IconUpload, IconX } from '@tabler/icons-react'
+import { Button, Group, Text } from '@mantine/core'
+import { Dropzone } from '@mantine/dropzone'
+import '@mantine/dropzone/styles.css'
+import { IconUpload } from '@tabler/icons-react'
 import _ from 'lodash'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { B2B_API } from '../../../api/Interceptor'
 import './EnrichmentProductVariant.css'
 import { EnrichProductContext } from './EnrichProduct'
-import '@mantine/dropzone/styles.css';
-import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import { BASE_URL } from '../../../api/EndPoints'
 
 
-const EnrichmentProductVariant = (props) => {
-    const { product, setProduct, pim, setPim } = useContext(EnrichProductContext);
+const EnrichmentProductVariant = () => {
+    const { pim, setPim } = useContext(EnrichProductContext);
     const [activeTab, setActiveTab] = useState('Price');
     const [expandedRows, setExpandedRows] = useState([]);
     const isRowExpanded = (index) => expandedRows.includes(index);
-    const [isChecked, setIsChecked] = useState([]);
     const [variantValues, setVariantValues] = useState([]);
-    const [productPims, setProductPims] = useState([]);
-    const [file, setFile] = useState();
     const openRef = useRef(null); // Ref to open the Dropzone
-    const resetRef = useRef(null);
-    const [imageUrl, setImageUrl] = useState(null);
+    const margin = _.round((pim.pimVariants.costPrice * pim.pimVariants.markUp) / 100);
 
     useEffect(() => {
         if (pim?.pimVariants) {
@@ -41,13 +37,12 @@ const EnrichmentProductVariant = (props) => {
             }, {});
             setVariantValues(formattedVariantValues);
         }
-    }, [pim]);
-
-    useEffect(() => {
-        getAllPimVariants();
     }, []);
 
-    console.log("productPims : ", productPims);
+    // useEffect(() => {
+    //     getAllPimVariants();
+    // }, []);
+
 
     const handleToggle = (index) => {
         if (expandedRows.includes(index)) {
@@ -62,37 +57,131 @@ const EnrichmentProductVariant = (props) => {
     };
 
     const handleEnable = (index) => {
-        setIsChecked((prevChecked) => {
-            const newChecked = [...prevChecked];
-            newChecked[index] = !newChecked[index];
-            return newChecked;
+        setPim((prevProductPims) => {
+            return {
+                ...prevProductPims, // Preserve all previous properties
+                pimVariants: prevProductPims.pimVariants.map((pim, i) => {
+                    if (i === index) {
+                        return {
+                            ...pim,
+                            status: pim.status === "ACTIVE" ? "INACTIVE" : "ACTIVE", // Toggle the status
+                        };
+                    }
+                    return pim; // Return unchanged pim
+                }),
+            };
         });
     };
 
-    const getAllPimVariants = async () => {
-        const res = await B2B_API.get(`pim/product/${pim?.pimId}`).json()
-        const pims = res?.response?.pimVariants
-        setProductPims(pims);
-        console.log("pimsssss : ", pims);
-    }
+
+
+    // const handleDrop = (acceptedFiles, index) => {
+    //     const uploadedFile = acceptedFiles[0];
+    //     const fileUrl = URL.createObjectURL(uploadedFile);
+    //     setProductPims((prevState) =>
+    //         prevState.map((item, i) =>
+    //             i === index ? { ...item, file: uploadedFile, imageUrl: fileUrl } : item
+    //         )
+    //     );
+    // };
 
     const handleDrop = (acceptedFiles, index) => {
         const uploadedFile = acceptedFiles[0];
+        if (!uploadedFile || !uploadedFile.type.startsWith('image/')) {
+            console.error("Uploaded file is not an image");
+            return;
+        }
+
         const fileUrl = URL.createObjectURL(uploadedFile);
-        setProductPims((prevState) =>
-            prevState.map((item, i) =>
-                i === index ? { ...item, file: uploadedFile, imageUrl: fileUrl } : item
-            )
-        );
+        const fileName = uploadedFile.name; // Extract the file name from the uploaded file
+
+        setPim((prevProductPims) => {
+            return {
+                ...prevProductPims, // Preserve all previous properties
+                pimVariants: prevProductPims.pimVariants.map((item, i) =>
+                    i === index
+                        ? {
+                            ...item,
+                            file: uploadedFile,
+                            imageUrl: fileUrl,
+                        }
+                        : item
+                ),
+            };
+        });
     };
 
+
+
     const handleReset = (index) => {
-        setProductPims((prevState) =>
-            prevState.map((item, i) =>
-                i === index ? { ...item, file: null, imageUrl: null } : item
-            )
-        );
+        setPim((prevProductPims) => {
+            return {
+                ...prevProductPims, // Preserve all previous properties
+                pimVariants: prevProductPims.pimVariants.map((item, i) =>
+                    i === index ? { ...item, file: null, imageUrl: null } : item
+                ),
+            };
+        });
     };
+
+    // const handleChange = (e, index) => {
+    //     const { name, value } = e.target;
+    //     const margin = _.round((pim.pimVariants.costPrice * pim.pimVariants.markUp) / 100);
+
+    //     setPim((prevProductPims) => {
+    //         return {
+    //             ...prevProductPims,
+    //             pimVariants: prevProductPims.pimVariants.map((item, i) =>
+    //                 i === index
+    //                     ? {
+    //                         ...item,
+    //                         [name]: value,
+    //                     }
+    //                     : item
+    //             ),
+    //         };
+    //     });
+    // };
+    const handleChange = (e, index) => {
+        const { name, value } = e.target;
+
+        setPim((prevProductPims) => {
+            const updatedPimVariants = prevProductPims.pimVariants.map((item, i) => {
+                if (i === index) {
+                    const updatedItem = {
+                        ...item,
+                        [name]: value,
+                    };
+
+                    // Recalculate margin and sellingPrice if both costPrice and markUp are available
+                    const costPrice = Number(updatedItem.costPrice);  // Ensure costPrice is a number
+                    const markUp = Number(updatedItem.markUp);        // Ensure markUp is a number
+
+                    if (costPrice && markUp) {
+                        const margin = _.round((costPrice * markUp) / 100);
+                        const sellingPrice = margin + costPrice;  // Calculate sellingPrice
+
+                        updatedItem.margin = margin;              // Update margin
+                        updatedItem.sellingPrice = sellingPrice;  // Update sellingPrice
+                    }
+
+                    return updatedItem;
+                }
+                return item;
+            });
+
+            return {
+                ...prevProductPims,
+                pimVariants: updatedPimVariants,
+            };
+        });
+    };
+
+
+
+    console.log(pim, ":pim");
+
+
 
 
 
@@ -157,7 +246,7 @@ const EnrichmentProductVariant = (props) => {
                                 </div>
                             </div>
                             <div className="product-info-variant-mb1">
-                                <h3 className="product-info-variant-text-sub-heading product-info-variant-mb1" role="heading" aria-level="3">This product has {_.size(productPims)} variant</h3>
+                                <h3 className="product-info-variant-text-sub-heading product-info-variant-mb1" role="heading" aria-level="3">This product has {_.size(pim.pimVariants)} variant</h3>
                             </div>
                             <div data-cy="variants-table-content">
                                 <table data-testid="table" className="product-info-variant-table-list">
@@ -176,7 +265,7 @@ const EnrichmentProductVariant = (props) => {
                                         </tr>
                                     </thead>
                                     {
-                                        productPims?.map((item, index) => (
+                                        pim.pimVariants?.map((item, index) => (
                                             <tbody>
                                                 <tr key={index} data-testid="table-row" data-cy="variantSummary" className={`product-info-variant-table-list-row product-info-variant-table-list-row--expandable ${isRowExpanded(index) ? 'product-info-variant-table-list-row--expanded' : ''}`}>
                                                     <td onClick={() => handleToggle(index)} data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--compact product-info-variant-pt2 product-info-variant-pl0 product-info-variant-flex product-info-variant-flex--align-center">
@@ -185,7 +274,7 @@ const EnrichmentProductVariant = (props) => {
                                                             <div key={index} className="product-info-variant-id-badge__image" data-cy="badgeImage" data-testid="badgeImage">
                                                                 {item.imageUrl ? (
                                                                     <img src={item.imageUrl} alt="Uploaded Badge" style={{ maxWidth: '100px', maxHeight: '100px' }} />
-                                                                ) : null}
+                                                                ) : item.image ? <img src={`${BASE_URL}${item.image}?${Date.now()}`} alt="Uploaded Badge" style={{ maxWidth: '100px', maxHeight: '100px' }} /> : null}
                                                             </div>
                                                             <div className="product-info-variant-id-badge__content">
                                                                 <div className="product-info-variant-id-badge__header-title" data-cy="badgeHeader" data-testid="badgeHeader">
@@ -198,13 +287,13 @@ const EnrichmentProductVariant = (props) => {
                                                     </td>
                                                     <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--input input-columns sku">
                                                         <div className="product-info-variant-util-pos-relative">
-                                                            <input className="product-info-variant-input variant-sku-input" type="text" data-cy="variant-sku-input" value={item.variantSku} placeholder="Enter SKU" disabled />
+                                                            <input className="product-info-variant-input variant-sku-input" type="text" data-cy="variant-sku-input" value={item.variantSku} placeholder="Enter SKU" disabled style={{ cursor:'not-allowed'}} />
                                                         </div>
                                                     </td>
                                                     <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--input input-columns">
                                                         <div className="product-info-variant-util-pos-relative">
-                                                            <input className="product-info-variant-input product-info-variant-input--text-align-right" type="text" placeholder="Enter the amount" name="retailPrice" data-cy="retail-price-excluding-tax-input" value={item.RetailPrice} style={{ paddingLeft: '4ch' }} />
-                                                            <div className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol">Rs</div>
+                                                            <input className="product-info-variant-input product-info-variant-input--text-align-right" type="text" placeholder="Enter the amount" name="sellingPrice" data-cy="retail-price-excluding-tax-input" value={item.sellingPrice} style={{ paddingLeft: '4ch', cursor:'not-allowed' }} disabled />
+                                                            <div className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol" value={item.sellingPrice}>Rs</div>
                                                         </div>
                                                     </td>
                                                     <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--toggle product-info-variant-align-center product-info-variant-valign-t product-info-variant-pt4 product-info-variant-pr0 product-info-variant-pl0">
@@ -212,7 +301,7 @@ const EnrichmentProductVariant = (props) => {
                                                             <input
                                                                 className="product-info-variant-switch-input"
                                                                 type="checkbox"
-                                                                checked={!!isChecked[index]}
+                                                                checked={item?.status === "ACTIVE"}
                                                                 onChange={() => handleEnable(index)}
                                                             />
                                                             <div className="product-info-variant-switch-track">
@@ -271,23 +360,26 @@ const EnrichmentProductVariant = (props) => {
                                                                                     <tr data-testid="table-row" data-ta="product-pricebook-table-body-row" className="product-info-variant-table-list-row">
                                                                                         <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-name" width="30%">General Price Book (All Products)</td>
                                                                                         <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-align-right" data-ta="product-pricebook-table-body-cell-supply-price">
-                                                                                            <span className="product-info-variant-text-body product-info-variant-util-text-overflow-normal">₹ {item.SupplierPrice}</span>
+                                                                                            <div className="product-info-variant-util-pos-relative">
+                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value={item.costPrice} name='costPrice' placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)' }} onChange={(e) => handleChange(e, index)} />
+                                                                                                <span className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol">₹</span>
+                                                                                            </div>
                                                                                         </td>
                                                                                         <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-markup" width="20%">
                                                                                             <div className="product-info-variant-util-pos-relative">
-                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value="" placeholder="Enter the amount" style={{ paddingRight: 'calc(27.8px)' }} />
+                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value={item.markUp} name='markUp' placeholder="Enter the amount" style={{ paddingRight: 'calc(27.8px)' }} onChange={(e) => handleChange(e, index)} />
                                                                                                 <span className="product-info-variant-input-icon product-info-variant-input-icon--right product-info-variant-input-symbol">%</span>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-markup" width="20%">
                                                                                             <div className="product-info-variant-util-pos-relative">
-                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value="" placeholder="Enter the amount" style={{ paddingRight: 'calc(27.8px)' }} />
-                                                                                                <span className="product-info-variant-input-icon product-info-variant-input-icon--right product-info-variant-input-symbol">%</span>
+                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value={item.margin} placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)', cursor:'not-allowed' }} disabled />
+                                                                                                <span className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol">₹</span>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-retail-price" width="20%">
                                                                                             <div className="product-info-variant-util-pos-relative">
-                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value={item.RetailPrice} placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)' }} />
+                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value={item.sellingPrice} placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)', cursor:'not-allowed' }} disabled />
                                                                                                 <span className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol">₹</span>
                                                                                             </div>
                                                                                         </td>
@@ -303,16 +395,21 @@ const EnrichmentProductVariant = (props) => {
                                                                                     onDrop={(acceptedFiles) => handleDrop(acceptedFiles, index)}
                                                                                     openRef={openRef}
                                                                                 >
-                                                                                    {!item.imageUrl ? (
+                                                                                    {!item.image && !item.imageUrl ? (
                                                                                         <>
                                                                                             <IconUpload size={50} />
                                                                                             <Text size="md">Drag images here or click to select files</Text>
                                                                                         </>
-                                                                                    ) : null}
+                                                                                    ) : <Text size="md">Click and choose file to change image</Text>}
 
-                                                                                    {item.imageUrl && (
+                                                                                    {item.imageUrl ? (
                                                                                         <img src={item.imageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: 100 }} />
+                                                                                    ) : (
+                                                                                        item.image && (
+                                                                                            <img src={`${BASE_URL}${item.image}?${Date.now()}`} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: 100 }} />
+                                                                                        )
                                                                                     )}
+
                                                                                     {item.file && (
                                                                                         <Text size="sm" mt={10}>
                                                                                             Selected file: {item.file.name}
