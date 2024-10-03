@@ -34,7 +34,7 @@ const MapChannel = () => {
       setProduct([]);
     }
   }, [pagination, selectedChannel, selectedStore, mapStatus]);
-  
+
   const fetchAllCompanyLocations = async () => {
     try {
       const response = await B2B_API.get('company-location/get-all').json();
@@ -74,7 +74,7 @@ const MapChannel = () => {
       const data = response?.response?.content || [];
       setRowCount(response?.response?.totalElements || 0);
       setProduct(data.map(item => mapStatus ? item.product : item));
-      
+
       if (selectedPairs.length === rowCount && rowCount > 0) {
         setAreAllSelected(true);
       } else {
@@ -122,16 +122,16 @@ const MapChannel = () => {
   const handleSelectAllPairs = () => {
     if (!areAllSelected) {
       const allProductIds = product.map(item => item.productId);
-      console.log(product,"prod inside")
-    
-      
+      console.log(product, "prod inside")
+
+
       setSelectedPairs(allProductIds);
       setAreAllSelected(!areAllSelected);
     } else {
       setSelectedPairs([]);
       setAreAllSelected(!areAllSelected);
     }
-   
+
   };
 
 
@@ -159,6 +159,9 @@ const MapChannel = () => {
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: '2rem', marginBottom: '0.5rem' }}>
         <div className='left--section'>
+          <div>
+            <h2>{!mapStatus ? 'Unmapped Products - ' : 'Mapped Products - '}</h2>
+          </div>
           <B2BButton onClick={() => { setMapStatus(!mapStatus); setSelectedPairs([]) }} disabled={!mapStatus} name='UnMapped' />
           <B2BButton onClick={() => { setMapStatus(!mapStatus); setSelectedPairs([]) }} disabled={mapStatus} name='Mapped' />
         </div>

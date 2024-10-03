@@ -37,7 +37,7 @@ const ProductVariant = () => {
         if (_.size(keys) > 0) {
             const pairs = keys.map(key => ({
                 key,
-                values: prodVariants[key]
+                values: Array.from(new Set(prodVariants[key]))
             }));
             setSelectedPairs(pairs);
         }
@@ -100,6 +100,8 @@ const ProductVariant = () => {
         return Object.keys(attributes).filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
     };
 
+    console.log("selectedPairs : ",selectedPairs);
+    
    
     return (
         <section className="product-variant-section">
