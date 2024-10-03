@@ -1,5 +1,6 @@
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { NumberInput } from '@mantine/core';
 import { IconPercentage } from '@tabler/icons-react';
 import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
@@ -8,7 +9,6 @@ import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
 import './FabricContent.css';
-import { NumberInput } from '@mantine/core';
 
 const FabricContent = () => {
     const { product, setProduct, handleChange, inputError, setInputError } = useContext(ProductContext);
@@ -101,7 +101,7 @@ const FabricContent = () => {
                     value: formattedFCC
                 }
             }));
-                setFCCValue(formattedFCC);
+            setFCCValue(formattedFCC);
         } catch (error) {
             console.error("Error fetching category data: ", error);
         }
@@ -109,7 +109,7 @@ const FabricContent = () => {
     const handleSelectChange = (index, selectedValue) => {
         const newPairs = [...selectedPairs];
         const oldKey = newPairs[index].key;
-        const  oldvalue = parseInt(newPairs[index].value, 10) || 0;
+        const oldvalue = parseInt(newPairs[index].value, 10) || 0;
         newPairs[index].key = selectedValue || '';
         newPairs[index].value = selectedValue ? newPairs[index].value : '';
         const newValue = parseInt(newPairs[index].value, 10) || 0;
@@ -128,7 +128,7 @@ const FabricContent = () => {
             }
 
             return {
-                ...prevState,totalProductPercent:updatedTotal,
+                ...prevState, totalProductPercent: updatedTotal,
                 fabricContent: {
                     ...prevState.fabricContent,
                     composition: updatedComposition
@@ -166,7 +166,7 @@ const FabricContent = () => {
         }
         setInputError(prev => ({
             ...prev,
-            fabricCompositionError:false,
+            fabricCompositionError: false,
             fabricContentError: false,
             fabricContentErrorMessage: '',
         }));
@@ -176,14 +176,14 @@ const FabricContent = () => {
         const key = newPairs[index].key;
         const previousValue = parseInt(newPairs[index].value, 10) || 0;
         const updatedTotal = totalPercent - previousValue + value;
-    
-       
+
+
         if (key) {
             newPairs[index].value = value;
             setSelectedPairs(newPairs);
             setTotalpercent(updatedTotal);
             setProduct(prevState => ({
-                ...prevState,totalProductPercent:updatedTotal,
+                ...prevState, totalProductPercent: updatedTotal,
                 fabricContent: {
                     ...prevState.fabricContent,
                     composition: {
@@ -201,8 +201,8 @@ const FabricContent = () => {
             fabricContentCode(pairsObject);
         }
         setInputError(prev => ({
-            ...prev, 
-            fabricCompositionError:false,
+            ...prev,
+            fabricCompositionError: false,
             fabricContentError: false,
             fabricContentErrorMessage: '',
         }));
@@ -210,23 +210,23 @@ const FabricContent = () => {
 
 
 
-    
-
-const addNewPair = () => {
-    const totalSum = _.sumBy(selectedPairs, (item) => parseInt(item.value));
-    if (totalSum < 100) {
-        setSelectedPairs([...selectedPairs, { key: '', value: '' }]);
-        setInputError(prev => ({
-            ...prev,
-            fabricCompositionError:false,
-            fabricContentError: false,
-            fabricContentErrorMessage: '',
-        }));
-    }
-};
 
 
-    const removePair = (index,value) => {
+    const addNewPair = () => {
+        const totalSum = _.sumBy(selectedPairs, (item) => parseInt(item.value));
+        if (totalSum < 100) {
+            setSelectedPairs([...selectedPairs, { key: '', value: '' }]);
+            setInputError(prev => ({
+                ...prev,
+                fabricCompositionError: false,
+                fabricContentError: false,
+                fabricContentErrorMessage: '',
+            }));
+        }
+    };
+
+
+    const removePair = (index, value) => {
         const newPairs = [...selectedPairs];
         const removedKey = newPairs[index].key;
         const updatedTotal = totalPercent - value;
@@ -243,7 +243,7 @@ const addNewPair = () => {
         setProduct(prevState => {
             const { [removedKey]: _, ...newComposition } = prevState.fabricContent.composition;
             return {
-                ...prevState,totalProductPercent:updatedTotal,
+                ...prevState, totalProductPercent: updatedTotal,
                 fabricContent: {
                     ...prevState.fabricContent,
                     composition: newComposition,
@@ -257,7 +257,6 @@ const addNewPair = () => {
     const getfabricValues = async () => {
         try {
             const res = await B2B_API.get(`fabric`).json();
-            console.log(res?.response,'fa')
             setFabricValue(res?.response);
         } catch (error) {
             console.error("Error fetching fabric values: ", error);
@@ -268,43 +267,43 @@ const addNewPair = () => {
 
         const selectedFabric = fabricValue.find(fabric => fabric.value === selectedValue);
         const selectedPairs = selectedFabric ? Object.entries(selectedFabric.composition) : [];
-    
+
         setSelectedPairs(selectedPairs.map(([key, value]) => ({ key, value })));
         const totalSum = _.sumBy(selectedPairs, (item) => parseInt(item[1], 10) || 0);
         setTotalpercent(totalSum)
         const pairsObject = Object.fromEntries(selectedPairs);
-    
+
         if (Object.keys(pairsObject).length > 0) {
             setProduct(prevState => ({
-                ...prevState,totalProductPercent:totalSum,
+                ...prevState, totalProductPercent: totalSum,
                 fabricContent: {
                     ...prevState.fabricContent,
-                    composition:pairsObject
+                    composition: pairsObject
                 }
             }));
-    
+
             fabricContentCode(pairsObject);
         }
         if (Object.keys(pairsObject).length > 0) {
             fabricContentCode(pairsObject)
-        
+
         } else {
             setFCCValue('');
             setSelectedPairs([{ key: '', values: [], value: null }])
             setProduct(prevState => ({
-                ...prevState,totalProductPercent:0,
+                ...prevState, totalProductPercent: 0,
                 fabricContent: {
                     ...prevState.fabricContent,
-                    composition:{},
+                    composition: {},
                     value: ''
                 }
             }));
-          
+
 
         }
         setInputError(prev => ({
-            ...prev, 
-            fabricCompositionError:false,
+            ...prev,
+            fabricCompositionError: false,
             fabricContentError: false,
             fabricContentErrorMessage: '',
         }));
@@ -348,7 +347,7 @@ const addNewPair = () => {
                     <div key={index} className="fabric-content-g-row">
                         <div className="fabric-content-g-col fabric-content-g-s-6 fabric-content-g-m-4">
                             <B2BSelect
-                                value={selectedPairs[index]?.key||''}
+                                value={selectedPairs[index]?.key || ''}
                                 data={getAvailableKeys(index).map(key => ({ value: key, label: keyToNameMap[key] }))}
                                 clearable={true}
                                 onChange={(e) => handleSelectChange(index, e)}
@@ -372,7 +371,7 @@ const addNewPair = () => {
                                 <button
                                     type="button"
                                     className="fabric-content-btn fabric-content-btn--icon-no fabric-content-ml2"
-                                    onClick={() => removePair(index ,pair.value)}
+                                    onClick={() => removePair(index, pair.value)}
                                 >
                                     <FontAwesomeIcon className="fa fabric-content-icon" icon={faTrash} />
                                 </button>
@@ -397,10 +396,10 @@ const addNewPair = () => {
                 <div>
                     <p className='fabric-label'>Overal Composition Percentage:  {totalPercent}</p>
                     {inputError?.fabricCompositionError && (
-                <p className='error-message'>
-                    {inputError.fabricCompositionErrorMessage}
-                </p>
-            )}
+                        <p className='error-message'>
+                            {inputError.fabricCompositionErrorMessage}
+                        </p>
+                    )}
                 </div>
             </div>
         </section>

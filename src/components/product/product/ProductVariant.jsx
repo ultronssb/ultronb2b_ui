@@ -1,8 +1,8 @@
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, FileInput, Group, Image, MultiSelect } from '@mantine/core';
+import { MultiSelect } from '@mantine/core';
 import _ from 'lodash';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
@@ -13,9 +13,6 @@ const ProductVariant = () => {
 
     const [attributes, setAttributes] = useState({});
     const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [] }]);
-    const [files, setFiles] = useState([]);
-    const [variantImages, setVariantImages] = useState({});
-    const inputRefs = useRef({});
     useEffect(() => {
         fetchVariant();
     }, []);
@@ -100,9 +97,6 @@ const ProductVariant = () => {
         return Object.keys(attributes).filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
     };
 
-    console.log("selectedPairs : ",selectedPairs);
-    
-   
     return (
         <section className="product-variant-section">
             <div className="product-variant-section-wrap">

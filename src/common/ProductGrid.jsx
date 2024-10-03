@@ -1,9 +1,8 @@
-import { Box, Button, Checkbox, Flex, Menu, Text, Title } from '@mantine/core';
+import { Checkbox } from '@mantine/core';
 import { IconPencil } from '@tabler/icons-react';
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
-import { useMemo } from 'react';
-import B2BTableGrid from './B2BTableGrid';
 import _ from 'lodash';
+import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import { useMemo, useState } from 'react';
 
 const ProductGrid = ({ data,
      editVariant,
@@ -30,21 +29,28 @@ const ProductGrid = ({ data,
                     accessorKey: pimId ? 'product.articleCode' : 'articleCode',
                     header: 'Product Code',
                     size: 150,
+                    enableSorting: false,
+                    enableColumnDragging: false,
                 },
                 {
                     accessorKey: pimId ? 'product.articleName' : 'articleName',
                     header: 'Product Name',
                     size: 250,
+                    enableSorting: false,
+                    enableColumnDragging: false,
                 },
                 {
                     accessorKey: pimId ? 'product.brand.name' : 'brand.name',
                     header: 'Brand',
                     size: 150,
+                    enableSorting: false,
+                    enableColumnDragging: false,
                 },
                 {
                     accessorKey: pimId ? 'product.priceSetting.sellingPrice' : 'priceSetting.sellingPrice',
                     header: 'Product Price',
-                    enableColumnFilter: false,
+                    enableSorting: false,
+                    enableColumnDragging: false,
                     Cell: ({ cell }) => {
                         const price = cell.getValue();
                         return price ? price.toLocaleString('en-US', {
@@ -59,8 +65,10 @@ const ProductGrid = ({ data,
                     accessorKey: pimId ? 'product.status' : 'status',
                     header: 'Status',
                     size: 100,
+                    enableSorting: false,
+                    enableColumnDragging: false,
                     Cell: ({ cell }) => (
-                        <span style={{ color: cell.getValue() === 'active' ? 'green' : 'red' }}>
+                        <span style={{ color: cell.getValue() === 'ACTIVE' ? 'green' : 'red' }}>
                             {cell.getValue()}
                         </span>
                     ),
@@ -74,6 +82,8 @@ const ProductGrid = ({ data,
                     ) : (
                         pimId ? ' Actions' : 'Actions'
                     ),
+                    enableSorting: false,
+                    enableColumnDragging: false,
                     mainTableHeaderCellProps: { align: 'center' },
                     mainTableBodyCellProps: { align: 'center' },
                     size: 100,
@@ -123,22 +133,29 @@ const ProductGrid = ({ data,
         }));
 
         const output = generateVariantCombinations(formattedVariants);
+        const [pageSize, setPageSize] = useState(5);
 
         return (<>
             <p>Total Variants: {_.size(variants)}</p>
-            {/* <B2BTableGrid
+            <MantineReactTable
                 columns={productColumns}
                 data={output}
                 enableTopToolbar={false}
                 enableGlobalFilter={false}
-                manualPagination={false}
-                enableFullScreenToggle={false}
-                rowCount={_.size(output)}
-            /> */}
-            <MantineReactTable columns={productColumns} data={output} enableTopToolbar={false} enableGlobalFilter={false} paginationDisplayMode='pages' mantinePaginationProps={{
-                rowsPerPageOptions: ['5','10'],
-                withEdges: false,
-            }} />
+                enableSorting={false}
+                enableColumnActions={false}
+                paginationDisplayMode='pages'
+                mantinePaginationProps={{
+                    rowsPerPageOptions: ['5', '10'],
+                    withEdges: false,
+                }}
+                initialState={{
+                    pagination: {
+                        pageSize: pageSize,
+                        pageIndex: 0,
+                    },
+                }}
+            />
         </>
         );
     };

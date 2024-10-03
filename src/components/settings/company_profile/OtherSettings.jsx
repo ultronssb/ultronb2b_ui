@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { B2B_API } from '../../../api/Interceptor'
 import B2BButton from '../../../common/B2BButton'
-import B2BDateInput from '../../../common/B2BDateInput'
 import B2BInput from '../../../common/B2BInput'
 import B2BSelect from '../../../common/B2BSelect'
-import { currencies, TimeFormats } from '../../../utils/SettingsInput'
-import { B2B_API } from '../../../api/Interceptor'
 import notify from '../../../utils/Notification'
 
 const OtherSettings = () => {
@@ -41,7 +39,6 @@ const OtherSettings = () => {
     if (company) {
       setOtherSettings((prev) => ({ ...prev, companyId: company.companyId }))
     }
-    console.log(otherSettings)
   }
 
   const getSettings = async () => {

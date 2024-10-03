@@ -1,4 +1,3 @@
-import { Checkbox } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
@@ -110,8 +109,6 @@ const MapChannel = () => {
       locationId: selectedStore,
       productIds: selectedPairs,
     };
-
-    console.log(prod);
     await B2B_API.post('map-channel', { json: prod }).json();
     fetchAllProducts();
   };
@@ -129,9 +126,6 @@ const MapChannel = () => {
   const handleSelectAllPairs = () => {
     if (!areAllSelected) {
       const allProductIds = product.map(item => item.productId);
-      console.log(product, "prod inside")
-
-
       setSelectedPairs(allProductIds);
       setAreAllSelected(!areAllSelected);
     } else {

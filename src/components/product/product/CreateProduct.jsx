@@ -1,17 +1,17 @@
+import { isEmpty } from 'lodash';
 import React, { createContext, useEffect, useState } from 'react';
+import { BASE_URL } from '../../../api/EndPoints';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTabs from '../../../common/B2BTabs';
+import notify from '../../../utils/Notification';
+import { validateProductDescription, validateProductName } from '../../../utils/Validation';
 import FabricContent from './FabricContent';
 import ProductCategorys from './ProductCategorys';
-import ProductPrice from './ProductPrice';
-import ProductType from './ProductType'
-import ProductVariant from './ProductVariant';
-import notify from '../../../utils/Notification';
 import ProductDimension from './ProductDimension';
-import _, { constant, isEmpty, isNull } from 'lodash';
-import { validateProductDescription, validateProductName } from '../../../utils/Validation';
-import { BASE_URL } from '../../../api/EndPoints';
+import ProductPrice from './ProductPrice';
+import ProductType from './ProductType';
+import ProductVariant from './ProductVariant';
 export const ProductContext = createContext(null);
 
 const CreateProduct = () => {
@@ -621,8 +621,6 @@ const CreateProduct = () => {
       });
     }
   };
-  console.log("pro : ", product);
-
 
   return (
     <ProductContext.Provider value={{ product, handleChange, addProduct, setProduct, imageFile, setImageFile, inputError, setInputError }}>

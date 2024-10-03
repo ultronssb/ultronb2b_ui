@@ -1,11 +1,8 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import B2BButton from '../../common/B2BButton';
 import { Text } from '@mantine/core';
-import B2BTableGrid from '../../common/B2BTableGrid';
-import { IconPencil, IconPlus } from '@tabler/icons-react';
-import { ActiveTabContext } from '../../layout/Layout';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../api/Interceptor';
+import B2BTableGrid from '../../common/B2BTableGrid';
+import { ActiveTabContext } from '../../layout/Layout';
 import notify from '../../utils/Notification';
 
 const Salesman = () => {
@@ -33,7 +30,7 @@ const Salesman = () => {
       const data = response?.response || [];
       setRowCount(response?.response?.totalElements || 0);
       setSalesMans(data);
-      
+
     } catch (error) {
       setIsError(true);
       notify({
@@ -45,8 +42,6 @@ const Salesman = () => {
       setIsLoading(false);
     }
   };
-console.log(salesMans);
-
 
   const columns = useMemo(() => [
     {
@@ -63,7 +58,7 @@ console.log(salesMans);
     {
       header: 'Sales Man Name',
       accessorFn: (row) => row?.firstName + " " + (row?.lastName === null ? '' : row?.lastName),
-      accessorKey:"userName"
+      accessorKey: "userName"
     },
     {
       header: 'Email',
@@ -81,12 +76,13 @@ console.log(salesMans);
       header: 'Status',
       accessorKey: 'status'
     },
-     { id: 'customersCount',
+    {
+      id: 'customersCount',
       header: 'Customers',
       accessorFn: (row) => {
-        return  customerCounts[row?.userId] ;
+        return customerCounts[row?.userId];
       }
-     }
+    }
   ], [customerCounts]);
   return (
 

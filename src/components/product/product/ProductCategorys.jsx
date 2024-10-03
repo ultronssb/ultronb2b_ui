@@ -19,9 +19,6 @@ const ProductCategorys = () => {
         fetchcategory();
     }, []);
 
-
-    console.log("product : ", product);
-
     const fetchcategory = async () => {
         try {
             const res = await B2B_API.get('product-category').json();

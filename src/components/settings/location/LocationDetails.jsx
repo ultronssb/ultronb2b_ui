@@ -1,12 +1,11 @@
 import { Text } from '@mantine/core';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ERROR_MESSAGE } from '../../../common/CommonResponse';
-import { ActiveTabContext } from '../../../layout/Layout';
 import notify from '../../../utils/Notification';
 
 const LocationDetails = () => {
@@ -62,7 +61,7 @@ const LocationDetails = () => {
         const { original } = row;
         return (
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <IconPencil onClick={() => editVarient(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+            <IconPencil onClick={() => editVarient(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
           </div>
         );
       }
@@ -81,14 +80,13 @@ const LocationDetails = () => {
       const response = await B2B_API.get(`company-location/view?page=${pagination.pageIndex}&size=${pagination.pageSize}`).json();
       const data = response?.response?.content || [];
       setRowCount(response?.response?.totalElements || 0);
-      console.log(data)
       const transformedData = data.map(item => ({
         companyLocationId: item.companyLocationId,
         name: item.name,
         address: item.address,
         email: item.email,
         mobileNumber: item.mobileNumber,
-        locationType: item.locationType?.name 
+        locationType: item.locationType?.name
       }));
       setLocations(transformedData);
     } catch (error) {
@@ -104,8 +102,8 @@ const LocationDetails = () => {
     }
   };
   const handleChange = (e) => {
-  
-    navigate('/settings/location/new-location' )
+
+    navigate('/settings/location/new-location')
   }
 
   return (

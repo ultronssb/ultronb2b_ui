@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import '../../../css/formstyles/Formstyles.css';
-import B2BInput from '../../../common/B2BInput';
-import B2BTextarea from '../../../common/B2BTextarea';
-import B2BSelect from '../../../common/B2BSelect';
+import { Flex, Text, Tooltip } from '@mantine/core';
+import { IconPencil, IconPlus } from '@tabler/icons-react';
+import React, { useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
+import B2BInput from '../../../common/B2BInput';
+import B2BSelect from '../../../common/B2BSelect';
 import B2BTableGrid from '../../../common/B2BTableGrid';
-import { Flex, Text, Tooltip } from '@mantine/core';
-import { IconEdit, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import B2BTextarea from '../../../common/B2BTextarea';
+import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
-import { ERROR_MESSAGE } from '../../../common/CommonResponse';
 
 
 const Channel = () => {
@@ -100,7 +99,6 @@ const Channel = () => {
     ]
 
     const editChannel = (channelObj) => {
-        console.log(channelObj)
         setCreateChannel(true)
         setChannel((prev) => ({ ...prev, ...channelObj }))
     }

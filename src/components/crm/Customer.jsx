@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import B2BButton from '../../common/B2BButton';
 import { Text } from '@mantine/core';
-import B2BTableGrid from '../../common/B2BTableGrid';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
-import { ActiveTabContext } from '../../layout/Layout';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../api/Interceptor';
+import B2BButton from '../../common/B2BButton';
+import B2BTableGrid from '../../common/B2BTableGrid';
+import { ActiveTabContext } from '../../layout/Layout';
 import notify from '../../utils/Notification';
 
 const Customer = () => {

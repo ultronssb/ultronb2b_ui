@@ -8,7 +8,7 @@ import { EnrichProductContext } from './EnrichProduct';
 const EnrichmentMedia = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const { product, setProduct, setMultimedia } = useContext(EnrichProductContext);
-  const [variants,setVariants]= useState({})
+  const [variants, setVariants] = useState({})
   const [media, setMedia] = useState({})
 
   const fileChange = (file, sku, type, variant) => {
@@ -34,7 +34,7 @@ const EnrichmentMedia = () => {
             ...prevProduct,
             productVariants: prevProduct.productVariants.map((variant) =>
               variant.variantSku === sku
-                ? { ...variant, [type]: reader.result, name: fileName,file: file }
+                ? { ...variant, [type]: reader.result, name: fileName, file: file }
                 : variant
             ),
           }));
@@ -61,8 +61,6 @@ const EnrichmentMedia = () => {
     }));
   };
 
-  console.log(product, "prod");
-
   return (
     <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem' }}>
       <thead>
@@ -77,7 +75,7 @@ const EnrichmentMedia = () => {
       <tbody>
         {product?.productVariants?.map((variant) => (
           <tr key={variant.id}>
-            <td style={{ border: '1px solid #ccc', padding: '10px',textAlign:'center' }}>
+            <td style={{ border: '1px solid #ccc', padding: '10px', textAlign: 'center' }}>
               {variant.variants.map((variantDetail) => (
                 <div key={variantDetail.value}>
                   <h4>{variantDetail.value}</h4>
@@ -85,19 +83,19 @@ const EnrichmentMedia = () => {
               ))}
             </td>
 
-            <td style={{ border: '1px solid #ccc', padding: '10px', textAlign:'center'}}>
+            <td style={{ border: '1px solid #ccc', padding: '10px', textAlign: 'center' }}>
               {variant.image ? (
                 <img
-                  src={variant.image.includes('/resources')?`${BASE_URL}${variant.image}?time=${Date.now()}`: variant.image}
+                  src={variant.image.includes('/resources') ? `${BASE_URL}${variant.image}?time=${Date.now()}` : variant.image}
                   alt="Uploaded"
-                  style={{ maxWidth: '50%', maxHeight: '70px'}}
+                  style={{ maxWidth: '50%', maxHeight: '70px' }}
                 />
-              ) :(
+              ) : (
                 <p style={{ color: '#888' }}>No image uploaded</p>
               )}
             </td>
 
-            <td style={{ border: '1px solid #ccc', padding: '10px',alignItems:'center' }}>
+            <td style={{ border: '1px solid #ccc', padding: '10px', alignItems: 'center' }}>
               <Group justify="flex-start">
                 <FileButton onChange={(file) => fileChange(file, variant.variantSku, 'image', variant)} multiple={false}>
                   {(props) => <Button {...props}>Upload Image</Button>}

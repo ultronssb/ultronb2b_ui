@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import B2BTableGrid from '../../../common/B2BTableGrid';
-import B2BButton from '../../../common/B2BButton';
 import { IconPencil } from '@tabler/icons-react';
-import B2BInput from '../../../common/B2BInput';
 import dayjs from 'dayjs';
-import notify from '../../../utils/Notification';
+import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
+import B2BButton from '../../../common/B2BButton';
+import B2BInput from '../../../common/B2BInput';
+import B2BTableGrid from '../../../common/B2BTableGrid';
+import notify from '../../../utils/Notification';
 
 const LocationType = () => {
     const initialData = {

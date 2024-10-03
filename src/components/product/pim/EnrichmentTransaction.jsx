@@ -3,15 +3,13 @@ import { EnrichProductContext } from './EnrichProduct';
 
 const EnrichmentTransaction = () => {
 
-    const { handleChange, product ,pim} = useContext(EnrichProductContext);
+    const { handleChange, product, pim } = useContext(EnrichProductContext);
 
-    console.log(pim,"pim");
-    
     const json = [
         {
             label: "Stop GRN",
             type: 'radio',
-            value:String( pim?.pimOtherInformation?.isStopGRN),
+            value: String(pim?.pimOtherInformation?.isStopGRN),
             fieldType: 'radioField',
             options: [
                 { label: "Yes", value: "true" },
@@ -27,7 +25,7 @@ const EnrichmentTransaction = () => {
             fieldType: 'radioField',
             options: [
                 { label: "Yes", value: "true" },
-                { label: "No", value: "false"}
+                { label: "No", value: "false" }
             ],
             onChange: (event) => handleChange(event, "isStopPurchaseReturn"),
             name: "isStopPurchaseReturn",
@@ -35,10 +33,10 @@ const EnrichmentTransaction = () => {
         {
             label: "Stop Sale",
             type: 'radio',
-            value:String(pim?.pimOtherInformation?.isStopSale),
+            value: String(pim?.pimOtherInformation?.isStopSale),
             fieldType: 'radioField',
             options: [
-                { label: "Yes", value: "true"},
+                { label: "Yes", value: "true" },
                 { label: "No", value: "false" }
             ],
             onChange: (event) => handleChange(event, "isStopSale"),
@@ -75,7 +73,7 @@ const EnrichmentTransaction = () => {
             fieldType: 'radioField',
             options: [
                 { label: "Yes", value: "true" },
-                { label: "No", value: "false"}
+                { label: "No", value: "false" }
             ],
             onChange: (event) => handleChange(event, "isAllowCostEditInGRN"),
             name: "isAllowCostEditInGRN",
@@ -105,9 +103,6 @@ const EnrichmentTransaction = () => {
             name: "isNonTrading",
         },
     ];
-
-    console.log(product,"infoproduct");
-    
 
     return (
         <div>

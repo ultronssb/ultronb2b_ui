@@ -6,9 +6,9 @@ import '@mantine/dropzone/styles.css'
 import { IconUpload } from '@tabler/icons-react'
 import _ from 'lodash'
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import { BASE_URL } from '../../../api/EndPoints'
 import './EnrichmentProductVariant.css'
 import { EnrichProductContext } from './EnrichProduct'
-import { BASE_URL } from '../../../api/EndPoints'
 
 
 const EnrichmentProductVariant = () => {
@@ -39,11 +39,6 @@ const EnrichmentProductVariant = () => {
         }
     }, []);
 
-    // useEffect(() => {
-    //     getAllPimVariants();
-    // }, []);
-
-
     const handleToggle = (index) => {
         if (expandedRows.includes(index)) {
             setExpandedRows(expandedRows.filter((i) => i !== index));
@@ -72,18 +67,6 @@ const EnrichmentProductVariant = () => {
             };
         });
     };
-
-
-
-    // const handleDrop = (acceptedFiles, index) => {
-    //     const uploadedFile = acceptedFiles[0];
-    //     const fileUrl = URL.createObjectURL(uploadedFile);
-    //     setProductPims((prevState) =>
-    //         prevState.map((item, i) =>
-    //             i === index ? { ...item, file: uploadedFile, imageUrl: fileUrl } : item
-    //         )
-    //     );
-    // };
 
     const handleDrop = (acceptedFiles, index) => {
         const uploadedFile = acceptedFiles[0];
@@ -124,24 +107,7 @@ const EnrichmentProductVariant = () => {
         });
     };
 
-    // const handleChange = (e, index) => {
-    //     const { name, value } = e.target;
-    //     const margin = _.round((pim.pimVariants.costPrice * pim.pimVariants.markUp) / 100);
 
-    //     setPim((prevProductPims) => {
-    //         return {
-    //             ...prevProductPims,
-    //             pimVariants: prevProductPims.pimVariants.map((item, i) =>
-    //                 i === index
-    //                     ? {
-    //                         ...item,
-    //                         [name]: value,
-    //                     }
-    //                     : item
-    //             ),
-    //         };
-    //     });
-    // };
     const handleChange = (e, index) => {
         const { name, value } = e.target;
 
@@ -176,14 +142,6 @@ const EnrichmentProductVariant = () => {
             };
         });
     };
-
-
-
-    console.log(pim, ":pim");
-
-
-
-
 
     return (
         <div>
@@ -287,12 +245,12 @@ const EnrichmentProductVariant = () => {
                                                     </td>
                                                     <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--input input-columns sku">
                                                         <div className="product-info-variant-util-pos-relative">
-                                                            <input className="product-info-variant-input variant-sku-input" type="text" data-cy="variant-sku-input" value={item.variantSku} placeholder="Enter SKU" disabled style={{ cursor:'not-allowed'}} />
+                                                            <input className="product-info-variant-input variant-sku-input" type="text" data-cy="variant-sku-input" value={item.variantSku} placeholder="Enter SKU" disabled style={{ cursor: 'not-allowed' }} />
                                                         </div>
                                                     </td>
                                                     <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--input input-columns">
                                                         <div className="product-info-variant-util-pos-relative">
-                                                            <input className="product-info-variant-input product-info-variant-input--text-align-right" type="text" placeholder="Enter the amount" name="sellingPrice" data-cy="retail-price-excluding-tax-input" value={item.sellingPrice} style={{ paddingLeft: '4ch', cursor:'not-allowed' }} disabled />
+                                                            <input className="product-info-variant-input product-info-variant-input--text-align-right" type="text" placeholder="Enter the amount" name="sellingPrice" data-cy="retail-price-excluding-tax-input" value={item.sellingPrice} style={{ paddingLeft: '4ch', cursor: 'not-allowed' }} disabled />
                                                             <div className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol" value={item.sellingPrice}>Rs</div>
                                                         </div>
                                                     </td>
@@ -350,36 +308,36 @@ const EnrichmentProductVariant = () => {
                                                                                 <thead>
                                                                                     <tr data-testid="table-row" className="product-info-variant-table-list-row product-info-variant-table-list-row--header">
                                                                                         <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell" aria-sort="none">Price point</th>
-                                                                                        <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-right" aria-sort="none">Cost price</th>
-                                                                                        <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-right" aria-sort="none">Markup</th>
-                                                                                        <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-right" aria-sort="none">Margin</th>
-                                                                                        <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-right" aria-sort="none">Retail price</th>
+                                                                                        <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell" aria-sort="none">Cost price</th>
+                                                                                        <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell" aria-sort="none">Markup</th>
+                                                                                        <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell" aria-sort="none">Margin</th>
+                                                                                        <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell" aria-sort="none">Retail price</th>
                                                                                     </tr>
                                                                                 </thead>
                                                                                 <tbody>
                                                                                     <tr data-testid="table-row" data-ta="product-pricebook-table-body-row" className="product-info-variant-table-list-row">
                                                                                         <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-name" width="30%">General Price Book (All Products)</td>
-                                                                                        <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-align-right" data-ta="product-pricebook-table-body-cell-supply-price">
+                                                                                        <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-supply-price" width="15%">
                                                                                             <div className="product-info-variant-util-pos-relative">
-                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value={item.costPrice} name='costPrice' placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)' }} onChange={(e) => handleChange(e, index)} />
+                                                                                                <input className="product-info-variant-input" type="text" value={item.costPrice} name='costPrice' placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)' }} onChange={(e) => handleChange(e, index)} />
                                                                                                 <span className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol">₹</span>
                                                                                             </div>
                                                                                         </td>
-                                                                                        <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-markup" width="20%">
+                                                                                        <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-markup" width="15%">
                                                                                             <div className="product-info-variant-util-pos-relative">
                                                                                                 <input className="product-info-variant-input product-info-variant-align-right" type="text" value={item.markUp} name='markUp' placeholder="Enter the amount" style={{ paddingRight: 'calc(27.8px)' }} onChange={(e) => handleChange(e, index)} />
                                                                                                 <span className="product-info-variant-input-icon product-info-variant-input-icon--right product-info-variant-input-symbol">%</span>
                                                                                             </div>
                                                                                         </td>
-                                                                                        <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-markup" width="20%">
+                                                                                        <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-markup" width="15%">
                                                                                             <div className="product-info-variant-util-pos-relative">
-                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value={item.margin} placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)', cursor:'not-allowed' }} disabled />
+                                                                                                <input className="product-info-variant-input" type="text" value={item.margin} placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)', cursor: 'not-allowed' }} disabled />
                                                                                                 <span className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol">₹</span>
                                                                                             </div>
                                                                                         </td>
-                                                                                        <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-retail-price" width="20%">
+                                                                                        <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-retail-price" width="15%">
                                                                                             <div className="product-info-variant-util-pos-relative">
-                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value={item.sellingPrice} placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)', cursor:'not-allowed' }} disabled />
+                                                                                                <input className="product-info-variant-input" type="text" value={item.sellingPrice} placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)', cursor: 'not-allowed' }} disabled />
                                                                                                 <span className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol">₹</span>
                                                                                             </div>
                                                                                         </td>

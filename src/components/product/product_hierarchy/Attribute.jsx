@@ -1,10 +1,10 @@
+import { IconPencil } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ERROR_MESSAGE } from '../../../common/CommonResponse';
+import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
-import { B2B_API } from '../../../api/Interceptor';
+import { ERROR_MESSAGE } from '../../../common/CommonResponse';
 import notify from '../../../utils/Notification';
-import { IconPencil } from '@tabler/icons-react';
 
 export const Attribute = () => {
   const initialData = {
@@ -74,7 +74,7 @@ export const Attribute = () => {
   const addAttribute = async (event) => {
     event.preventDefault();
     try {
-      const response = await B2B_API.post(`attribute`, { json: attribute }).json(); 
+      const response = await B2B_API.post(`attribute`, { json: attribute }).json();
       setAttribute(initialData);
       fetchAttribute();
       notify({

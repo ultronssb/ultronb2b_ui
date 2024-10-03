@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import B2BSelect from '../../../common/B2BSelect';
-import './Variant.css';
-import B2BInput from '../../../common/B2BInput';
 import { Button, ColorInput, ColorSwatch, FileButton, Group, Tabs, Text } from '@mantine/core';
-import B2BButton from '../../../common/B2BButton';
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
-import B2BTableGrid from '../../../common/B2BTableGrid';
-import { B2B_API } from '../../../api/Interceptor';
-import notify from '../../../utils/Notification';
+import React, { useEffect, useRef, useState } from 'react';
 import { BASE_URL } from '../../../api/EndPoints';
+import { B2B_API } from '../../../api/Interceptor';
+import B2BButton from '../../../common/B2BButton';
+import B2BInput from '../../../common/B2BInput';
+import B2BSelect from '../../../common/B2BSelect';
+import B2BTableGrid from '../../../common/B2BTableGrid';
+import notify from '../../../utils/Notification';
+import './Variant.css';
 
 const Variants = () => {
   const initialState = {
@@ -119,7 +119,7 @@ const Variants = () => {
   );
 
 
-  const columns =  {
+  const columns = {
     "Colour": [
       { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
       { header: 'Colour', accessorKey: 'value' },
@@ -136,7 +136,7 @@ const Variants = () => {
           );
         }
       },
-      { header: 'Status', accessorKey:'status' },
+      { header: 'Status', accessorKey: 'status' },
       {
         header: 'Actions', mainTableHeaderCellProps: { align: 'center' }, mainTableBodyCellProps: { align: 'center' }, size: 100, Cell: ({ row }) => {
           const { original } = row;
@@ -149,16 +149,16 @@ const Variants = () => {
       },
     ],
 
-    "Solid":[
+    "Solid": [
       { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
       { header: 'Solid', accessorKey: 'value' },
       {
-        header: 'Solid Pattern', accessorKey:'solid', Cell: ({ row }) => {
+        header: 'Solid Pattern', accessorKey: 'solid', Cell: ({ row }) => {
           const { original } = row;
           return original.image ? <img src={`${BASE_URL.replace('/api', '')}${original.image}`} alt='solid' style={{ width: '75px', height: '50px' }} /> : "-";
         },
       },
-      { header: 'Status', accessorKey:'status' },
+      { header: 'Status', accessorKey: 'status' },
       {
         header: 'Actions', mainTableHeaderCellProps: { align: 'center' }, mainTableBodyCellProps: { align: 'center' }, size: 100, Cell: ({ row }) => {
           const { original } = row;
@@ -168,14 +168,14 @@ const Variants = () => {
             </div>
           );
         },
-        accessorKey:"actions"
+        accessorKey: "actions"
       },
     ],
-    "Others" :[
+    "Others": [
       { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
       { header: 'Name', accessorKey: 'name' },
       { header: 'Value', accessorKey: 'value' },
-      { header: 'Status', accessorKey:'status' },
+      { header: 'Status', accessorKey: 'status' },
       {
         header: 'Actions', mainTableHeaderCellProps: { align: 'center' }, mainTableBodyCellProps: { align: 'center' }, size: 100, Cell: ({ row }) => {
           const { original } = row;
@@ -185,12 +185,12 @@ const Variants = () => {
             </div>
           );
         },
-        accessorKey:"actions"
+        accessorKey: "actions"
       },
     ]
   }
 
-  
+
 
   const handleTabChange = (option) => {
     setActiveTab(option);
@@ -341,7 +341,7 @@ const Variants = () => {
       )}
       {isVariant && (
         <div className='container'>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', width:'100%' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
             <B2BButton
               style={{ color: '#000' }}
               name="Back"

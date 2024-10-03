@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react';
-import B2BInput from '../../../common/B2BInput';
-import { EnrichProductContext } from './EnrichProduct';
-import B2BButton from '../../../common/B2BButton';
 import { ActionIcon, Button, Modal, TextInput } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
+import React, { useContext, useState } from 'react';
+import B2BButton from '../../../common/B2BButton';
+import B2BInput from '../../../common/B2BInput';
+import { EnrichProductContext } from './EnrichProduct';
 
 const EnrichmentAttributes = () => {
   const { handleChange, product, pim, setPim } = useContext(EnrichProductContext);
@@ -19,12 +19,12 @@ const EnrichmentAttributes = () => {
       ...(pim.variants || []), // Use empty array if variants is undefined
       { name: variantName, value: variantValue },
     ];
-    
+
     setPim((prevPim) => ({
       ...prevPim,
       variants: updatedVariants,
     }));
-    
+
     setVariantName('');
     setVariantValue('');
     close();

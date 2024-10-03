@@ -1,20 +1,19 @@
 import { faArrowTurnUp, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
-import _, { includes } from 'lodash';
+import _ from 'lodash';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
+import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
 import notify from '../../../utils/Notification';
 import './ProductHierarchy.css';
-import B2BInput from '../../../common/B2BInput';
 
-const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children,disable }) => {
-  console.log(disable,'disabled')
+const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children, disable }) => {
   return (
     <div style={{ marginLeft: level === 1 ? '0px' : `${level + 130}px`, display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -37,7 +36,7 @@ const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children,disabl
   );
 };
 
-const CategoryTree = ({ level = 1, categories, onCategoryChange, disable}) => {
+const CategoryTree = ({ level = 1, categories, onCategoryChange, disable }) => {
   const handleCategoryChange = (index, newValue) => {
     const newCategories = [...categories];
     newCategories[index].name = newValue;
@@ -96,7 +95,7 @@ const ProductHierarchy = () => {
   const [categoryPagination, setCategoryPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [taxonomy, setTaxonomy] = useState([]);
   const [productCount, setProductCount] = useState({})
-  const [types,setTypes]= useState('')
+  const [types, setTypes] = useState('')
   const [isLevelOneDisabled, setIsLevelOneDisabled] = useState(false);
 
   const typesOptions = ["Fabric Type", "Fabric Content", "Others"];
@@ -152,22 +151,22 @@ const ProductHierarchy = () => {
   const handleTypeSelectChange = (value) => {
     const isFabricType = value === "Others";
 
-    if ( isFabricType) {
+    if (isFabricType) {
       setTypes(value);
       setCategoryTree(prevTree => {
         const newTree = [...prevTree];
-        newTree[0].name = id? prevTree[0].name : ''; 
+        newTree[0].name = id ? prevTree[0].name : '';
         return newTree;
       });
-      if(!id){
+      if (!id) {
         setIsLevelOneDisabled(false);
       }
     } else {
       setTypes(value);
       setCategoryTree(prevTree => {
         const newTree = [...prevTree];
-        newTree[0].name =  value; 
-        newTree[0].type=value
+        newTree[0].name = value;
+        newTree[0].type = value
         return newTree;
       });
       setIsLevelOneDisabled(true);
@@ -266,7 +265,7 @@ const ProductHierarchy = () => {
       id: 'productCount',
       header: 'Product Count',
       accessorFn: (row) => {
-        return productCount[row.name]|| 0;
+        return productCount[row.name] || 0;
       },
       size: 150,
     },
@@ -324,9 +323,6 @@ const ProductHierarchy = () => {
     }
   };
 
-  console.log(categoryTree, "cat");
-
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <h3 style={{ margin: '1rem 0.3rem' }} key={"division"}>Category Details</h3>
@@ -334,7 +330,7 @@ const ProductHierarchy = () => {
         <div className='create-product-btn'>
           {
             isCreateCategory === false ?
-              <B2BButton style={{ color: '#000' }} name="Create Category" onClick={() => {setIsCreateCategory(true); setIsLevelOneDisabled(true)}} leftSection={<IconPlus size={15} />} color={"rgb(207, 239, 253)"} />
+              <B2BButton style={{ color: '#000' }} name="Create Category" onClick={() => { setIsCreateCategory(true); setIsLevelOneDisabled(true) }} leftSection={<IconPlus size={15} />} color={"rgb(207, 239, 253)"} />
               :
               <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
           }
@@ -363,24 +359,17 @@ const ProductHierarchy = () => {
                     onChange={(event) => handleSelectChange(event)}
                     clearable={true}
                   />
-                      <label>Types</label>
-                      {id?<B2BInput 
+                  <label>Types</label>
+                  {id ? <B2BInput
+                    value={types}
+                    disabled={true} /> :
+                    <B2BSelect
                       value={types}
-                      disabled={true}/>:
-                      <B2BSelect
-                      value={types}
-                       data={typesOptions}
-                       required
+                      data={typesOptions}
+                      required
                       onChange={handleTypeSelectChange}
                       clearable
-                />}
-                  {/* <B2BSelect
-                  value={types}
-                  data={typesOptions}
-                  required
-                  onChange={handleTypeSelectChange}
-                  clearable
-                /> */}
+                    />}
                 </div>
                 <CategoryTree
                   level={1}

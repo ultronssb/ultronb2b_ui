@@ -52,9 +52,8 @@ const AddUsers = () => {
   }
 
   useEffect(() => {
-    console.log(columnFilters, "columnFilters");
     filterUsers();
-  }, [columnFilters,globalSearch])
+  }, [columnFilters, globalSearch])
 
   const filterUsers = async () => {
     const filter = columnFilters && columnFilters.map(filter => {
@@ -68,7 +67,6 @@ const AddUsers = () => {
         json: filter,
       }).json();
       setUserFromResponse(response?.response)
-      console.log('Filtered Users:', response);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -120,7 +118,7 @@ const AddUsers = () => {
     {
       header: 'User Name',
       accessorFn: (row) => row?.firstName + " " + (row?.lastName === null ? '' : row?.lastName),
-      accessorKey:"userName"
+      accessorKey: "userName"
     },
     {
       header: 'Email ID',
@@ -133,7 +131,7 @@ const AddUsers = () => {
     {
       header: 'Role',
       accessorFn: (row) => row?.roleName,
-      accessorKey:'roleName'
+      accessorKey: 'roleName'
     },
     {
       header: 'Location ID',
@@ -220,9 +218,6 @@ const AddUsers = () => {
     setCreateUserArea(false)
     setUser(initialUserState)
   };
-
-  console.log(user);
-
 
   return (
     <>

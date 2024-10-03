@@ -1,11 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { IconPencil } from '@tabler/icons-react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
-import notify from '../../../utils/Notification';
 import B2BTableGrid from '../../../common/B2BTableGrid';
-import { IconPencil, IconTrash } from '@tabler/icons-react';
-import { useDisclosure } from '@mantine/hooks';
-import B2BModal from '../../../common/B2BModal';
+import notify from '../../../utils/Notification';
 
 const Group = () => {
 

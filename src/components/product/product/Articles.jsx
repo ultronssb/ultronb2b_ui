@@ -1,15 +1,12 @@
-import { Box, Text, Title } from '@mantine/core';
-import { IconPencil, IconPlus } from '@tabler/icons-react';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { IconPlus } from '@tabler/icons-react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
-import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ERROR_MESSAGE } from '../../../common/CommonResponse';
+import ProductGrid from '../../../common/ProductGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
 import notify from '../../../utils/Notification';
-import _ from 'lodash';
-import ProductGrid from '../../../common/ProductGrid';
 
 const Articles = () => {
 
@@ -26,11 +23,11 @@ const Articles = () => {
 
   useEffect(() => {
     fetchAllProducts();
-  }, [pagination.pageIndex, pagination.pageSize,searchTerm]);
+  }, [pagination.pageIndex, pagination.pageSize, searchTerm]);
 
   useEffect(() => {
     fetchAllProducts();
-}, [searchTerm, pagination]);
+  }, [searchTerm, pagination]);
   const editVarient = (varobj) => {
     setIsCreateProduct(true);
     navigate(`/product/product/create?id=${varobj?.productId}`);
@@ -64,8 +61,7 @@ const Articles = () => {
     const value = event.currentTarget.value;
     setSearchTerm(value);
     fetchAllProducts();
-};
-  console.log(products)
+  };
 
   return (
     <>

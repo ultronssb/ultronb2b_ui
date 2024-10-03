@@ -7,14 +7,14 @@ import { B2B_API } from '../../../api/Interceptor'
 import B2BButton from '../../../common/B2BButton'
 import B2BInput from '../../../common/B2BInput'
 import B2BSelect from '../../../common/B2BSelect'
+import { ActiveTabContext } from '../../../layout/Layout'
 import notify from '../../../utils/Notification'
 import EnrichmentTabs from './EnrichmentTabs'
-import { ActiveTabContext } from '../../../layout/Layout'
 
 export const EnrichProductContext = createContext(null);
 
 const EnrichProduct = () => {
-  const { stateData} = useContext(ActiveTabContext);
+  const { stateData } = useContext(ActiveTabContext);
   const [product, setProduct] = useState({
     status: '',
   });
@@ -38,7 +38,7 @@ const EnrichProduct = () => {
       fetchProduct(id)
     }
   }, [location.search])
-  
+
   useEffect(() => {
     fetchStoreAndLocation()
 
@@ -72,7 +72,7 @@ const EnrichProduct = () => {
     try {
       const response = await B2B_API.get(`pim/product/${id}`).json();
       const product = response.response.product;
-      const pims =response.response;
+      const pims = response.response;
       const barcodeString = product?.isCreateBarcode ? "true" : "false";
       const transformData = () => {
         const result = {};
@@ -87,8 +87,6 @@ const EnrichProduct = () => {
 
         return result;
       };
-      console.log(response.response.video)
-
       if (response.response.video) {
         const videoFile = await fetchVideoAsBlob(response.response.video);
         setVideoFile(videoFile);
@@ -156,9 +154,10 @@ const EnrichProduct = () => {
         }
         return result;
       };
-      setPim({...pims,
+      setPim({
+        ...pims,
         attributes: await transformAttributes(),
-       
+
       })
       setProduct({
         ...product,
@@ -170,7 +169,7 @@ const EnrichProduct = () => {
         productCategories: await transformCategories(),
         prodVariants: transformData(),
         priceSetting: adjustPriceSetting(product?.priceSetting),
-      
+
 
         productVariants: product?.productVariants?.map(variant => ({
           ...variant,
@@ -232,10 +231,10 @@ const EnrichProduct = () => {
     const countFilledFields = (obj) => {
       let filledCount = 0;
       Object.values(obj).forEach((val) => {
-          if (val || val === true) filledCount++; // Increase count if field is filled (non-empty or checked)
+        if (val || val === true) filledCount++; // Increase count if field is filled (non-empty or checked)
       });
       return filledCount;
-  };  
+    };
 
     // Updating the relevant state based on fieldType
     if (fieldType.includes('.')) {
@@ -294,12 +293,7 @@ const EnrichProduct = () => {
     const totalFields = 30; // Set your total fields accurately
     const completionPercentage = Math.min(Math.round((filledCount / totalFields) * 100), 100);
     setSliderValue(completionPercentage); // Use this to set a state or display it
-};
-
-
-
-  console.log(pim);
-
+  };
 
   const json = [
     {
@@ -406,7 +400,7 @@ const EnrichProduct = () => {
   const createdDate = product?.createdDate ? formatDate(product.createdDate) : null;
 
   const handleBack = () => {
-    navigate(from,{ state: { ...stateData, tabs: stateData.childTabs , }})
+    navigate(from, { state: { ...stateData, tabs: stateData.childTabs, } })
   }
 
   const getUserById = async (userId) => {

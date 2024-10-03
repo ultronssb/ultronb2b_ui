@@ -1,18 +1,17 @@
 import { Slider } from '@mantine/core';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTabs from '../../../common/B2BTabs';
 import EnrichmentAttributes from './EnrichmentAttributes';
 import { default as EnrichmentHierarchy, default as Hierarchy } from './EnrichmentHierarchy';
-import EnrichmentMedia from './EnrichmentMedia';
 import EnrichmentPrice from './EnrichmentPrice';
 import EnrichmentProduct from './EnrichmentProduct';
+import EnrichmentProductVariant from './EnrichmentProductVariant';
 import EnrichmentSeo from './EnrichmentSeo';
 import EnrichmentTransaction from './EnrichmentTransaction';
 import { EnrichProductContext } from './EnrichProduct';
-import EnrichmentProductVariant from './EnrichmentProductVariant';
 
 const EnrichmentTabs = () => {
     const { product, pim, videoFile, multimedia } = useContext(EnrichProductContext);
@@ -21,7 +20,7 @@ const EnrichmentTabs = () => {
     const navigate = useNavigate();
     const query_param = new URLSearchParams(location.search);
     const from = query_param.get('from');
-    
+
     const initialTabs = [
         { id: "1", name: "Hireachy", disabled: false },
         { id: "2", name: "Attributes", disabled: false },
@@ -149,8 +148,8 @@ const EnrichmentTabs = () => {
                 {renderActiveComponent()}
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-                {activeTab > "1" && <B2BButton name={'Back'} onClick={handleBackTab}  style={{marginTop: '1px'  }}/>}
-                {activeTab < "7" && <B2BButton name={'Next'} onClick={handleNextTab} style={{marginTop: '1px'  }} />}
+                {activeTab > "1" && <B2BButton name={'Back'} onClick={handleBackTab} style={{ marginTop: '1px' }} />}
+                {activeTab < "7" && <B2BButton name={'Next'} onClick={handleNextTab} style={{ marginTop: '1px' }} />}
                 {activeTab === "7" &&
                     <B2BButton
                         style={{ backgroundColor: 'green' }}

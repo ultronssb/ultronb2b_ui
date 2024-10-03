@@ -1,12 +1,9 @@
-import React, { useContext } from 'react'
-import B2BInput from '../../../common/B2BInput'
+import React, { useContext } from 'react';
+import B2BInput from '../../../common/B2BInput';
 import { EnrichProductContext } from './EnrichProduct';
-import { Slider, RangeSlider } from '@mantine/core';
 
 const EnrichmentPrice = () => {
   const { handleChange, product, pim } = useContext(EnrichProductContext);
-
-  console.log(pim, "pim");
 
   return (
     <div>

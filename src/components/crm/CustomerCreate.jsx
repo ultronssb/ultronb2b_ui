@@ -1,19 +1,18 @@
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Checkbox, Modal, Tabs } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { IconArrowLeft } from '@tabler/icons-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { B2B_API } from '../../api/Interceptor';
 import B2BButton from '../../common/B2BButton';
-import { IconArrowLeft } from '@tabler/icons-react';
-import { ActiveTabContext } from '../../layout/Layout';
 import B2BInput from '../../common/B2BInput';
 import B2BSelect from '../../common/B2BSelect';
-import './CustomerCreate.css';
-import { Checkbox, Modal, Tabs } from '@mantine/core';
-import { B2B_API } from '../../api/Interceptor';
-import states from '../crm/StatesAndDistricts.json';
-import _, { add } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-import { useDisclosure } from '@mantine/hooks';
+import { ActiveTabContext } from '../../layout/Layout';
 import notify from '../../utils/Notification';
+import states from '../crm/StatesAndDistricts.json';
+import './CustomerCreate.css';
 
 const CustomerCreate = () => {
   const { stateData } = useContext(ActiveTabContext);
@@ -447,20 +446,6 @@ const CustomerCreate = () => {
     setActiveTab(tabValue);
   };
 
-  const handleNext = () => {
-    const currentIndex = options.indexOf(activeTab);
-    if (currentIndex < options.length - 1) {
-      setActiveTab(options[currentIndex + 1]);
-    }
-  };
-
-  const handleBack = () => {
-    const currentIndex = options.indexOf(activeTab);
-    if (currentIndex > 0) {
-      setActiveTab(options[currentIndex - 1]);
-    }
-  };
-
   /* new customer save function */
   const handleSave = async () => {
     try {
@@ -530,7 +515,7 @@ const CustomerCreate = () => {
   };
 
   const handleClose = () => {
-    setAddress(initialAddressState); 
+    setAddress(initialAddressState);
     close();
   };
 
@@ -674,7 +659,6 @@ const CustomerCreate = () => {
                           </div>
                         </div>
                         <div className='address-btn'>
-                          {/* {addr.id ? '' : <button className="addr-btn clear-button" onClick={() => { handleClear(addr) }}>Clear</button>} */}
                           <button className="addr-btn edit-button" onClick={() => { handleEdit(addr) }}>Edit</button>
                         </div>
                       </div>

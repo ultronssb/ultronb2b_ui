@@ -1,46 +1,46 @@
-import React, { useEffect, useState } from 'react'
-import '../../../css/formstyles/Formstyles.css';
-import B2BInput from '../../../common/B2BInput';
-import B2BTextarea from '../../../common/B2BTextarea';
-import B2BButton from '../../../common/B2BButton';
-import B2BSelect from '../../../common/B2BSelect';
-import { B2B_API } from '../../../api/Interceptor';
-import notify from '../../../utils/Notification';
-import { getpayLoadFromToken } from '../../../common/JwtPayload';
 import _ from 'lodash';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { B2B_API } from '../../../api/Interceptor';
+import B2BButton from '../../../common/B2BButton';
+import B2BInput from '../../../common/B2BInput';
+import B2BSelect from '../../../common/B2BSelect';
+import B2BTextarea from '../../../common/B2BTextarea';
+import { getpayLoadFromToken } from '../../../common/JwtPayload';
+import '../../../css/formstyles/Formstyles.css';
+import notify from '../../../utils/Notification';
 
 const NewLocation = () => {
 
   const initialCompany = {
-    companyId:"",
-    address : "",
-    cinNumber:  "",
+    companyId: "",
+    address: "",
+    cinNumber: "",
     city: "",
-    companyLocationId:  "",
-    companyURL : "",
-    email :  "",
-    gstNumber :  "",
-    latitude:  "",
-    locatorUrl:  "",
-    longitude:  "",
+    companyLocationId: "",
+    companyURL: "",
+    email: "",
+    gstNumber: "",
+    latitude: "",
+    locatorUrl: "",
+    longitude: "",
     mobileNumber: "",
-    name :  "",
-    pinCode :  "",
-    priceBook :  "",
-    radius : "",
+    name: "",
+    pinCode: "",
+    priceBook: "",
+    radius: "",
     revenueShare: "",
     state: "",
     tinNumber: "",
     zone: "",
     locationTypeId: '',
-    locationType:{},
+    locationType: {},
   }
 
   const [company, setCompany] = useState(initialCompany);
   const [companyLocations, setCompanyLocations] = useState([]);
   const navigate = useNavigate()
- 
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,7 +66,6 @@ const NewLocation = () => {
   }, [window.location.search]);
   const fetchAllCompanyLocations = async () => {
     const response = await B2B_API.get('location-type/get-all').json();
-    console.log(response.response)
     setCompanyLocations(response?.response)
   }
   const fetchCompany = async (id) => {
@@ -76,7 +75,7 @@ const NewLocation = () => {
       const data = response.response;
       setCompany({
         ...data,
-        locationTypeId: data.locationType?.locationTypeId ,
+        locationTypeId: data.locationType?.locationTypeId,
         companyId: data.company?.companyId
       });
     } catch (error) {
@@ -96,9 +95,9 @@ const NewLocation = () => {
   const createCompanyProfile = async (event) => {
     event.preventDefault();
     const locationType = _.find(companyLocations, cl => cl.locationId === company.locationTypeId)
-    company.locationType = locationType; 
+    company.locationType = locationType;
     const isUpdate = company.id;
-    const successMessage = isUpdate ? 'updated': 'added';
+    const successMessage = isUpdate ? 'updated' : 'added';
     try {
       await B2B_API.post('company-location/save', { json: company }).json();
       navigate('/settings/location')

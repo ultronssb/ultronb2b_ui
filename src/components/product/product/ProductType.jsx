@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Button, FileButton, Group, MultiSelect, Text } from '@mantine/core';
-import { B2B_API } from '../../../api/Interceptor';
-import { ProductContext } from './CreateProduct';
-import B2BSelect from '../../../common/B2BSelect';
-import B2BButton from '../../../common/B2BButton';
-import { useNavigate } from 'react-router-dom';
+import { Button, FileButton, Group, MultiSelect } from '@mantine/core';
 import { IconArrowLeft } from '@tabler/icons-react';
-import { ActiveTabContext } from '../../../layout/Layout';
-import B2BInput from '../../../common/B2BInput';
 import _ from 'lodash';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { B2B_API } from '../../../api/Interceptor';
+import B2BButton from '../../../common/B2BButton';
+import B2BInput from '../../../common/B2BInput';
+import B2BSelect from '../../../common/B2BSelect';
+import { ActiveTabContext } from '../../../layout/Layout';
 import notify from '../../../utils/Notification';
+import { ProductContext } from './CreateProduct';
 
 const ProductType = () => {
     const { stateData } = useContext(ActiveTabContext);

@@ -40,15 +40,15 @@ import Taxonomy from './components/product/product_hierarchy/Taxonomy';
 import ProductHistory from './components/product/productHistory/ProductHistory';
 import GST from './components/product/tax/GST';
 import Variants from './components/product/variants/Variants';
-import Abondened from './components/sales/Abondened';
-import Cancelled from './components/sales/Cancelled';
+import OrderAbondened from './components/sales/OrderAbondened';
+import OrderCancelled from './components/sales/OrderCancelled';
 import CreateOrder from './components/sales/CreateOrder';
-import Delivered from './components/sales/Delivered';
+import OrderDelivered from './components/sales/OrderDelivered';
 import Invoice from './components/sales/Invoice';
-import OpenOrder from './components/sales/OpenOrder';
+import OrderOpen from './components/sales/OrderOpen';
 import OrderManagement from './components/sales/OrderManagement';
 import Packing from './components/sales/Packing';
-import Returned from './components/sales/Returned';
+import OrderReturned from './components/sales/OrderReturned';
 import ReturnNote from './components/sales/ReturnNote';
 import SalesOrder from './components/sales/SalesOrder';
 import ShipmentNote from './components/sales/ShipmentNote';
@@ -125,11 +125,11 @@ function App() {
         {/* sales */}
         <Route path='/sales/order-management' element={<ProtectedRoute element={OrderManagement} />} />
         <Route path='/sales/enquiry' element={<ProtectedRoute element={Enquiry} />} />
-        <Route path='/sales/open-order' element={<ProtectedRoute element={OpenOrder} />} />
-        <Route path='/sales/delivery' element={<ProtectedRoute element={Delivered} />} />
-        <Route path='/sales/cancel' element={<ProtectedRoute element={Cancelled} />} />
-        <Route path='/sales/abandon' element={<ProtectedRoute element={Abondened} />} />
-        <Route path='/sales/return' element={<ProtectedRoute element={Returned} />} />
+        <Route path='/sales/open-order' element={<ProtectedRoute element={OrderOpen} />} />
+        <Route path='/sales/delivery' element={<ProtectedRoute element={OrderDelivered} />} />
+        <Route path='/sales/cancel' element={<ProtectedRoute element={OrderCancelled} />} />
+        <Route path='/sales/abandon' element={<ProtectedRoute element={OrderAbondened} />} />
+        <Route path='/sales/return' element={<ProtectedRoute element={OrderReturned} />} />
         <Route path='/sales/create-order' element={<ProtectedRoute element={CreateOrder} />} />
 
         <Route path='/sales/sales-order' element={<ProtectedRoute element={SalesOrder} />} />

@@ -1,9 +1,9 @@
-import React, { useContext, useMemo, useState } from 'react'
+import { Text } from '@mantine/core';
+import { IconPencil, IconPlus } from '@tabler/icons-react';
+import React, { useContext, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import B2BButton from '../../common/B2BButton';
-import { Text } from '@mantine/core';
 import B2BTableGrid from '../../common/B2BTableGrid';
-import { IconPencil, IconPlus } from '@tabler/icons-react';
 import { ActiveTabContext } from '../../layout/Layout';
 
 export const Loyalty = () => {

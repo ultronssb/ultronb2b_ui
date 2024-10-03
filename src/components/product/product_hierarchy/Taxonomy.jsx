@@ -1,5 +1,5 @@
 import { IconPencil } from '@tabler/icons-react';
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
@@ -60,7 +60,7 @@ const Taxonomy = () => {
         )
       }
     }
-  ],[])
+  ], [])
 
   const editTaxonomy = (roleObj) => {
     setTaxonomy((prev => ({ ...prev, ...roleObj })))

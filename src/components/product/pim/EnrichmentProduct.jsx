@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
 import B2BInput from '../../../common/B2BInput';
 import { EnrichProductContext } from './EnrichProduct';
-import B2BSelect from '../../../common/B2BSelect';
 
 const EnrichmentProduct = () => {
 
-  const { handleChange, product,pim } = useContext(EnrichProductContext);
+  const { handleChange, product, pim } = useContext(EnrichProductContext);
 
   return (
     <div>

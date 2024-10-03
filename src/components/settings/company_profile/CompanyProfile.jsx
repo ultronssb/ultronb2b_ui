@@ -95,7 +95,7 @@ const CompanyProfile = () => {
     const { value } = event?.target
     setCompany((prev) => ({ ...prev, [key]: value }))
   }
-  
+
   // const handleChange = (event, field, value) => {
   //   if (field === 'pinCode') {
   //     if (value.length <= 6 && /^[0-9]*$/.test(value)) {
@@ -125,8 +125,6 @@ const CompanyProfile = () => {
 
   const createCompanyProfile = async (event) => {
     event.preventDefault();
-    console.log(companyLocations);
-    
     const locationType = _.find(companyLocations, cl => cl?.locationTypeId === company?.locationType?.locationTypeId);
     // if (!locationType) {
     //   return;
@@ -207,8 +205,6 @@ const CompanyProfile = () => {
   const handleBack = (e) => {
     setIsCompany(false)
   }
-
-  console.log("company : ", company);
 
   return (
     <div className='grid-container'>
