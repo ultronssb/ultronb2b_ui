@@ -23,7 +23,7 @@ const EnrichmentTabs = () => {
 
     const initialTabs = [
         { id: "1", name: "Hireachy", disabled: false },
-        { id: "2", name: "Attributes", disabled: false },
+        // { id: "2", name: "Attributes", disabled: false },
         { id: "3", name: "Product", disabled: false },
         { id: "4", name: "Transaction", disabled: false },
         { id: "5", name: "SEO", disabled: false },
@@ -37,8 +37,6 @@ const EnrichmentTabs = () => {
         switch (activeTab) {
             case "1":
                 return <EnrichmentHierarchy />;
-            case "2":
-                return <EnrichmentAttributes />;
             case "3":
                 return <EnrichmentProduct />;
             case "4":

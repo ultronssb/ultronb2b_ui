@@ -32,6 +32,8 @@ const EnrichProduct = () => {
   const [pim, setPim] = useState({});
   const [multimedia, setMultimedia] = useState([])
   const [sliderValue, setSliderValue] = useState(0);
+  const [totalFields, setTotalFields] = useState(0);
+
 
   useEffect(() => {
     if (id) {
@@ -341,6 +343,16 @@ const EnrichProduct = () => {
       onChange: (event) => handleChange(event, "name", 0),
       edit: true
     },
+    // {
+    //   label: "Taxonomy",
+    //   value: product.taxonomyNode?.name || "", // Display name if available
+    //   type: product.taxonomyNode?.name ? "text" : "select", // Switch between text or select field
+    //   fieldType: product.taxonomyNode?.name ? "textField" : "selectField", // Conditionally render field type
+    //   placeholder: product.taxonomyNode?.name ? "Enter Variant Id" : "Select Taxonomy", // Placeholder changes accordingly
+    //   options: !product.taxonomyNode?.name ? taxonomyOptions : [], // Provide options if dropdown is shown
+    //   onChange: (event) => handleChange(event, "name", 0), // Handle change for both cases
+    //   edit: true
+    // },
     {
       label: "Status",
       type: 'radio',
