@@ -21,13 +21,16 @@ const Articles = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
+  const [searchTerm, setSearchTerm] = useState('');
 
 
   useEffect(() => {
     fetchAllProducts();
-  }, [pagination.pageIndex, pagination.pageSize]);
+  }, [pagination.pageIndex, pagination.pageSize,searchTerm]);
 
+  useEffect(() => {
+    fetchAllProducts();
+}, [searchTerm, pagination]);
   const editVarient = (varobj) => {
     setIsCreateProduct(true);
     navigate(`/product/product/create?id=${varobj?.productId}`);
@@ -36,7 +39,7 @@ const Articles = () => {
   const fetchAllProducts = async () => {
     try {
       setIsLoading(true);
-      const response = await B2B_API.get(`product/view?page=${pagination.pageIndex}&size=${pagination.pageSize}`).json();
+      const response = await B2B_API.get(`product/products/search?page=${pagination.pageIndex}&size=${pagination.pageSize}&searchTerm=${searchTerm}`).json();
       const data = response?.response?.content || [];
       setRowCount(response?.response?.totalElements || 0);
       setProducts(data);
@@ -57,6 +60,11 @@ const Articles = () => {
     navigate('/product/product/create', { state: { ...stateData, tabs: stateData.childTabs } })
   }
 
+  const handleSearchChange = (event) => {
+    const value = event.currentTarget.value;
+    setSearchTerm(value);
+    fetchAllProducts();
+};
   console.log(products)
 
   return (
@@ -83,6 +91,8 @@ const Articles = () => {
             pagination={pagination}
             rowCount={rowCount}
             manualPagination={true}
+            searchTerm={searchTerm}
+            handleSearchChange={handleSearchChange}
           />
         </div>
       )}

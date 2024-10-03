@@ -19,6 +19,8 @@ const MapChannel = () => {
   const [mapStatus, setMapStatus] = useState(false);
   const [areAllSelected, setAreAllSelected] = useState(false);
   const [status] = useState('ACTIVE');
+  const [searchTerm, setSearchTerm] = useState('');
+
 
   useEffect(() => {
     fetchAllCompanyLocations();
@@ -33,8 +35,12 @@ const MapChannel = () => {
       setAreAllSelected(false);
       setProduct([]);
     }
-  }, [pagination, selectedChannel, selectedStore, mapStatus]);
-
+  }, [pagination, selectedChannel, selectedStore, mapStatus,searchTerm]);
+  
+  useEffect(() => {
+    fetchAllProducts();
+}, [searchTerm, pagination]);
+  console.log(searchTerm,'search');
   const fetchAllCompanyLocations = async () => {
     try {
       const response = await B2B_API.get('company-location/get-all').json();
@@ -62,13 +68,14 @@ const MapChannel = () => {
       console.error("Error fetching channels:", error);
     }
   };
-
+ 
+ 
   const fetchAllProducts = async () => {
     setIsLoading(true);
     try {
       const endpoint = mapStatus
         ? `pim/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}`
-        : `map-channel/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}`;
+        : `map-channel/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}&searchTerm=${searchTerm}`;
 
       const response = await B2B_API.get(endpoint).json();
       const data = response?.response?.content || [];
@@ -131,8 +138,15 @@ const MapChannel = () => {
       setSelectedPairs([]);
       setAreAllSelected(!areAllSelected);
     }
-
+   
   };
+  const handleSearchChange = (event) => {
+    const value = event.currentTarget.value;
+    setSearchTerm(value);
+    
+    // Optionally, you could debounce this call for better performance
+    fetchAllProducts(); // Fetch products based on the new search term
+};
 
 
   return (
@@ -187,6 +201,8 @@ const MapChannel = () => {
         pagination={pagination}
         rowCount={rowCount}
         onPaginationChange={setPagination}
+        searchTerm={searchTerm}
+        handleSearchChange={handleSearchChange}
       />
     </div>
   );

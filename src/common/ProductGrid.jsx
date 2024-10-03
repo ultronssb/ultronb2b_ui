@@ -6,17 +6,19 @@ import B2BTableGrid from './B2BTableGrid';
 import _ from 'lodash';
 
 const ProductGrid = ({ data,
-    editVariant,
-    map,
-    areAllSelected,
-    handleSelectAllPairs,
-    selectedPairs,
-    handleSelectPair,
-    isLoading,
-    isError,
+     editVariant,
+      map,
+      searchTerm,
+       areAllSelected, 
+       handleSelectAllPairs,
+        selectedPairs, 
+        handleSelectPair ,
+        isLoading ,
+        isError,
+        handleSearchChange,
 
-    onPaginationChange = () => { }, pagination, pageCount, manualPagination,
-    rowCount, isFetching }) => {
+    onPaginationChange = () => { },  pagination,  pageCount,manualPagination,
+    rowCount, isFetching}) => {
     const { pimId } = data[0] || {};
 
 
@@ -176,6 +178,8 @@ const ProductGrid = ({ data,
         },
         mantineSearchTextInputProps: {
             placeholder: 'Search Products',
+            value: searchTerm,
+            onChange: handleSearchChange,
         },
         onPaginationChange: onPaginationChange,
         manualPagination: manualPagination,
