@@ -49,7 +49,7 @@ const CustomerCreate = () => {
 
   const [customer, setCustomer] = useState(initialCustomerState);
   const [cities, setCities] = useState([]);
-  const options = ['Customer', 'Address'];
+  const options = ['Detail Info', 'Address'];
   const [activeTab, setActiveTab] = useState(options[0]);
   const [opened, { open, close }] = useDisclosure(false);
   const location = useLocation();
@@ -521,7 +521,8 @@ const CustomerCreate = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ flexGrow: 1, display:'flex', alignItems:'center' }} className='customer-details-header'>Customer {id ? <span style={{fontSize:'15px', marginLeft:'0.5rem'}}>- (Edit)</span> : ''}</div>
         <B2BButton
           style={{ color: '#000' }}
           name="Back"
@@ -530,6 +531,7 @@ const CustomerCreate = () => {
           color={"rgb(207, 239, 253)"}
         />
       </div>
+
       {
         id && (
           <Tabs value={activeTab} onTabChange={setActiveTab} color='2px solid #3c6d8e'>
@@ -547,9 +549,9 @@ const CustomerCreate = () => {
               ))}
             </Tabs.List>
 
-            <Tabs.Panel value='Customer'>
+            <Tabs.Panel value='Detail Info'>
               <div className='customer-container'>
-                <div className='customer-details-header'>New Customer</div>
+                <div className='customer-details-header'></div>
                 <div className='customer-form-section'>
                   {customerFields.filter(field => field.id <= 16).map(field => (
                     <div key={field.id} className="customer-form-group">
@@ -590,9 +592,9 @@ const CustomerCreate = () => {
 
             <Tabs.Panel value='Address'>
               <div className='address-container'>
-                <div className='address-details-header'>Address</div>
+                <div className='address-details-header'></div>
                 <div className='address-container-field'>
-                  <div className="add-address">
+                  <div className="add-address" onClick={open}>
                     <FontAwesomeIcon icon={faPlusCircle} className="address-icon" onClick={open} />
                     <div className="address-label">Add Address</div>
                   </div>
@@ -680,7 +682,6 @@ const CustomerCreate = () => {
       {
         !id && (
           <div className='customer-container'>
-            <div className='customer-details-header'>New Customer</div>
             <div className='customer-form-section'>
               {customerFields.map((field, index) => (
                 field.category === 'customer' && (
