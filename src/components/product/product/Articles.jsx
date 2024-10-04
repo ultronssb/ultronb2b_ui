@@ -25,9 +25,6 @@ const Articles = () => {
     fetchAllProducts();
   }, [pagination.pageIndex, pagination.pageSize, searchTerm]);
 
-  useEffect(() => {
-    fetchAllProducts();
-  }, [searchTerm, pagination]);
   const editVarient = (varobj) => {
     setIsCreateProduct(true);
     navigate(`/product/product/create?id=${varobj?.productId}`);
@@ -60,7 +57,6 @@ const Articles = () => {
   const handleSearchChange = (event) => {
     const value = event.currentTarget.value;
     setSearchTerm(value);
-    fetchAllProducts();
   };
 
   return (

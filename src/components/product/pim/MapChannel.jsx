@@ -36,9 +36,9 @@ const MapChannel = () => {
     }
   }, [pagination, selectedChannel, selectedStore, mapStatus,searchTerm]);
   
-  useEffect(() => {
-    fetchAllProducts();
-}, [searchTerm, pagination]);
+//   useEffect(() => {
+//     fetchAllProducts();
+// }, [searchTerm, pagination]);
   console.log(searchTerm,'search');
   const fetchAllCompanyLocations = async () => {
     try {
@@ -137,9 +137,6 @@ const MapChannel = () => {
   const handleSearchChange = (event) => {
     const value = event.currentTarget.value;
     setSearchTerm(value);
-    
-    // Optionally, you could debounce this call for better performance
-    fetchAllProducts(); // Fetch products based on the new search term
 };
 
 
