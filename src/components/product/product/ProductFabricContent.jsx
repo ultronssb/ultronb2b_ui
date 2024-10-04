@@ -8,7 +8,7 @@ import { B2B_API } from '../../../api/Interceptor';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
-import './FabricContent.css';
+import './ProductFabricContent.css';
 
 const FabricContent = () => {
     const { product, setProduct, handleChange, inputError, setInputError } = useContext(ProductContext);

@@ -7,6 +7,7 @@ import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
 import B2BTableGrid from '../../../common/B2BTableGrid';
+import B2BSelectable from '../../../common/B2BSelectable';
 import notify from '../../../utils/Notification';
 import './Variant.css';
 
@@ -21,31 +22,42 @@ const Variants = () => {
     status: 'ACTIVE',
   };
 
-  const [isVariant, setIsVariant] = useState(false);
+  const [isCreateVariant, setIsCreateVariant] = useState(false);
   const [variant, setVariant] = useState(initialState);
-  const [variants, setVariants] = useState([]);
-  const [variantType, setVariantType] = useState('');
+  const [variantList, setVariantList] = useState([]);
+  const [currentVariantType, setCurrentVariantType] = useState('');
+  const [variantTypes, setVariantTypes] = useState([]);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [rowCount, setRowCount] = useState(5);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
-  const variantOptions = ['Colour', 'Solid', 'Others'];
+  const variantOptions = ['Colour', 'Solid', 'More Variants'];
   const [activeTab, setActiveTab] = useState(variantOptions[0]);
+
+  const [otherVariantTypes, setOtherVariantTypes] = useState([]);
+  const [selectedOtherVariant, setSelectedOtherVariant] = useState('Size');
 
 
   useEffect(() => {
     fetchAllVariants();
   }, [pagination.pageIndex, pagination.pageSize, activeTab]);
 
+  useEffect(() => {
+    fetchAllVarientType();
+  }, [])
+
   const fetchAllVariants = async () => {
+    const type = activeTab === 'More Variants' ? 'Others' : activeTab;
     try {
       setIsLoading(true);
-      const res = await B2B_API.get(`variant/get-All?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&type=${activeTab}`).json();
+      const res = await B2B_API.get(`variant/get-All?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&type=${type}`).json();
       const data = res?.response?.content || [];
       setRowCount(res?.response?.totalElements || 0);
-      setVariants(data);
+      setVariantList(data);
+      const uniqueNames = [...new Set(data.map(item => item.name))];
+      setOtherVariantTypes(uniqueNames)
     } catch (error) {
       setIsError(true);
       notify({
@@ -58,6 +70,29 @@ const Variants = () => {
       setIsLoading(false);
     }
   };
+
+  const fetchAllVarientType = async () => {
+    try {
+      setIsLoading(true);
+      const response = await B2B_API.get(`variantType`).json();
+      const data = response?.response || [];
+      console.log(data);
+      const filteredData = data.filter(item => !['Colour', 'Solid'].includes(item));
+
+      setVariantTypes(filteredData);
+    } catch (error) {
+      setIsError(true);
+      notify({
+        id: "fetch_varients",
+        error: true,
+        success: false,
+        title: error?.message || ERROR_MESSAGE
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   const initializeImage = async (imagePath) => {
     try {
@@ -81,23 +116,29 @@ const Variants = () => {
   };
 
   const handleSelect = (value) => {
-    setVariantType(value || '');
+    setCurrentVariantType(value || '');
     if (value !== 'Solid') {
       setImageFile(null)
     }
     setVariant(prev => ({
       ...prev,
-      name: value === 'Others' ? '' : value,
-      type: value,
+      name: value === 'More Variants' ? '' : value,
+      type: value === 'More Variants' ? 'Others' : value,
     }));
   };
 
   const handleChange = (event, key) => {
     const { value, checked, type } = event.target;
+    console.log(type);
+
     setVariant(prev => ({
       ...prev,
       [key]: type === 'checkbox' ? checked : value,
     }));
+  };
+
+  const handleVariant = (event, key) => {
+    setVariant(prev => ({ ...prev, [key]: key === "name" ? event : event?.target?.value }));
   };
 
   const handleColorChange = (color) => {
@@ -117,6 +158,10 @@ const Variants = () => {
       />
     </div>
   );
+
+  const handleSelectOtherVariants = (newValue) => {
+    setSelectedOtherVariant(newValue);
+  };
 
 
   const columns = {
@@ -151,7 +196,7 @@ const Variants = () => {
 
     "Solid": [
       { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
-      { header: 'Solid', accessorKey: 'value' },
+      { header: 'Solid / Pattern', accessorKey: 'value' },
       {
         header: 'Solid Pattern', accessorKey: 'solid', Cell: ({ row }) => {
           const { original } = row;
@@ -171,10 +216,27 @@ const Variants = () => {
         accessorKey: "actions"
       },
     ],
-    "Others": [
+    "More Variants": [
       { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
-      { header: 'Name', accessorKey: 'name' },
-      { header: 'Value', accessorKey: 'value' },
+      {
+        header: (
+          <B2BSelect
+            style={{ width: '200px !important', border: 'none' }}
+            value={selectedOtherVariant}
+            data={otherVariantTypes}
+            onChange={handleSelectOtherVariants}
+            clearable
+          />
+        ),
+        accessorKey: 'value',
+        Cell: ({ row }) => {
+          const { original } = row;
+          if (original.name === selectedOtherVariant) {
+            return <span>{original.value}</span>;
+          }
+          return null;
+        },
+      },
       { header: 'Status', accessorKey: 'status' },
       {
         header: 'Actions', mainTableHeaderCellProps: { align: 'center' }, mainTableBodyCellProps: { align: 'center' }, size: 100, Cell: ({ row }) => {
@@ -198,8 +260,9 @@ const Variants = () => {
 
 
   const editVariant = (varobj) => {
-    setIsVariant(true);
-    setVariantType(varobj.type);
+    setIsCreateVariant(true);
+    const type = varobj.type === 'Others' ? 'More Variants' : varobj.type;
+    setCurrentVariantType(type);
     setVariant(prev => ({ ...prev, ...varobj }));
     initializeImage(varobj.image);
   };
@@ -215,9 +278,9 @@ const Variants = () => {
     try {
       setIsLoading(true);
       const response = await B2B_API.post('variant', { body: formData }).json();
-      setIsVariant(false);
+      setIsCreateVariant(false);
       setVariant(initialState);
-      setVariantType('');
+      setCurrentVariantType('');
       setImageFile(null)
       notify({
         id: variant.variantId ? 'update_variant_success' : 'create_variant_success',
@@ -239,9 +302,9 @@ const Variants = () => {
   };
 
   const handleCancel = () => {
-    setIsVariant(false);
+    setIsCreateVariant(false);
     setVariant(initialState);
-    setVariantType('');
+    setCurrentVariantType('');
     setImageFile(null);
   };
 
@@ -292,11 +355,14 @@ const Variants = () => {
     }
   };
 
+  const filteredVariants = variantList.filter(variant => variant.name === selectedOtherVariant);
+  console.log('filter : ', filteredVariants);
+
 
 
   return (
     <div>
-      {!isVariant && (
+      {!isCreateVariant && (
         <>
           <div className='user--container'>
             <Text size='lg'>Variant Details</Text>
@@ -304,7 +370,7 @@ const Variants = () => {
               <B2BButton
                 style={{ color: '#000' }}
                 name={"Create Variants"}
-                onClick={() => setIsVariant(true)}
+                onClick={() => setIsCreateVariant(true)}
                 leftSection={<IconPlus size={15} />}
                 color={"rgb(207, 239, 253)"}
               />
@@ -322,7 +388,7 @@ const Variants = () => {
               <Tabs.Panel value={activeTab}>
                 <B2BTableGrid
                   columns={columns[activeTab]}
-                  data={variants}
+                  data={activeTab === 'More Variants' ? filteredVariants : variantList}
                   isLoading={isLoading}
                   isError={isError}
                   enableTopToolbar={true}
@@ -339,7 +405,7 @@ const Variants = () => {
 
         </>
       )}
-      {isVariant && (
+      {isCreateVariant && (
         <div className='container'>
           <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
             <B2BButton
@@ -353,15 +419,15 @@ const Variants = () => {
           <div className='variant-container'>
             <h1 style={{ width: '250px' }}>{variant.variantId ? 'Update Variant' : 'New Variant'}</h1>
             <div className='variant-group'>
-              <label className='variant-label'>Select Variant</label>
+              <label className='variant-label'>Select Variant Type</label>
               <B2BSelect
-                value={variantType}
+                value={currentVariantType}
                 data={variantOptions}
                 onChange={handleSelect}
                 clearable
               />
             </div>
-            {variantType === 'Colour' && (
+            {currentVariantType === 'Colour' && (
               <>
                 {renderInput('Value', 'value')}
                 <div className="variant-group">
@@ -376,7 +442,7 @@ const Variants = () => {
                 </div>
               </>
             )}
-            {variantType === 'Solid' && (
+            {currentVariantType === 'Solid' && (
               <>
                 {renderInput('Value', 'value')}
                 <div className="variant-group">
@@ -399,9 +465,18 @@ const Variants = () => {
                 </div>
               </>
             )}
-            {variantType === 'Others' && (
+            {currentVariantType === 'More Variants' && (
               <>
-                {renderInput('Name', 'name')}
+                <div className="variant-group">
+                  <label className='variant-label'>New Variant</label>
+                  <B2BSelectable
+                    data={variantTypes}
+                    value={variant.name || ""}
+                    setData={setVariantTypes}
+                    setValue={(event) => handleVariant(event, 'name')}
+
+                  />
+                </div>
                 {renderInput('Value', 'value')}
               </>
             )}

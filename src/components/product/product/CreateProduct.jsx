@@ -6,7 +6,7 @@ import B2BButton from '../../../common/B2BButton';
 import B2BTabs from '../../../common/B2BTabs';
 import notify from '../../../utils/Notification';
 import { validateProductDescription, validateProductName } from '../../../utils/Validation';
-import FabricContent from './FabricContent';
+import ProductFabricContent from './ProductFabricContent';
 import ProductCategorys from './ProductCategorys';
 import ProductDimension from './ProductDimension';
 import ProductPrice from './ProductPrice';
@@ -214,7 +214,7 @@ const CreateProduct = () => {
       case "2":
         return <ProductCategorys />;
       case "3":
-        return <FabricContent />;
+        return <ProductFabricContent />;
       case "4":
         return <ProductDimension />;
       case "5":
