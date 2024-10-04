@@ -179,8 +179,8 @@ const ProductType = () => {
             value: product?.status,
             fieldType: 'radioField',
             options: [
-                { label: "ACTIVE", value: "true" },
-                { label: "INACTIVE", value: "false" }
+                { label: "ACTIVE", value: "ACTIVE" },
+                { label: "INACTIVE", value: "INACTIVE" }
             ],
             onChange: (event) => handleChange(event, "status"),
             name: "status",

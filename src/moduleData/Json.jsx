@@ -186,11 +186,11 @@ export const data = [
   { id: "85", name: "Users", parent_id: "7", orderBy: 5, path: "/settings/user-management" },
   { id: "86", name: "Location Type", parent_id: "7", orderBy: 6, path: "/settings/location-type" },
 
-  { id: "87", name: "Company Profile", parent_id: "8q", orderBy: 1, path: '/settings/company-profile' },
-  { id: "88", name: "Channels", parent_id: "8q", orderBy: 2, path: '/settings/company-profile/channels' },
-  { id: "89", name: "Other Settings", parent_id: "8q", orderBy: 3, path: '/settings/company-profile/other-settings' },
-  { id: "90", name: "Legal", parent_id: "8q", orderBy: 4,path: '/settings/company-profile/legal' },
-  { id: "91", name: "Business Rules", parent_id: "8q", orderBy: 5, path: '/settings/company-profile/business-rules' },
+  { id: "87", name: "Company Profile", parent_id: "81", orderBy: 1, path: '/settings/company-profile' },
+  { id: "88", name: "Channels", parent_id: "81", orderBy: 2, path: '/settings/company-profile/channels' },
+  { id: "89", name: "Other Settings", parent_id: "81", orderBy: 3, path: '/settings/company-profile/other-settings' },
+  { id: "90", name: "Legal", parent_id: "81", orderBy: 4,path: '/settings/company-profile/legal' },
+  { id: "91", name: "Business Rules", parent_id: "81", orderBy: 5, path: '/settings/company-profile/business-rules' },
 
   { id: "92", name: "Location Details", parent_id: "82", orderBy: 1, path: "/settings/location" },
   { id: "93", name: "Bulk Upload", parent_id: "82", orderBy: 3, modal: true },

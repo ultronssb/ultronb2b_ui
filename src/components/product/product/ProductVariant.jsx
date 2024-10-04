@@ -36,6 +36,7 @@ const ProductVariant = () => {
                 key,
                 values: Array.from(new Set(prodVariants[key]))
             }));
+            console.log(selectedPairs)
             setSelectedPairs(pairs);
         }
     };

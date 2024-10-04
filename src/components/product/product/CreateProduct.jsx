@@ -78,6 +78,7 @@ const CreateProduct = () => {
     gstId: '',
     brandId: '',
     taxonomyNode: {},
+    status: 'ACTIVE'
   }
   const [product, setProduct] = useState(initialState);
   const [imageFile, setImageFile] = useState(null)
@@ -518,14 +519,20 @@ const CreateProduct = () => {
         product?.productVariants.forEach(variant => {
           variant.variants.forEach(v => {
             if (!result[v.name]) {
-              result[v.name] = [];
+              result[v.name] = new Set(); // Use a Set to ensure uniqueness
             }
-            result[v.name].push(v.id);
+            result[v.name].add(v.id); // Add id to the Set
           });
         });
-
+      
+        // Convert Set back to array before returning the result
+        for (const key in result) {
+          result[key] = Array.from(result[key]);
+        }
+      
         return result;
       };
+      
       const calculateTotalPercent = (composition) => {
         return Object.values(composition).reduce((sum, value) => sum + parseInt(value, 10), 0);
       };
@@ -574,6 +581,7 @@ const CreateProduct = () => {
           isMarkUp: priceSetting.markUpPercent > 0 ? true : false,
         };
       };
+      console.log(transformData())
 
       setProduct({
         ...product,
