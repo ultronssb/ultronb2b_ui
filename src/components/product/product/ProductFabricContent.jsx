@@ -10,7 +10,7 @@ import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
 import './ProductFabricContent.css';
 
-const FabricContent = () => {
+const ProductFabricContent = () => {
     const { product, setProduct, handleChange, inputError, setInputError } = useContext(ProductContext);
     const [totalPercent, setTotalpercent] = useState(product?.totalProductPercent || 0)
     const [fabricContent, setFabricContent] = useState({});
@@ -19,7 +19,7 @@ const FabricContent = () => {
     const [fCCValue, setFCCValue] = useState('');
     const [fabricValue, setFabricValue] = useState([]);
 
-    console.log('fcc : ',product);
+    console.log('pro : ',product);
     
 
     useEffect(() => {
@@ -409,4 +409,4 @@ const FabricContent = () => {
     );
 };
 
-export default FabricContent;
+export default ProductFabricContent;

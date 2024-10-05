@@ -67,6 +67,7 @@ import Role from './components/settings/users/Role';
 import RolePrivileges from './components/settings/users/RolePrivileges';
 import Layout from './layout/Layout';
 import Enquiry from './components/sales/Enquiry';
+import FabricContent from './components/product/product_hierarchy/FabricContent';
 
 const ProtectedRoute = ({ element: Component }) => {
   const navigate = useNavigate();
@@ -98,6 +99,7 @@ function App() {
         <Route path='/product/group' element={<ProtectedRoute element={Group} />} />
         <Route path='/product/taxonomy' element={<ProtectedRoute element={Taxonomy} />} />
         <Route path='/product/attribute' element={<ProtectedRoute element={Attribute} />} />
+        <Route path='/product/fabricContent' element={<ProtectedRoute element={FabricContent} />} />
         {/* 
         <Route path='/product/tax/tax-masters' element={<ProtectedRoute element={TaxMasters} />} />
         <Route path='/product/tax/gst-slabs' element={<ProtectedRoute element={GSTSlabs} />} />

@@ -92,8 +92,7 @@ const ProductHierarchy = () => {
   const [categoryTree, setCategoryTree] = useState([{ ...initialState }]);
   const [groups, setGroups] = useState([]);
   const [categoryRowCount, setCategoryRowCount] = useState(0);
-  const [categoryPagination, setCategoryPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const [taxonomy, setTaxonomy] = useState([]);
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [productCount, setProductCount] = useState({})
   const [types, setTypes] = useState('')
   const [isLevelOneDisabled, setIsLevelOneDisabled] = useState(false);
@@ -186,12 +185,13 @@ const ProductHierarchy = () => {
       const response = await B2B_API.post('product-category', { json: categoryTree[0] }).json();
       notify({
         title: "Success!!",
-        message: 'Category saved successfully.',
+        message: id ? 'Category updated successfully.' : 'Category saved successfully.',
         error: false,
         success: true
       });
       setTypes('')
       setIsCreateCategory(false);
+      navigate('/product/product-hierarchy', { state: { ...stateData, tabs: stateData.childTabs } });
     } catch (error) {
       notify({
         title: "Error!!",
@@ -344,6 +344,9 @@ const ProductHierarchy = () => {
                 enableTopToolbar={true}
                 enableGlobalFilter={true}
                 enableFullScreenToggle={true}
+                pagination={pagination}
+                rowCount={categoryRowCount}
+                onPaginationChange={setPagination}
               />
             )
           }
@@ -379,7 +382,7 @@ const ProductHierarchy = () => {
                 />
                 <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center' }}>
                   <B2BButton onClick={() => handleCancel()} name='Cancel' color='#ff0000' />
-                  <B2BButton onClick={() => handleSave()} name='Save' color='rgb(26, 160, 70)' />
+                  <B2BButton onClick={() => handleSave()} name={id ? 'Update' : 'Save'} color='rgb(26, 160, 70)' />
                 </div>
               </div>
             )

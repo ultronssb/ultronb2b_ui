@@ -77,7 +77,7 @@ export const data = [
   { id: "18", name: "Brand", parent_id: "8", orderBy: 6, path: "/product/brand" },
   { id: "19", name: "Group", parent_id: "8", orderBy: 7, path: "/product/group" },
   { id: "20", name: "Taxonomy", parent_id: "8", orderBy: 8, path: "/product/taxonomy" },
-  // { id: "21", name: "Attribute", parent_id: "8", orderBy: 9, path: "/product/attribute" },
+  { id: "211", name: "FCC Code", parent_id: "8", orderBy: 9, path: "/product/fabricContent" },
 
 
   { id: "22", name: "Product", parent_id: "9", orderBy: 1, path: "/product/product/articles" },
@@ -150,7 +150,7 @@ export const data = [
   /* CRM Child Component */
   { id: "62", name: "Customer", parent_id: "5", orderBy: 1, path: "/crm/customer" },
   { id: "63", name: "Loyalty", parent_id: "5", orderBy: 2, path: "/crm/loyalty" },
-  { id: "64", name: "Sales Man", parent_id: "5", orderBy: 3, path: "/crm/salesman" },
+  { id: "64", name: "SalesMan", parent_id: "5", orderBy: 3, path: "/crm/salesman" },
 
   { id: "65", name: "Customer", parent_id: "62", orderBy: 1, path: "/crm/customer" },
   { id: "66", name: "Draft", parent_id: "62", orderBy: 2, path: "/crm/customer/draft" },
@@ -159,7 +159,7 @@ export const data = [
   { id: "68", name: "Loyalty", parent_id: "63", orderBy: 1, path: "/crm/loyalty" },
   { id: "69", name: "Point Status", parent_id: "63", orderBy: 3, path: "/crm/loyalty/point-status" },
 
-  { id: "70", name: "Sales Man", parent_id: "64", orderBy: 1, path: "/crm/salesman" },
+  { id: "70", name: "SalesMan", parent_id: "64", orderBy: 1, path: "/crm/salesman" },
 
 
   /* E-Commerce Child Component */
