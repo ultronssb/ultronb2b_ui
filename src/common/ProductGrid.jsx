@@ -3,21 +3,22 @@ import { IconPencil } from '@tabler/icons-react';
 import _ from 'lodash';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { useMemo, useState } from 'react';
+import { BASE_URL } from '../api/EndPoints';
 
 const ProductGrid = ({ data,
-     editVariant,
-      map,
-      searchTerm,
-       areAllSelected, 
-       handleSelectAllPairs,
-        selectedPairs, 
-        handleSelectPair ,
-        isLoading ,
-        isError,
-        handleSearchChange,
+    editVariant,
+    map,
+    searchTerm,
+    areAllSelected,
+    handleSelectAllPairs,
+    selectedPairs,
+    handleSelectPair,
+    isLoading,
+    isError,
+    handleSearchChange,
 
-    onPaginationChange = () => { },  pagination,  pageCount,manualPagination,
-    rowCount, isFetching}) => {
+    onPaginationChange = () => { }, pagination, pageCount, manualPagination,
+    rowCount, isFetching }) => {
     const { pimId } = data[0] || {};
 
 
@@ -25,6 +26,19 @@ const ProductGrid = ({ data,
         {
             id: 'product',
             columns: [
+                {
+                    accessorKey: pimId ? 'product.image' : 'image',
+                    header: 'Product Image',
+                    size: 150,
+                    enableSorting: false,
+                    enableColumnDragging: false,
+                    Cell: ({ row }) => {
+                        const item = pimId ? row.original.product?.image : row.original.image;
+                        return (
+                            <img src={`${BASE_URL.replace('/api', '')}${item}`} alt="Uploaded Badge" style={{ maxWidth: '50px', maxHeight: '50px' }} />
+                        );
+                    }
+                },
                 {
                     accessorKey: pimId ? 'product.articleCode' : 'articleCode',
                     header: 'Product Code',

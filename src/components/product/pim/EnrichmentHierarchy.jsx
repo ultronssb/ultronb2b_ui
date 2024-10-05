@@ -7,6 +7,7 @@ import { B2B_API } from '../../../api/Interceptor';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
 import { EnrichProductContext } from './EnrichProduct';
+import { Textarea } from '@mantine/core';
 
 const EnrichmentHierarchy = () => {
   const { product, setProduct, pim, setPim } = useContext(EnrichProductContext);
@@ -14,26 +15,27 @@ const EnrichmentHierarchy = () => {
   const initialState = { key: '', value: {}, heirarchyLabel: "", options: [], openModal: false, count: 2 };
   const [categorys, setCategorys] = useState([]);
   const [categoryName, setCategoryName] = useState([]);
-  const [selectedPairs, setSelectedPairs] = useState([{ ...initialState }]);
+  const [selectedPairs, setSelectedPairs] = useState([]);
   const [expanded, setExpanded] = useState('category-0');
   const [opened, { open, close }] = useDisclosure(false);
   const [loading, setLoading] = useState(true);
   const [isAddingNew, setIsAddingNew] = useState(false);
+  const [existingCategoryKey, setExistingCategoryKey] = useState([])
 
   useEffect(() => {
     fetchCategory();
-  }, []);
+  }, [pim.attributes,product.productCategories]);
 
 
-  useEffect(() => {
-    if (!loading && product?.productCategories) {
-      const categories = product.productCategories.length > 0 ? product.productCategories : [{ ...initialState }];
+  // useEffect(() => {
+  //   if (!loading && product?.productCategories) {
+  //     const categories = product.productCategories.length > 0 ? product.productCategories : [{ ...initialState }];
 
-      const attributes = pim?.attributes.length > 0 ? pim?.attributes : [];
+  //     const attributes = pim?.attributes.length > 0 ? pim?.attributes : [];
 
-      setSelectedPairs([...categories, ...attributes]);
-    }
-  }, [loading, product?.productCategories, pim?.attributes]);
+  //     setSelectedPairs([...categories, ...attributes]);
+  //   }
+  // }, [loading, product?.productCategories, pim?.attributes]);
 
   const fetchCategory = async () => {
     try {
@@ -44,6 +46,7 @@ const EnrichmentHierarchy = () => {
       setCategorys(categories)
       setLoading(false)
       setCategorysAndselectedPairs()
+      console.log(categories)
     } catch (error) {
       console.error('Error fetching variants:', error);
     }
@@ -53,14 +56,15 @@ const EnrichmentHierarchy = () => {
     const { productCategories } = product;
     const { attributes } = pim;
 
+    setExistingCategoryKey(_.map(productCategories, p => p.key))
     const formattedCategories = [];
-    if (_.size(productCategories) > 0) {
-      const productFormatted = productCategories.map(category => ({
-        ...category,
-        options: getParentChild(category.key)
-      }));
-      formattedCategories.push(...productFormatted);
-    }
+    // if (_.size(productCategories) > 0) {
+    //   const productFormatted = productCategories.map(category => ({
+    //     ...category,
+    //     options: getParentChild(category.key)
+    //   }));
+    //   formattedCategories.push(...productFormatted);
+    // }
 
     if (_.size(attributes) > 0) {
       const attributeFormatted = attributes.map(attribute => ({
@@ -69,7 +73,7 @@ const EnrichmentHierarchy = () => {
       }));
       formattedCategories.push(...attributeFormatted);
     }
-    setSelectedPairs(formattedCategories.length > 0 ? formattedCategories : [{ ...initialState }]);
+    setSelectedPairs(formattedCategories);
   };
 
   const handleSelectChange = (index, selectedKey) => {
@@ -78,7 +82,7 @@ const EnrichmentHierarchy = () => {
     const childCategory = categorys.find(cat => cat.name === selectedKey)?.child || [];
     newPairs[index].options = childCategory;
     setSelectedPairs(newPairs);
-    setPim(prev => ({ ...prev, attributes: newPairs.slice(_.size(product.productCategories)) }));
+    setPim(prev => ({ ...prev, attributes: newPairs }));
   };
 
   const openModals = (index, value) => {
@@ -98,7 +102,7 @@ const EnrichmentHierarchy = () => {
     const newPairs = [...selectedPairs];
     newPairs.splice(index, 1);
     setSelectedPairs(newPairs);
-    setPim(prev => ({ ...prev, attributes: newPairs.splice(_.size(product.productCategories)) }));
+    setPim(prev => ({ ...prev, attributes: newPairs }));
   };
 
   const selectcategory = (index, cat) => {
@@ -134,7 +138,7 @@ const EnrichmentHierarchy = () => {
   const setDescription = (index, e) => {
     const newPairs = [...selectedPairs];
     newPairs[index].value.description = e.target.value;
-    setPim(prev => ({ ...prev, attributes: newPairs.slice(_.size(product.productCategories)) }));
+    setPim(prev => ({ ...prev, attributes: newPairs }));
   }
   const removeCategory = (index) => {
     openModals(index, false)
@@ -151,126 +155,109 @@ const EnrichmentHierarchy = () => {
     return categoryName.filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
   };
 
-  return (<div>
-
-    <div className="" style={{ display: 'flex', flexDirection: 'row' }}>
-
-      <div className='input-field-container'>
-        <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}>
-          {selectedPairs.map((pair, index) => (
-            <div>
-              {index === 0 ? <> <h2 className="product-category-sub-heading">Category</h2>
-                <div className="product-category-g-row">
-                  <div className="product-category-g-col" >
-                    <span className="product-category-text-label">Category</span>
+console.log(selectedPairs)
+  return (
+    <div>
+      <div className="" style={{ display: 'flex', flexDirection: 'row' }}>
+        <div className='input-field-container'>
+          <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}>
+            <h2 className="product-category-sub-heading">Attributes</h2>
+            {selectedPairs.map((pair, index) => (
+              <div>
+                <>
+                  <div className="product-category-g-row">
+                    <div className="product-category-g-col" >
+                      <span className="product-category-text-label">Attribute</span>
+                    </div>
+                    <div className="product-category-g-col" >
+                      <span className="product-category-text-label">Level</span>
+                    </div>
+                    <div className="product-category-g-col" >
+                      <span className="product-category-text-label">Description</span>
+                    </div>
                   </div>
-                  <div className="product-category-g-col" >
-                    <span className="product-category-text-label">Level</span>
-                  </div>
-
-                </div></> : ''}
-              {index === _.size(product.productCategories) ? <> <h2 className="product-category-sub-heading">Attributes</h2>
-                <div className="product-category-g-row">
-                  <div className="product-category-g-col" >
-                    <span className="product-category-text-label">Attribute</span>
-                  </div>
-                  <div className="product-category-g-col" >
-                    <span className="product-category-text-label">Level</span>
-                  </div>
-                  <div className="product-category-g-col" >
-                    <span className="product-category-text-label">Description</span>
-                  </div>
-                </div></> : ''}
-              <div key={index} className="product-category-g-row">
-
-                <div className="product-category-g-col">
-                  {index < _.size(product.productCategories) ? (
-                    <B2BInput
-                      value={pair.key}
-                      disabled={index}
-
-                    />
-                  ) : (
+                </>
+                <div key={index} className="product-category-g-row">
+                  <div className="product-category-g-col">
+                    {_.includes(existingCategoryKey, pair.key) ? 
+                    <B2BInput value={pair.key} disabled={true} /> :
                     <B2BSelect
                       value={pair.key}
                       data={getAvailableKeys(index)}
                       onChange={(e) => handleSelectChange(index, e)}
-
                     />
-                  )}
-                </div>
-                <div className="product-category-g-col" style={{ flexDirection: 'column' }}>
-                  <div className='product-category-inputField'>
-                    <input placeholder="Select a category" disabled={index < (_.size(product.productCategories))} style={{ cursor: pair.key === null ? 'not-allowed' : 'pointer' }} readOnly type="text" value={pair.heirarchyLabel} onClick={() => openModals(index, true)} onChange={() => { }} />
+            }
                   </div>
+                  <div className="product-category-g-col" style={{ flexDirection: 'column' }}>
+                    <div className='product-category-inputField'>
+                      <input placeholder="Select a category" disabled={_.includes(existingCategoryKey, pair.key)} style={{ cursor: pair.key === null ? 'not-allowed' : 'pointer' }} readOnly type="text" value={pair.heirarchyLabel} onClick={() => openModals(index, true)} onChange={() => { }} />
+                    </div>
 
-                  {
-                    pair.openModal && (
-                      <div className="product-category-modal-popup">
-                        <div className="product-category-modal-popup-heading" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                          <span className="product-category-modal-popup-label">Search all categories</span>
-                          <span><FontAwesomeIcon icon={faClose} onClick={() => openModals(index, false)} style={{ cursor: 'pointer', fontSize: '18px' }} /></span>
-                        </div>
-                        {!pair.value || pair.options.length > 0 ? <div style={{ padding: '0 20px', }}> <input type="text" id="product-category-search-input" placeholder="Enter a category name" /> </div> : ''}
-                        {
-                          !pair.value || pair.options.length > 0 ?
-                            <div role="list">
-                              <div className='product-category-child'>
-                                <span className='product-category-child-level'>Level {pair.count}</span>
-                                <hr />
-                              </div>
-                              <div className='product-category-child'>
-                                {pair.options.map((cat) => (
-                                  <ul className="product-category-child-list" key={cat.id}>
-                                    <li tabIndex="0" onClick={() => selectcategory(index, cat)}>
-                                      <span className="">{cat.name}</span>
-                                    </li>
-                                  </ul>
-                                ))}
-                              </div>
-                            </div> : ''
-                        }
-                        {pair.heirarchyLabel && (
-                          <div className="product-category-heirarchyLevel">
-                            <span className="vd-text-body vd-util-text-overflow-break-word">{pair.heirarchyLabel}</span>
-                            <button aria-label="Remove selected category" type="button" className="vd-btn vd-btn--icon-supplementary" onClick={() => removeCategory(index)} >
-                              <FontAwesomeIcon className='fa' icon={faTrash} />
-                            </button>
+                    {
+                      pair.openModal && (
+                        <div className="product-category-modal-popup">
+                          <div className="product-category-modal-popup-heading" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                            <span className="product-category-modal-popup-label">Search all categories</span>
+                            <span><FontAwesomeIcon icon={faClose} onClick={() => openModals(index, false)} style={{ cursor: 'pointer', fontSize: '18px' }} /></span>
                           </div>
-                        )}
-                      </div>
-                    )
-
-                  }
-
-                </div>
-                {index >= (_.size(product.productCategories)) ? <div className="product-category-g-col" style={{ flexDirection: 'column', marginLeft: '1rem' }}>
-                  <div className='product-category-inputField'>
-                    <input placeholder="Description" value={pair.value.description} onChange={(e) => setDescription(index, e)} />
+                          {!pair.value || pair.options.length > 0 ? <div style={{ padding: '0 20px', }}> <input type="text" id="product-category-search-input" placeholder="Enter a category name" /> </div> : ''}
+                          {
+                            !pair.value || pair.options.length > 0 ?
+                              <div role="list">
+                                <div className='product-category-child'>
+                                  <span className='product-category-child-level'>Level {pair.count}</span>
+                                  <hr />
+                                </div>
+                                <div className='product-category-child'>
+                                  {pair.options.map((cat) => (
+                                    <ul className="product-category-child-list" key={cat.id}>
+                                      <li tabIndex="0" onClick={() => selectcategory(index, cat)}>
+                                        <span className="">{cat.name}</span>
+                                      </li>
+                                    </ul>
+                                  ))}
+                                </div>
+                              </div> : ''
+                          }
+                          {pair.heirarchyLabel && (
+                            <div className="product-category-heirarchyLevel">
+                              <span className="vd-text-body vd-util-text-overflow-break-word">{pair.heirarchyLabel}</span>
+                              <button aria-label="Remove selected category" type="button" className="vd-btn vd-btn--icon-supplementary" onClick={() => removeCategory(index)} >
+                                <FontAwesomeIcon className='fa' icon={faTrash} />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    }
                   </div>
-                </div> : ""}
-                <div className="product-category-g-col" style={{ width: '5rem', flex: 'none', justifyContent: 'center' }}>
-                  {!pair.openModal && index >= _.size(product.productCategories) && (
-                    <button type="button" className="product-category-btn" onClick={() => removePair(+index)}>
-                      <FontAwesomeIcon className="fa product-category-icon" icon={faTrash} />
-                    </button>
-                  )}
+                  <div className="product-category-g-col" style={{ flexDirection: 'column', marginLeft: '1rem' }}>
+                    <Textarea placeholder="Description" value={pair.value.description} onChange={(e) => setDescription(index, e)} style />
+                  </div>
+                  <div className="product-category-g-col" style={{ width: '5rem', flex: 'none', justifyContent: 'center' }}>
+                    {!pair.openModal && !_.includes(existingCategoryKey,pair.key) && (
+                      <button type="button" className="product-category-btn" onClick={() => removePair(+index)}>
+                        <FontAwesomeIcon className="fa product-category-icon" icon={faTrash} />
+                      </button>
+                    )}
+                  </div>
+
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-        <div>
-          {_.size(categorys) > _.size(selectedPairs.slice(_.size(product.productCategories))) && (
-            <button type="button" className="product-category-btn product-category-btn--text-go" onClick={addNewPair} >
-              <FontAwesomeIcon className="fa" icon={faPlus} />
-              Add Attributes
-            </button>
-          )}
+            ))}
+
+          </div>
+          <div>
+            {_.size(categorys) >= _.size(selectedPairs) && (
+              <button type="button" className="product-category-btn product-category-btn--text-go" onClick={addNewPair} >
+                <FontAwesomeIcon className="fa" icon={faPlus} />
+                Add Attributes
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  </div>)
+    </div>)
 };
 
 export default EnrichmentHierarchy;

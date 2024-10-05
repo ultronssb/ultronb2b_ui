@@ -33,7 +33,7 @@ const CreateProduct = () => {
     articleCode: '',
     description: '',
     supplier: '',
-    barcode: '',
+    isCreateBarcode: true,
     tags: [],
     metrics: {
       weight: 0,
@@ -118,6 +118,10 @@ const CreateProduct = () => {
     mrpErrorMessage: '',
     costPriceError: false,
     costPriceErrorMessage: '',
+    taxonomyError: false,
+    taxonomyErrorMessage: '',
+    imageError: false,
+    imageErrorMessage: ''
   })
 
   useEffect(() => {
@@ -171,7 +175,7 @@ const CreateProduct = () => {
     } else if (fieldType === 'isCreateBarcode') {
       setProduct(prev => ({
         ...prev,
-        isCreateBarcode: event?.target?.value
+        isCreateBarcode: 'true' === event?.target?.value
       }));
     } else {
       setProduct(prev => ({
@@ -304,13 +308,28 @@ const CreateProduct = () => {
             errors.uomErrorMessage = "UOM Is Required !!"
           isValid = false
         }
-        if (isEmpty(product?.barcode)) {
+        if (product?.isCreateBarcode === undefined || product?.isCreateBarcode === null) {
           errors.barcodeError = true;
-          errors.barcodeErrorMessage = "Barcode Is Required !!";
-          isValid = false
-
+          errors.barcodeErrorMessage = "Barcode Is Required!!";
+          isValid = false;
+        } else {
+          errors.barcodeError = false;
         }
 
+        if (isEmpty(product?.taxonomyNode)) {
+          errors.taxonomyError = true;
+          errors.taxonomyErrorMessage = "Taxonomy is Required!!";
+          isValid = false;
+        } else {
+          errors.taxonomyError = false;
+        }
+        if (isEmpty(product.image) || product.image == undefined) {
+          errors.imageError = true;
+          errors.imageErrorMessage = 'Image is Required!!';
+          isValid = false;
+        } else {
+          errors.imageError = false;
+        }
         if (isValid) {
           enableNextTab(false)
         } else {
@@ -524,15 +543,15 @@ const CreateProduct = () => {
             result[v.name].add(v.id); // Add id to the Set
           });
         });
-      
+
         // Convert Set back to array before returning the result
         for (const key in result) {
           result[key] = Array.from(result[key]);
         }
-      
+
         return result;
       };
-      
+
       const calculateTotalPercent = (composition) => {
         return Object.values(composition).reduce((sum, value) => sum + parseInt(value, 10), 0);
       };
@@ -581,7 +600,6 @@ const CreateProduct = () => {
           isMarkUp: priceSetting.markUpPercent > 0 ? true : false,
         };
       };
-      console.log(transformData())
 
       setProduct({
         ...product,

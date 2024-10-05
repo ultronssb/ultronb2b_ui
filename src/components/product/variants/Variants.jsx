@@ -10,6 +10,7 @@ import B2BTableGrid from '../../../common/B2BTableGrid';
 import B2BSelectable from '../../../common/B2BSelectable';
 import notify from '../../../utils/Notification';
 import './Variant.css';
+import _ from 'lodash';
 
 const Variants = () => {
   const initialState = {
@@ -37,7 +38,7 @@ const Variants = () => {
   const [activeTab, setActiveTab] = useState(variantOptions[0]);
 
   const [otherVariantTypes, setOtherVariantTypes] = useState([]);
-  const [selectedOtherVariant, setSelectedOtherVariant] = useState('Size');
+  const [selectedOtherVariant, setSelectedOtherVariant] = useState('');
 
 
   useEffect(() => {
@@ -47,6 +48,12 @@ const Variants = () => {
   useEffect(() => {
     fetchAllVarientType();
   }, [])
+
+  useEffect(() => {
+    if(_.size(variantTypes)> 0) {
+      setSelectedOtherVariant(variantTypes[0])
+    }
+  },[variantTypes])
 
   const fetchAllVariants = async () => {
     const type = activeTab === 'More Variants' ? 'Others' : activeTab;
@@ -191,6 +198,7 @@ const Variants = () => {
             </div>
           );
         },
+        accessorKey:"action",
       },
     ],
 
@@ -198,7 +206,7 @@ const Variants = () => {
       { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
       { header: 'Solid / Pattern', accessorKey: 'value' },
       {
-        header: 'Solid Pattern', accessorKey: 'solid', Cell: ({ row }) => {
+        header: 'Solid Pattern', accessorKey: 'solid/pattern', Cell: ({ row }) => {
           const { original } = row;
           return original.image ? <img src={`${BASE_URL.replace('/api', '')}${original.image}`} alt='solid' style={{ width: '75px', height: '50px' }} /> : "-";
         },
@@ -213,7 +221,6 @@ const Variants = () => {
             </div>
           );
         },
-        accessorKey: "actions"
       },
     ],
     "More Variants": [

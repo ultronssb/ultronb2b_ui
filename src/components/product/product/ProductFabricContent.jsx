@@ -19,6 +19,9 @@ const FabricContent = () => {
     const [fCCValue, setFCCValue] = useState('');
     const [fabricValue, setFabricValue] = useState([]);
 
+    console.log('fcc : ',product);
+    
+
     useEffect(() => {
         fetchVariant();
         setFCCValue(product?.fabricContent?.value)

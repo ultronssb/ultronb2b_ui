@@ -237,7 +237,7 @@ const EnrichmentProductVariant = () => {
                                                             <div className="product-info-variant-id-badge__content">
                                                                 <div className="product-info-variant-id-badge__header-title" data-cy="badgeHeader" data-testid="badgeHeader">
                                                                     <h5>
-                                                                        {item.variants.filter(variant => (variant.name)).map(variant => variant.value).join('/')}
+                                                                        {item.variants.filter(variant => (variant.name)).map(variant => variant.value).join(' / ')}
                                                                     </h5>
                                                                 </div>
                                                             </div>

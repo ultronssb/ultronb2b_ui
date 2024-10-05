@@ -15,6 +15,7 @@ import { B2B_API } from '../api/Interceptor';
 import B2BButton from '../common/B2BButton';
 import CustomPopup from '../utils/Custompopup';
 import UseInactivityLogout from '../utils/UseInactivityLogout';
+import HeaderMenu from '../common/HeaderMenu';
 
 export const ScrollContext = createContext(null);
 export const ActiveTabContext = createContext(null)
@@ -107,6 +108,13 @@ export default function Layout() {
     return button.path === window.location.pathname;
   }
 
+  const handleRouter = (tabs) => {
+    const parentTabs = ModuleJson(tabs.parentId);
+    const buttonGroup = ModuleJson(tabs.childParentId);
+    const index = parseInt(tabs.parentId) -1;
+    navigate(tabs.path, { state: { parentId: tabs.parentId, tabs: parentTabs  , childParentId: tabs.childParentId, activeIndex: index, buttonGroup: buttonGroup } });
+  }
+
   return (
     <ActiveTabContext.Provider value={{ stateData ,setStateData}}>
       <ScrollContext.Provider value={scrollToTop}>
@@ -124,9 +132,8 @@ export default function Layout() {
                 ))}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                {/* <B2BMenu trigger="click" menuItems={floatButtonItems}> */}
-                <button onClick={() => alert("Work in progress!!!")} style={{ color: 'white', position: 'absolute', top: '3rem', right: '10rem', width: '30px', height: '30px', borderRadius: '25px', backgroundColor: '#022d46', outline: 'none', border: 'none', cursor: 'pointer' }}>+</button>
-                {/* </B2BMenu> */}
+                {/* <button onClick={() => alert("Work in progress!!!")} style={{ color: 'white', position: 'absolute', top: '3rem', right: '10rem', width: '30px', height: '30px', borderRadius: '25px', backgroundColor: '#022d46', outline: 'none', border: 'none', cursor: 'pointer' }}>+</button> */}
+                <HeaderMenu onMenuClick={handleRouter}/>
                 <B2BMenu trigger="hover" menuItems={menuItems}>
                   <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', width: '10rem', justifyContent: 'flex-end' }}>
                     <div style={{ paddingRight: '2rem' }}>

@@ -41,6 +41,25 @@ const ProductVariant = () => {
         }
     };
 
+    const transformData = () => {
+        const result = {};
+        product?.productVariants.forEach(variant => {
+          variant.variants.forEach(v => {
+            if (!result[v.name]) {
+              result[v.name] = new Set(); // Use a Set to ensure uniqueness
+            }
+            result[v.name].add(v.id); // Add id to the Set
+          });
+        });
+      
+        // Convert Set back to array before returning the result
+        for (const key in result) {
+          result[key] = Array.from(result[key]);
+        }
+      
+        return result;
+      };
+
     const handleSelectChange = (index, selectedValue) => {
         const newPairs = [...selectedPairs];
         const oldKey = newPairs[index].key;

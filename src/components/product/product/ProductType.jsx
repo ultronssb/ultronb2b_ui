@@ -52,7 +52,7 @@ const ProductType = () => {
             resetRef.current();
         }
         setImageFile(null)
-        setCurrentImage(null)
+        // setCurrentImage(null)
     };
 
     const fileChange = (file) => {
@@ -104,17 +104,16 @@ const ProductType = () => {
         {
             label: "Barcode",
             type: 'radio',
-            value: product.isCreateBarcode,
+            value: product?.isCreateBarcode,
             fieldType: 'radioField',
             require: true,
             options: [
-                { label: "Yes", value: "true" },
-                { label: "No", value: "false" }
+                { label: "Yes", value: true },
+                { label: "No", value: false }
             ],
-            placeholder: "Enter Description",
-            onChange: (event) => handleChange(event, "barcode"),
+            onChange: (event) => handleChange(event, "isCreateBarcode"),
             name: "barcode",
-            checked: product?.barcode,
+            checked: product?.isCreateBarcode,
             error: inputError?.barcodeErrorMessage
         },
         {
@@ -135,6 +134,18 @@ const ProductType = () => {
             require: true,
             className: "form-group",
             error: inputError.uomErrorMessage,
+        },
+        {
+            label: "Taxonomy",
+            value: product?.taxonomyNode?.id,
+            data: taxonomy ? taxonomy.map(b => ({ label: b.name, value: b.id })) : [],
+            onChange: (event) => handleChange(_.find(taxonomy, tax => tax.id === event), "taxonomyNode"),
+            type: "Select",
+            fieldType: 'selectField',
+            placeholder: "Enter Taxonomy",
+            clearable: true,
+            require: true,
+            error: inputError.taxonomyErrorMessage
         },
         {
             label: "Brand",
@@ -161,17 +172,6 @@ const ProductType = () => {
             placeholder: "Enter Description",
             rows: 1,
             cols: 50,
-            error: inputError.descErrorMessage
-        },
-        {
-            label: "Taxonomy",
-            value: product?.taxonomyNode?.id,
-            data: taxonomy ? taxonomy.map(b => ({ label: b.name, value: b.id })) : [],
-            onChange: (event) => handleChange(_.find(taxonomy, tax => tax.id === event), "taxonomyNode"),
-            type: "Select",
-            fieldType: 'selectField',
-            placeholder: "Enter Taxonomy",
-            clearable: true
         },
         {
             label: "Status",
@@ -201,6 +201,21 @@ const ProductType = () => {
         const res = await B2B_API.get("taxonomy").json();
         setTaxonomy(res.response);
     }
+
+    console.log(product, "pro");
+
+    const handleImageUpload = (event) => {
+        const file = event.target.files[0];
+
+        if (file && file.size > 5000000) { // Example condition for the error (file size > 5MB)
+            setImageError('File size should be less than 5MB');
+            setImageFile(null); // Reset the image file if there's an error
+        } else {
+            setImageFile(file);
+            setImageError(''); // Clear error if the file is valid
+        }
+    };
+
 
     return (
         <div className='productType-container' style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem' }}>
@@ -296,10 +311,10 @@ const ProductType = () => {
                                     <div key={idx} className="radio-item" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                         <input
                                             type="radio"
-                                            value={option.value}
+                                            value={option?.value}
                                             name={field.name}
                                             onChange={field?.onChange}
-                                            checked={field.checked === option?.value || field.checked === option?.label}
+                                            checked={field?.checked === option?.value}
                                         />
                                         <label className='radio-label'>{option.label}</label>
                                     </div>
@@ -323,7 +338,6 @@ const ProductType = () => {
                         </Button>
                     </Group>
 
-                    {/* Image Display Section */}
                     <div style={{ textAlign: 'center', marginBottom: '1rem', border: '1px solid #ccc', padding: '10px', width: '150px', height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '10px' }}>
                         {imageFile ? (
                             <img
@@ -335,12 +349,8 @@ const ProductType = () => {
                             <p style={{ color: '#888' }}>No image uploaded</p>
                         )}
                     </div>
-                    {errorMessage && notify({
-                        title: 'Error!!',
-                        message: errorMessage || 'Failed to add Image.',
-                        error: true,
-                        success: false,
-                    })}
+                    {inputError.imageError ?
+                        <span className='error-message'>{inputError?.imageErrorMessage}</span> : ''}
                 </div>
             </form>
         </div>
