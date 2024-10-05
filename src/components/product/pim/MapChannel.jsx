@@ -73,7 +73,7 @@ const MapChannel = () => {
     setIsLoading(true);
     try {
       const endpoint = mapStatus
-        ? `pim/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}`
+        ? `pim/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}&searchTerm=${searchTerm}`
         : `map-channel/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}&searchTerm=${searchTerm}`;
 
       const response = await B2B_API.get(endpoint).json();

@@ -22,138 +22,158 @@ const ProductGrid = ({ data,
     const { pimId } = data[0] || {};
 
 
-    const columns = useMemo(() => [
-        {
-            id: 'product',
-            columns: [
-                {
-                    accessorKey: pimId ? 'product.image' : 'image',
-                    header: 'Product Image',
-                    size: 150,
-                    enableSorting: false,
-                    enableColumnDragging: false,
-                    Cell: ({ row }) => {
-                        const item = pimId ? row.original.product?.image : row.original.image;
-                        return (
-                            <img src={`${BASE_URL.replace('/api', '')}${item}`} alt="Uploaded Badge" style={{ maxWidth: '50px', maxHeight: '50px' }} />
-                        );
-                    }
-                },
-                {
-                    accessorKey: pimId ? 'product.articleCode' : 'articleCode',
-                    header: 'Product Code',
-                    size: 150,
-                    enableSorting: false,
-                    enableColumnDragging: false,
-                },
-                {
-                    accessorKey: pimId ? 'product.articleName' : 'articleName',
-                    header: 'Product Name',
-                    size: 250,
-                    enableSorting: false,
-                    enableColumnDragging: false,
-                },
-                {
-                    accessorKey: pimId ? 'product.brand.name' : 'brand.name',
-                    header: 'Brand',
-                    size: 150,
-                    enableSorting: false,
-                    enableColumnDragging: false,
-                },
-                {
-                    accessorKey: pimId ? 'product.priceSetting.sellingPrice' : 'priceSetting.sellingPrice',
-                    header: 'Product Price',
-                    enableSorting: false,
-                    enableColumnDragging: false,
-                    Cell: ({ cell }) => {
-                        const price = cell.getValue();
-                        return price ? price.toLocaleString('en-US', {
-                            style: 'currency',
-                            currency: 'IND',
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                        }) : 'N/A';
+    const columns = useMemo(() => {
+        return [
+            {
+                id: 'product',
+                columns: [
+                    {
+                        accessorKey: 'articleCode',
+                        header: 'Product Code',
+                        size: 150,
+                        enableSorting: false,
+                        enableColumnDragging: false,
+                        Cell: ({ row }) => (
+                            <span>{pimId ? row.original.product.articleCode : row.original.articleCode}</span>
+                        ),
                     },
-                },
-                {
-                    accessorKey: pimId ? 'product.status' : 'status',
-                    header: 'Status',
-                    size: 100,
-                    enableSorting: false,
-                    enableColumnDragging: false,
-                    Cell: ({ cell }) => (
-                        <span style={{ color: cell.getValue() === 'ACTIVE' ? 'green' : 'red' }}>
-                            {cell.getValue()}
-                        </span>
-                    ),
-                },
-                {
-                    header: map ? (
-                        <Checkbox
-                            checked={areAllSelected}
-                            onChange={() => handleSelectAllPairs(data)}
-                        />
-                    ) : (
-                        pimId ? ' Actions' : 'Actions'
-                    ),
-                    enableSorting: false,
-                    enableColumnDragging: false,
-                    mainTableHeaderCellProps: { align: 'center' },
-                    mainTableBodyCellProps: { align: 'center' },
-                    size: 100,
-                    Cell: ({ row }) => {
-                        if (map) {
+                    {
+                        accessorKey: 'articleName',
+                        header: 'Product Name',
+                        size: 250,
+                        enableSorting: false,
+                        enableColumnDragging: false,
+                        Cell: ({ row }) => (
+                            <span>{pimId ? row.original.product.articleName : row.original.articleName}</span>
+                        ),
+                    },
+                    {
+                        accessorKey: 'brand.name',
+                        header: 'Brand',
+                        size: 150,
+                        enableSorting: false,
+                        enableColumnDragging: false,
+                        Cell: ({ row }) => (
+                            <span>{pimId ? row.original.product.brand.name : row.original.brand.name}</span>
+                        ),
+                    },
+                    {
+                        accessorKey: 'priceSetting.sellingPrice',
+                        header: 'Product Price',
+                        enableSorting: false,
+                        enableColumnDragging: false,
+                        Cell: ({ cell, row }) => {
+                            const price = pimId ? row.original.product.priceSetting.sellingPrice : row.original.priceSetting.sellingPrice;
+                            return price ? price.toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'IND',
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            }) : 'N/A';
+                        },
+                    },
+                    {
+                        accessorKey: 'status',
+                        header: 'Status',
+                        size: 100,
+                        enableSorting: false,
+                        enableColumnDragging: false,
+                        Cell: ({ cell, row }) => {
+                            const status = pimId ? row.original.status : row.original.status;
                             return (
+                                <span style={{ color: status === 'ACTIVE' ? 'green' : 'red' }}>
+                                    {status}
+                                </span>
+                            );
+                        },
+                    },
+                    {
+                        header: (
+                            map ? (
+                                <Checkbox
+                                    checked={areAllSelected}
+                                    onChange={() => handleSelectAllPairs(data)}
+                                />
+                            ) : (
+                                'Actions'
+                            )
+                        ),
+                        enableSorting: false,
+                        enableColumnDragging: false,
+                        mainTableHeaderCellProps: { align: 'center' },
+                        mainTableBodyCellProps: { align: 'center' },
+                        size: 100,
+                        Cell: ({ row }) => {
+                            return map ? (
                                 <Checkbox
                                     checked={selectedPairs.includes(row.original.productId)}
                                     onChange={() => handleSelectPair(row.original)}
                                 />
-                            );
-                        } else {
-                            return (
+                            ) : (
                                 <IconPencil
                                     onClick={() => editVariant(row.original)}
                                     style={{ cursor: 'pointer', color: 'teal' }}
                                     stroke={2}
                                 />
                             );
-                        }
+                        },
                     },
-                },
-            ],
-        },
-    ], [pimId, map, areAllSelected, selectedPairs, data]);
+                ],
+            },
+        ];
+    }, [pimId, map, areAllSelected, selectedPairs, data]);
 
 
     const renderDetailPanel = ({ row }) => {
         const variants = pimId ? row.original.product.productVariants : row.original.productVariants;
-        const variantGroups = {};
-        variants?.forEach(variantItem => {
-            variantItem.variants?.forEach(variant => {
-                if (!variantGroups[variant.name]) {
-                    variantGroups[variant.name] = new Set();
-                }
-                variantGroups[variant.name].add(variant.value);
-            });
-        });
+        const productname = pimId ? row.original.product.articleName : row.original.articleName;
 
-        const formattedVariants = Object.fromEntries(
-            Object.entries(variantGroups).map(([key, value]) => [key, Array.from(value)])
-        );
+        const productColumns = [{
+            accessorKey: 'Variant SKU',
+            header: 'SKU',
+            Cell: ({ row }) => (
 
-        const productColumns = Object.keys(formattedVariants).map(key => ({
-            header: key,
-            accessorKey: key,
-        }));
+                <span>{row.original.variantSku}</span>
 
-        const output = generateVariantCombinations(formattedVariants);
+            )
+        },
+        {
+            accessorKey: 'Name',
+            header: 'Name',
+            Cell: ({ row }) => {
+                console.log('row : ', row.original)
+                return <span>{`${productname} / ${row.original.variants.map(vari => vari.value).join(' / ')}`}</span>
+
+            }
+        },
+        // {
+        //     accessorKey: 'Solid',
+        //     header: 'Solid',
+        //     Cell: ({ row }) => {
+        //         console.log('row : ', row.original)
+        //         return (<span>{row.original.variants.map(vari => vari.name === 'Solid' ? vari.value : '')}</span>)
+
+        //     }
+        // },
+        // {
+        //     accessorKey: 'Colour',
+        //     header: 'Colour',
+        //     Cell: ({ row }) => {
+        //         console.log('row : ', row.original)
+        //         return (<span>{row.original.variants.map(vari => vari.name === 'Colour' ? vari.value : '')}</span>)
+
+        //     }
+        // }
+        ]
+
+ console.log(data)
         const [pageSize, setPageSize] = useState(5);
 
         return (<>
             <p>Total Variants: {_.size(variants)}</p>
             <MantineReactTable
                 columns={productColumns}
-                data={output}
+                data={variants}
                 enableTopToolbar={false}
                 enableGlobalFilter={false}
                 enableSorting={false}
@@ -172,22 +192,6 @@ const ProductGrid = ({ data,
             />
         </>
         );
-    };
-
-    const generateVariantCombinations = (variantValues) => {
-        const allVariants = Object.values(variantValues);
-        return allVariants.reduce((acc, variantArray) => {
-            if (!acc.length) {
-                return variantArray.map(value => ({ [Object.keys(variantValues)[0]]: value }));
-            }
-
-            return acc.flatMap(existing =>
-                variantArray.map(value => ({
-                    ...existing,
-                    [Object.keys(variantValues)[allVariants.indexOf(variantArray)]]: value,
-                }))
-            );
-        }, []);
     };
 
     const table = useMantineReactTable({

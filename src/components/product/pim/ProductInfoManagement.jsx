@@ -17,6 +17,7 @@ const ProductInfoManagement = () => {
   const [selectedChannel, setSelectedChannel] = useState('');
   const [selectedStore, setSelectedStore] = useState('');
   const [status, SetStatus] = useState('ACTIVE')
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate()
 
   const statusOption = [
@@ -31,7 +32,7 @@ const ProductInfoManagement = () => {
     }
     fetchAllCompanyLocations();
     fetchAllChannels();
-  }, [pagination, selectedChannel, selectedStore, status]);
+  }, [pagination, selectedChannel, selectedStore, status,searchTerm]);
   useEffect(() => {
     const query_param = new URLSearchParams(location.search);
     const channel = query_param.get('channel')
@@ -75,7 +76,7 @@ const ProductInfoManagement = () => {
   const fetchAllProducts = async () => {
     setIsLoading(true);
     try {
-      const response = await B2B_API.get(`pim/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}`).json();
+      const response = await B2B_API.get(`pim/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}&searchTerm=${searchTerm}`).json();
       const data = response?.response?.content || [];
       setRowCount(response?.response?.totalElements || 0);
       setProduct(data);
@@ -87,6 +88,10 @@ const ProductInfoManagement = () => {
     }
   };
 
+  const handleSearchChange = (event) => {
+    const value = event.currentTarget.value;
+    setSearchTerm(value);
+};
 
   const editVarient = (varobj) => {
     navigate(`/product/pim/enrich-product?id=${varobj.pimId}&from=${encodeURIComponent(`${window.location.pathname}?channel=${selectedChannel}&store=${selectedStore}`)}`, { state: { ...stateData, tabs: stateData.childTabs } });
@@ -138,6 +143,7 @@ const ProductInfoManagement = () => {
         pagination={pagination}
         rowCount={rowCount}
         onPaginationChange={setPagination}
+        handleSearchChange={handleSearchChange}
       />
     </div>
   );
