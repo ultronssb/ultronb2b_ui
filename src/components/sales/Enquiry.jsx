@@ -1,24 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Text } from '@mantine/core';
+import { Text, Tabs } from '@mantine/core';
 import { B2B_API } from '../../api/Interceptor';
-import B2BButton from '../../common/B2BButton';
 import B2BTableGrid from '../../common/B2BTableGrid';
 import notify from '../../utils/Notification';
 import { getpayLoadFromToken } from '../../common/JwtPayload';
 
 const Enquiry = () => {
   const [enquiries, setEnquiries] = useState([]);
-  const [salesmanAssigned, setSalesmanAssigned] = useState(true);
+  const variantOptions = ['Pending', 'Complete', 'Cancel'];
+  const [activeTab, setActiveTab] = useState(variantOptions[0]);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [rowCount, setRowCount] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
 
   const payload = useMemo(() => getpayLoadFromToken(), []);
-  const user = payload?.ROLE;
+  const userRole = payload?.ROLE;
 
   useEffect(() => {
     fetchEnquiries();
-  }, [pagination.pageIndex, pagination.pageSize, salesmanAssigned]);
+  }, [pagination.pageIndex, pagination.pageSize]);
 
   const columns = useMemo(() => {
     return [
@@ -38,12 +38,14 @@ const Enquiry = () => {
   const fetchEnquiries = async () => {
     try {
       setIsLoading(true);
-      const res = await B2B_API.get(`fabricInquiry/get-All?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
-      const filteredEnquiries = res?.response?.content?.filter(enquiry => {
-        return salesmanAssigned ? enquiry.isProgress : !enquiry.isProgress;
-      });
+      let res;
+      if (userRole === 'SALESMAN') {
+        res = await B2B_API.get(`fabricInquiry/get-All?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      } else if (userRole === 'COMPANY_ADMIN') {
+        res = await B2B_API.get(`fabricInquiry/all?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      }
 
-      setEnquiries(filteredEnquiries || []);
+      setEnquiries(res?.response?.content || []);
       setRowCount(res?.response?.totalElements || 0);
     } catch (error) {
       notify({ error: true, title: 'Error fetching enquiries' });
@@ -52,41 +54,39 @@ const Enquiry = () => {
     }
   };
 
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div className='user--container'>
-          <Text size='lg' fw={800}>
-            Enquiry Details {user !== 'SALESMAN' ? '' : (salesmanAssigned ? '- Enquiry Pending' : '- Enquiry Complete')}
-          </Text>
-        </div>
-        {user === 'SALESMAN' && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '2rem' }}>
-            <B2BButton
-              onClick={() => { setSalesmanAssigned(true); }} // Show only pending enquiries
-              disabled={salesmanAssigned}
-              name='Enquiry Pending'
-            />
-            <B2BButton
-              onClick={() => { setSalesmanAssigned(false); }} // Show only completed enquiries
-              disabled={!salesmanAssigned}
-              name='Enquiry Complete'
-            />
-          </div>
-        )}
-      </div>
+  const handleTabChange = (option) => {
+    setActiveTab(option);
+  };
 
-      <B2BTableGrid
-        data={enquiries}
-        columns={columns}
-        pageIndex={pagination.pageIndex}
-        pageSize={pagination.pageSize}
-        setPagination={setPagination}
-        rowCount={rowCount}
-        isLoading={isLoading}
-      />
+  return (
+    <div style={{ marginTop: '1rem' }}>
+      <Text size='lg' fw={800} style={{ padding: '20px 0px' }}>Enquiry Details - {activeTab}</Text>
+      <Tabs value={activeTab} onTabChange={setActiveTab}>
+        <Tabs.List>
+          {variantOptions.map((item, index) => (
+            <Tabs.Tab key={index} value={item} onClick={() => handleTabChange(item)}>
+              {item}
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+        <Tabs.Panel value={activeTab}>
+          <B2BTableGrid
+            columns={columns}
+            data={activeTab === 'Pending' ? enquiries.filter(enquiry => enquiry.isProgress) : activeTab === 'Complete' ? enquiries.filter(enquiry => enquiry.isComplete) : enquiries.filter(enquiry => enquiry.isCancelled)}
+            isLoading={isLoading}
+            enableTopToolbar={true}
+            enableGlobalFilter={true}
+            manualPagination={true}
+            pagination={pagination}
+            rowCount={rowCount}
+            onPaginationChange={setPagination}
+            enableFullScreenToggle={true}
+          />
+        </Tabs.Panel>
+      </Tabs>
     </div>
   );
 };
 
 export default Enquiry;
+
