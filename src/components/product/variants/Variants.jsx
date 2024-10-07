@@ -1,16 +1,16 @@
 import { Button, ColorInput, ColorSwatch, FileButton, Group, Tabs, Text } from '@mantine/core';
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
+import _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { BASE_URL } from '../../../api/EndPoints';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
-import B2BTableGrid from '../../../common/B2BTableGrid';
 import B2BSelectable from '../../../common/B2BSelectable';
+import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
 import './Variant.css';
-import _ from 'lodash';
 
 const Variants = () => {
   const initialState = {
@@ -50,10 +50,10 @@ const Variants = () => {
   }, [])
 
   useEffect(() => {
-    if(_.size(variantTypes)> 0) {
+    if (_.size(variantTypes) > 0) {
       setSelectedOtherVariant(variantTypes[0])
     }
-  },[variantTypes])
+  }, [variantTypes])
 
   const fetchAllVariants = async () => {
     const type = activeTab === 'More Variants' ? 'Others' : activeTab;
@@ -173,8 +173,17 @@ const Variants = () => {
 
   const columns = {
     "Colour": [
-      { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
-      { header: 'Colour', accessorKey: 'value' },
+      {
+        header: 'S.No',
+        accessorFn: (_, index) => index + 1,
+        size: 100,
+        mantineTableHeadCellProps: { align: 'center' },
+        mantineTableBodyCellProps: { align: 'center' },
+      },
+      {
+        header: 'Colour',
+        accessorKey: 'value',
+      },
       {
         header: 'Hexa Color Code', accessorKey: 'hexaColorCode', Cell: ({ row }) => {
           const { original } = row;
@@ -188,7 +197,18 @@ const Variants = () => {
           );
         }
       },
-      { header: 'Status', accessorKey: 'status' },
+      {
+        header: 'Status',
+        accessorKey: 'status',
+        Cell: ({ cell, row }) => {
+          const status = row.original.status;
+          return (
+            <span style={{ color: status === 'ACTIVE' ? 'green' : 'red' }}>
+              {status}
+            </span>
+          );
+        },
+      },
       {
         header: 'Actions', mainTableHeaderCellProps: { align: 'center' }, mainTableBodyCellProps: { align: 'center' }, size: 100, Cell: ({ row }) => {
           const { original } = row;
@@ -198,22 +218,47 @@ const Variants = () => {
             </div>
           );
         },
-        accessorKey:"action",
+        accessorKey: "action",
       },
     ],
 
     "Solid": [
-      { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
-      { header: 'Solid / Pattern', accessorKey: 'value' },
       {
-        header: 'Solid Pattern', accessorKey: 'solid/pattern', Cell: ({ row }) => {
+        header: 'S.No',
+        accessorFn: (_, index) => index + 1,
+        size: 100,
+        mantineTableHeadCellProps: { align: 'center' },
+        mantineTableBodyCellProps: { align: 'center' }
+      },
+      {
+        header: 'Solid / Pattern',
+        accessorKey: 'value'
+      },
+      {
+        header: 'Solid Pattern',
+        accessorKey: 'solid/pattern',
+        Cell: ({ row }) => {
           const { original } = row;
           return original.image ? <img src={`${BASE_URL.replace('/api', '')}${original.image}`} alt='solid' style={{ width: '75px', height: '50px' }} /> : "-";
         },
       },
-      { header: 'Status', accessorKey: 'status' },
       {
-        header: 'Actions', mainTableHeaderCellProps: { align: 'center' }, mainTableBodyCellProps: { align: 'center' }, size: 100, Cell: ({ row }) => {
+        header: 'Status',
+        accessorKey: 'status',
+        Cell: ({ cell, row }) => {
+          const status = row.original.status;
+          return (
+            <span style={{ color: status === 'ACTIVE' ? 'green' : 'red' }}>
+              {status}
+            </span>
+          );
+        },
+      },
+      {
+        header: 'Actions',
+        mainTableHeaderCellProps: { align: 'center' },
+        mainTableBodyCellProps: { align: 'center' },
+        size: 100, Cell: ({ row }) => {
           const { original } = row;
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
@@ -224,7 +269,13 @@ const Variants = () => {
       },
     ],
     "More Variants": [
-      { header: 'S.No', accessorFn: (_, index) => index + 1, size: 100, mantineTableHeadCellProps: { align: 'center' }, mantineTableBodyCellProps: { align: 'center' } },
+      {
+        header: 'S.No',
+        accessorFn: (_, index) => index + 1,
+        size: 100,
+        mantineTableHeadCellProps: { align: 'center' },
+        mantineTableBodyCellProps: { align: 'center' },
+      },
       {
         header: (
           <B2BSelect
@@ -244,9 +295,24 @@ const Variants = () => {
           return null;
         },
       },
-      { header: 'Status', accessorKey: 'status' },
       {
-        header: 'Actions', mainTableHeaderCellProps: { align: 'center' }, mainTableBodyCellProps: { align: 'center' }, size: 100, Cell: ({ row }) => {
+        header: 'Status',
+        accessorKey: 'status',
+        Cell: ({ cell, row }) => {
+          const status = row.original.status;
+          return (
+            <span style={{ color: status === 'ACTIVE' ? 'green' : 'red' }}>
+              {status}
+            </span>
+          );
+        },
+      },
+      {
+        header: 'Actions',
+        mainTableHeaderCellProps: { align: 'center' },
+        mainTableBodyCellProps: { align: 'center' },
+        size: 100,
+        Cell: ({ row }) => {
           const { original } = row;
           return (
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
@@ -299,7 +365,7 @@ const Variants = () => {
       notify({
         id: variant.variantId ? 'update_variant_error' : 'create_variant_error',
         title: "Oops!!!",
-        message: error.response?.message || 'Error occurred',
+        message: error?.message || 'Something Went Wrong',
         error: true,
         success: false,
       });

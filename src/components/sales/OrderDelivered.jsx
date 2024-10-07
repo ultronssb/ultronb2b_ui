@@ -63,7 +63,15 @@ const OrderDelivered = () => {
     },
     {
       header: 'Status',
-      accessorKey: 'status'
+      accessorKey: 'status',
+      Cell: ({ cell, row }) => {
+        const status = row.original.status;
+        return (
+          <span style={{ color: status === 'ACTIVE' ? 'green' : 'red' }}>
+            {status}
+          </span>
+        );
+      },
     },
   ], []);
 

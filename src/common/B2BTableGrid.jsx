@@ -1,7 +1,7 @@
-import '@mantine/dates/styles.css'; //if using mantine date picker features
+import '@mantine/dates/styles.css';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import '@mantine/core/styles.css';
-import 'mantine-react-table/styles.css'; //import MRT styles
+import 'mantine-react-table/styles.css';
 import React from 'react';
 
 const B2BTableGrid = ({
@@ -16,7 +16,7 @@ const B2BTableGrid = ({
     manualPagination = true,
     manualSorting = false,
     enableTopToolbar = false,
-    renderRowActions = () => {},
+    renderRowActions = () => { },
     onColumnFilterFnsChange = () => { },
     onColumnFiltersChange = () => { },
     onGlobalFilterChange = () => { },
@@ -47,7 +47,7 @@ const B2BTableGrid = ({
         mantinePaginationProps: {
             radius: 'sm',
             size: 'sm',
-            rowsPerPageOptions: ["5" , "10", "15"]
+            rowsPerPageOptions: ["5", "10", "15"]
         },
         mantineTableProps: { striped: true },
         enableColumnActions: enableColumnActions,
@@ -87,19 +87,11 @@ const B2BTableGrid = ({
             showProgressBars: isFetching,
             sorting,
         },
+        enableColumnFilters: false,
     })
 
     return (
-        // <Paper
-        //     // ml={20}
-        //     // mr={20}
-        //     mt={20}
-        //     shadow='xl'
-        //     withBorder
-        //     radius={"md"}
-        // >
         <MantineReactTable table={table} />
-        // </Paper>
     )
 }
 

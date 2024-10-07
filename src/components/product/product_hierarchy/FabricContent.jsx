@@ -1,7 +1,7 @@
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faFilterCircleXmark, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Text } from '@mantine/core';
-import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
+import { rem, Switch, Text } from '@mantine/core';
+import { IconArrowLeft, IconCheck, IconPlus, IconX } from '@tabler/icons-react';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
@@ -38,30 +38,38 @@ const FabricContent = () => {
   });
   const [totalPercent, setTotalPercent] = useState(fabricCode?.totalProductPercent || 0);
   const [fCCValue, setFCCValue] = useState('');
+  const [checked, setChecked] = useState({});
+  const [status, setStatus] = useState('ACTIVE')
+  const [openStatus, setOpenStatus] = useState(false);
+
 
   useEffect(() => {
     fetchAllFabricCodes();
-  }, [pagination.pageIndex, pagination.pageSize]);
+  }, [status]);
 
   const fetchAllFabricCodes = async () => {
     try {
       setIsLoading(true);
-      const res = await B2B_API.get(`fabric/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const res = await B2B_API.get(`fabric/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&status=${status}`).json();
       const data = res?.response?.content || [];
       setRowCount(res?.response?.totalElements || 0);
       setFabricCodeList(data);
+      const initialChecked = {};
+      data.forEach(item => {
+        initialChecked[item.id] = item.status === 'ACTIVE';
+      });
+      setChecked(initialChecked);
     } catch (error) {
       setIsError(true);
       notify({
-        id: "fetch_varients",
         error: true,
         success: false,
-        title: error?.message || 'Error fetching variants',
+        title: error?.message || 'Something went wrong',
       });
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
     if (fabricCategory) {
@@ -326,9 +334,34 @@ const FabricContent = () => {
       size: 120
     },
     {
-      header: 'Status',
+      header: (
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+          <div>Status</div>
+          <FontAwesomeIcon icon={openStatus ? faFilterCircleXmark : faFilter} size={18} style={{ marginLeft: '1.5rem', cursor: 'pointer' }} onClick={() => setOpenStatus(!openStatus)} />
+          {
+            openStatus && (
+              <div className='status-dropdown'>
+                <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+                  <Text size="xs" fw={800}>ACTIVE</Text>
+                </div>
+                <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+                  <Text size="xs" fw={800}>INACTIVE</Text>
+                </div>
+              </div>
+            )
+          }
+        </div>
+      ),
       accessorKey: 'status',
       size: 100,
+      Cell: ({ cell, row }) => {
+        const status = row.original.status;
+        return (
+          <span style={{ color: status === 'ACTIVE' ? 'green' : 'red' }}>
+            {status}
+          </span>
+        );
+      },
     },
     {
       header: 'Actions',
@@ -337,24 +370,60 @@ const FabricContent = () => {
       size: 100,
       Cell: ({ row }) => {
         const { original } = row;
+        if (checked[original.id] === undefined) {
+          checked[original.id] = original.status === 'ACTIVE';
+        }
         return (
-          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <IconPencil
-              onClick={() => editFabricCode(original)}
-              style={{ cursor: 'pointer', color: 'teal' }}
-              stroke={2}
+          <div key={original.id} style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+            <Switch
+              checked={checked[original.id]}
+              onChange={() => handleSwitchChange(original.id)}
+              color="teal"
+              size="md"
+              style={{ cursor: 'pointer' }}
+              thumbIcon={
+                checked[original.id] ? (
+                  <IconCheck style={{ width: rem(12), height: rem(12) }} color="#007f5f" stroke={3} />
+                ) : (
+                  <IconX style={{ width: rem(12), height: rem(12) }} color="#e63946" stroke={3} />
+                )
+              }
             />
           </div>
         );
       }
     }
-  ], []);
+  ], [openStatus, checked, status]);
 
-  const editFabricCode = (roleObj) => {
-    setFabricCode(prev => ({ ...prev, ...roleObj }));
+  const handleStatusChange = (status) => {
+    setStatus(status)
+    setOpenStatus(false)
+  }
+
+  const handleSwitchChange = async (id) => {
+    setChecked((prev) => {
+      const newChecked = !prev[id];
+      return { ...prev, [id]: newChecked };
+    });
+    const newStatus = !checked[id] ? 'ACTIVE' : 'INACTIVE';
+    const options = {
+      json: { status: newStatus },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    try {
+      await B2B_API.put(`fabric/${id}`, options);
+      setFabricCodeList((currentData) =>
+        currentData.map((row) =>
+          row.id === id ? { ...row, status: newStatus } : row
+        )
+      );
+      await fetchAllFabricCodes();
+    } catch (error) {
+      console.error("Error updating status", error);
+    }
   };
-
-  console.log('fab : ', fabricCode);
 
 
   return (

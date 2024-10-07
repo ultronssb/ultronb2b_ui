@@ -74,7 +74,15 @@ const GST = () => {
     {
       header: 'Status',
       accessorKey: 'status',
-      size: 80
+      size: 80,
+      Cell: ({ cell, row }) => {
+        const status = row.original.status;
+        return (
+          <span style={{ color: status === 'ACTIVE' ? 'green' : 'red' }}>
+            {status}
+          </span>
+        );
+      },
     },
     {
       header: 'Actions',
@@ -140,7 +148,7 @@ const GST = () => {
         }));
       } else {
         const calculatedIgst = rate;
-        const calculatedCgstSgst = rate / 2; 
+        const calculatedCgstSgst = rate / 2;
         setGst((prev) => ({
           ...prev,
           gstRate: value,
@@ -150,14 +158,14 @@ const GST = () => {
           name: `GST ${rate}%`,
         }));
       }
-    } else if (['igst', 'cgst', 'sgst','name'].includes(key)) {
+    } else if (['igst', 'cgst', 'sgst', 'name'].includes(key)) {
       return;
     } else {
       setGst((prev) => ({ ...prev, [key]: value }));
     }
   };
-  
-  
+
+
   const createGST = async (event) => {
     event.preventDefault();
     try {

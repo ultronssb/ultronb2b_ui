@@ -51,7 +51,15 @@ const Discounts = () => {
     },
     {
       header: 'Status',
-      accessorKey: 'status'
+      accessorKey: 'status',
+      Cell: ({ cell, row }) => {
+        const status = row.original.status;
+        return (
+          <span style={{ color: status === 'ACTIVE' ? 'green' : 'red' }}>
+            {status}
+          </span>
+        );
+      },
     },
     {
       header: 'Created By',
@@ -92,7 +100,7 @@ const Discounts = () => {
   }
 
   return (
-    <div style={{marginTop:'5rem'}}>
+    <div style={{ marginTop: '5rem' }}>
       {!isDiscount && (
         <div>
           <div className='user--container'>

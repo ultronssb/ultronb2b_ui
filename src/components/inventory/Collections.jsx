@@ -2,10 +2,10 @@ import { Text } from '@mantine/core';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { B2B_API } from '../../api/Interceptor';
 import B2BButton from '../../common/B2BButton';
 import B2BTableGrid from '../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../layout/Layout';
-import { B2B_API } from '../../api/Interceptor';
 import notify from '../../utils/Notification';
 
 const Collections = () => {
@@ -19,9 +19,6 @@ const Collections = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  console.log(collections);
-
-
   useEffect(() => {
     const fetchCollections = async () => {
       try {
@@ -34,7 +31,7 @@ const Collections = () => {
         notify({
           error: true,
           success: false,
-          title: error?.message,
+          title: error?.message || 'something went wrong',
         });
       } finally {
         setIsLoading(false);
@@ -78,7 +75,15 @@ const Collections = () => {
     },
     {
       header: 'Status',
-      accessorKey: 'status'
+      accessorKey: 'status',
+      Cell: ({ cell, row }) => {
+        const status = row.original.status;
+        return (
+          <span style={{ color: status === 'ACTIVE' ? 'green' : 'red' }}>
+            {status}
+          </span>
+        );
+      },
     },
     {
       header: 'Image 1',
@@ -108,9 +113,13 @@ const Collections = () => {
     }
   ], []);
 
+  const sortedCollections = collections.sort((a, b) => {
+    return a.collectionId.localeCompare(b.collectionId);
+  });
+
   const editCollection = (varobj) => {
     const id = varobj.id;
-    navigate(`/inventory/collections/create?id=${id}`);
+    navigate(`/inventory/collections/create?id=${id}`, { state: { ...stateData, tabs: stateData.childTabs } });
   }
 
   const handleChange = (e) => {
@@ -127,7 +136,7 @@ const Collections = () => {
       </div>
       <B2BTableGrid
         columns={columns}
-        data={collections}
+        data={sortedCollections}
         isLoading={isLoading}
         isError={isError}
         enableTopToolbar={true}

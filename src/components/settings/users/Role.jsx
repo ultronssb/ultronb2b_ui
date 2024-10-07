@@ -65,6 +65,14 @@ const Role = () => {
       header: 'Status',
       accessorKey: 'status',
       size: 100,
+      Cell: ({ cell, row }) => {
+        const status = row.original.status;
+        return (
+          <span style={{ color: status === 'ACTIVE' ? 'green' : 'red' }}>
+            {status}
+          </span>
+        );
+      },
     },
     {
       header: 'Actions',
