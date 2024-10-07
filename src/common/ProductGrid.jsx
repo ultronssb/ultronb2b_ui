@@ -130,7 +130,7 @@ const ProductGrid = ({ data,
 
         const productColumns = [{
             accessorKey: 'Variant SKU',
-            header: 'SKU',
+            header: 'Variant SKU',
             Cell: ({ row }) => (
 
                 <span>{row.original.variantSku}</span>

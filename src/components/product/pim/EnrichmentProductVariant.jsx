@@ -1,9 +1,8 @@
 import { faAngleRight, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { IconUpload } from '@tabler/icons-react'
 import { Button, Group, Text } from '@mantine/core'
 import { Dropzone } from '@mantine/dropzone'
-import '@mantine/dropzone/styles.css'
-import { IconUpload } from '@tabler/icons-react'
 import _ from 'lodash'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { BASE_URL } from '../../../api/EndPoints'
@@ -74,10 +73,8 @@ const EnrichmentProductVariant = () => {
             console.error("Uploaded file is not an image");
             return;
         }
-
         const fileUrl = URL.createObjectURL(uploadedFile);
         const fileName = uploadedFile.name; // Extract the file name from the uploaded file
-
         setPim((prevProductPims) => {
             return {
                 ...prevProductPims, // Preserve all previous properties
@@ -93,8 +90,6 @@ const EnrichmentProductVariant = () => {
             };
         });
     };
-
-
 
     const handleReset = (index) => {
         setPim((prevProductPims) => {

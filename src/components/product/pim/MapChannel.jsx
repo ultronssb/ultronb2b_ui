@@ -17,7 +17,6 @@ const MapChannel = () => {
   const [selectedStore, setSelectedStore] = useState('');
   const [mapStatus, setMapStatus] = useState(false);
   const [areAllSelected, setAreAllSelected] = useState(false);
-  const [status] = useState('ACTIVE');
   const [searchTerm, setSearchTerm] = useState('');
 
 
@@ -73,8 +72,8 @@ const MapChannel = () => {
     setIsLoading(true);
     try {
       const endpoint = mapStatus
-        ? `pim/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}&searchTerm=${searchTerm}`
-        : `map-channel/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=${status}&searchTerm=${searchTerm}`;
+        ? `pim/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&searchTerm=${searchTerm}`
+        : `map-channel/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=ACTIVE&searchTerm=${searchTerm}`;
 
       const response = await B2B_API.get(endpoint).json();
       const data = response?.response?.content || [];

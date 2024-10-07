@@ -325,15 +325,15 @@ const EnrichProduct = () => {
       onChange: (event) => handleChange(event, "pimId"),
       edit: true
     },
-    {
-      label: "Variant Id",
-      value: product?.productVariants?.[0]?.variants?.[0]?.variantId || '',
-      type: "text",
-      fieldType: 'textField',
-      placeholder: "Enter Variant Id",
-      onChange: (event) => handleChange(event, "variantId", 0),
-      edit: true
-    },
+    // {
+    //   label: "Variant Id",
+    //   value: product?.productVariants?.[0]?.variants?.[0]?.variantId || '',
+    //   type: "text",
+    //   fieldType: 'textField',
+    //   placeholder: "Enter Variant Id",
+    //   onChange: (event) => handleChange(event, "variantId", 0),
+    //   edit: true
+    // },
     {
       label: "Taxonomy",
       value: product.taxonomyNode?.name,

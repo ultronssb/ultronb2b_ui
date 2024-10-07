@@ -248,7 +248,7 @@ console.log(selectedPairs)
 
           </div>
           <div>
-            {_.size(categorys) >= _.size(selectedPairs) && (
+            {_.size(categorys) + _.size(existingCategoryKey) > _.size(selectedPairs) && (
               <button type="button" className="product-category-btn product-category-btn--text-go" onClick={addNewPair} >
                 <FontAwesomeIcon className="fa" icon={faPlus} />
                 Add Attributes
