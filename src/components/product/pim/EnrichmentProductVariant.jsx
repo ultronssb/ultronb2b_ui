@@ -11,7 +11,7 @@ import { EnrichProductContext } from './EnrichProduct'
 
 
 const EnrichmentProductVariant = () => {
-    const { pim, setPim } = useContext(EnrichProductContext);
+    const { pim, setPim,product } = useContext(EnrichProductContext);
     const [activeTab, setActiveTab] = useState('Price');
     const [expandedRows, setExpandedRows] = useState([]);
     const isRowExpanded = (index) => expandedRows.includes(index);
@@ -138,6 +138,8 @@ const EnrichmentProductVariant = () => {
         });
     };
 
+    console.log(product,"pro");
+    
     return (
         <div>
             <section className="helios-c-PJLV product-info-variant-section">
@@ -207,7 +209,7 @@ const EnrichmentProductVariant = () => {
                                         <tr data-testid="table-row" className="product-info-variant-table-list-row product-info-variant-table-list-row--header">
                                             <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell cn-variant-name-column" aria-sort="none">Variant name</th>
                                             <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell" aria-sort="none">
-                                                <div>SKU Code</div>
+                                                <div>Variant SKU</div>
                                             </th>
                                             <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant input-columns" aria-sort="none">
                                                 <div>Retail Price</div>

@@ -1,5 +1,5 @@
-import { Button, FileButton, Group } from '@mantine/core'
-import { IconArrowLeft } from '@tabler/icons-react'
+import { Button, FileButton, Group, rem, Switch } from '@mantine/core'
+import { IconArrowLeft, IconCheck, IconX } from '@tabler/icons-react'
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../../../api/EndPoints'
@@ -37,7 +37,7 @@ const EnrichProduct = () => {
 
   useEffect(() => {
     if (id) {
-      fetchProduct(id)
+      fetchProduct()
     }
   }, [location.search])
 
@@ -70,7 +70,7 @@ const EnrichProduct = () => {
       throw error;
     }
   };
-  const fetchProduct = async (id) => {
+  const fetchProduct = async () => {
     try {
       const response = await B2B_API.get(`pim/product/${id}`).json();
       const product = response.response.product;
@@ -291,11 +291,11 @@ const EnrichProduct = () => {
     }
   };
 
-  const updateCompletionPercentage = (filledCount) => {
-    const totalFields = 30; // Set your total fields accurately
-    const completionPercentage = Math.min(Math.round((filledCount / totalFields) * 100), 100);
-    setSliderValue(completionPercentage); // Use this to set a state or display it
-  };
+  // const updateCompletionPercentage = (filledCount) => {
+  //   const totalFields = 30; // Set your total fields accurately
+  //   const completionPercentage = Math.min(Math.round((filledCount / totalFields) * 100), 100);
+  //   setSliderValue(completionPercentage); // Use this to set a state or display it
+  // };
 
   const json = [
     {
@@ -380,6 +380,10 @@ const EnrichProduct = () => {
       reader.onloadend = () => {
         setErrorMessage('');
         setVideoFile(file);
+        setPim((prevPim) => ({
+          ...prevPim,
+          video: reader.result,
+      }));
       };
       reader.readAsDataURL(file);
     } else {
@@ -426,6 +430,31 @@ const EnrichProduct = () => {
     }
   };
 
+  const publishPim = async (e) => {
+
+    console.log(e.target.checked, "event");
+
+    try {
+
+      const res = await B2B_API.post(`pim/publish/${pim.pimId}?publish=${!pim.isPublished}`).json();
+      notify({
+        title: pim.product?.articleName || pim.pimId,
+        message: !pim.isPublished ? 'Product Published Successfully !!' : "Product UnPublished Succesfully",
+        error: false,
+        success: true,
+      });
+      fetchProduct()
+    } catch (error) {
+
+      notify({
+        title: 'Error!',
+        message: error?.response?.message || 'Failed to publish product.',
+        error: true,
+        success: false,
+      });
+    }
+  }
+
   return (
     <EnrichProductContext.Provider value={{ handleChange, product, setProduct, pim, setPim, videoFile, multimedia, setMultimedia }}>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -455,6 +484,30 @@ const EnrichProduct = () => {
             ) : (
               <p style={{ color: '#888' }}>No image uploaded</p>
             )}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-around', width: '10rem' }}>
+            <h3>Published</h3>
+            <Switch
+              checked={pim?.isPublished}
+              onChange={(e) => publishPim(e)}
+              color="teal"
+              size="md"
+              thumbIcon={
+                pim?.isPublished ? (
+                  <IconCheck
+                    style={{ width: rem(12), height: rem(12) }}
+                    color='#007f5f'
+                    stroke={3}
+                  />
+                ) : (
+                  <IconX
+                    style={{ width: rem(12), height: rem(12) }}
+                    color='#e63946'
+                    stroke={3}
+                  />
+                )
+              }
+            />
           </div>
         </div>
         <div className='form-group' style={{ display: 'flex', flexDirection: 'column', maxWidth: '49%', alignItems: 'center' }}>

@@ -22,10 +22,23 @@ const ProductGrid = ({ data,
     const { pimId } = data[0] || {};
 
     const columns = useMemo(() => {
-        return [
+        const columnArray = [
             {
                 id: 'product',
                 columns: [
+                    {
+                        accessorKey: 'product.image',
+                        header: 'Product Image',
+                        size: 150,
+                        enableSorting: false,
+                        enableColumnDragging: false,
+                        Cell: ({ row }) => {
+                            const item = pimId ? row.original.product?.image : row.original.image;
+                            return (
+                                <img src={`${BASE_URL.replace('/api', '')}${item}`} alt="Uploaded Badge" style={{ maxWidth: '50px', maxHeight: '50px' }} />
+                            );
+                        }
+                    },
                     {
                         accessorKey: 'articleCode',
                         header: 'Product Code',
@@ -53,7 +66,7 @@ const ProductGrid = ({ data,
                         enableSorting: false,
                         enableColumnDragging: false,
                         Cell: ({ row }) => (
-                            <span>{pimId ? row.original.product.brand.name : row.original.brand.name}</span>
+                            <span>{pimId ? row.original.product.brand.name : row.original?.brand?.name}</span>
                         ),
                     },
                     {
@@ -62,7 +75,7 @@ const ProductGrid = ({ data,
                         enableSorting: false,
                         enableColumnDragging: false,
                         Cell: ({ cell, row }) => {
-                            const price = pimId ? row.original.product.priceSetting.sellingPrice : row.original.priceSetting.sellingPrice;
+                            const price = pimId ? row.original.product.priceSetting.sellingPrice : row.original.priceSetting?.sellingPrice;
                             return price ? price.toLocaleString('en-US', {
                                 style: 'currency',
                                 currency: 'IND',
@@ -86,41 +99,64 @@ const ProductGrid = ({ data,
                             );
                         },
                     },
-                    {
-                        header: (
-                            map ? (
-                                <Checkbox
-                                    checked={areAllSelected}
-                                    onChange={() => handleSelectAllPairs(data)}
-                                />
-                            ) : (
-                                'Actions'
-                            )
-                        ),
-                        enableSorting: false,
-                        enableColumnDragging: false,
-                        mainTableHeaderCellProps: { align: 'center' },
-                        mainTableBodyCellProps: { align: 'center' },
-                        size: 100,
-                        Cell: ({ row }) => {
-                            return map ? (
-                                <Checkbox
-                                    checked={selectedPairs.includes(row.original.productId)}
-                                    onChange={() => handleSelectPair(row.original)}
-                                />
-                            ) : (
-                                <IconPencil
-                                    onClick={() => editVariant(row.original)}
-                                    style={{ cursor: 'pointer', color: 'teal' }}
-                                    stroke={2}
-                                />
-                            );
-                        },
-                    },
                 ],
             },
         ];
+         // Conditionally add the 'Publish' column when pimId is present, and insert it before the last column (Actions)
+         if (pimId) {
+            columnArray[0].columns.splice(columnArray[0].columns.length - 1, 0, {
+                accessorKey: 'isPublished',
+                header: 'Publish',
+                size: 150,
+                enableSorting: false,
+                enableColumnDragging: false,
+                Cell: ({ cell, row }) => {
+                    const status = row.original.isPublished;
+                    return (
+                        <span style={{ color: status ? 'green' : 'red' }}>
+                            {status ? "Published" : "Not Published"}
+                        </span>
+                    );
+                },
+            });
+        }
+        // Actions column (always at the end)
+        columnArray[0].columns.push({
+            header: (
+                map ? (
+                    <Checkbox
+                        checked={areAllSelected}
+                        onChange={() => handleSelectAllPairs(data)}
+                    />
+                ) : (
+                    'Actions'
+                )
+            ),
+            enableSorting: false,
+            enableColumnDragging: false,
+            mainTableHeaderCellProps: { align: 'center' },
+            mainTableBodyCellProps: { align: 'center' },
+            size: 100,
+            Cell: ({ row }) => {
+                return map ? (
+                    <Checkbox
+                        checked={selectedPairs.includes(row.original.productId)}
+                        onChange={() => handleSelectPair(row.original)}
+                    />
+                ) : (
+                    <IconPencil
+                        onClick={() => editVariant(row.original)}
+                        style={{ cursor: 'pointer', color: 'teal' }}
+                        stroke={2}
+                    />
+                );
+            },
+        });
+
+        return columnArray;
     }, [pimId, map, areAllSelected, selectedPairs, data]);
+
+
 
 
     const renderDetailPanel = ({ row }) => {
@@ -145,24 +181,6 @@ const ProductGrid = ({ data,
 
             }
         },
-            // {
-            //     accessorKey: 'Solid',
-            //     header: 'Solid',
-            //     Cell: ({ row }) => {
-            //         console.log('row : ', row.original)
-            //         return (<span>{row.original.variants.map(vari => vari.name === 'Solid' ? vari.value : '')}</span>)
-
-            //     }
-            // },
-            // {
-            //     accessorKey: 'Colour',
-            //     header: 'Colour',
-            //     Cell: ({ row }) => {
-            //         console.log('row : ', row.original)
-            //         return (<span>{row.original.variants.map(vari => vari.name === 'Colour' ? vari.value : '')}</span>)
-
-            //     }
-            // }
         ]
 
         const [pageSize, setPageSize] = useState(5);

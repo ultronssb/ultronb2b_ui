@@ -4,6 +4,7 @@ import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect'; // Ensure you import B2BSelect
 import ProductGrid from '../../../common/ProductGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
+import _ from 'lodash';
 
 const ProductInfoManagement = () => {
   const { stateData } = useContext(ActiveTabContext);
@@ -30,9 +31,9 @@ const ProductInfoManagement = () => {
     } else {
       setProduct([])
     }
-    fetchAllCompanyLocations();
-    fetchAllChannels();
-  }, [pagination, selectedChannel, selectedStore, status,searchTerm]);
+
+  }, [pagination, selectedChannel, selectedStore, status, searchTerm]);
+
   useEffect(() => {
     const query_param = new URLSearchParams(location.search);
     const channel = query_param.get('channel')
@@ -40,13 +41,24 @@ const ProductInfoManagement = () => {
     if (channel) {
       setSelectedChannel(channel);
       setSelectedStore(store);
+      fetchAllCompanyLocations(false)
+      fetchAllChannels(false)
+    } else {
+      fetchAllCompanyLocations();
+      fetchAllChannels();
     }
 
   }, [location.search])
-  const fetchAllCompanyLocations = async () => {
+
+
+
+  const fetchAllCompanyLocations = async (setDefault = true) => {
     try {
       const response = await B2B_API.get(`company-location/get-all`).json();
       const data = response.response;
+      if (_.size(data) > 0  && setDefault) {
+        setSelectedStore(data[0].companyLocationId)
+      }
       const transformedData = data.map(item => ({
         value: item.companyLocationId,
         label: item.name
@@ -58,10 +70,13 @@ const ProductInfoManagement = () => {
     }
   };
 
-  const fetchAllChannels = async () => {
+  const fetchAllChannels = async (setDefault = true) => {
     try {
       const response = await B2B_API.get(`channel/get-all-channel`).json();
       const data = response.response;
+      if (_.size(data) > 0 && setDefault) {
+        setSelectedChannel(data[0].channelId)
+      }
       const transformedData = data.map(item => ({
         value: item.channelId,
         label: item.name
@@ -91,7 +106,7 @@ const ProductInfoManagement = () => {
   const handleSearchChange = (event) => {
     const value = event.currentTarget.value;
     setSearchTerm(value);
-};
+  };
 
   const editVarient = (varobj) => {
     navigate(`/product/pim/enrich-product?id=${varobj.pimId}&from=${encodeURIComponent(`${window.location.pathname}?channel=${selectedChannel}&store=${selectedStore}`)}`, { state: { ...stateData, tabs: stateData.childTabs } });

@@ -68,7 +68,7 @@ import Role from './components/settings/users/Role';
 import RolePrivileges from './components/settings/users/RolePrivileges';
 import Layout from './layout/Layout';
 
-import SwatchOn from './SwatchOn.jsx'
+import Filters from './components/settings/filters/Filters.jsx';
 
 const ProtectedRoute = ({ element: Component }) => {
   const navigate = useNavigate();
@@ -200,7 +200,7 @@ function App() {
 
         <Route path='/settings/location-type' element={<ProtectedRoute element={LocationType} />} />
 
-        <Route path='/swatch' element={<ProtectedRoute element={SwatchOn} />} />
+        <Route path='/settings/filters' element={<ProtectedRoute element={Filters} />} />
 
       </Route>
     </Routes>
