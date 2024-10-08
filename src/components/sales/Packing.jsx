@@ -79,10 +79,6 @@ const Packing = () => {
               <TextInput label="Cartoon Size" placeholder="Delivery Charges" />
             </Grid.Col>
           </Grid>
-          <Group position="right" mt="md">
-            <Button>Cancel</Button>
-            <Button>Save</Button>
-          </Group>
         </Grid.Col>
 
         {/* Right section */}
@@ -129,12 +125,15 @@ const Packing = () => {
               </tbody>
             </Table>
 
-            <Textarea style={{ width: '250px', marginTop: '1rem' }} placeholder="Remark" label="Remark" minRows={4} />
-
-            <div style={{ marginTop: '20px' }}>
-              <Group>
-                <TextInput label="Total Packed Qty"/>
-              </Group>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem', }}>
+              <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '1rem' }}>
+                <label style={{ fontWeight: 'bold' }}>Remarks</label>
+                <textarea style={{ width: '330px', padding: '0 0 0 5px', resize: 'none', outline: 'none', background: 'none', border: '1px solid silver', borderRadius: '5px' }}></textarea>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <label style={{ fontWeight: 'bold', }}>Total Packed Qty</label>
+                <input type='text' readOnly style={{ width: '120px', outline: 'none', background: 'none', color: '#666666', border: '1px solid silver', height: '3rem', borderRadius: '5px' }} />
+              </div>
             </div>
 
             <Group position="right" mt="md">

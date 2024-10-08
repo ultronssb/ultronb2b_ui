@@ -94,10 +94,6 @@ const ShipmentNote = () => {
               <TextInput label="Delivery Charges" placeholder="Delivery Charges" />
             </Grid.Col>
           </Grid>
-          <Group position="right" mt="md">
-            <Button>Cancel</Button>
-            <Button>Save</Button>
-          </Group>
         </Grid.Col>
 
         {/* Right section */}
@@ -145,15 +141,29 @@ const ShipmentNote = () => {
               </tbody>
             </Table>
 
-            <Textarea style={{ width: '250px', marginTop: '1rem' }} placeholder="Remark" label="Remark" minRows={4} />
-
-            <div style={{ marginTop: '20px' }}>
-              <Group>
-                <TextInput label="Gross Total" readOnly />
-                <TextInput label="Shipping Cost" readOnly />
-                <TextInput label="GST" readOnly />
-                <TextInput label="Total Amount" readOnly />
-              </Group>
+            <div style={{ display: 'flex', flexDirection: 'row', marginTop: '1rem', gap: '1rem' }}>
+              <div style={{ display: "flex", flexDirection: 'column' }}>
+                <label style={{ fontWeight: 'bold' }}>Remarks</label>
+                <textarea style={{ width: '240px', height: '10rem', resize: 'none', outline: 'none', background: 'none', border: '1px solid silver', borderRadius: '5px' }}></textarea>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', }}>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'center' }}>
+                  <label style={{ width: '120px', fontWeight: 'bold', }}>Gross Total</label>
+                  <input type='text' readOnly style={{ width: '180px', outline: 'none', background: 'none', color: '#666666', border: '1px solid silver', height: '2.5rem', borderRadius: '5px' }} />
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'center' }}>
+                  <label style={{ width: '120px', fontWeight: 'bold', }}>Shipping Cost</label>
+                  <input type='text' readOnly style={{ width: '180px', outline: 'none', background: 'none', color: '#666666', border: '1px solid silver', height: '2.5rem', borderRadius: '5px' }} />
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'center' }}>
+                  <label style={{ width: '120px', fontWeight: 'bold', }}>GST</label>
+                  <input type='text' readOnly style={{ width: '180px', outline: 'none', background: 'none', color: '#666666', border: '1px solid silver', height: '2.5rem', borderRadius: '5px' }} />
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'center' }}>
+                  <label style={{ width: '120px', fontWeight: 'bold', }}>Total Amount</label>
+                  <input type='text' readOnly style={{ width: '180px', outline: 'none', background: 'none', color: '#666666', border: '1px solid silver', height: '2.5rem', borderRadius: '5px' }} />
+                </div>
+              </div>
             </div>
 
             <Group position="right" mt="md">

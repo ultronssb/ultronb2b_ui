@@ -1,13 +1,13 @@
-import { Button, Checkbox, FileButton } from '@mantine/core';
+import { Button, FileButton } from '@mantine/core';
 import { IconArrowLeft } from '@tabler/icons-react';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../api/EndPoints';
 import { B2B_API } from '../../api/Interceptor';
 import B2BButton from '../../common/B2BButton';
 import B2BInput from '../../common/B2BInput';
-import B2BTableGrid from '../../common/B2BTableGrid';
 import B2BTextarea from '../../common/B2BTextarea';
+import ProductGrid from '../../common/ProductGrid';
 import { ActiveTabContext } from '../../layout/Layout';
 import notify from '../../utils/Notification';
 import './CollectionCreation.css';
@@ -24,7 +24,7 @@ const CollectionCreation = () => {
 
   const [collection, setCollection] = useState(initialState);
   const [products, setProducts] = useState([]);
-  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [selectedPairs, setSelectedPairs] = useState([]);
   const [rowCount, setRowCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -32,6 +32,8 @@ const CollectionCreation = () => {
   const fileInputRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [areAllSelected, setAreAllSelected] = useState(false);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -43,7 +45,7 @@ const CollectionCreation = () => {
       const res = await B2B_API.get(`collections/get?id=${id}`).json();
       setCollection(res.response);
       const productIds = Array.from(new Set(res.response.product.map(pro => pro.productId)));
-      setSelectedProductIds(productIds);
+      setSelectedPairs(productIds);
       setImageFile(res.response.image);
     };
     fetchCollection();
@@ -51,11 +53,11 @@ const CollectionCreation = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [pagination]);
+  }, [pagination.pageIndex, pagination.pageSize, searchTerm]);
 
   const fetchProducts = async () => {
     try {
-      const res = await B2B_API.get(`product/view?page=${pagination.pageIndex}&size=${pagination.pageSize}`).json();
+      const res = await B2B_API.get(`product/products/search?page=${pagination.pageIndex}&size=${pagination.pageSize}&searchTerm=${searchTerm}`).json();
       const data = res?.response?.content || [];
       setRowCount(res?.response?.totalElements || 0);
       setProducts(data);
@@ -92,7 +94,6 @@ const CollectionCreation = () => {
       name: "Collection Image",
       fieldType: "image",
       value: collection.image,
-      onChange: (event) => handleFileChange(event, 'image'),
       disabled: false,
     },
     {
@@ -162,85 +163,6 @@ const CollectionCreation = () => {
     }
   };
 
-  const columns = useMemo(() => [
-    {
-      header: 'Action',
-      mainTableHeaderCellProps: { align: 'center' },
-      mainTableBodyCellProps: { align: 'center' },
-      Cell: ({ row }) => {
-        const isChecked = Array.isArray(selectedProductIds) && selectedProductIds.includes(row.original.productId);
-        return (
-          <Checkbox
-            onChange={() => selectProduct(row.original)}
-            checked={isChecked}
-          />
-        );
-      },
-    },
-    {
-      header: 'Product Id',
-      accessorKey: 'productId',
-    },
-    {
-      header: 'Product Name',
-      accessorKey: 'articleName',
-    },
-    {
-      header: 'SKU ID',
-      accessorKey: 'articleCode',
-    },
-    {
-      header: 'Product Category',
-      accessorKey: 'productCategories.Fabric Type.name',
-    },
-    {
-      header: 'Brand',
-      accessorKey: 'brand.name',
-    },
-    {
-      header: 'Image 1',
-      accessorKey: 'image',
-      Cell: ({ cell }) => {
-        const imagePath = cell.row.original.image;
-        const fullImageUrl = `${BASE_URL.replace("/api", "")}${imagePath}`;
-        return (
-          <img src={fullImageUrl} alt="Product" style={{ width: '50px', height: 'auto' }} />
-        );
-      },
-    },
-    {
-      header: 'Status',
-      accessorKey: 'status',
-      Cell: ({ cell, row }) => {
-        const status = row.original.status;
-        return (
-          <span style={{ color: status === 'ACTIVE' ? 'green' : 'red' }}>
-            {status}
-          </span>
-        );
-      },
-    },
-  ], [selectedProductIds]);
-
-  const sortedProducts = products.sort((a, b) => {
-    return a.productId.localeCompare(b.productId);
-  });
-
-  const selectProduct = (product) => {
-    const productId = product.productId;
-    const isSelected = Array.isArray(selectedProductIds) && selectedProductIds.includes(productId);
-    setSelectedProductIds(prevSelectedIds => {
-      const newSelectedIds = isSelected ? prevSelectedIds.filter(id => id !== productId) : [...prevSelectedIds, productId];
-      const currentProducts = collection.product;
-      const newCollectionProducts = isSelected ? currentProducts.filter(prod => prod.productId !== productId) : [...currentProducts, product];
-      setCollection(prevCollection => ({
-        ...prevCollection,
-        product: newCollectionProducts
-      }));
-      return Array.isArray(newSelectedIds) ? newSelectedIds : [];
-    });
-  };
-
 
   const handleCancel = () => {
     navigate('/inventory/collections', { state: { ...stateData, tabs: stateData.childTabs } });
@@ -276,7 +198,40 @@ const CollectionCreation = () => {
     }
   }
 
+  const handleSelectPair = (product) => {
+    const productId = product.productId;
+    const isSelected = Array.isArray(selectedPairs) && selectedPairs.includes(productId);
+    setSelectedPairs(prevSelectedIds => {
+      const newSelectedIds = isSelected ? prevSelectedIds.filter(id => id !== productId) : [...prevSelectedIds, productId];
+      const currentProducts = collection.product;
+      const newCollectionProducts = isSelected ? currentProducts.filter(prod => prod.productId !== productId) : [...currentProducts, product];
+      setCollection(prevCollection => ({
+        ...prevCollection,
+        product: newCollectionProducts
+      }));
+      return Array.isArray(newSelectedIds) ? newSelectedIds : [];
+    });
+  };
+
+  const handleSelectAllPairs = () => {
+    if (!areAllSelected) {
+      const allProductIds = products.map(item => item.productId);
+      setSelectedPairs(allProductIds);
+      setAreAllSelected(!areAllSelected);
+    } else {
+      setSelectedPairs([]);
+      setAreAllSelected(!areAllSelected);
+    }
+  };
+
+  const handleSearchChange = (event) => {
+    const value = event.currentTarget.value;
+    setSearchTerm(value);
+  };
+
   console.log('coll : ', collection);
+  console.log('selectedPairs : ', selectedPairs);
+
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -353,18 +308,20 @@ const CollectionCreation = () => {
       </div>
       <div className='collection-product-table'>
         <h3>Select Products</h3>
-        <B2BTableGrid
-          columns={columns}
-          data={sortedProducts}
+        <ProductGrid
+          data={products}
+          map={"mapStatus"}
+          selectedPairs={selectedPairs}
+          areAllSelected={areAllSelected}
+          handleSelectAllPairs={handleSelectAllPairs}
+          handleSelectPair={handleSelectPair}
           isLoading={isLoading}
-          isError={isError}
-          enableTopToolbar={true}
-          enableGlobalFilter={true}
           manualPagination={true}
           pagination={pagination}
           rowCount={rowCount}
           onPaginationChange={setPagination}
-          enableFullScreenToggle={true}
+          searchTerm={searchTerm}
+          handleSearchChange={handleSearchChange}
         />
       </div>
     </div>

@@ -45,7 +45,7 @@ const FabricContent = () => {
 
   useEffect(() => {
     fetchAllFabricCodes();
-  }, [status]);
+  }, [status, pagination.pageIndex, pagination.pageSize]);
 
   const fetchAllFabricCodes = async () => {
     try {

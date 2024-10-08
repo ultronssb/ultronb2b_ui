@@ -16,8 +16,8 @@ import Settings from './components/e-commerce/settings/EComSettings';
 import Publish from './components/e-commerce/settings/Publish';
 import SiteInfo from './components/e-commerce/website/SiteInfo';
 import Website from './components/e-commerce/website/Website';
-import Collections from './components/inventory/Collections';
 import CollectionCreation from './components/inventory/CollectionCreation';
+import Collections from './components/inventory/Collections';
 import DiscountCreation from './components/inventory/DiscountCreation';
 import Discounts from './components/inventory/Discounts';
 import OpeningStocks from './components/inventory/OpeningStocks';
@@ -34,21 +34,22 @@ import CreateProduct from './components/product/product/CreateProduct';
 import ProductTags from './components/product/product/ProductTags';
 import { Attribute } from './components/product/product_hierarchy/Attribute';
 import Brand from './components/product/product_hierarchy/Brand';
+import FabricContent from './components/product/product_hierarchy/FabricContent';
 import Group from './components/product/product_hierarchy/Group';
 import ProductHierarchy from './components/product/product_hierarchy/ProductHierarchy';
 import Taxonomy from './components/product/product_hierarchy/Taxonomy';
 import ProductHistory from './components/product/productHistory/ProductHistory';
 import GST from './components/product/tax/GST';
 import Variants from './components/product/variants/Variants';
+import CreateOrder from './components/sales/CreateOrder';
+import Enquiry from './components/sales/Enquiry';
+import Invoice from './components/sales/Invoice';
 import OrderAbondened from './components/sales/OrderAbondened';
 import OrderCancelled from './components/sales/OrderCancelled';
-import CreateOrder from './components/sales/CreateOrder';
 import OrderDelivered from './components/sales/OrderDelivered';
-import Invoice from './components/sales/Invoice';
 import OrderOpen from './components/sales/OrderOpen';
-import OrderManagement from './components/sales/OrderManagement';
-import Packing from './components/sales/Packing';
 import OrderReturned from './components/sales/OrderReturned';
+import Packing from './components/sales/Packing';
 import ReturnNote from './components/sales/ReturnNote';
 import SalesOrder from './components/sales/SalesOrder';
 import ShipmentNote from './components/sales/ShipmentNote';
@@ -66,8 +67,8 @@ import AddUsers from './components/settings/users/AddUsers';
 import Role from './components/settings/users/Role';
 import RolePrivileges from './components/settings/users/RolePrivileges';
 import Layout from './layout/Layout';
-import Enquiry from './components/sales/Enquiry';
-import FabricContent from './components/product/product_hierarchy/FabricContent';
+
+import SwatchOn from './SwatchOn.jsx'
 
 const ProtectedRoute = ({ element: Component }) => {
   const navigate = useNavigate();
@@ -125,9 +126,8 @@ function App() {
 
 
         {/* sales */}
-        <Route path='/sales/order-management' element={<ProtectedRoute element={OrderManagement} />} />
         <Route path='/sales/enquiry' element={<ProtectedRoute element={Enquiry} />} />
-        <Route path='/sales/open-order' element={<ProtectedRoute element={OrderOpen} />} />
+        <Route path='/sales/order-management' element={<ProtectedRoute element={OrderOpen} />} />
         <Route path='/sales/delivery' element={<ProtectedRoute element={OrderDelivered} />} />
         <Route path='/sales/cancel' element={<ProtectedRoute element={OrderCancelled} />} />
         <Route path='/sales/abandon' element={<ProtectedRoute element={OrderAbondened} />} />
@@ -200,6 +200,7 @@ function App() {
 
         <Route path='/settings/location-type' element={<ProtectedRoute element={LocationType} />} />
 
+        <Route path='/swatch' element={<ProtectedRoute element={SwatchOn} />} />
 
       </Route>
     </Routes>

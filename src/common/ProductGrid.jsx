@@ -21,7 +21,6 @@ const ProductGrid = ({ data,
     rowCount, isFetching }) => {
     const { pimId } = data[0] || {};
 
-
     const columns = useMemo(() => {
         return [
             {
@@ -146,27 +145,26 @@ const ProductGrid = ({ data,
 
             }
         },
-        // {
-        //     accessorKey: 'Solid',
-        //     header: 'Solid',
-        //     Cell: ({ row }) => {
-        //         console.log('row : ', row.original)
-        //         return (<span>{row.original.variants.map(vari => vari.name === 'Solid' ? vari.value : '')}</span>)
+            // {
+            //     accessorKey: 'Solid',
+            //     header: 'Solid',
+            //     Cell: ({ row }) => {
+            //         console.log('row : ', row.original)
+            //         return (<span>{row.original.variants.map(vari => vari.name === 'Solid' ? vari.value : '')}</span>)
 
-        //     }
-        // },
-        // {
-        //     accessorKey: 'Colour',
-        //     header: 'Colour',
-        //     Cell: ({ row }) => {
-        //         console.log('row : ', row.original)
-        //         return (<span>{row.original.variants.map(vari => vari.name === 'Colour' ? vari.value : '')}</span>)
+            //     }
+            // },
+            // {
+            //     accessorKey: 'Colour',
+            //     header: 'Colour',
+            //     Cell: ({ row }) => {
+            //         console.log('row : ', row.original)
+            //         return (<span>{row.original.variants.map(vari => vari.name === 'Colour' ? vari.value : '')}</span>)
 
-        //     }
-        // }
+            //     }
+            // }
         ]
 
- console.log(data)
         const [pageSize, setPageSize] = useState(5);
 
         return (<>
@@ -204,6 +202,8 @@ const ProductGrid = ({ data,
         enablePinning: true,
         enableRowActions: false,
         enableRowSelection: false,
+        enableColumnFilters: false,
+        enableDensityToggle: false,
         initialState: { showColumnFilters: false, showGlobalFilter: true },
         paginationDisplayMode: 'pages',
         positionToolbarAlertBanner: 'bottom',
