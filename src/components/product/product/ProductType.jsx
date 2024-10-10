@@ -8,19 +8,18 @@ import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
 import { ActiveTabContext } from '../../../layout/Layout';
-import notify from '../../../utils/Notification';
 import { ProductContext } from './CreateProduct';
 
 const ProductType = () => {
     const { stateData } = useContext(ActiveTabContext);
-    const [errorMessage, setErrorMessage] = useState('');
-    const { product, handleChange, setProduct, setImageFile, imageFile, inputError } = useContext(ProductContext);
+    const { product, handleChange, setImageFile, imageFile, inputError } = useContext(ProductContext);
     const [brand, setBrand] = useState([]);
-    const resetRef = useRef(null);
     const [productTags, setProductTags] = useState([]);
     const [taxonomy, setTaxonomy] = useState([]);
     const navigate = useNavigate();
-
+    
+    const resetRef = useRef(null);
+    
     useEffect(() => {
         fetchAllBrand();
         fetchAllTags();
@@ -45,9 +44,6 @@ const ProductType = () => {
     };
 
     const clearFile = () => {
-        setProduct((prevProduct) => ({
-            ...prevProduct, image: ''
-        }));
         if (resetRef.current) {
             resetRef.current();
         }
@@ -60,33 +56,14 @@ const ProductType = () => {
 
         if (file) {
             if (file.size > MAX_SIZE_BYTES) {
-                setErrorMessage(`File size exceeds the 3MB limit for the Image!! `);
                 if (file.size > MAX_SIZE_BYTES) {
                     setImageFile(null);
-                    setProduct((prevProduct) => ({
-                        ...prevProduct,
-                        image: '',
-                    }));
                 }
             } else {
-                setErrorMessage("")
                 setImageFile(file);
-                const reader = new FileReader()
-                reader.onloadend = () => {
-                    setProduct((prevProduct) => ({
-                        ...prevProduct,
-                        image: reader.result,
-                    }));
-                };
-                reader.readAsDataURL(file);
             }
         } else {
-            setErrorMessage('');
             setImageFile(null);
-            setProduct((prevProduct) => ({
-                ...prevProduct,
-                image: '',
-            }));
         }
     };
 

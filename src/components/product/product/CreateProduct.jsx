@@ -323,7 +323,7 @@ const CreateProduct = () => {
         } else {
           errors.taxonomyError = false;
         }
-        if (isEmpty(product.image) || product.image == undefined) {
+        if ((isEmpty(product.image) && !imageFile)) {
           errors.imageError = true;
           errors.imageErrorMessage = 'Image is Required!!';
           isValid = false;
