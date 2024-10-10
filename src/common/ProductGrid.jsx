@@ -28,7 +28,7 @@ const ProductGrid = ({ data,
                 columns: [
                     {
                         accessorKey: 'product.image',
-                        header: 'Product Image',
+                        header: 'Image',
                         size: 150,
                         enableSorting: false,
                         enableColumnDragging: false,
@@ -71,7 +71,7 @@ const ProductGrid = ({ data,
                     },
                     {
                         accessorKey: 'priceSetting.sellingPrice',
-                        header: 'Product Price',
+                        header: 'Price',
                         enableSorting: false,
                         enableColumnDragging: false,
                         Cell: ({ cell, row }) => {
@@ -105,9 +105,9 @@ const ProductGrid = ({ data,
          // Conditionally add the 'Publish' column when pimId is present, and insert it before the last column (Actions)
          if (pimId) {
             columnArray[0].columns.splice(columnArray[0].columns.length - 1, 0, {
-                accessorKey: 'isPublished',
                 header: 'Publish',
-                size: 150,
+                accessorKey: 'isPublished',
+                size: 120,
                 enableSorting: false,
                 enableColumnDragging: false,
                 Cell: ({ cell, row }) => {
@@ -129,13 +129,13 @@ const ProductGrid = ({ data,
                         onChange={() => handleSelectAllPairs(data)}
                     />
                 ) : (
-                    'Actions'
+                    pimId ? 'Action' : "Actions"
                 )
             ),
             enableSorting: false,
             enableColumnDragging: false,
-            mainTableHeaderCellProps: { align: 'center' },
-            mainTableBodyCellProps: { align: 'center' },
+            mantineTableHeadCellProps: { align: 'center' },
+            mantineTableBodyCellProps: { align: 'center' },
             size: 100,
             Cell: ({ row }) => {
                 return map ? (

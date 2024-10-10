@@ -366,6 +366,7 @@ const Variants = () => {
         },
       },
       {
+        id: 'SolidStatus',
         header: 'Status',
         accessorKey: 'status',
         Cell: ({ cell, row }) => {
@@ -378,7 +379,7 @@ const Variants = () => {
         },
       },
       {
-        header: 'Actions',
+        header: 'Action',
         mainTableHeaderCellProps: { align: 'center' },
         mainTableBodyCellProps: { align: 'center' },
         size: 100, Cell: ({ row }) => {
