@@ -50,3 +50,7 @@
     gap: 1rem;
     width: 100%;
 }
+
+.error {
+    color: #FF0000;
+}

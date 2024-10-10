@@ -11,7 +11,7 @@ import B2BSelect from '../../../common/B2BSelect';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
 import notify from '../../../utils/Notification';
-import './ProductHierarchy.css';
+import './Category.css';
 
 const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children, disable }) => {
   return (
@@ -84,7 +84,7 @@ const CategoryTree = ({ level = 1, categories, onCategoryChange, disable }) => {
   );
 };
 
-const ProductHierarchy = () => {
+const Category = () => {
   const initialState = { name: '', parentId: null, productGroup: {}, child: [] };
   const { stateData } = useContext(ActiveTabContext);
   const [productCategories, setProductCategories] = useState([]);
@@ -401,4 +401,4 @@ const ProductHierarchy = () => {
   );
 };
 
-export default ProductHierarchy;
+export default Category;

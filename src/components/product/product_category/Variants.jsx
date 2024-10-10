@@ -39,6 +39,7 @@ const Variants = () => {
 
   const [otherVariantTypes, setOtherVariantTypes] = useState([]);
   const [selectedOtherVariant, setSelectedOtherVariant] = useState('');
+  const [errors, setErrors] = useState({});
 
 
   useEffect(() => {
@@ -123,15 +124,19 @@ const Variants = () => {
   };
 
   const handleSelect = (value) => {
-    setCurrentVariantType(value || '');
-    if (value !== 'Solid') {
-      setImageFile(null)
+    setCurrentVariantType(value);
+    if (!value) {
+      setVariant(initialState);
+      setImageFile(null);
+      setCurrentVariantType('');
+      setErrors('')
+    } else {
+      setVariant(prev => ({
+        ...prev,
+        name: value === 'More Variants' ? '' : value,
+        type: value === 'More Variants' ? 'Others' : value,
+      }));
     }
-    setVariant(prev => ({
-      ...prev,
-      name: value === 'More Variants' ? '' : value,
-      type: value === 'More Variants' ? 'Others' : value,
-    }));
   };
 
   const handleChange = (event, key) => {
@@ -152,24 +157,142 @@ const Variants = () => {
     setVariant(prev => ({ ...prev, hexaColorCode: color }));
   };
 
-  const renderInput = (label, key, type = 'text', required = true) => (
-    <div className="variant-group">
-      <label className='variant-label'>{label}</label>
-      <B2BInput
-        value={variant[key]}
-        styles={{ input: { fontSize: '14px' } }}
-        placeholder={label}
-        onChange={(event) => handleChange(event, key)}
-        type={type}
-        required={required}
-      />
-    </div>
-  );
+  const handleTabChange = (option) => {
+    setActiveTab(option);
+  };
+
+  const validateFields = () => {
+    let tempErrors = {};
+    if (currentVariantType === 'Colour') {
+      if (!variant.value) {
+        tempErrors.value = 'Value is required';
+      }
+      if (!variant.hexaColorCode) {
+        tempErrors.hexaColorCode = 'Hexa Color Code is required';
+      }
+    } else if (currentVariantType === 'Solid') {
+      if (!variant.value) {
+        tempErrors.value = 'Value is required';
+      }
+      if (!imageFile) {
+        tempErrors.image = 'Image is required';
+      }
+    } else if (currentVariantType === 'More Variants') {
+      if (!variant.name) {
+        tempErrors.name = 'New Variant is required';
+      }
+      if (!variant.value) {
+        tempErrors.value = 'Value is required';
+      }
+    }
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  const submitVariant = async (event) => {
+    event.preventDefault();
+    if (!validateFields()) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("variant", new Blob([JSON.stringify(variant)], { type: 'application/json' }));
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+    try {
+      setIsLoading(true);
+      const response = await B2B_API.post('variant', { body: formData }).json();
+      setIsCreateVariant(false);
+      setVariant(initialState);
+      setCurrentVariantType('');
+      setImageFile(null)
+      notify({
+        id: variant.variantId ? 'update_variant_success' : 'create_variant_success',
+        title: "Success!!!",
+        message: variant.variantId ? "Updated Successfully" : response?.message,
+        success: true,
+      });
+      await fetchAllVariants()
+    } catch (error) {
+      notify({
+        id: variant.variantId ? 'update_variant_error' : 'create_variant_error',
+        title: "Oops!!!",
+        message: error?.message || 'Something Went Wrong',
+        error: true,
+        success: false,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fileChange = (file) => {
+    const MAX_SIZE_BYTES = 3 * 1024 * 1024;
+    if (file) {
+      if (file.size > MAX_SIZE_BYTES) {
+        notify({
+          id: "file_size_error",
+          title: "File Size Error",
+          message: "File size exceeds the 3MB limit for the Image!",
+          error: true,
+          success: false,
+        });
+        setImageFile(null);
+        setVariant(prevVariant => ({
+          ...prevVariant,
+          image: '',
+        }));
+      } else {
+        setImageFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setVariant(prevVariant => ({
+            ...prevVariant,
+            image: reader.result,
+          }));
+        };
+        reader.readAsDataURL(file);
+        setErrors('');
+      }
+    } else {
+      setImageFile(null);
+      setVariant(prevVariant => ({
+        ...prevVariant,
+        image: '',
+      }));
+    }
+  };
+
+  const clearFile = () => {
+    setVariant(prevVariant => ({
+      ...prevVariant,
+      image: ''
+    }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
+    }
+    setImageFile(null);
+  };
 
   const handleSelectOtherVariants = (newValue) => {
     setSelectedOtherVariant(newValue);
   };
 
+  const editVariant = (varobj) => {
+    setIsCreateVariant(true);
+    const type = varobj.type === 'Others' ? 'More Variants' : varobj.type;
+    setCurrentVariantType(type);
+    setVariant(prev => ({ ...prev, ...varobj }));
+    initializeImage(varobj.image);
+  };
+
+  const handleCancel = () => {
+    setIsCreateVariant(false);
+    setVariant(initialState);
+    setCurrentVariantType('');
+    setImageFile(null);
+  };
 
   const columns = {
     "Colour": [
@@ -325,113 +448,27 @@ const Variants = () => {
     ]
   }
 
-
-
-  const handleTabChange = (option) => {
-    setActiveTab(option);
-  };
-
-
-  const editVariant = (varobj) => {
-    setIsCreateVariant(true);
-    const type = varobj.type === 'Others' ? 'More Variants' : varobj.type;
-    setCurrentVariantType(type);
-    setVariant(prev => ({ ...prev, ...varobj }));
-    initializeImage(varobj.image);
-  };
-
-  const submitVariant = async (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    formData.append("variant", new Blob([JSON.stringify(variant)], { type: 'application/json' }));
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
-
-    try {
-      setIsLoading(true);
-      const response = await B2B_API.post('variant', { body: formData }).json();
-      setIsCreateVariant(false);
-      setVariant(initialState);
-      setCurrentVariantType('');
-      setImageFile(null)
-      notify({
-        id: variant.variantId ? 'update_variant_success' : 'create_variant_success',
-        title: "Success!!!",
-        message: variant.variantId ? "Updated Successfully" : response?.message,
-        success: true,
-      });
-    } catch (error) {
-      notify({
-        id: variant.variantId ? 'update_variant_error' : 'create_variant_error',
-        title: "Oops!!!",
-        message: error?.message || 'Something Went Wrong',
-        error: true,
-        success: false,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCancel = () => {
-    setIsCreateVariant(false);
-    setVariant(initialState);
-    setCurrentVariantType('');
-    setImageFile(null);
-  };
-
-  const clearFile = () => {
-    setVariant(prevVariant => ({
-      ...prevVariant,
-      image: ''
-    }));
-    if (fileInputRef.current) {
-      fileInputRef.current.value = null;
-    }
-    setImageFile(null);
-  };
-
-  const fileChange = (file) => {
-    const MAX_SIZE_BYTES = 3 * 1024 * 1024;
-    if (file) {
-      if (file.size > MAX_SIZE_BYTES) {
-        notify({
-          id: "file_size_error",
-          title: "File Size Error",
-          message: "File size exceeds the 3MB limit for the Image!",
-          error: true,
-          success: false,
-        });
-        setImageFile(null);
-        setVariant(prevVariant => ({
-          ...prevVariant,
-          image: '',
-        }));
-      } else {
-        setImageFile(file);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setVariant(prevVariant => ({
-            ...prevVariant,
-            image: reader.result,
-          }));
-        };
-        reader.readAsDataURL(file);
-      }
-    } else {
-      setImageFile(null);
-      setVariant(prevVariant => ({
-        ...prevVariant,
-        image: '',
-      }));
-    }
-  };
+  const renderInput = (label, key, type = 'text', required = true) => (
+    <div className="variant-group">
+      <label className='variant-label'>{label}</label>
+      <B2BInput
+        value={variant[key]}
+        styles={{ input: { fontSize: '14px' } }}
+        placeholder={label}
+        onChange={(event) => {
+          handleChange(event, key);
+          if (event.target.value) {
+            setErrors(prev => ({ ...prev, [key]: '' }));
+          }
+        }}
+        type={type}
+        required={required}
+      />
+    </div>
+  );
 
   const filteredVariants = variantList.filter(variant => variant.name === selectedOtherVariant);
   console.log('filter : ', filteredVariants);
-
-
 
   return (
     <div>
@@ -502,55 +539,77 @@ const Variants = () => {
             </div>
             {currentVariantType === 'Colour' && (
               <>
-                {renderInput('Value', 'value')}
-                <div className="variant-group">
-                  <label className='variant-label'>Hexa Color Code</label>
-                  <ColorInput
-                    size="md"
-                    value={variant.hexaColorCode}
-                    placeholder="color"
-                    onChange={handleColorChange}
-                    style={{ width: '250px' }}
-                  />
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {renderInput('Value', 'value')}
+                  {errors.value && <span className="error">{errors.value}</span>}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div className="variant-group">
+                    <label className='variant-label'>Hexa Color Code</label>
+                    <ColorInput
+                      size="md"
+                      value={variant.hexaColorCode}
+                      placeholder="color"
+                      onChange={handleColorChange}
+                      style={{ width: '250px' }}
+                    />
+                  </div>
+                  {errors.hexaColorCode && <span className="error">{errors.hexaColorCode}</span>}
                 </div>
               </>
             )}
             {currentVariantType === 'Solid' && (
               <>
-                {renderInput('Value', 'value')}
-                <div className="variant-group">
-                  <label className='variant-label'>Solid Image</label>
-                  <Group w={250}>
-                    <FileButton ref={fileInputRef} onChange={fileChange} accept="image/png,image/jpeg">
-                      {(props) => <Button {...props}>{variant.variantId ? "Update Image " : "Add Image"}</Button>}
-                    </FileButton>
-                    <Button disabled={!imageFile} color="red" onClick={clearFile} w={100}>Reset</Button>
-                  </Group>
-                  {imageFile && (
-                    <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                      <img
-                        src={URL.createObjectURL(imageFile)}
-                        alt="Uploaded"
-                        style={{ maxWidth: '150px', maxHeight: '150px', border: '1px solid #ccc', padding: '5px' }}
-                      />
-                    </div>
-                  )}
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {renderInput('Value', 'value')}
+                  {errors.value && <span className="error">{errors.value}</span>}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div className="variant-group">
+                    <label className='variant-label'>Solid Image</label>
+                    <Group w={250}>
+                      <FileButton ref={fileInputRef} onChange={fileChange} accept="image/png,image/jpeg">
+                        {(props) => <Button {...props}>{variant.variantId ? "Update Image " : "Add Image"}</Button>}
+                      </FileButton>
+                      <Button disabled={!imageFile} color="red" onClick={clearFile} w={100}>Reset</Button>
+                    </Group>
+                    {imageFile && (
+                      <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                        <img
+                          src={URL.createObjectURL(imageFile)}
+                          alt="Uploaded"
+                          style={{ maxWidth: '150px', maxHeight: '150px', border: '1px solid #ccc', padding: '5px' }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {errors.image && <span className="error">{errors.image}</span>}
                 </div>
               </>
             )}
             {currentVariantType === 'More Variants' && (
               <>
-                <div className="variant-group">
-                  <label className='variant-label'>New Variant</label>
-                  <B2BSelectable
-                    data={variantTypes}
-                    value={variant.name || ""}
-                    setData={setVariantTypes}
-                    setValue={(event) => handleVariant(event, 'name')}
-
-                  />
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div className="variant-group">
+                    <label className='variant-label'>New Variant</label>
+                    <B2BSelectable
+                      data={variantTypes}
+                      value={variant.name || ""}
+                      setData={setVariantTypes}
+                      setValue={(event) => {
+                        handleVariant(event, 'name');
+                        if (event) {
+                          setErrors(prev => ({ ...prev, name: '' }));
+                        }
+                      }}
+                    />
+                  </div>
+                  {errors.name && <span className="error">{errors.name}</span>}
                 </div>
-                {renderInput('Value', 'value')}
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {renderInput('Value', 'value')}
+                  {errors.value && <span className="error">{errors.value}</span>}
+                </div>
               </>
             )}
             <div className="variant-group">
@@ -573,7 +632,7 @@ const Variants = () => {
             </div>
             <div className='variant-btns'>
               <B2BButton type='button' onClick={handleCancel} color='red' name="Cancel" />
-              <B2BButton type='button' onClick={submitVariant} name={variant.variantId ? "Update" : "Save"} />
+              <B2BButton type='button' onClick={submitVariant} name={variant.variantId ? "Update" : "Save"} disabled={!currentVariantType} />
             </div>
           </div>
         </div>

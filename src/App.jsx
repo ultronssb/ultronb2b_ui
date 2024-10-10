@@ -31,16 +31,16 @@ import CreatePriceBook from './components/product/pricebook/CreatePriceBook';
 import PriceBook from './components/product/pricebook/PriceBook';
 import Articles from './components/product/product/Articles';
 import CreateProduct from './components/product/product/CreateProduct';
-import ProductTags from './components/product/product/ProductTags';
-import { Attribute } from './components/product/product_hierarchy/Attribute';
-import Brand from './components/product/product_hierarchy/Brand';
-import FabricContent from './components/product/product_hierarchy/FabricContent';
-import Group from './components/product/product_hierarchy/Group';
-import ProductHierarchy from './components/product/product_hierarchy/ProductHierarchy';
-import Taxonomy from './components/product/product_hierarchy/Taxonomy';
-import ProductHistory from './components/product/productHistory/ProductHistory';
-import GST from './components/product/tax/GST';
-import Variants from './components/product/variants/Variants';
+import ProductTags from './components/product/product_category/ProductTags';
+import { Attribute } from './components/product/product_category/Attribute';
+import Brand from './components/product/product_category/Brand';
+import FabricContent from './components/product/product_category/FabricContent';
+import Group from './components/product/product_category/Group';
+import Category from './components/product/product_category/Category';
+import Taxonomy from './components/product/product_category/Taxonomy';
+import ProductHistory from './components/product/product_history/ProductHistory';
+import GST from './components/product/product_category/GST';
+import Variants from './components/product/product_category/Variants';
 import CreateOrder from './components/sales/CreateOrder';
 import Enquiry from './components/sales/Enquiry';
 import Invoice from './components/sales/Invoice';
@@ -92,9 +92,9 @@ function App() {
       <Route element={<Layout />}>
         <Route path='/dashboard' element={<ProtectedRoute element={Dashboard} />} />
 
-        <Route path='/product/product-hierarchy' element={<ProtectedRoute element={ProductHierarchy} />} />
+        <Route path='/product/product-hierarchy' element={<ProtectedRoute element={Category} />} />
         <Route path='/product/tags' element={<ProtectedRoute element={ProductTags} />} />
-        <Route path='/product/tax/gst' element={<ProtectedRoute element={GST} />} />
+        <Route path='/product/gst' element={<ProtectedRoute element={GST} />} />
         <Route path='/product/variants' element={<ProtectedRoute element={Variants} />} />
         <Route path='/product/brand' element={<ProtectedRoute element={Brand} />} />
         <Route path='/product/group' element={<ProtectedRoute element={Group} />} />
