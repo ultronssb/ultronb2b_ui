@@ -16,11 +16,62 @@ const Customer = () => {
   const [rowCount, setRowCount] = useState(5);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [globalSearch, setGlobalSearch] = useState("")
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchCustomers();
-  }, [pagination]);
+  }, [pagination.pageIndex, pagination.pageSize]);
+
+
+  const onGlobalFilterChange = (value) => {
+    setGlobalSearch(value)
+  }
+
+  const setCustomerFromResponse = (response) => {
+    setRowCount(response?.totalElements || 0);
+    setCustomers(response.content);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    console.log(columnFilters, "columnFilters");
+    filterCustomers();
+  }, [columnFilters, globalSearch])
+  
+  const filterCustomers = async () => {
+    const filter = columnFilters && columnFilters.map(filter => {
+      return {
+        name: filter.id,
+        value: filter.value
+      };
+    });
+
+    try {
+      const response = await B2B_API.post(
+        `customer/search?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&search=${globalSearch}&status=APPROVED`,
+        { json: filter }
+      ).json();
+
+      const data = response?.response?.content || [];
+      const customersWithLocation = await Promise.all(data.map(async (customer) => {
+        const locationResponse = await B2B_API.get(`locations/customer-location/${customer.customerId}`).json();
+        return { ...customer, location: locationResponse?.response || {} };
+      }));
+
+      setCustomerFromResponse({ content: customersWithLocation, totalElements: response?.response?.totalElements });
+
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setIsError(true);
+      notify({
+        error: true,
+        success: false,
+        title: error?.message
+      });
+    }
+  };
 
   const fetchCustomers = async () => {
     try {
@@ -53,6 +104,7 @@ const Customer = () => {
       header: 'S.No',
       accessorFn: (_, index) => index + 1,
       size: 100,
+      enableColumnFilter: false,
       mantineTableHeadCellProps: {
         align: 'center'
       },
@@ -75,10 +127,12 @@ const Customer = () => {
     {
       header: 'Address',
       accessorFn: row => row.location?.address1 + ' ' + row.location?.address2 || 'N/A',
+      enableColumnFilter: false,
     },
     {
       header: 'Location',
       accessorFn: row => row.location?.city || 'N/A',
+      enableColumnFilter: false,
     },
     {
       header: 'Status',
@@ -148,6 +202,10 @@ const Customer = () => {
         rowCount={rowCount}
         onPaginationChange={setPagination}
         enableFullScreenToggle={true}
+        manualFiltering={true}
+        columnFilters={columnFilters}
+        onColumnFiltersChange={setColumnFilters}
+        onGlobalFilterChange={onGlobalFilterChange}
       />
     </div>
   )
