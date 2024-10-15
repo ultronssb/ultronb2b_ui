@@ -5,10 +5,10 @@ import React from 'react'
 const routeJson = {
     "Create Product": { "path": "/product/product/create", "parentId": "2", "childParentId": "9" },
     "View Products": { "path": "/product/product/articles", "parentId": "2", "childParentId": "9" },
-    "View Customers": { "path": "/crm/customer", "parentId": "5", "childParentId": "62" },
+    "View Customers": { "path": "/crm/customer", "parentId": "5", "childParentId": "61" },
     "View Variants": { "path": "/product/variants", "parentId": "2", "childParentId": "8" },
     "Categories": { "path": "/product/product-hierarchy", "parentId": "2", "childParentId": "8" },
-    "Users": { "path": "/settings/user-management", "parentId": "7", "childParentId": "85" },
+    "Users": { "path": "/settings/user-management", "parentId": "7", "childParentId": "84" },
 
 }
 const HeaderMenu = ({ onMenuClick }) => {
