@@ -17,9 +17,9 @@ const ProductType = () => {
     const [productTags, setProductTags] = useState([]);
     const [taxonomy, setTaxonomy] = useState([]);
     const navigate = useNavigate();
-    
+
     const resetRef = useRef(null);
-    
+
     useEffect(() => {
         fetchAllBrand();
         fetchAllTags();
@@ -149,6 +149,7 @@ const ProductType = () => {
             placeholder: "Enter Description",
             rows: 1,
             cols: 50,
+            error: inputError.descErrorMessage,
         },
         {
             label: "Status",

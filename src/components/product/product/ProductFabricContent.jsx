@@ -259,7 +259,7 @@ const ProductFabricContent = () => {
 
     const getfabricValues = async () => {
         try {
-            const res = await B2B_API.get(`fabric`).json();
+            const res = await B2B_API.get(`fabric?status=ACTIVE`).json();
             setFabricValue(res?.response);
         } catch (error) {
             console.error("Error fetching fabric values: ", error);

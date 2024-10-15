@@ -21,6 +21,7 @@ const Variants = () => {
     image: '',
     type: '',
     status: 'ACTIVE',
+    group: ''
   };
 
   const [isCreateVariant, setIsCreateVariant] = useState(false);
@@ -40,6 +41,8 @@ const Variants = () => {
   const [otherVariantTypes, setOtherVariantTypes] = useState([]);
   const [selectedOtherVariant, setSelectedOtherVariant] = useState('');
   const [errors, setErrors] = useState({});
+  const [groups, setGroups] = useState([]);
+  const [groupName, setGroupName] = useState('');
 
 
   useEffect(() => {
@@ -47,7 +50,8 @@ const Variants = () => {
   }, [pagination.pageIndex, pagination.pageSize, activeTab]);
 
   useEffect(() => {
-    fetchAllVarientType();
+    fetchAllVariantType();
+    fetchGroup();
   }, [])
 
   useEffect(() => {
@@ -79,14 +83,12 @@ const Variants = () => {
     }
   };
 
-  const fetchAllVarientType = async () => {
+  const fetchAllVariantType = async () => {
     try {
       setIsLoading(true);
       const response = await B2B_API.get(`variantType`).json();
       const data = response?.response || [];
-      console.log(data);
       const filteredData = data.filter(item => !['Colour', 'Solid'].includes(item));
-
       setVariantTypes(filteredData);
     } catch (error) {
       setIsError(true);
@@ -101,6 +103,34 @@ const Variants = () => {
     }
   };
 
+  const fetchGroup = async () => {
+    const response = await B2B_API.get(`group`).json();
+    setGroups(response.response);
+  };
+
+  const fetchVariantType = async (variantType) => {
+    try {
+      setIsLoading(true);
+      const res = await B2B_API.get(`variantType/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const data = res?.response?.content || [];
+      const result = data.find(item => item.name === variantType);
+      if (result && result.group) {
+        setGroupName(result.group.name);
+      }
+      handleSelectGroup(result?.group?.name);
+      setRowCount(res?.response?.totalElements || 0);
+    } catch (error) {
+      setIsError(true);
+      notify({
+        id: "fetch_varients",
+        error: true,
+        success: false,
+        title: error?.message || ERROR_MESSAGE
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const initializeImage = async (imagePath) => {
     try {
@@ -114,35 +144,48 @@ const Variants = () => {
   const fetchImageAsBlob = async (imagePath) => {
     const response = await fetch(`${BASE_URL.replace('/api', '')}${imagePath}`);
     const contentType = response.headers.get('Content-Type');
-
     if (!contentType?.startsWith('image/')) {
       throw new Error(`Expected an image, but received: ${contentType}`);
     }
-
     const blob = await response.blob();
     return new File([blob], 'image.jpeg', { type: blob.type });
   };
 
-  const handleSelect = (value) => {
-    setCurrentVariantType(value);
-    if (!value) {
+  const handleSelect = (selectedVariant) => {
+    setCurrentVariantType(selectedVariant);
+    if (!selectedVariant) {
       setVariant(initialState);
       setImageFile(null);
       setCurrentVariantType('');
-      setErrors('')
+      setErrors('');
+      setGroupName('')
     } else {
       setVariant(prev => ({
         ...prev,
-        name: value === 'More Variants' ? '' : value,
-        type: value === 'More Variants' ? 'Others' : value,
+        name: selectedVariant === 'More Variants' ? '' : selectedVariant,
+        type: selectedVariant === 'More Variants' ? 'Others' : selectedVariant,
       }));
+    }
+    if (selectedVariant !== 'More Variants') {
+      fetchVariantType(selectedVariant);
+    }
+  };
+
+  const handleSelectGroup = (selectedVariant) => {
+    setGroupName(selectedVariant || '');
+    if (!selectedVariant) {
+      setErrors('');
+      setVariant(prev => ({ ...prev, group: null }));
+    } else {
+      const group = _.find(groups, gr => gr.name === selectedVariant);
+      if (group) {
+        setVariant(prev => ({ ...prev, group: group.id }));
+      }
     }
   };
 
   const handleChange = (event, key) => {
     const { value, checked, type } = event.target;
-    console.log(type);
-
     setVariant(prev => ({
       ...prev,
       [key]: type === 'checkbox' ? checked : value,
@@ -151,6 +194,7 @@ const Variants = () => {
 
   const handleVariant = (event, key) => {
     setVariant(prev => ({ ...prev, [key]: key === "name" ? event : event?.target?.value }));
+    fetchVariantType(event);
   };
 
   const handleColorChange = (color) => {
@@ -167,12 +211,18 @@ const Variants = () => {
       if (!variant.value) {
         tempErrors.value = 'Value is required';
       }
+      if (!variant.group) {
+        tempErrors.group = 'Group is Required';
+      }
       if (!variant.hexaColorCode) {
         tempErrors.hexaColorCode = 'Hexa Color Code is required';
       }
     } else if (currentVariantType === 'Solid') {
       if (!variant.value) {
         tempErrors.value = 'Value is required';
+      }
+      if (!variant.group) {
+        tempErrors.group = 'Group is Required';
       }
       if (!imageFile) {
         tempErrors.image = 'Image is required';
@@ -183,6 +233,9 @@ const Variants = () => {
       }
       if (!variant.value) {
         tempErrors.value = 'Value is required';
+      }
+      if (!variant.group) {
+        tempErrors.group = 'Group is Required';
       }
     }
     setErrors(tempErrors);
@@ -284,7 +337,10 @@ const Variants = () => {
     const type = varobj.type === 'Others' ? 'More Variants' : varobj.type;
     setCurrentVariantType(type);
     setVariant(prev => ({ ...prev, ...varobj }));
-    initializeImage(varobj.image);
+    if (varobj.type === 'Solid') {
+      initializeImage(varobj.image);
+    }
+    fetchVariantType(varobj.name);
   };
 
   const handleCancel = () => {
@@ -292,6 +348,10 @@ const Variants = () => {
     setVariant(initialState);
     setCurrentVariantType('');
     setImageFile(null);
+    setErrors('');
+    setGroupName('')
+    setPagination({ pageIndex: 0, pageSize: 5 })
+    fetchAllVariants();
   };
 
   const columns = {
@@ -468,8 +528,13 @@ const Variants = () => {
     </div>
   );
 
+
   const filteredVariants = variantList.filter(variant => variant.name === selectedOtherVariant);
-  console.log('filter : ', filteredVariants);
+
+  const selectedGroupName = variant.variantId
+    ? groupName || _.find(groups, { id: variant.group })?.name
+    : _.find(groups, { id: variant.group })?.name || groupName;
+
 
   return (
     <div>
@@ -538,6 +603,43 @@ const Variants = () => {
                 clearable
               />
             </div>
+            {currentVariantType === 'More Variants' && (
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="variant-group">
+                  <label className='variant-label'>New Variant</label>
+                  <B2BSelectable
+                    data={variantTypes}
+                    value={variant.name || ""}
+                    setData={setVariantTypes}
+                    setValue={(event) => {
+                      handleVariant(event, 'name');
+                      if (event) {
+                        setErrors(prev => ({ ...prev, name: '' }));
+                      }
+                    }}
+                  />
+                </div>
+                {errors.name && <span className="error">{errors.name}</span>}
+              </div>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className='variant-group'>
+                <label className='variant-label'>Select Group</label>
+                <B2BSelect
+                  value={selectedGroupName || ''}
+                  data={groups.map(group => group.name)}
+                  onChange={(event) => {
+                    handleSelectGroup(event);
+                    if (event) {
+                      setErrors(prev => ({ ...prev, groupName: '' }));
+                    }
+                  }}
+                  clearable
+                  disabled={variant?.name}
+                />
+              </div>
+              {errors.group && <span className="error">{errors.group}</span>}
+            </div>
             {currentVariantType === 'Colour' && (
               <>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -589,29 +691,10 @@ const Variants = () => {
               </>
             )}
             {currentVariantType === 'More Variants' && (
-              <>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div className="variant-group">
-                    <label className='variant-label'>New Variant</label>
-                    <B2BSelectable
-                      data={variantTypes}
-                      value={variant.name || ""}
-                      setData={setVariantTypes}
-                      setValue={(event) => {
-                        handleVariant(event, 'name');
-                        if (event) {
-                          setErrors(prev => ({ ...prev, name: '' }));
-                        }
-                      }}
-                    />
-                  </div>
-                  {errors.name && <span className="error">{errors.name}</span>}
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  {renderInput('Value', 'value')}
-                  {errors.value && <span className="error">{errors.value}</span>}
-                </div>
-              </>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {renderInput('Value', 'value')}
+                {errors.value && <span className="error">{errors.value}</span>}
+              </div>
             )}
             <div className="variant-group">
               <label className='variant-label'>Status</label>
@@ -633,7 +716,7 @@ const Variants = () => {
             </div>
             <div className='variant-btns'>
               <B2BButton type='button' onClick={handleCancel} color='red' name="Cancel" />
-              <B2BButton type='button' onClick={submitVariant} name={variant.variantId ? "Update" : "Save"} disabled={!currentVariantType} />
+              <B2BButton type='button' onClick={submitVariant} name={variant.variantId ? "Update" : "Save"} disabled={!currentVariantType} title={!currentVariantType ? 'Choose One Variant Type' : ''} />
             </div>
           </div>
         </div>

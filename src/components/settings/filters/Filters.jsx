@@ -160,6 +160,7 @@ const Filters = () => {
                         ) : (
                             <IconX style={{ width: rem(12), height: rem(12) }} color="#e63946" stroke={3} />
                         )}
+                        disabled={original.name === 'Fabric Type' || original.name === 'Fabric Content'}
                     />
                 );
             },

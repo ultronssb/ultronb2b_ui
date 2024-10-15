@@ -2,7 +2,7 @@ import { Button, } from '@mantine/core'
 import React from 'react'
 import PropTypes from 'prop-types';
 
-const B2BButton = ({ style = {} , variant, color, size, radius, onClick, disabled, key, name, leftSection, rightSection, loading, loaderProps = '', type=""}) => {
+const B2BButton = ({ style = {} , variant, color, size, radius, onClick, disabled, key, name, leftSection, rightSection, loading, loaderProps = '', type="", title}) => {
     
     return (
         <Button
@@ -19,6 +19,7 @@ const B2BButton = ({ style = {} , variant, color, size, radius, onClick, disable
             disabled={disabled}
             leftSection={leftSection}
             rightSection={rightSection}
+            title={title}
         >
             {name}
         </Button>
