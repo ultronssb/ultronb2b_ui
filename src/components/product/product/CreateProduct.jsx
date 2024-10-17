@@ -59,6 +59,7 @@ const CreateProduct = () => {
     productCategories: {
 
     },
+    newProductVariants: [],
     fabricContent: {
       value: "",
       composition: {}
@@ -177,6 +178,18 @@ const CreateProduct = () => {
         ...prev,
         isCreateBarcode: 'true' === event?.target?.value
       }));
+    } else if (['sampleMOQ', 'wholesaleMOQ', 'minMargin', 'allowLoyalty', 'isStopGRN', 'isStopPurchaseReturn', 'isStopSale',
+      'isAllowRefund', 'isAllowNegative', 'isAllowCostEditInGRN', 'isEnableSerialNumber', 'isNonTrading', 'metaDescription', 'productSlug', 'url'].includes(fieldType)) {
+      setProduct((prev) => {
+        const updatedState = {
+          ...prev,
+          otherInformation: {
+            ...prev.otherInformation,
+            [fieldType]: value,
+          },
+        };
+        return updatedState;
+      });
     } else {
       setProduct(prev => ({
         ...prev,
@@ -323,7 +336,7 @@ const CreateProduct = () => {
         } else {
           errors.taxonomyError = false;
         }
-        if (isEmpty(product.image) || product.image == undefined) {
+        if ((isEmpty(product.image) && !imageFile)) {
           errors.imageError = true;
           errors.imageErrorMessage = 'Image is Required!!';
           isValid = false;
@@ -505,18 +518,16 @@ const CreateProduct = () => {
     const formData = new FormData();
     let updatedProduct = {
       ...product,
-      prodVariants: { ...product.prodVariants },
       productCategories: [...product.productCategories]
     };
-
-    updatedProduct.prodVariants = Object.values(updatedProduct.prodVariants);
-
+    updatedProduct.productVariants = product.newProductVariants;
     updatedProduct.productCategories = updatedProduct.productCategories
       ? updatedProduct.productCategories.reduce((acc, item) => {
         acc[item.key] = item.value;
         return acc;
       }, {})
       : {};
+    delete updatedProduct.prodVariants
     formData.append("product", JSON.stringify(updatedProduct))
     formData.append("image", imageFile)
     addProduct(formData);
@@ -611,6 +622,7 @@ const CreateProduct = () => {
         image: `${BASE_URL.replace("/api", "")}${product?.image}`,
         productCategories: await transformCategories(),
         prodVariants: transformData(),
+        newProductVariants: product?.productVariants,
         priceSetting: adjustPriceSetting(product?.priceSetting),
         totalProductPercent: calculateTotalPercent(product?.fabricContent.composition)
       });

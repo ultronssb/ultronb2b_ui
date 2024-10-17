@@ -108,6 +108,7 @@ const LocationType = () => {
         try {
             const response = await B2B_API.post('location-type', { json: locationType }).json();
             setLocationType(initialData);
+            fetchLocationTypes()
             notify({ id: "add_location_type", message: response.message, success: true, error: false });
         } catch (error) {
             notify({ id: "add_location_type_error", message: error.message, success: false, error: true });
