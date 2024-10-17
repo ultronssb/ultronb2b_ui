@@ -4,13 +4,14 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
+import notify from '../../../utils/Notification';
+import _ from 'lodash';
 
 const Filters = () => {
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 });
     const [rowCount, setRowCount] = useState(0);
     const [categoryList, setCategoryList] = useState([]);
-    const [variantList, setVariantList] = useState([]);
-    const [productCount, setProductCount] = useState({});
+    const [variantTypeList, setVariantTypeList] = useState([]);
     const [isCategoryFilter, setIsCategoryFilter] = useState(false);
     const [checkedState, setCheckedState] = useState({})
 
@@ -21,25 +22,26 @@ const Filters = () => {
     const fetchAllData = async () => {
         await getAllCategory();
         await getAllVariant();
-        fetchProductCount();
     };
 
     const getAllCategory = async () => {
-        const res = await B2B_API.get(`product-category`).json();
-        setCategoryList(res.response);
+        const res = await B2B_API.get('product-category').json();
+        setCategoryList(_.sortBy(res.response, 'displayOrder') || []);
     };
 
     const getAllVariant = async () => {
-        const res = await B2B_API.get(`variantType/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
-        setVariantList(res.response.content);
-        setRowCount(res.response.totalElements);
-    };
-
-    const fetchProductCount = async () => {
-        const res = await B2B_API.get('product/count-by-category').json();
-        const response = res.response;
-        response['Fabric Content'] = res.response['Fabric Type'];
-        setProductCount(response);
+        try {
+            const res = await B2B_API.get(`variantType/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+            setVariantTypeList(res.response.content);
+            setRowCount(res.response.totalElements);
+        } catch (error) {
+            notify({
+                title: "Error!!",
+                message: error.message,
+                error: true,
+                success: false
+            });
+        }
     };
 
     const countLeafNodes = (node) => {
@@ -72,9 +74,17 @@ const Filters = () => {
                     row.id === category.id ? updatedCategory : row
                 )
             );
-            // await getAllCategory();
+            notify({
+                message: 'Filter show on the website has been updated successfully',
+                success: true,
+                error: false
+            });
         } catch (error) {
-            console.error("Error updating showInFilter", error);
+            notify({
+                message: error.message,
+                success: false,
+                error: true
+            });
         }
     };
 
@@ -83,14 +93,22 @@ const Filters = () => {
         const updatedVariant = { ...variant, showInFilter: newShowInFilter };
         try {
             await B2B_API.post(`variantType`, { json: updatedVariant }).json();
-            setVariantList((currentData) =>
+            setVariantTypeList((currentData) =>
                 currentData.map((row) =>
                     row.id === variant.id ? updatedVariant : row
                 )
             );
-            // await getAllVariant();
+            notify({
+                message: 'Filter show on the website has been updated successfully',
+                success: true,
+                error: false
+            });
         } catch (error) {
-            console.error("Error updating showInFilter", error);
+            notify({
+                message: error.message,
+                success: false,
+                error: true
+            });
         }
     };
 
@@ -119,10 +137,25 @@ const Filters = () => {
             size: 150,
         },
         {
-            id: 'productCount',
-            header: 'Product Count',
-            accessorFn: (row) => productCount[row.name] || 0,
-            size: 150,
+            header: 'Display Order',
+            accessorKey: 'displayOrder',
+            size: 100,
+            Cell: ({ cell, row }) => {
+                const original = row.original;
+                return (
+                    <select
+                        value={original.displayOrder}
+                        onChange={e => handleChangeCategoryOrder(original.id, Number(e.target.value))}
+                        style={{ width: '100px', height: '30px', borderRadius: '5px', padding: '0rem 0.5rem', cursor: 'pointer' }}
+                    >
+                        {[...Array(categoryList.length)].map((_, index) => (
+                            <option key={index} value={index + 1}>
+                                {index + 1}
+                            </option>
+                        ))}
+                    </select>
+                );
+            },
         },
         {
             id: 'status',
@@ -155,12 +188,55 @@ const Filters = () => {
                         ) : (
                             <IconX style={{ width: rem(12), height: rem(12) }} color="#e63946" stroke={3} />
                         )}
-                        disabled={original.name === 'Fabric Type' || original.name === 'Fabric Content'}
+                        disabled={original.showInFilter === true && (original.name === 'Fabric Type' || original.name === 'Fabric Content')}
                     />
                 );
             },
         }
-    ], [categoryLeafCounts, checkedState, productCount,]);
+    ], [categoryLeafCounts, checkedState, categoryList]);
+
+
+    const handleChangeCategoryOrder = (id, newOrder) => {
+        setCategoryList(prevData => {
+            const updatedData = [...prevData];
+            const itemToUpdate = updatedData.find(item => item.id === id);
+            const currentOrder = itemToUpdate.displayOrder;
+            if (newOrder < currentOrder) {
+                updatedData.forEach(item => {
+                    if (item.displayOrder >= newOrder && item.displayOrder < currentOrder) {
+                        item.displayOrder += 1;
+                    }
+                });
+            } else if (newOrder > currentOrder) {
+                updatedData.forEach(item => {
+                    if (item.displayOrder > currentOrder && item.displayOrder <= newOrder) {
+                        item.displayOrder -= 1;
+                    }
+                });
+            }
+            itemToUpdate.displayOrder = newOrder;
+            const sortedData = updatedData.sort((a, b) => a.displayOrder - b.displayOrder);
+            updateCategoryDisplayOrder(sortedData);
+            return sortedData;
+        });
+    };
+
+    const updateCategoryDisplayOrder = async (categorys) => {
+        try {
+            const res = await B2B_API.put('product-category/display-order', { json: categorys }).json();
+            notify({
+                message: res.message,
+                success: true,
+                error: false
+            });
+        } catch (error) {
+            notify({
+                message: error.message,
+                success: false,
+                error: true
+            });
+        }
+    };
 
     const variantColumns = useMemo(() => [
         {
@@ -175,6 +251,28 @@ const Filters = () => {
             id: 'variantName',
             header: 'Variant Name',
             accessorKey: 'name',
+        },
+        {
+            id: 'variantDisplayOrder',
+            header: 'Variant Display Order',
+            accessorKey: 'displayOrder',
+            size: 100,
+            Cell: ({ cell, row }) => {
+                const original = row.original;
+                return (
+                    <select
+                        value={original.displayOrder}
+                        onChange={e => handleChangeVariantTypeOrder(original.id, Number(e.target.value))}
+                        style={{ width: '100px', height: '30px', borderRadius: '5px', padding: '0rem 0.5rem', cursor: 'pointer' }}
+                    >
+                        {[...Array(variantTypeList.length)].map((_, index) => (
+                            <option key={index} value={index + 1}>
+                                {index + 1}
+                            </option>
+                        ))}
+                    </select>
+                );
+            },
         },
         {
             id: 'variantStatus',
@@ -211,7 +309,49 @@ const Filters = () => {
                 );
             },
         }
-    ], [checkedState,]);
+    ], [checkedState, variantTypeList]);
+
+    const handleChangeVariantTypeOrder = (id, newOrder) => {
+        setVariantTypeList(prevData => {
+            const updatedData = [...prevData];
+            const itemToUpdate = updatedData.find(item => item.id === id);
+            const currentOrder = itemToUpdate.displayOrder;
+            if (newOrder < currentOrder) {
+                updatedData.forEach(item => {
+                    if (item.displayOrder >= newOrder && item.displayOrder < currentOrder) {
+                        item.displayOrder += 1;
+                    }
+                });
+            } else if (newOrder > currentOrder) {
+                updatedData.forEach(item => {
+                    if (item.displayOrder > currentOrder && item.displayOrder <= newOrder) {
+                        item.displayOrder -= 1;
+                    }
+                });
+            }
+            itemToUpdate.displayOrder = newOrder;
+            const sortedData = updatedData.sort((a, b) => a.displayOrder - b.displayOrder);
+            updateVariantTypeDisplayOrder(sortedData);
+            return sortedData;
+        });
+    };
+
+    const updateVariantTypeDisplayOrder = async (variantTypes) => {
+        try {
+            const res = await B2B_API.put('variantType/display-order', { json: variantTypes }).json();
+            notify({
+                message: res.message,
+                success: true,
+                error: false
+            });
+        } catch (error) {
+            notify({
+                message: error.message,
+                success: false,
+                error: true
+            });
+        }
+    };
 
     return (
         <div>
@@ -239,7 +379,7 @@ const Filters = () => {
                 ) : (
                     <B2BTableGrid
                         columns={variantColumns}
-                        data={variantList}
+                        data={variantTypeList}
                         enableTopToolbar={true}
                         enableGlobalFilter={true}
                         enableFullScreenToggle={true}

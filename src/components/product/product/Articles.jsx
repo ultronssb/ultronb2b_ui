@@ -27,7 +27,7 @@ const Articles = () => {
 
   const editVarient = (varobj) => {
     setIsCreateProduct(true);
-    navigate(`/product/product/create?id=${varobj?.productId}`);
+    navigate(`/product/product/create?id=${varobj?.productId}`, { state: { ...stateData, tabs: stateData.childTabs } });
   };
 
   const fetchAllProducts = async () => {
