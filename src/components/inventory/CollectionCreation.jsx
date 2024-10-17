@@ -229,10 +229,6 @@ const CollectionCreation = () => {
     setSearchTerm(value);
   };
 
-  console.log('coll : ', collection);
-  console.log('selectedPairs : ', selectedPairs);
-
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>

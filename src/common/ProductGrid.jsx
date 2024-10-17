@@ -176,7 +176,6 @@ const ProductGrid = ({ data,
             accessorKey: 'Name',
             header: 'Name',
             Cell: ({ row }) => {
-                console.log('row : ', row.original)
                 return <span>{`${productname} / ${row.original.variants.map(vari => vari.value).join(' / ')}`}</span>
 
             }

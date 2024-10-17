@@ -42,11 +42,6 @@ const Filters = () => {
         setProductCount(response);
     };
 
-    console.log('var : ', variantList);
-    console.log('cat : ', categoryList);
-
-
-
     const countLeafNodes = (node) => {
         let count = 0;
         const traverse = (node) => {
@@ -199,7 +194,6 @@ const Filters = () => {
             size: 100,
             Cell: ({ row }) => {
                 const { original } = row;
-                console.log(original);
                 const checked = checkedState[original.id] !== undefined ? checkedState[original.id] : original.showInFilter === true;
                 return (
                     <Switch

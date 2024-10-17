@@ -419,11 +419,11 @@ const ProductVariant = () => {
                                     <td onClick={() => handleToggle(index)} data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--compact product-info-variant-pt2 product-info-variant-pl0 product-info-variant-flex product-info-variant-flex--align-center">
                                         <FontAwesomeIcon icon={faAngleRight} className={`i fa product-info-variant-icon product-info-variant-table-list-toggle-icon ${isRowExpanded(index) ? 'product-info-variant-table-list-toggle-icon--toggled' : ''}`} onClick={() => handleToggle(index)} />
                                         <div className="product-info-variant-id-badge product-info-variant-id-badge--small">
-                                            <div key={index} className="product-info-variant-id-badge__image" data-cy="badgeImage" data-testid="badgeImage">
+                                            {/* <div key={index} className="product-info-variant-id-badge__image" data-cy="badgeImage" data-testid="badgeImage">
                                                 {item.imageUrl ? (
                                                     <img src={item.imageUrl} alt="Uploaded Badge" style={{ maxWidth: '100px', maxHeight: '100px' }} />
                                                 ) : item.image ? <img src={`${BASE_URL}${item.image}?${Date.now()}`} alt="Uploaded Badge" style={{ maxWidth: '100px', maxHeight: '100px' }} /> : null}
-                                            </div>
+                                            </div> */}
                                             <div className="product-info-variant-id-badge__content">
                                                 <div className="product-info-variant-id-badge__header-title" data-cy="badgeHeader" data-testid="badgeHeader">
                                                     <h5>
@@ -440,7 +440,7 @@ const ProductVariant = () => {
                                     </td>
                                     <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--input input-columns">
                                         <div className="product-info-variant-util-pos-relative">
-                                            <input className="product-info-variant-input product-info-variant-input--text-align-right" type="text" placeholder="Enter the amount" name="sellingPrice" data-cy="retail-price-excluding-tax-input" value={item.sellingPrice} style={{ paddingLeft: '4ch', cursor: 'not-allowed' }} disabled />
+                                            <input className="product-info-variant-input product-info-variant-input--text-align-right" type="text" placeholder="Enter the amount" name="sellingPrice" data-cy="retail-price-excluding-tax-input" value={item.sellingPrice} style={{ paddingLeft: '4ch'}}/>
                                             <div className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol" value={item.sellingPrice}>Rs</div>
                                         </div>
                                     </td>

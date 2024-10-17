@@ -1,5 +1,5 @@
 import { Button, FileButton, Group, rem, Switch } from '@mantine/core'
-import { IconArrowLeft, IconCheck, IconX } from '@tabler/icons-react'
+import { IconArrowLeft, IconCheck, IconPencil, IconX } from '@tabler/icons-react'
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../../../api/EndPoints'
@@ -219,7 +219,7 @@ const EnrichProduct = () => {
     }
   };
 
-  const handleChange = (event, fieldType) => {
+  const handleChange = (event, fieldType, pimField, index) => {
     const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
 
     const updateState = (setter, field, newValue) => {
@@ -264,7 +264,7 @@ const EnrichProduct = () => {
         setSliderValue((filledCount / totalFields) * 100);
         return updatedState;
       });
-    } else if (['sampleMOQ', 'wholesaleMOQ', 'minMargin', 'allowLoyalty', 'isStopGRN', 'isStopPurchaseReturn', 'isStopSale',
+    } else if (!pimField && ['sampleMOQ', 'wholesaleMOQ', 'minMargin', 'allowLoyalty', 'isStopGRN', 'isStopPurchaseReturn', 'isStopSale',
       'isAllowRefund', 'isAllowNegative', 'isAllowCostEditInGRN', 'isEnableSerialNumber', 'isNonTrading', 'metaDescription', 'productSlug', 'url'].includes(fieldType)) {
       setPim((prev) => {
         const updatedState = {
@@ -277,6 +277,20 @@ const EnrichProduct = () => {
         const filledCount = countFilledFields(updatedState.pimOtherInformation);
         setSliderValue((filledCount / totalFields) * 100);
         return updatedState;
+      });
+    } else if (pimField === "pim" && ['sampleMOQ', 'wholesaleMOQ'].includes(fieldType)) {
+      setPim((prev) => {
+          const updatedVariants = [...prev.pimVariants]; // Create a copy of the pimVariants array
+          // Update the specific variant at the given index
+          updatedVariants[index] = {
+              ...updatedVariants[index],
+              [fieldType]: value, // Update either sampleMOQ or wholesaleMOQ
+          };
+
+          return {
+              ...prev,
+              pimVariants: updatedVariants, // Set the updated array
+          };
       });
     } else {
       setProduct((prev) => {
@@ -291,11 +305,16 @@ const EnrichProduct = () => {
     }
   };
 
-  // const updateCompletionPercentage = (filledCount) => {
-  //   const totalFields = 30; // Set your total fields accurately
-  //   const completionPercentage = Math.min(Math.round((filledCount / totalFields) * 100), 100);
-  //   setSliderValue(completionPercentage); // Use this to set a state or display it
-  // };
+  const handleEdit = () => {
+    const decodedParams = new URLSearchParams(location.search).toString();
+
+    // Construct the full URL with decoded parameters
+    const fullUrl = `${location.pathname}?${decodedParams}`;
+    const productEditPageUrl = `/product/product/create?id=${pim.product.productId}`
+
+    // Navigate to the new page with the current URL as the 'from' parameter
+    navigate(`${productEditPageUrl}&toUrl=${fullUrl}`, { state: { ...stateData, tabs: stateData.childTabs, } });
+  };
 
   const json = [
     {
@@ -314,7 +333,8 @@ const EnrichProduct = () => {
       fieldType: 'textField',
       placeholder: "Enter Product Name",
       onChange: (event) => handleChange(event, "articleName"),
-      edit: true
+      edit: true,
+      showEditIcon: true,
     },
     {
       label: "PIM Id",
@@ -341,7 +361,8 @@ const EnrichProduct = () => {
       fieldType: 'textField',
       placeholder: "Enter Variant Id",
       onChange: (event) => handleChange(event, "name", 0),
-      edit: true
+      edit: true,
+      showEditIcon: true,
     },
     // {
     //   label: "Taxonomy",
@@ -383,7 +404,7 @@ const EnrichProduct = () => {
         setPim((prevPim) => ({
           ...prevPim,
           video: reader.result,
-      }));
+        }));
       };
       reader.readAsDataURL(file);
     } else {
@@ -431,9 +452,6 @@ const EnrichProduct = () => {
   };
 
   const publishPim = async (e) => {
-
-    console.log(e.target.checked, "event");
-
     try {
 
       const res = await B2B_API.post(`pim/publish/${pim.pimId}?publish=${!pim.isPublished}`).json();
@@ -475,15 +493,11 @@ const EnrichProduct = () => {
         <div className='form-group' style={{ display: 'flex', flexDirection: 'column', maxWidth: '49%', alignItems: 'center' }}>
           {/* Image Display Section */}
           <div style={{ textAlign: 'center', marginBottom: '1rem', border: '1px solid #ccc', padding: '10px', width: '200px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '10px' }}>
-            {imageFile ? (
-              <img
-                src={URL.createObjectURL(imageFile)}
-                alt="Uploaded"
-                style={{ maxWidth: '100%', maxHeight: '100%' }}
-              />
-            ) : (
-              <p style={{ color: '#888' }}>No image uploaded</p>
-            )}
+            <img
+              src={`${BASE_URL}${pim.product?.image?.replace("/api", "")}`}
+              alt={pim.product?.articleName}
+              style={{ maxWidth: '100%', maxHeight: '100%' }}
+            />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-around', width: '10rem' }}>
             <h3>Published</h3>
@@ -541,7 +555,7 @@ const EnrichProduct = () => {
         <form className='form-container' style={{ display: 'flex', flexDirection: 'row', maxWidth: '49%' }}>
 
           {json?.map((field, index) => (
-            <div key={index} className={field.className ? field.className : "form-group"}>
+            <div key={index} style={{ alignItems: field.showEditIcon ? 'center' : 'baseline' }} className={field.className ? field.className : "form-group"}>
               <label className='form-label'>{field.label}</label>
               {
                 field.fieldType === 'textField' && (
@@ -555,6 +569,11 @@ const EnrichProduct = () => {
                   />
                 )
               }
+              {field.showEditIcon && <div style={{ marginLeft: '1rem' }}> <IconPencil
+                onClick={handleEdit}
+                style={{ cursor: 'pointer', color: 'teal' }}
+                stroke={2}
+              /></div>}
               {
                 field.fieldType === "selectField" && (
                   <B2BSelect

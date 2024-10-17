@@ -11,7 +11,7 @@ import { ActiveTabContext } from '../../../layout/Layout';
 import { ProductContext } from './CreateProduct';
 
 const ProductType = () => {
-    const { stateData } = useContext(ActiveTabContext);
+    // const { stateData } = useContext(ActiveTabContext);
     const { product, handleChange, setImageFile, imageFile, inputError } = useContext(ProductContext);
     const [brand, setBrand] = useState([]);
     const [productTags, setProductTags] = useState([]);
@@ -166,9 +166,9 @@ const ProductType = () => {
         },
     ];
 
-    const handleCancel = () => {
-        navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
-    }
+    // const handleCancel = () => {
+    //     navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
+    // }
 
     const handleSelectChange = (value) => {
         const group = _.find(groups, gr => gr.name === value);
@@ -179,8 +179,6 @@ const ProductType = () => {
         const res = await B2B_API.get("taxonomy").json();
         setTaxonomy(res.response);
     }
-
-    console.log(product, "pro");
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -197,9 +195,9 @@ const ProductType = () => {
 
     return (
         <div className='productType-container' style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            {/* <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
-            </div>
+            </div> */}
             <form className='form-container'>
                 {json?.map((field, index) => (
                     <div key={index} className={field.className ? field.className : "form-group"}>

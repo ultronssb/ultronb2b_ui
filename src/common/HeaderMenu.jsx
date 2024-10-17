@@ -15,10 +15,10 @@ const HeaderMenu = ({ onMenuClick }) => {
     return (
         <Menu trigger="click-hover" openDelay={100} closeDelay={400}>
             <Menu.Target>
-                <button style={{ color: 'black', position: 'relative', top: '3rem', left: '1rem', width: '30px', height: '30px', borderRadius: '25px', backgroundColor: 'white', outline: 'none', border: 'none', cursor: 'pointer', boxShadow:'0px 0.5px 0px 1px #0780B2', fontSize:'16px' }}>+</button>
+                <button style={{ color: 'black', position: 'relative', top: '3rem', left: '1rem', width: '30px', height: '30px', borderRadius: '25px', backgroundColor: 'white', outline: 'none', border: 'none', cursor: 'pointer', boxShadow: '0px 0.5px 0px 1px #0780B2', fontSize: '16px' }}>+</button>
             </Menu.Target>
             <Menu.Dropdown>
-                {Object.keys(routeJson).map(menu => <Menu.Item onClick={() => onMenuClick(routeJson[menu])}>
+                {Object.keys(routeJson).map((menu, key) => <Menu.Item key={key} onClick={() => onMenuClick(routeJson[menu])}>
                     {menu}
                 </Menu.Item>)}
                 {/* <Menu.Item>
