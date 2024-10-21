@@ -1,4 +1,3 @@
-import { Text } from '@mantine/core';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../api/Interceptor';
 import B2BTableGrid from '../../common/B2BTableGrid';
@@ -96,16 +95,7 @@ const Salesman = () => {
 
     <div>
       <div className='user--container'>
-        <Text size='lg'>Saleman</Text>
-        {/* <div className='right--section'>
-          <B2BButton
-            style={{ color: '#000' }}
-            name={"Create Customer"}
-            onClick={handleChange}
-            leftSection={<IconPlus size={15} />}
-            color={"rgb(207, 239, 253)"}
-          />
-        </div> */}
+        <header>Saleman Details</header>
       </div>
       <B2BTableGrid
         columns={columns}

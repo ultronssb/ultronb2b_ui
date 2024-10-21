@@ -1,4 +1,4 @@
-import { PasswordInput, Text } from '@mantine/core';
+import { PasswordInput } from '@mantine/core';
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
@@ -232,7 +232,7 @@ const AddUsers = () => {
       {!createUserArea && (
         <>
           <div className='user--container'>
-            <Text size='lg'>User Details</Text>
+            <header>User Details</header>
             <div className='right--section'>
               <B2BButton
                 name={"Bulk Upload"}
@@ -270,7 +270,7 @@ const AddUsers = () => {
       {createUserArea && (
         <>
           <div className='user--container'>
-            <Text size='lg' fw={800}>Create User</Text>
+            <header>Create User</header>
             <B2BButton
               style={{ color: '#000' }}
               name="Back"

@@ -119,6 +119,9 @@ const NewLocation = () => {
   }
   return (
     <div className='grid-container'>
+      <div>
+        <header>Create Location Details</header>
+      </div>
       <form onSubmit={createCompanyProfile} className='form-container'>
         <div className="form-group">
           <label className='form-label'>Company ID</label>

@@ -1,4 +1,3 @@
-import { Text } from '@mantine/core';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -111,7 +110,7 @@ const LocationDetails = () => {
       {!isCreateProduct && (
         <>
           <div className='user--container'>
-            <Text size='lg'> Location Details</Text>
+            <header>Location Details</header>
             <div className='right--section'>
               <B2BButton
                 style={{ color: '#000' }}

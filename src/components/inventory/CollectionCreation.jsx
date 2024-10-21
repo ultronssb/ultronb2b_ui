@@ -232,7 +232,7 @@ const CollectionCreation = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div style={{ fontSize: '28px', fontWeight: '700' }}>Create Collection</div>
+        <header>Create Collection</header>
         <B2BButton
           style={{ color: '#000' }}
           name="Back"

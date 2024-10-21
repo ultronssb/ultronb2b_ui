@@ -1,14 +1,14 @@
+import { faCircleMinus, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconArrowLeft } from '@tabler/icons-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { B2B_API } from '../../api/Interceptor';
 import B2BButton from '../../common/B2BButton';
-import { IconArrowLeft } from '@tabler/icons-react';
-import { ActiveTabContext } from '../../layout/Layout';
 import B2BInput from '../../common/B2BInput';
 import B2BSelect from '../../common/B2BSelect';
-import { B2B_API } from '../../api/Interceptor';
+import { ActiveTabContext } from '../../layout/Layout';
 import './LoyaltyCreate.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleMinus, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 
 const LoyaltyCreate = () => {
   const { stateData } = useContext(ActiveTabContext);
@@ -161,6 +161,7 @@ const LoyaltyCreate = () => {
   return (
     <div>
       <div className='backBtn'>
+        <header>Create Loyalty</header>
         <B2BButton
           style={{ color: '#000' }}
           name="Back"

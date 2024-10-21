@@ -330,8 +330,8 @@ const EnrichmentTabs = () => {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
                 {activeTab > "1" && <B2BButton name={'Back'} onClick={handleBackTab} style={{ marginTop: '1px' }} />}
-                {activeTab < "7" && <B2BButton name={'Next'} onClick={handleNextTab} style={{ marginTop: '1px' }} />}
-                {activeTab === "7" &&
+                {activeTab < String(tabs.length) && <B2BButton name={'Next'} onClick={handleNextTab} style={{ marginTop: '1px' }} />}
+                {activeTab === String(tabs.length) &&
                     <B2BButton
                         style={{ backgroundColor: 'green' }}
                         name={"Save"}

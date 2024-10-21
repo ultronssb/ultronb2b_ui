@@ -31,16 +31,16 @@ import CreatePriceBook from './components/product/pricebook/CreatePriceBook';
 import PriceBook from './components/product/pricebook/PriceBook';
 import Articles from './components/product/product/Articles';
 import CreateProduct from './components/product/product/CreateProduct';
-import ProductTags from './components/product/product_category/ProductTags';
 import { Attribute } from './components/product/product_category/Attribute';
 import Brand from './components/product/product_category/Brand';
+import Category from './components/product/product_category/Category';
 import FabricContent from './components/product/product_category/FabricContent';
 import Group from './components/product/product_category/Group';
-import Category from './components/product/product_category/Category';
-import Taxonomy from './components/product/product_category/Taxonomy';
-import ProductHistory from './components/product/product_history/ProductHistory';
 import GST from './components/product/product_category/GST';
+import ProductTags from './components/product/product_category/ProductTags';
+import Taxonomy from './components/product/product_category/Taxonomy';
 import Variants from './components/product/product_category/Variants';
+import ProductHistory from './components/product/product_history/ProductHistory';
 import CreateOrder from './components/sales/CreateOrder';
 import Enquiry from './components/sales/Enquiry';
 import Invoice from './components/sales/Invoice';
@@ -53,22 +53,23 @@ import Packing from './components/sales/Packing';
 import ReturnNote from './components/sales/ReturnNote';
 import SalesOrder from './components/sales/SalesOrder';
 import ShipmentNote from './components/sales/ShipmentNote';
-import BusinessRules from './components/settings/company_profile/BusinessRules';
-import Channel from './components/settings/company_profile/Channel';
 import CompanyProfile from './components/settings/company_profile/CompanyProfile';
-import Legal from './components/settings/company_profile/Legal';
+import Channel from './components/settings/company_profile/Channel';
 import OtherSettings from './components/settings/company_profile/OtherSettings';
+import Legal from './components/settings/company_profile/Legal';
+import BusinessRules from './components/settings/company_profile/BusinessRules';
 import LocationDetails from './components/settings/location/LocationDetails';
 import NewLocation from './components/settings/location/NewLocation';
-import LocationType from './components/settings/location_type/LocationType';
 import Payment from './components/settings/payment/Payment';
 import Shipment from './components/settings/shipment/Shipment';
+import DeliveryMode from './components/settings/shipment/DeliveryMode.jsx';
 import AddUsers from './components/settings/users/AddUsers';
 import Role from './components/settings/users/Role';
 import RolePrivileges from './components/settings/users/RolePrivileges';
+import LocationType from './components/settings/location_type/LocationType';
+import Filters from './components/settings/filters/Filters.jsx';
 import Layout from './layout/Layout';
 
-import Filters from './components/settings/filters/Filters.jsx';
 
 const ProtectedRoute = ({ element: Component }) => {
   const navigate = useNavigate();
@@ -193,6 +194,7 @@ function App() {
         <Route path='/settings/payment' element={<ProtectedRoute element={Payment} />} />
 
         <Route path='/settings/shipment' element={<ProtectedRoute element={Shipment} />} />
+        <Route path='/settings/deliverymode' element={<ProtectedRoute element={DeliveryMode} />} />
 
         <Route path='/settings/user-management' element={<ProtectedRoute element={AddUsers} />} />
         <Route path='/settings/user/role' element={<Role />} />

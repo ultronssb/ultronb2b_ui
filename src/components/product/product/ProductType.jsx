@@ -1,13 +1,12 @@
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, FileButton, Group, MultiSelect } from '@mantine/core';
-import { IconArrowLeft } from '@tabler/icons-react';
 import _ from 'lodash';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../../api/Interceptor';
-import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
-import { ActiveTabContext } from '../../../layout/Layout';
 import { ProductContext } from './CreateProduct';
 
 const ProductType = () => {
@@ -122,7 +121,9 @@ const ProductType = () => {
             placeholder: "Enter Taxonomy",
             clearable: true,
             require: true,
-            error: inputError.taxonomyErrorMessage
+            error: inputError.taxonomyErrorMessage,
+            masterCreation: true,
+            masterNew: 'Create Taxonomy',
         },
         {
             label: "Brand",
@@ -132,13 +133,17 @@ const ProductType = () => {
             fieldType: 'selectField',
             placeholder: "Enter Brand",
             data: brand ? brand.map(b => ({ label: b.name, value: b.brandId })) : [],
-            clearable: true
+            clearable: true,
+            masterCreation: true,
+            masterNew: 'Create Brand',
         },
         {
             label: "Product Tag",
             type: "multiselect",
             fieldType: 'multiselectField',
-            placeholder: "Enter Tag"
+            placeholder: "Enter Tag",
+            masterCreation: true,
+            masterNew: 'Create Product Tag',
         },
         {
             label: "Description",
@@ -220,26 +225,32 @@ const ProductType = () => {
                         }
                         {
                             field.fieldType === "selectField" && (
-                                <B2BSelect
-                                    data={field.data}
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                    placeholder={field.placeholder}
-                                    clearable={field.clearable}
-                                    error={field.error}
-                                    maxDropdownHeight={400}
-                                />
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', cursor: 'pointer', fontSize: '1.25rem' }}>
+                                    <B2BSelect
+                                        data={field.data}
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        placeholder={field.placeholder}
+                                        clearable={field.clearable}
+                                        error={field.error}
+                                        maxDropdownHeight={400}
+                                    />
+                                    {field.masterCreation && (<FontAwesomeIcon icon={faCirclePlus} title={field.masterNew} />)}
+                                </div>
                             )
                         }
                         {
                             field.fieldType === 'multiselectField' && (
-                                <MultiSelect
-                                    value={product?.tags || []}
-                                    style={{ width: '250px' }}
-                                    placeholder="Tags"
-                                    data={productTags.map(tag => tag.name)}
-                                    onChange={(selectedTags) => handleChange({ target: { value: selectedTags } }, "tags")}
-                                />
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', cursor: 'pointer', fontSize: '1.25rem' }}>
+                                    <MultiSelect
+                                        value={product?.tags || []}
+                                        style={{ width: '250px' }}
+                                        placeholder="Tags"
+                                        data={productTags.map(tag => tag.name)}
+                                        onChange={(selectedTags) => handleChange({ target: { value: selectedTags } }, "tags")}
+                                    />
+                                    {field.masterCreation && (<FontAwesomeIcon icon={faCirclePlus} title={field.masterNew} />)}
+                                </div>
                             )
                         }
                         {

@@ -1,4 +1,3 @@
-import { Text } from '@mantine/core';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useContext, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -95,7 +94,7 @@ export const Loyalty = () => {
   return (
     <div>
       <div className='user--container'>
-        <Text size='lg'>Loyalty Program Details</Text>
+        <header>Loyalty Program Details</header>
         <div className='right--section'>
           <B2BButton
             style={{ color: '#000' }}

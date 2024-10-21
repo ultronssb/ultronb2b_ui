@@ -1,4 +1,3 @@
-import { Text } from '@mantine/core';
 import React, { useContext, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import B2BTableGrid from '../../common/B2BTableGrid';
@@ -88,7 +87,7 @@ const LoyaltyPointStatus = () => {
       {!isCustomer && (
         <>
           <div className='user--container'>
-            <Text size='lg'>Loyalty Points Status</Text>
+            <header>Loyalty Points Status</header>
           </div>
           <B2BTableGrid
             columns={columns}
