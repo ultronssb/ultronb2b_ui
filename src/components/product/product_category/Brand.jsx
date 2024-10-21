@@ -158,6 +158,7 @@ const Brand = () => {
 
   return (
     <div className='grid-container'>
+      <header>Brand</header>
       <form onSubmit={(event) => addBrand(event)} className='form-container'>
         {json.map((e, index) => (
           <div key={index} className={e.className ? e.className : "form-group"}>

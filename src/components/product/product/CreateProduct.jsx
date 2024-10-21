@@ -157,8 +157,6 @@ const CreateProduct = () => {
   };
 
 
-
-
   const handleChange = (event, fieldType) => {
     const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
     setInputError("")
@@ -302,7 +300,7 @@ const CreateProduct = () => {
     });
   };
 
-  const handleNextTab = async (fromNext = ture) => {
+  const handleNextTab = async (fromNext = true) => {
     let isValid = true;
     const errors = {};
 
@@ -363,13 +361,6 @@ const CreateProduct = () => {
           isValid = false;
         } else {
           errors.taxonomyError = false;
-        }
-        if ((isEmpty(product.image) && !imageFile)) {
-          errors.imageError = true;
-          errors.imageErrorMessage = 'Image is Required!!';
-          isValid = false;
-        } else {
-          errors.imageError = false;
         }
         if (isValid) {
           enableNextTab(false)

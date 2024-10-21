@@ -194,6 +194,7 @@ const Group = () => {
   return (
     <>
       <div className='grid-container'>
+      <header>Group</header>
         <form onSubmit={(event) => addGroup(event)} className='form-container'>
           <div className="form-group">
             <label className='form-label'>Name</label>

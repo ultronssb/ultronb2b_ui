@@ -1,6 +1,6 @@
 import { AppShell, Avatar, Button, Container, Group, rem } from '@mantine/core';
 import { IconLogout, IconUserCircle } from '@tabler/icons-react';
-import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { B2B_API } from '../api/Interceptor';
 import ultron_logo from "../assets/ultron-logo.png";
@@ -161,7 +161,9 @@ export default function Layout() {
               </Group>
             )}
             <Container size="responsive" ref={appShellRef}>
-              <Outlet />
+              <Suspense fallback={<div>Loading...</div>}>
+                <Outlet />
+              </Suspense>
             </Container>
           </AppShell.Main>
           <AppShell.Footer h={5}></AppShell.Footer>

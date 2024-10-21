@@ -8,14 +8,16 @@ import { B2B_API } from '../../../api/Interceptor';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
+import notify from '../../../utils/Notification';
 
 const ProductType = () => {
     // const { stateData } = useContext(ActiveTabContext);
-    const { product, handleChange, setImageFile, imageFile, inputError } = useContext(ProductContext);
+    const { product, setProduct, handleChange, setImageFile, imageFile, inputError } = useContext(ProductContext);
     const [brand, setBrand] = useState([]);
     const [productTags, setProductTags] = useState([]);
     const [taxonomy, setTaxonomy] = useState([]);
     const navigate = useNavigate();
+    const [imageError, setImageError] = useState('')
 
     const resetRef = useRef(null);
 
@@ -51,20 +53,25 @@ const ProductType = () => {
     };
 
     const fileChange = (file) => {
-        const MAX_SIZE_BYTES = 3 * 1024 * 1024;
+        const MAX_SIZE_BYTES = 3 * 1024 * 1024; // 3MB
 
         if (file) {
             if (file.size > MAX_SIZE_BYTES) {
-                if (file.size > MAX_SIZE_BYTES) {
-                    setImageFile(null);
-                }
+                setImageError('File size should be less than 3MB');
+                setImageFile(null); // Clear the file if it exceeds the size limit
             } else {
-                setImageFile(file);
+                setImageError(''); // Clear any previous errors
+                setImageFile(file); // Set the file if it meets the size requirement
+                setProduct(prev => ({
+                    ...prev,
+                    image: URL.createObjectURL(file)
+                }))
             }
         } else {
             setImageFile(null);
         }
     };
+
 
     const json = [
         {
@@ -185,17 +192,8 @@ const ProductType = () => {
         setTaxonomy(res.response);
     }
 
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
+    console.log(product, "pro");
 
-        if (file && file.size > 5000000) { // Example condition for the error (file size > 5MB)
-            setImageError('File size should be less than 5MB');
-            setImageFile(null); // Reset the image file if there's an error
-        } else {
-            setImageFile(file);
-            setImageError(''); // Clear error if the file is valid
-        }
-    };
 
 
     return (
@@ -335,9 +333,13 @@ const ProductType = () => {
                         ) : (
                             <p style={{ color: '#888' }}>No image uploaded</p>
                         )}
+                        {imageError && notify({
+                            title: 'Error!!',
+                            message: imageError || 'Failed to add Image.',
+                            error: true,
+                            success: false,
+                        })}
                     </div>
-                    {inputError.imageError ?
-                        <span className='error-message'>{inputError?.imageErrorMessage}</span> : ''}
                 </div>
             </form>
         </div>

@@ -174,6 +174,7 @@ const AddUsers = () => {
     const res = await B2B_API.get(`user/${userObj.userId}`).json();
     if (res.response && res.response.emailId) {
       setUser({ ...res.response, userName: res.response.emailId });
+      setPagination({pageIndex: 0, pageSize: 5})
     } else {
       setUser(res.response);
     }

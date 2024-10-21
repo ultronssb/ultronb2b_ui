@@ -21,6 +21,7 @@ const EnrichProduct = () => {
   const resetRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
+  const [imageError, setImageError] = useState('')
   const [errorMessage, setErrorMessage] = useState('');
   const [store, setStore] = useState('')
   const [channel, setChannel] = useState('')
@@ -33,6 +34,7 @@ const EnrichProduct = () => {
   const [multimedia, setMultimedia] = useState([])
   const [sliderValue, setSliderValue] = useState(0);
   const [totalFields, setTotalFields] = useState(0);
+
 
 
   useEffect(() => {
@@ -70,146 +72,131 @@ const EnrichProduct = () => {
       throw error;
     }
   };
+
+  const transformData = async (product) => {
+    const result = {};
+    product?.productVariants.forEach(variant => {
+      variant.variants.forEach(v => {
+        if (!result[v.name]) {
+          result[v.name] = [];
+        }
+        result[v.name].push(v.id);
+      });
+    });
+
+    return result;
+  };
+
+  const fetchHeirarchy = async (parentId) => {
+    let heirarchy = [];
+    let currentId = parentId;
+    while (currentId) {
+      try {
+        const res = await B2B_API.get(`product-category/category/${currentId}`).json();
+        const category = res.response;
+        if (category) {
+          heirarchy.push(category.name);
+          currentId = category.parentId;
+        } else {
+          currentId = null;
+        }
+      } catch (error) {
+        console.error('Error category : ', error);
+        currentId = null;
+      }
+    }
+    return heirarchy.reverse();
+  }
+
+  //transform categories
+  const transformCategories = async (product) => {
+    const result = [];
+
+    for (const [key, value] of Object.entries(product?.productCategories || {})) {
+      const heirarchy = await fetchHeirarchy(value.categoryId);
+      const heirarchyLabel = heirarchy?.slice(1).join('/');
+      result.push({
+        key: key,
+        value: value,
+        heirarchyLabel: heirarchyLabel,
+        options: value.options || [],
+        openModal: false
+      });
+    }
+    return result;
+  };
+
+  const transformAttributes = async (pims) => {
+    const result = [];
+
+    for (const [key, value] of Object.entries(pims?.attributes || {})) {
+      const heirarchy = await fetchHeirarchy(value.categoryId);
+      const heirarchyLabel = heirarchy?.slice(1).join('/');
+      result.push({
+        key: key,
+        value: value,
+        heirarchyLabel: heirarchyLabel,
+        options: value.options || [],
+        openModal: false
+      });
+    }
+    return result;
+  };
+
+  const adjustPriceSetting = (priceSetting) => {
+    return {
+      ...priceSetting,
+      isMarkDown: priceSetting.markDownPercent > 0 ? true : false,
+      isMarkUp: priceSetting.markUpPercent > 0 ? true : false,
+    };
+  };
+
+  const setPims = async (response) => {
+    const product = response.product;
+    const pims = response;
+    const barcodeString = product?.isCreateBarcode ? "true" : "false";
+    if (response.video) {
+      const videoFile = await fetchVideoAsBlob(response.video);
+      setVideoFile(videoFile);
+    }
+    getUserById(response.updatedBy);
+
+    setPim({
+      ...pims,
+      attributes: await transformAttributes(pims),
+
+    })
+    setProduct({
+      ...product,
+      tags: product?.productTags.split(",").map(tag => tag.trim()),
+      brandId: product?.brand?.brandId,
+      barcode: barcodeString,
+      gstId: product?.gst?.gstId,
+      image: `${BASE_URL}${product?.image}`,
+      productCategories: await transformCategories(product),
+      prodVariants: transformData(product),
+      priceSetting: adjustPriceSetting(product?.priceSetting),
+
+
+      productVariants: product?.productVariants?.map(variant => ({
+        ...variant,
+        variants: variant?.variants.map(v => ({
+          ...v,
+          variantId: v.variantId
+        }))
+      })),
+      otherInformation: {
+        ...product.otherInformation,
+      }
+    });
+  }
+
   const fetchProduct = async () => {
     try {
       const response = await B2B_API.get(`pim/product/${id}`).json();
-      const product = response.response.product;
-      const pims = response.response;
-      const barcodeString = product?.isCreateBarcode ? "true" : "false";
-      const transformData = () => {
-        const result = {};
-        product?.productVariants.forEach(variant => {
-          variant.variants.forEach(v => {
-            if (!result[v.name]) {
-              result[v.name] = [];
-            }
-            result[v.name].push(v.id);
-          });
-        });
-
-        return result;
-      };
-      if (response.response.video) {
-        const videoFile = await fetchVideoAsBlob(response.response.video);
-        setVideoFile(videoFile);
-      }
-      getUserById(response.response.updatedBy);
-
-      const fetchHeirarchy = async (parentId) => {
-        let heirarchy = [];
-        let currentId = parentId;
-        while (currentId) {
-          try {
-            const res = await B2B_API.get(`product-category/category/${currentId}`).json();
-            const category = res.response;
-            if (category) {
-              heirarchy.push(category.name);
-              currentId = category.parentId;
-            } else {
-              currentId = null;
-            }
-          } catch (error) {
-            console.error('Error category : ', error);
-            currentId = null;
-          }
-        }
-        return heirarchy.reverse();
-      }
-
-      const transformCategories = async () => {
-        const result = [];
-
-        for (const [key, value] of Object.entries(product?.productCategories || {})) {
-          const heirarchy = await fetchHeirarchy(value.categoryId);
-          const heirarchyLabel = heirarchy?.slice(1).join('/');
-          result.push({
-            key: key,
-            value: value,
-            heirarchyLabel: heirarchyLabel,
-            options: value.options || [],
-            openModal: false
-          });
-        }
-        return result;
-      };
-
-      const adjustPriceSetting = (priceSetting) => {
-        return {
-          ...priceSetting,
-          isMarkDown: priceSetting.markDownPercent > 0 ? true : false,
-          isMarkUp: priceSetting.markUpPercent > 0 ? true : false,
-        };
-      };
-      const transformAttributes = async () => {
-        const result = [];
-
-        for (const [key, value] of Object.entries(pims?.attributes || {})) {
-          const heirarchy = await fetchHeirarchy(value.categoryId);
-          const heirarchyLabel = heirarchy?.slice(1).join('/');
-          result.push({
-            key: key,
-            value: value,
-            heirarchyLabel: heirarchyLabel,
-            options: value.options || [],
-            openModal: false
-          });
-        }
-        return result;
-      };
-      setPim({
-        ...pims,
-        attributes: await transformAttributes(),
-
-      })
-      setProduct({
-        ...product,
-        tags: product?.productTags.split(",").map(tag => tag.trim()),
-        brandId: product?.brand?.brandId,
-        barcode: barcodeString,
-        gstId: product?.gst?.gstId,
-        image: `${BASE_URL}${product?.image}`,
-        productCategories: await transformCategories(),
-        prodVariants: transformData(),
-        priceSetting: adjustPriceSetting(product?.priceSetting),
-
-
-        productVariants: product?.productVariants?.map(variant => ({
-          ...variant,
-          variants: variant?.variants.map(v => ({
-            ...v,
-            variantId: v.variantId
-          }))
-        })),
-        otherInformation: {
-          ...product.otherInformation,
-        }
-      });
-
-      const initializeImage = async () => {
-        try {
-          const imageFile = await fetchImageAsBlob();
-          setImageFile(imageFile);
-        } catch (error) {
-          console.error("Failed to fetch and set image file:", error);
-        }
-      };
-      const fetchImageAsBlob = async () => {
-        try {
-          const response = await fetch(`${BASE_URL?.replace('/api', '')}${product?.image}`);
-          const contentType = response.headers.get('Content-Type');
-          if (!contentType || !contentType.startsWith('image/')) {
-            throw new Error('Expected an image, but received: ' + contentType);
-          }
-          const blob = await response.blob();
-          const file = new File([blob], 'image.jpeg', { type: blob.type });
-          return file;
-        } catch (error) {
-          console.error('Error:', error);
-          throw error;
-        }
-      };
-      initializeImage()
-    } catch (err) {
+      setPims(response.response)
+    }
+    catch (err) {
       notify({
         title: 'Error!',
         message: err?.message || 'Failed to fetch product.',
@@ -217,7 +204,8 @@ const EnrichProduct = () => {
         success: false,
       });
     }
-  };
+
+  }
 
   const handleChange = (event, fieldType, pimField, index) => {
     const value = event?.target?.type === 'checkbox' ? event?.target?.checked : event?.target?.value;
@@ -227,6 +215,11 @@ const EnrichProduct = () => {
         ...prev,
         [field]: newValue,
       }));
+      if (!imageFile && !pim.image) {
+        setImageError('Image is required.');
+        return;
+      }
+      setImageError('');
     };
 
     // Function to count the filled fields
@@ -280,17 +273,17 @@ const EnrichProduct = () => {
       });
     } else if (pimField === "pim" && ['sampleMOQ', 'wholesaleMOQ'].includes(fieldType)) {
       setPim((prev) => {
-          const updatedVariants = [...prev.pimVariants]; // Create a copy of the pimVariants array
-          // Update the specific variant at the given index
-          updatedVariants[index] = {
-              ...updatedVariants[index],
-              [fieldType]: value, // Update either sampleMOQ or wholesaleMOQ
-          };
+        const updatedVariants = [...prev.pimVariants]; // Create a copy of the pimVariants array
+        // Update the specific variant at the given index
+        updatedVariants[index] = {
+          ...updatedVariants[index],
+          [fieldType]: value, // Update either sampleMOQ or wholesaleMOQ
+        };
 
-          return {
-              ...prev,
-              pimVariants: updatedVariants, // Set the updated array
-          };
+        return {
+          ...prev,
+          pimVariants: updatedVariants, // Set the updated array
+        };
       });
     } else {
       setProduct((prev) => {
@@ -364,16 +357,6 @@ const EnrichProduct = () => {
       edit: true,
       showEditIcon: true,
     },
-    // {
-    //   label: "Taxonomy",
-    //   value: product.taxonomyNode?.name || "", // Display name if available
-    //   type: product.taxonomyNode?.name ? "text" : "select", // Switch between text or select field
-    //   fieldType: product.taxonomyNode?.name ? "textField" : "selectField", // Conditionally render field type
-    //   placeholder: product.taxonomyNode?.name ? "Enter Variant Id" : "Select Taxonomy", // Placeholder changes accordingly
-    //   options: !product.taxonomyNode?.name ? taxonomyOptions : [], // Provide options if dropdown is shown
-    //   onChange: (event) => handleChange(event, "name", 0), // Handle change for both cases
-    //   edit: true
-    // },
     {
       label: "Status",
       type: 'radio',
@@ -413,16 +396,59 @@ const EnrichProduct = () => {
     }
   };
 
+  const fileChange = (file) => {
+    const MAX_SIZE_BYTES = 3 * 1024 * 1024; // 3MB
+
+    if (file) {
+      if (file.size > MAX_SIZE_BYTES) {
+        setImageError('File size should be less than 3MB');
+        setImageFile(null); // Clear the file if it exceeds the size limit
+      } else {
+        setImageError(''); // Clear any previous errors
+        setImageFile(file); // Set the file if it meets the size requirement
+        setPim(prev => ({
+          ...prev,
+          product: {
+            ...prev.product, image: file
+          },
+        }))
+        saveImage(file);
+      }
+    } else {
+      setImageFile(null);
+    }
+  };
+
+  const saveImage = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('pimId', pim.pimId);
+      formData.append('imageFile', file);
+      const res = await B2B_API.post(`pim/upload-image`, { body: formData }).json()
+      setPims(res.response)
+      setImageFile(null)
+    } catch (err) {
+      console.log("Failed to add Image In Pim", err);
+
+    }
+  }
 
   const clearFile = () => {
     setProduct((prevProduct) => ({
-      ...prevProduct, video: ''
+      ...prevProduct, video: null
     }));
+    setPim((prev) => ({
+      ...prev,
+      product: {
+        ...prev.product, image: null
+      }
+    }))
     if (resetRef.current) {
       resetRef.current();
     }
-    setVideoFile(null)
-    setCurrentImage(null)
+    setVideoFile(null);
+    setImageFile(null);
+
   };
   const formatDate = (timestamp) => {
     const date = new Date(Number(timestamp));
@@ -452,8 +478,9 @@ const EnrichProduct = () => {
   };
 
   const publishPim = async (e) => {
-    try {
 
+    if (!checkPublished()) return
+    try {
       const res = await B2B_API.post(`pim/publish/${pim.pimId}?publish=${!pim.isPublished}`).json();
       notify({
         title: pim.product?.articleName || pim.pimId,
@@ -461,7 +488,7 @@ const EnrichProduct = () => {
         error: false,
         success: true,
       });
-      fetchProduct()
+      setPim(prev => ({ ...prev, isPublished: !prev.isPublished }))
     } catch (error) {
 
       notify({
@@ -472,6 +499,13 @@ const EnrichProduct = () => {
       });
     }
   }
+
+  const checkPublished = () => {
+    return (
+      (pim.image) &&
+      pim.pimVariants?.every(variant => variant.image)
+    );
+  };
 
   return (
     <EnrichProductContext.Provider value={{ handleChange, product, setProduct, pim, setPim, videoFile, multimedia, setMultimedia }}>
@@ -493,18 +527,33 @@ const EnrichProduct = () => {
         <div className='form-group' style={{ display: 'flex', flexDirection: 'column', maxWidth: '49%', alignItems: 'center' }}>
           {/* Image Display Section */}
           <div style={{ textAlign: 'center', marginBottom: '1rem', border: '1px solid #ccc', padding: '10px', width: '200px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '10px' }}>
-            <img
-              src={`${BASE_URL}${pim.product?.image?.replace("/api", "")}`}
-              alt={pim.product?.articleName}
-              style={{ maxWidth: '100%', maxHeight: '100%' }}
-            />
+            {imageFile || pim.image ? (
+              <img
+                src={imageFile ? URL.createObjectURL(imageFile) : `${BASE_URL}${pim?.image?.replace("/api", "")}?time=${Date.now()}`}
+                alt={"Uploaded Image"}
+                style={{ maxWidth: '100%', maxHeight: '100%' }}
+              />
+            ) : (
+              <span style={{ color: 'red' }}>No Image Uploaded</span>
+            )}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-around', width: '10rem' }}>
+
+          <Group justify="flex-start">
+            <FileButton resetRef={resetRef} onChange={(file) => fileChange(file)} accept="image/png,image/jpeg">
+              {(props) => <Button {...props}>Upload Image</Button>}
+            </FileButton>
+            <Button disabled={!imageFile && !pim?.image} color="red" onClick={clearFile}>
+              Reset
+            </Button>
+          </Group>
+
+          <div style={{ display: 'flex', justifyContent: 'space-around', width: '10rem',marginTop:'1rem',marginRight:'5rem' }}>
             <h3>Published</h3>
             <Switch
               checked={pim?.isPublished}
               onChange={(e) => publishPim(e)}
               color="teal"
+              disabled={!checkPublished()}
               size="md"
               thumbIcon={
                 pim?.isPublished ? (
@@ -523,6 +572,10 @@ const EnrichProduct = () => {
               }
             />
           </div>
+
+          {!checkPublished() ?
+            <h5 style={{ color: 'red' }}>Note* Upload all variant image & product Image to Publish</h5> : ''}
+
         </div>
         <div className='form-group' style={{ display: 'flex', flexDirection: 'column', maxWidth: '49%', alignItems: 'center' }}>
           <div style={{ textAlign: 'center', marginBottom: '1rem', border: '1px solid #ccc', padding: '10px', width: '200px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '10px' }}>
@@ -538,7 +591,7 @@ const EnrichProduct = () => {
                 </video>
               </div>
             ) : (
-              <p style={{ color: '#888' }}>No video uploaded</p>
+              <span style={{ color: 'red' }}>No video uploaded</span>
             )}
           </div>
 

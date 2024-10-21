@@ -39,7 +39,6 @@ const ProductTags = () => {
       accessorKey: 'name',
       size: 120
     },
-
     {
       header: 'Status',
       accessorKey: 'status',
@@ -128,6 +127,7 @@ const ProductTags = () => {
   return (
     <>
       <div className='grid-container'>
+      <header>Product Tags</header>
         <form onSubmit={(event) => addGroup(event)} className='form-container'>
           <div className="form-group">
             <label className='form-label'>Name</label>

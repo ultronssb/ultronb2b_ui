@@ -70,6 +70,7 @@ import LocationType from './components/settings/location_type/LocationType';
 import Filters from './components/settings/filters/Filters.jsx';
 import Layout from './layout/Layout';
 
+import VariantBarcode from './components/product/barcode/Barcode';
 
 const ProtectedRoute = ({ element: Component }) => {
   const navigate = useNavigate();
@@ -119,7 +120,7 @@ function App() {
         <Route path='/product/price-book' element={<ProtectedRoute element={PriceBook} />} />
         <Route path='/product/price-book/create' element={<ProtectedRoute element={CreatePriceBook} />} />
 
-        <Route path='/product/barcode' element={<ProtectedRoute element={Barcode} />} />
+        <Route path='/product/barcode' element={<ProtectedRoute element={VariantBarcode} />} />
 
         <Route path='/product/history' element={<ProtectedRoute element={ProductHistory} />} />
 

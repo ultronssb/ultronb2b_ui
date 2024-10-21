@@ -98,7 +98,7 @@ const EnrichmentProductVariant = () => {
             return {
                 ...prevProductPims, // Preserve all previous properties
                 pimVariants: prevProductPims.pimVariants.map((item, i) =>
-                    i === index ? { ...item, file: null, imageUrl: null } : item
+                    i === index ? { ...item, file: null, imageUrl: null, image:null } : item
                 ),
             };
         });

@@ -121,6 +121,7 @@ const Taxonomy = () => {
   return (
     <>
       <div className='grid-container'>
+      <header>Taxonomy</header>
         <form onSubmit={(event) => addTaxonomy(event)} className='form-container'>
           <div className="form-group">
             <label className='form-label'>Name</label>

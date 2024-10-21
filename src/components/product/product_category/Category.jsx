@@ -1,5 +1,4 @@
-import { faArrowTurnUp, faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowTurnUp, faFilter, faFilterCircleXmark, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import _ from 'lodash';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -12,6 +11,8 @@ import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
 import notify from '../../../utils/Notification';
 import './Category.css';
+import { Text } from '@mantine/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children, disable }) => {
   return (
@@ -55,7 +56,7 @@ const CategoryTree = ({ level = 1, categories, onCategoryChange, disable }) => {
   };
   return (
     <>
-      {categories.map((category, index) => (
+      {categories?.map((category, index) => (
         <div key={index} style={{ display: 'flex', flexDirection: 'column', marginTop: '2rem', gap: '1rem' }}>
           <CategoryInput
             level={level}
@@ -85,7 +86,7 @@ const CategoryTree = ({ level = 1, categories, onCategoryChange, disable }) => {
 };
 
 const Category = () => {
-  const initialState = { name: '', parentId: null, productGroup: {}, child: [] };
+  const initialState = { name: '', parentId: null, productGroup: {}, child: [], status: "ACTIVE" };
   const { stateData } = useContext(ActiveTabContext);
   const [productCategories, setProductCategories] = useState([]);
   const [isCreateCategory, setIsCreateCategory] = useState(false);
@@ -98,16 +99,19 @@ const Category = () => {
   const [isLevelOneDisabled, setIsLevelOneDisabled] = useState(false);
 
   const typesOptions = ["Fabric Type", "Fabric Content", "Others"];
+  const [status, setStatus] = useState('ACTIVE')
+  const [openStatus, setOpenStatus] = useState(false);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get('id');
+  const categoryStatus = queryParams.get('status');
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCategory = async () => {
       if (!id) return;
-      const response = await B2B_API.get(`product-category/${id}`).json();
+      const response = await B2B_API.get(`product-category/${id}?status=${categoryStatus}`).json();
       setCategoryTree(response.response);
       setIsCreateCategory(true);
       setIsLevelOneDisabled(true)
@@ -214,7 +218,7 @@ const Category = () => {
 
   useEffect(() => {
     fetchCategory();
-  }, []);
+  }, [status, pagination.pageIndex, pagination.pageSize]);
 
 
   const countLeafNodes = (node) => {
@@ -234,6 +238,11 @@ const Category = () => {
     name: node.name,
     count: countLeafNodes(node),
   }));
+
+  const handleStatusChange = (status) => {
+    setStatus(status)
+    setOpenStatus(false)
+  }
 
   const categoryColumns = useMemo(() => [
     {
@@ -270,9 +279,26 @@ const Category = () => {
       },
       size: 150,
     },
-    {
+    { 
+    header: (
+      <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+        <div>Status ({status})</div>
+        <FontAwesomeIcon icon={openStatus ? faFilterCircleXmark : faFilter} size={18} style={{ marginLeft: '1.5rem', cursor: 'pointer' }} onClick={() => setOpenStatus(!openStatus)} />
+        {
+          openStatus && (
+            <div className='status-dropdown'>
+              <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+                <Text size="xs" fw={800}>ACTIVE</Text>
+              </div>
+              <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+                <Text size="xs" fw={800}>INACTIVE</Text>
+              </div>
+            </div>
+          )
+        }
+      </div>
+    ),
       id: 'status',
-      header: 'Status',
       accessorKey: 'status',
       Cell: ({ cell, row }) => {
         const status = row.original.status;
@@ -284,8 +310,8 @@ const Category = () => {
       },
     },
     {
-      id: 'actions',
-      header: 'Actions',
+      id: 'Edit',
+      header: 'Edit',
       mantineTableHeadCellProps: {
         align: 'center'
       },
@@ -308,7 +334,7 @@ const Category = () => {
 
   const categoryEdit = (node) => {
     const categoryId = node.categoryId;
-    navigate(`/product/product-hierarchy?id=${categoryId}`, { state: { ...stateData, tabs: stateData.childTabs } });
+    navigate(`/product/product-hierarchy?id=${categoryId}&status=${node.status}`, { state: { ...stateData, tabs: stateData.childTabs } });
   };
 
   const sortCategories = (categories) => {
@@ -319,7 +345,7 @@ const Category = () => {
 
   const fetchCategory = async () => {
     try {
-      const response = await B2B_API.get('product-category').json();
+      const response = await B2B_API.get(`product-category?status=${status}`).json();
       const sortedData = sortCategories(response?.response);
       setProductCategories(sortedData || []);
     } catch (error) {
@@ -332,9 +358,15 @@ const Category = () => {
     }
   };
 
+  const handleChange = (event) => {
+    setCategoryTree(prevState => [
+      { ...prevState[0], status: event.target.value }
+    ]);
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <h3 style={{ margin: '1rem 0.3rem' }} key={"division"}>Category Details</h3>
+      <header>Category Details</header>
       <div className='product-category-container'>
         <div className='create-product-btn'>
           {
@@ -382,6 +414,33 @@ const Category = () => {
                       onChange={handleTypeSelectChange}
                       clearable
                     />}
+                </div>
+                <div className="form-group status-container">
+                  <label className='form-label'>Status</label>
+                  <div className='radio-group'>
+                    <div className='status-block'>
+                      <input
+                        type="radio"
+                        value="ACTIVE"
+                        onChange={(event) => handleChange(event, 'status')}
+                        checked={categoryTree[0]?.status === "ACTIVE"}
+                        name="status"
+                        id="status-active"
+                      />
+                      <label className='form-span radio' htmlFor="status-active">ACTIVE</label>
+                    </div>
+                    <div className='status-block'>
+                      <input
+                        type="radio"
+                        value="INACTIVE"
+                        onChange={(event) => handleChange(event, 'status')}
+                        checked={categoryTree[0]?.status === "INACTIVE"}
+                        name="status"
+                        id="status-inactive"
+                      />
+                      <label className='form-span radio' htmlFor="status-inactive">INACTIVE</label>
+                    </div>
+                  </div>
                 </div>
                 <CategoryTree
                   level={1}

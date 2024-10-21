@@ -10,6 +10,8 @@ import { ProductContext } from './CreateProduct';
 import { Dropzone } from '@mantine/dropzone';
 import { IconUpload } from '@tabler/icons-react';
 import { BASE_URL } from '../../../api/EndPoints';
+import JsBarcode from 'jsbarcode';
+import Barcode from 'react-barcode';
 
 
 const ProductVariant = () => {
@@ -35,6 +37,24 @@ const ProductVariant = () => {
     useEffect(() => {
         updateCombinations(selectedPairs);
     }, [variants, selectedPairs]);
+
+    // const BarcodeGenerator = ({ barcodeValue }) => {
+    //     const canvasRef = useRef(null);
+
+    //     useEffect(() => {
+    //       if (canvasRef.current && barcodeValue) {
+    //         JsBarcode(canvasRef.current, barcodeValue, {
+    //           format: 'EAN13',   // Change to your preferred barcode format
+    //           displayValue: true,
+    //           fontSize: 18,
+    //           width: 2,
+    //           height: 100,
+    //         });
+    //       }
+    //     }, [barcodeValue]);
+
+    //     return <canvas ref={canvasRef} />;
+    //   };
 
 
     const generateCombinations = (lists, variants = []) => {
@@ -91,6 +111,7 @@ const ProductVariant = () => {
             }
             variant['variants'] = _.map(combination, c => _.find(variants, v => v.id === c));
             variant['status'] = variant.id ? variant.status : 'ACTIVE'
+            variant['name'] = product.articleName?.concat("/").concat(getVarinatname(variant.variants))
             prodVariants.push(variant);
         })
         setProduct(prev => ({
@@ -110,7 +131,9 @@ const ProductVariant = () => {
         } catch (error) {
             console.error('Error fetching variants:', error);
         }
+        
     };
+    console.log(variants,"resVar");
 
     const setSelectedPairsFromProduct = () => {
         const { prodVariants } = product;
@@ -306,10 +329,14 @@ const ProductVariant = () => {
         });
     };
 
+    const getVarinatname = (variants) => {
+        return variants.map(variant => variant?.value).join(' / ')
+    }
+
     console.log('p : ', product.newProductVariants);
 
-    console.log(product,"prod");
-    
+    console.log(product, "prod");
+
 
 
     return (
@@ -408,7 +435,7 @@ const ProductVariant = () => {
                                 <div>Retail Price</div>
                                 <p className="product-info-variant-text-supplementary product-info-variant-util-text-overflow-break-word">Excluding tax</p>
                             </th>
-                            <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-center enabled-column" aria-sort="none">Enabled</th>
+                            <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-align-center enabled-column" aria-sort="none">Barcode</th>
                             {/* <th data-testid="table-head-cell" className="product-info-variant-table-list-head-cell product-info-variant-table-list-cell--action product-info-variant-pr0" aria-sort="none"></th> */}
                         </tr>
                     </thead>
@@ -440,34 +467,19 @@ const ProductVariant = () => {
                                     </td>
                                     <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--input input-columns">
                                         <div className="product-info-variant-util-pos-relative">
-                                            <input className="product-info-variant-input product-info-variant-input--text-align-right" type="text" placeholder="Enter the amount" name="sellingPrice" data-cy="retail-price-excluding-tax-input" value={item.sellingPrice} style={{ paddingLeft: '4ch'}}/>
+                                            <input className="product-info-variant-input product-info-variant-input--text-align-right" type="text" placeholder="Enter the amount" name="sellingPrice" data-cy="retail-price-excluding-tax-input" value={item.sellingPrice} style={{ paddingLeft: '4ch', cursor: 'not-allowed' }} disabled />
                                             <div className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol" value={item.sellingPrice}>Rs</div>
                                         </div>
                                     </td>
-                                    <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--toggle product-info-variant-align-center product-info-variant-valign-t product-info-variant-pt4 product-info-variant-pr0 product-info-variant-pl0">
-                                        <div className="product-info-variant-switch product-info-variant-switch--small">
-                                            <input
-                                                className="product-info-variant-switch-input"
-                                                type="checkbox"
-                                                checked={item?.status === "ACTIVE"}
-                                                onChange={() => handleEnable(index)}
-                                            />
-                                            {/* {
-                                                product.productVariants.map((item, index) => (
-                                                    <input
-                                                        className="product-info-variant-switch-input"
-                                                        type="checkbox"
-                                                        checked={item?.status === "ACTIVE"}
-                                                        onChange={() => handleEnable(index)}
-                                                    />
-                                                ))
-                                            } */}
-                                            <div className="product-info-variant-switch-track">
-                                                <FontAwesomeIcon icon={faCheck} className="i fa product-info-variant-switch-icon" />
-                                                <FontAwesomeIcon icon={faTimes} className="i fa product-info-variant-cross-icon" />
-                                                <div className="product-info-variant-switch-track-knob"></div>
-                                            </div>
+                                    <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--toggle product-info-variant-align-center product-info-variant-valign-t product-info-variant-pt4 product-info-variant-pr0 product-info-variant-pl0" style={{ verticalAlign: 'middle' }}>
+                                        <div style={{ width: '100%', height: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            {product.isCreateBarcode && item?.barcode?.barcode ? (
+                                                <Barcode value={item.barcode[0]?.barcode} fontSize={8} width={0.5} height={40} />
+                                            ) : (
+                                                <span>No Barcode For this Variant</span>
+                                            )}
                                         </div>
+
                                     </td>
                                 </tr>
                                 {isRowExpanded(index) && (

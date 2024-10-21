@@ -364,7 +364,7 @@ const FabricContent = () => {
       },
     },
     {
-      header: 'Actions',
+      header: status === 'ACTIVE' ? 'Disable': 'Enable',
       mantineTableHeadCellProps: { align: 'center' },
       mantineTableBodyCellProps: { align: 'center' },
       size: 100,
@@ -431,7 +431,7 @@ const FabricContent = () => {
       {!isFabricCode && (
         <div>
           <div className='user--container'>
-            <Text size='lg'>Fabric Code Details</Text>
+          <header>Fabric Code Details</header>
             <div className='right--section'>
               <B2BButton
                 style={{ color: '#000' }}
