@@ -79,7 +79,7 @@ const OrderReturned = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <div>
-        <h2>Order Returned</h2>
+        <header>Order Returned</header>
       </div>
       <B2BTableGrid
         columns={columns}

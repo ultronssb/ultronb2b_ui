@@ -8,10 +8,12 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { BASE_URL } from '../../../api/EndPoints'
 import './EnrichmentProductVariant.css'
 import { EnrichProductContext } from './EnrichProduct'
+import EnrichmentTransaction from './EnrichmentTransaction'
+import B2BInput from '../../../common/B2BInput'
 
 
 const EnrichmentProductVariant = () => {
-    const { pim, setPim,product } = useContext(EnrichProductContext);
+    const { pim, setPim, handleChange, product } = useContext(EnrichProductContext);
     const [activeTab, setActiveTab] = useState('Price');
     const [expandedRows, setExpandedRows] = useState([]);
     const isRowExpanded = (index) => expandedRows.includes(index);
@@ -103,7 +105,7 @@ const EnrichmentProductVariant = () => {
     };
 
 
-    const handleChange = (e, index) => {
+    const handleChanged = (e, index) => {
         const { name, value } = e.target;
 
         setPim((prevProductPims) => {
@@ -138,8 +140,9 @@ const EnrichmentProductVariant = () => {
         });
     };
 
-    console.log(product,"pro");
-    
+    console.log(pim, "pim");
+
+
     return (
         <div>
             <section className="helios-c-PJLV product-info-variant-section">
@@ -170,7 +173,7 @@ const EnrichmentProductVariant = () => {
                                                         <div className="product-info-variant-flex-grow-1 product-info-variant-mr2" data-cy="select-attribute">
                                                             <div className="product-info-variant-popover-tether-target-wrapper">
                                                                 <div className="product-info-variant-autocomplete-input-container product-info-variant-flex--column" data-testid="dropdown-input-container">
-                                                                    <input readonly="" type="text" className="product-info-variant-select product-info-variant-dropdown-input" spellcheck="false" placeholder="Choose a variant attribute" value={key} />
+                                                                    <input readonly="" type="text" className="product-info-variant-select product-info-variant-dropdown-input" spellCheck="false" placeholder="Choose a variant attribute" value={key} />
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -220,7 +223,7 @@ const EnrichmentProductVariant = () => {
                                         </tr>
                                     </thead>
                                     {
-                                        pim.pimVariants?.map((item, index) => (
+                                        pim?.pimVariants?.map((item, index) => (
                                             <tbody>
                                                 <tr key={index} data-testid="table-row" data-cy="variantSummary" className={`product-info-variant-table-list-row product-info-variant-table-list-row--expandable ${isRowExpanded(index) ? 'product-info-variant-table-list-row--expanded' : ''}`}>
                                                     <td onClick={() => handleToggle(index)} data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--compact product-info-variant-pt2 product-info-variant-pl0 product-info-variant-flex product-info-variant-flex--align-center">
@@ -278,8 +281,8 @@ const EnrichmentProductVariant = () => {
                                                                                 className={`product-info-variant-tab-button ${activeTab === 'Price' ? 'active-tab' : ''}`}
                                                                                 type="button"
                                                                                 role="tab"
-                                                                                data-cy="tab-button-price"
-                                                                                data-testid="tab-button-price"
+                                                                                data-cy="tab-button-Price"
+                                                                                data-testid="tab-button-Price"
                                                                                 onClick={() => handleTabClick('Price')}
                                                                             >
                                                                                 Price
@@ -295,6 +298,18 @@ const EnrichmentProductVariant = () => {
                                                                                 onClick={() => handleTabClick('Image')}
                                                                             >
                                                                                 Image
+                                                                            </button>
+                                                                        </div>
+                                                                        <div className="product-info-variant-tab" data-tab-name="Price">
+                                                                            <button
+                                                                                className={`product-info-variant-tab-button ${activeTab === 'MOQ' ? 'active-tab' : ''}`}
+                                                                                type="button"
+                                                                                role="tab"
+                                                                                data-cy="tab-button-MOQ"
+                                                                                data-testid="tab-button-MOQ"
+                                                                                onClick={() => handleTabClick('MOQ')}
+                                                                            >
+                                                                                MOQ
                                                                             </button>
                                                                         </div>
                                                                     </div>
@@ -316,13 +331,13 @@ const EnrichmentProductVariant = () => {
                                                                                         <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-name" width="30%">General Price Book (All Products)</td>
                                                                                         <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-supply-price" width="15%">
                                                                                             <div className="product-info-variant-util-pos-relative">
-                                                                                                <input className="product-info-variant-input" type="text" value={item.costPrice} name='costPrice' placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)' }} onChange={(e) => handleChange(e, index)} />
+                                                                                                <input className="product-info-variant-input" type="text" value={item.costPrice} name='costPrice' placeholder="Enter the amount" style={{ paddingLeft: 'calc(25.5px)' }} onChange={(e) => handleChanged(e, index)} />
                                                                                                 <span className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol">₹</span>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td data-testid="table-body-cell" className="product-info-variant-table-list-cell" data-ta="product-pricebook-table-body-cell-markup" width="15%">
                                                                                             <div className="product-info-variant-util-pos-relative">
-                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value={item.markUp} name='markUp' placeholder="Enter the amount" style={{ paddingRight: 'calc(27.8px)' }} onChange={(e) => handleChange(e, index)} />
+                                                                                                <input className="product-info-variant-input product-info-variant-align-right" type="text" value={item.markUp} name='markUp' placeholder="Enter the amount" style={{ paddingRight: 'calc(27.8px)' }} onChange={(e) => handleChanged(e, index)} />
                                                                                                 <span className="product-info-variant-input-icon product-info-variant-input-icon--right product-info-variant-input-symbol">%</span>
                                                                                             </div>
                                                                                         </td>
@@ -376,6 +391,31 @@ const EnrichmentProductVariant = () => {
                                                                                 <Group spacing="sm">
                                                                                     <Button onClick={() => handleReset(index)} color="red">Reset</Button>
                                                                                 </Group>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                    {activeTab === 'MOQ' && (
+                                                                        <div key={index}>
+                                                                            {console.log(item,"pimitem")}
+                                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                                                                <div className={"form-group"}>
+                                                                                    <label className='form-label'>Sample MOQ</label>
+                                                                                    <B2BInput
+                                                                                        value={item?.sampleMOQ || ''}
+                                                                                        className='form-input'
+                                                                                        onChange={(event) => handleChange(event, "sampleMOQ","pim", index)}
+                                                                                        placeholder={"sampleMOQ"}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className={"form-group"}>
+                                                                                    <label className='form-label'>Wholesale MOQ </label>
+                                                                                    <B2BInput
+                                                                                        value={item?.wholesaleMOQ || ''}
+                                                                                        className='form-input'
+                                                                                        onChange={(event) => handleChange(event, "wholesaleMOQ","pim", index)}
+                                                                                        placeholder={"wholesaleMOQ"}
+                                                                                    />
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     )}

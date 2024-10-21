@@ -1,4 +1,3 @@
-import { Text } from '@mantine/core';
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -220,7 +219,7 @@ const CompanyProfile = () => {
         isCompany && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div style={{ fontSize: '28px', fontWeight: '700' }}>Create Company Profile</div>
+              <header>Create Company Profile</header>
               {user === 'SUPER_ADMIN' && <B2BButton style={{ color: '#000' }} name="Back" onClick={handleBack} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />}
             </div>
             <form onSubmit={createCompanyProfile} className='form-container'>
@@ -459,7 +458,7 @@ const CompanyProfile = () => {
       {!isCompany && user === 'SUPER_ADMIN' && (
         <div>
           <div className='user--container'>
-            <Text size='lg' fw={800}>Company Profile Details</Text>
+            <header>Company Profile Details</header>
             <div className='right--section'>
               <B2BButton style={{ color: '#000' }} name={"Create Company Profile"} onClick={() => setIsCompany(true)} leftSection={<IconPlus size={15} />} color={"rgb(207, 239, 253)"} />
             </div>

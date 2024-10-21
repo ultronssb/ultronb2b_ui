@@ -102,7 +102,7 @@ const OrderOpen = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <div>
-        <h2>Open Order</h2>
+        <header>Open Order</header>
       </div>
       <B2BTableGrid
         columns={columns}

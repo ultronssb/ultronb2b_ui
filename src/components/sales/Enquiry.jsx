@@ -1,9 +1,9 @@
+import { Tabs } from '@mantine/core';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Text, Tabs } from '@mantine/core';
 import { B2B_API } from '../../api/Interceptor';
 import B2BTableGrid from '../../common/B2BTableGrid';
-import notify from '../../utils/Notification';
 import { getpayLoadFromToken } from '../../common/JwtPayload';
+import notify from '../../utils/Notification';
 
 const Enquiry = () => {
   const [enquiries, setEnquiries] = useState([]);
@@ -60,7 +60,7 @@ const Enquiry = () => {
 
   return (
     <div style={{ marginTop: '1rem' }}>
-      <Text size='lg' fw={800} style={{ padding: '20px 0px' }}>Enquiry Details - {activeTab}</Text>
+      <header>Enquiry Details - {activeTab}</header>
       <Tabs value={activeTab} onTabChange={setActiveTab}>
         <Tabs.List>
           {variantOptions.map((item, index) => (

@@ -209,40 +209,45 @@ const OtherSettings = () => {
   ]
 
   return (
-    <form onSubmit={handleCreateSettings} className='form-container'>
-      {otherSettingsJson.map((settings, index) => (
-        <div className="form-group" key={index}>
-          <label className='form-label'>{settings.label}</label>
-          {
-            settings.inputType === 'text' && (
-              <B2BInput
-                value={settings.value}
-                className='form-input'
-                required={settings.required}
-                disabled={settings.disabled}
-                type={settings.inputType}
-                placeholder={settings.placeholder}
-                onChange={settings.onChange}
-              />
-            )
-          }
-          {
-            settings.inputType === 'select' && (
-              <B2BSelect
-                value={settings.value}
-                onChange={settings.onChange}
-                data={settings.data}
-                placeholder={settings.placeholder}
-              />
-            )
-          }
-        </div>
-      ))}
-      <div className='save-button-container' style={{ paddingBlock: '2rem', paddingInline: 0, justifyContent: 'center', alignItems: 'center' }}>
-        <B2BButton type='button' name={"Cancel"} color={"red"} />
-        <B2BButton type='submit' name={otherSettings.otherSettingId ? "Update" : "Save"} />
+    <div>
+      <div>
+        <header>Other Settings Details</header>
       </div>
-    </form>
+      <form onSubmit={handleCreateSettings} className='form-container'>
+        {otherSettingsJson.map((settings, index) => (
+          <div className="form-group" key={index}>
+            <label className='form-label'>{settings.label}</label>
+            {
+              settings.inputType === 'text' && (
+                <B2BInput
+                  value={settings.value}
+                  className='form-input'
+                  required={settings.required}
+                  disabled={settings.disabled}
+                  type={settings.inputType}
+                  placeholder={settings.placeholder}
+                  onChange={settings.onChange}
+                />
+              )
+            }
+            {
+              settings.inputType === 'select' && (
+                <B2BSelect
+                  value={settings.value}
+                  onChange={settings.onChange}
+                  data={settings.data}
+                  placeholder={settings.placeholder}
+                />
+              )
+            }
+          </div>
+        ))}
+        <div className='save-button-container' style={{ paddingBlock: '2rem', paddingInline: 0, justifyContent: 'center', alignItems: 'center' }}>
+          <B2BButton type='button' name={"Cancel"} color={"red"} />
+          <B2BButton type='submit' name={otherSettings.otherSettingId ? "Update" : "Save"} />
+        </div>
+      </form>
+    </div>
   )
 }
 

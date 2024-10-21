@@ -1,4 +1,4 @@
-import { Flex, Text, Tooltip } from '@mantine/core';
+import { Flex, Tooltip } from '@mantine/core';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
@@ -176,7 +176,7 @@ const Channel = () => {
         <div className='grid-container'>
             {!createChannel && <>
                 <div className='user--container'>
-                    <Text size='lg'>Channel Details</Text>
+                    <header>Channel Details</header>
                     <div className='right--section'>
                         <B2BButton
                             style={{ color: '#000' }}
@@ -199,6 +199,9 @@ const Channel = () => {
                 />
             </>}
             {createChannel && <form onSubmit={handleCreateChannel} className='form-container centered'>
+                <div>
+                    <header>Create Channel Details</header>
+                </div>
                 <div className="form-group">
                     <label className='form-label'>Company ID</label>
                     <B2BSelect

@@ -1,3 +1,4 @@
+import { IconArrowLeft } from '@tabler/icons-react';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import B2BButton from '../../common/B2BButton';
@@ -6,7 +7,6 @@ import B2BInput from '../../common/B2BInput';
 import B2BSelect from '../../common/B2BSelect';
 import { ActiveTabContext } from '../../layout/Layout';
 import './DiscountCreation.css';
-import { IconArrowLeft } from '@tabler/icons-react';
 
 const DiscountCreation = () => {
   const { stateData } = useContext(ActiveTabContext);
@@ -286,7 +286,7 @@ const DiscountCreation = () => {
   return (
     <div style={{ marginTop: '4rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div style={{ fontSize: '28px', fontWeight: '700' }}>Create Discount</div>
+        <header>Create Discount</header>
         <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
       </div>
       <div>

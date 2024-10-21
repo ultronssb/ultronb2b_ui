@@ -1,21 +1,18 @@
-import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AppShell, Avatar, Button, Container, Group, rem } from '@mantine/core';
 import { IconLogout, IconUserCircle } from '@tabler/icons-react';
 import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { B2B_API } from '../api/Interceptor';
 import ultron_logo from "../assets/ultron-logo.png";
 import avatar from '../avatar.jpg';
 import B2BMenu from '../common/B2BMenu';
 import B2BTabs from '../common/B2BTabs';
+import HeaderMenu from '../common/HeaderMenu';
 import '../css/Header.css';
 import { ModuleJson } from '../moduleData/ModuleJson';
-import { LogOut } from '../utils/Utilities';
-import { B2B_API } from '../api/Interceptor';
-import B2BButton from '../common/B2BButton';
 import CustomPopup from '../utils/Custompopup';
 import UseInactivityLogout from '../utils/UseInactivityLogout';
-import HeaderMenu from '../common/HeaderMenu';
+import { LogOut } from '../utils/Utilities';
 
 export const ScrollContext = createContext(null);
 export const ActiveTabContext = createContext(null)

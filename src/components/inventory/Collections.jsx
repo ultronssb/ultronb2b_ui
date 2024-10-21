@@ -1,4 +1,3 @@
-import { Text } from '@mantine/core';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -129,7 +128,7 @@ const Collections = () => {
   return (
     <div>
       <div className='user--container'>
-        <Text size='lg' fw={800}>Collection Details</Text>
+        <header>Collection Details</header>
         <div className='right--section'>
           <B2BButton style={{ color: '#000' }} name={"Create Collection"} onClick={(e) => handleChange(e)} leftSection={<IconPlus size={15} />} color={"rgb(207, 239, 253)"} />
         </div>

@@ -1,10 +1,8 @@
-import React, { useContext, useMemo, useState } from 'react'
-import { ActiveTabContext } from '../../layout/Layout';
+import { IconPencil } from '@tabler/icons-react';
+import React, { useContext, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconPencil, IconPlus } from '@tabler/icons-react';
-import { Text } from '@mantine/core';
-import B2BButton from '../../common/B2BButton';
 import B2BTableGrid from '../../common/B2BTableGrid';
+import { ActiveTabContext } from '../../layout/Layout';
 
 const Stocks = () => {
   const { stateData } = useContext(ActiveTabContext);
@@ -95,7 +93,7 @@ const Stocks = () => {
       {!isStocks && (
         <>
           <div className='user--container'>
-            <Text size='lg' fw={800}>Stocks Details</Text>
+            <header>Stocks Details</header>
           </div>
           <B2BTableGrid
             columns={columns}

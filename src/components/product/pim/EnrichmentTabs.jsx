@@ -176,6 +176,7 @@ import EnrichmentProductVariant from './EnrichmentProductVariant';
 import EnrichmentSeo from './EnrichmentSeo';
 import EnrichmentTransaction from './EnrichmentTransaction';
 import { EnrichProductContext } from './EnrichProduct';
+import _ from 'lodash';
 
 const EnrichmentTabs = () => {
     const { product, pim, videoFile, multimedia } = useContext(EnrichProductContext);
@@ -189,18 +190,19 @@ const EnrichmentTabs = () => {
     const from = query_param.get('from');
 
     const initialTabs = [
-        { id: "1", name: "Hierarchy", disabled: false },
-        { id: "3", name: "Product", disabled: false },
-        { id: "4", name: "Transaction", disabled: false },
-        { id: "5", name: "SEO", disabled: false },
-        { id: "6", name: "Price", disabled: false },
-        { id: "7", name: "Variants", disabled: false },
+        { id: "1", name: "Attributes", disabled: false },
+        { id: "2", name: "Product", disabled: false },
+        { id: "3", name: "Transaction", disabled: false },
+        { id: "4", name: "SEO", disabled: false },
+        { id: "5", name: "Price", disabled: false },
+        { id: "6", name: "Variants", disabled: false },
     ];
 
     const [tabs, setTabs] = useState(initialTabs);
 
     useEffect(() => {
-        calculateInitialFilledPercentage();
+        const sliderPercent = calculateInitialFilledPercentage();
+        setSliderValue(sliderPercent)
     }, [product, pim]);
 
     const calculateInitialFilledPercentage = () => {
@@ -213,49 +215,29 @@ const EnrichmentTabs = () => {
             filledFields += Object.values(pim).filter(value => value !== null && value !== "").length; // Count filled fields in pim
         }
 
-        // if (product?.variant?.image) {
-        //     const variantImage = product?.variant?.image;
-        //     // Check if the variant image is uploaded (not empty or a placeholder)
-        //     if (variantImage && variantImage.trim() !== "") {
-        //         filledFields++; // Count as filled if the variant image is uploaded
-        //     }
-        // }
-
         // Logging for debugging
-        console.log("Total Fields:", totalFields);
-        console.log("Filled Fields:", filledFields);
-
         setFilledFieldsCount(filledFields);
         setTotalFieldsCount(totalFields);
 
         const initialPercentage = totalFields ? Math.round((filledFields / totalFields) * 100) : 0;
-        setSliderValue(initialPercentage);
+        return initialPercentage;
     };
 
-    const updateFilledFields = (newFieldFilled) => {
-        setFilledFieldsCount(prev => {
-            const newCount = prev + (newFieldFilled ? 1 : 0);
-            const updatedPercentage = Math.round((newCount / totalFieldsCount) * 100);
-            console.log("New filled count:", newCount, "Updated percentage:", updatedPercentage);
-            setSliderValue(updatedPercentage);
-            return newCount;
-        });
-    };
 
     const renderActiveComponent = () => {
         switch (activeTab) {
             case "1":
-                return <EnrichmentHierarchy onFieldChange={updateFilledFields} />;
+                return <EnrichmentHierarchy />;
+            case "2":
+                return <EnrichmentProduct />;
             case "3":
-                return <EnrichmentProduct onFieldChange={updateFilledFields} />;
+                return <EnrichmentTransaction />;
             case "4":
-                return <EnrichmentTransaction onFieldChange={updateFilledFields} />;
+                return <EnrichmentSeo />;
             case "5":
-                return <EnrichmentSeo onFieldChange={updateFilledFields} />;
+                return <EnrichmentPrice />;
             case "6":
-                return <EnrichmentPrice onFieldChange={updateFilledFields} />;
-            case "7":
-                return <EnrichmentProductVariant onFieldChange={updateFilledFields} />;
+                return <EnrichmentProductVariant />;
             default:
                 return <Hierarchy />;
         }
@@ -329,8 +311,7 @@ const EnrichmentTabs = () => {
             console.error("Failed to add Pim", err);
         }
     };
- console.log(pim,"pim");
- 
+
     return (
         <div>
             <div style={{ textAlign: 'right', marginBottom: '10px' }}>
@@ -349,8 +330,8 @@ const EnrichmentTabs = () => {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
                 {activeTab > "1" && <B2BButton name={'Back'} onClick={handleBackTab} style={{ marginTop: '1px' }} />}
-                {activeTab < "7" && <B2BButton name={'Next'} onClick={handleNextTab} style={{ marginTop: '1px' }} />}
-                {activeTab === "7" &&
+                {activeTab < String(tabs.length) && <B2BButton name={'Next'} onClick={handleNextTab} style={{ marginTop: '1px' }} />}
+                {activeTab === String(tabs.length) &&
                     <B2BButton
                         style={{ backgroundColor: 'green' }}
                         name={"Save"}

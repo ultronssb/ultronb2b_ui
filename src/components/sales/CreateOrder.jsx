@@ -2,7 +2,11 @@ import React from 'react'
 
 const CreateOrder = () => {
   return (
-    <div>CreateOrder</div>
+    <div>
+      <div>
+        <header>Create Order</header>
+      </div>
+    </div>
   )
 }
 

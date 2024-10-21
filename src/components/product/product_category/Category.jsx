@@ -191,6 +191,7 @@ const Category = () => {
       });
       setTypes('')
       setIsCreateCategory(false);
+      fetchCategory()
       navigate('/product/product-hierarchy', { state: { ...stateData, tabs: stateData.childTabs } });
     } catch (error) {
       notify({

@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { BASE_URL } from '../../../api/EndPoints';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
@@ -12,9 +12,13 @@ import ProductDimension from './ProductDimension';
 import ProductPrice from './ProductPrice';
 import ProductType from './ProductType';
 import ProductVariant from './ProductVariant';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { IconArrowLeft } from '@tabler/icons-react';
+import { ActiveTabContext } from '../../../layout/Layout';
 export const ProductContext = createContext(null);
 
 const CreateProduct = () => {
+  const { stateData } = useContext(ActiveTabContext);
   const initialTabs = [
     { id: "1", name: "Product Type", disabled: false },
     { id: "2", name: "Category Type", disabled: true },
@@ -26,6 +30,10 @@ const CreateProduct = () => {
   ];
 
   const [tabs, setTabs] = useState(initialTabs)
+  const navigate = useNavigate()
+  const query_param = new URLSearchParams(location.search);
+  const to = query_param.get('toUrl');
+  const from = query_param.get('from')
 
   const initialState = {
     productId: '',
@@ -190,7 +198,24 @@ const CreateProduct = () => {
         };
         return updatedState;
       });
-    } else {
+    } else if (fieldType.startsWith('variantImage')) {
+      const variantIndex = fieldType.split('-')[1]; // Assuming fieldType is like 'variantImage-0', 'variantImage-1', etc.
+
+      setProduct(prev => ({
+        ...prev,
+        variants: prev.variants.map((variantGroup, idx) => {
+          if (idx === parseInt(variantIndex)) {
+            // Update the image for the specific variant
+            return variantGroup.map(variant => ({
+              ...variant,
+              image: file // Set the new image file
+            }));
+          }
+          return variantGroup;
+        })
+      }));
+    }
+    else {
       setProduct(prev => ({
         ...prev,
         [fieldType]: checkDirectValue(fieldType) ? event : event?.target?.value,
@@ -203,6 +228,9 @@ const CreateProduct = () => {
       const res = await B2B_API.post(`product`, {
         body: prod,
       }).json();
+      if (to && from) {
+        return navigate(`${to}&from=${encodeURIComponent(from)}`)
+      }
       setProduct(initialState);
       setImageFile(null);
       setActiveTab("1");
@@ -313,7 +341,7 @@ const CreateProduct = () => {
         // Validate product description
         if (!validateProductDescription(product?.description)) {
           errors.descError = true;
-          errors.descErrorMessage = "Please use only letters, numbers, spaces, $, and ₹";
+          errors.descErrorMessage = "Please use only letters, numbers, spaces, $ , ₹ , . and ,";
           isValid = false;
         }
         if (!product?.otherInformation?.unitOfMeasures?.isKg && !product?.otherInformation?.unitOfMeasures?.isRoll) {
@@ -660,6 +688,14 @@ const CreateProduct = () => {
     }
   };
 
+
+  const handleCancel = () => {
+    if (to && from) {
+      return navigate(`${to}&from=${encodeURIComponent(from)}`)
+    }
+    navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
+  }
+
   return (
     <ProductContext.Provider value={{ product, handleChange, addProduct, setProduct, imageFile, setImageFile, inputError, setInputError }}>
       <B2BTabs
@@ -670,6 +706,18 @@ const CreateProduct = () => {
         variant='default'
         margin='10px'
       />
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+        {product.productId  && activeTab < "6" ?
+          <B2BButton
+            name={"Update"}
+            id={"Save"}
+            onClick={handleProductSave}
+            style={{ backgroundColor: 'green' }}
+            disabled={!isFormValid} // Disable Save button if the form is not valid
+          /> : ''}
+         <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
+
+      </div>
       <div style={{ minHeight: '50vh' }}>
         {renderActiveComponent()} {/* Render the component based on the active tab */}
       </div>

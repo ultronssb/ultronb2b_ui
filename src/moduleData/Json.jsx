@@ -12,7 +12,7 @@ export const data = [
     name: "Product",
     parent_id: null,
     orderBy: 2,
-    path: "/product/product-hierarchy",
+    path: "/product/group",
     icon: <span className="material-symbols-outlined">inventory_2</span>,
     defaultChildId: "8",
   },
@@ -21,7 +21,7 @@ export const data = [
     name: "Sales",
     parent_id: null,
     orderBy: 3,
-    path: "/sales/order-management",
+    path: "/sales/enquiry",
     icon: <span className="material-symbols-outlined">shopping_cart</span>,
     defaultChildId: "34",
   },
@@ -63,21 +63,21 @@ export const data = [
 
 
   /* Product Child Component */
-  { id: "8", name: "Product Categories", parent_id: "2", orderBy: 1, path: "/product/product-hierarchy" },
+  { id: "8", name: "Product Categories", parent_id: "2", orderBy: 1, path: "/product/group" },
   { id: "9", name: "Product", parent_id: "2", orderBy: 2, path: "/product/product/articles" },
   { id: "10", name: "Product Enrichment", parent_id: "2", orderBy: 3, path: "/product/pim" },//pims
   { id: "11", name: "Price Book", parent_id: "2", orderBy: 4, path: "/product/price-book" },
   { id: "12", name: "Barcode", parent_id: "2", orderBy: 5, path: "/product/barcode" },
   { id: "13", name: "History", parent_id: "2", orderBy: 6, path: "/product/history" },
 
-  { id: "14", name: "Product Category", parent_id: '8', orderBy: 1, path: "/product/product-hierarchy", },
-  { id: "15", name: "Product Tags", parent_id: "8", orderBy: 2, path: "/product/tags" },
-  { id: "16", name: "Tax", parent_id: "8", orderBy: 3, path: "/product/gst" },
-  { id: "17", name: "Variants", parent_id: "8", orderBy: 4, path: "/product/variants" },
-  { id: "18", name: "Brand", parent_id: "8", orderBy: 6, path: "/product/brand" },
-  { id: "19", name: "Group", parent_id: "8", orderBy: 7, path: "/product/group" },
-  { id: "20", name: "Taxonomy", parent_id: "8", orderBy: 8, path: "/product/taxonomy" },
-  { id: "21", name: "FCC Code", parent_id: "8", orderBy: 9, path: "/product/fabricContent" },
+  { id: "14", name: "Group", parent_id: "8", orderBy: 1, path: "/product/group" },
+  { id: "15", name: "Product Category", parent_id: '8', orderBy: 2, path: "/product/product-hierarchy", },
+  { id: "16", name: "Taxonomy", parent_id: "8", orderBy: 3, path: "/product/taxonomy" },
+  { id: "17", name: "Brand", parent_id: "8", orderBy: 4, path: "/product/brand" },
+  { id: "18", name: "FCC Code", parent_id: "8", orderBy: 5, path: "/product/fabricContent" },
+  { id: "19", name: "Variants", parent_id: "8", orderBy: 6, path: "/product/variants" },
+  { id: "20", name: "Tax", parent_id: "8", orderBy: 7, path: "/product/gst" },
+  { id: "21", name: "Product Tags", parent_id: "8", orderBy: 8, path: "/product/tags" },
 
 
   { id: "22", name: "Product", parent_id: "9", orderBy: 1, path: "/product/product/articles" },
@@ -103,14 +103,14 @@ export const data = [
   // { id: "25", name: "HSN/SAC", parent_id: "9", orderBy: 4, path: "/product/tax/hsn"},
 
   /* Sales Child Component */
-  { id: "34", name: "Order Management", parent_id: "3", orderBy: 1, path: "/sales/order-management" },
-  { id: "35", name: "Enquiry", parent_id: "3", orderBy: 2, path: "/sales/enquiry" },
-  { id: "36", name: "Sales Order", parent_id: "3", orderBy: 3, path: "/sales/sales-order" },
-  { id: "37", name: "Invoice", parent_id: "3", orderBy: 4, path: "/sales/invoice" },
-  { id: "38", name: "Shippment Note", parent_id: "3", orderBy: 5, path: "/sales/shippment-note" },
-  { id: "39", name: "Return Note", parent_id: "3", orderBy: 6, path: "/sales/return-note" },
-  { id: "40", name: "Packing", parent_id: "3", orderBy: 7, path: "/sales/packing" },
+  { id: "34", name: "Order Dashboard", parent_id: "3", orderBy: 1, path: "/sales/enquiry" },
+  { id: "35", name: "Sales Order", parent_id: "3", orderBy: 2, path: "/sales/sales-order" },
+  { id: "36", name: "Invoice", parent_id: "3", orderBy: 3, path: "/sales/invoice" },
+  { id: "37", name: "Shippment Note", parent_id: "3", orderBy: 4, path: "/sales/shippment-note" },
+  { id: "38", name: "Return Note", parent_id: "3", orderBy: 5, path: "/sales/return-note" },
+  { id: "39", name: "Packing", parent_id: "3", orderBy: 6, path: "/sales/packing" },
 
+  { id: "40", name: "Enquiry", parent_id: "34", orderBy: 1, path: "/sales/enquiry" },
   { id: "41", name: "Open Order", parent_id: "34", orderBy: 2, path: "/sales/order-management" },
   { id: "42", name: "Delivered", parent_id: "34", orderBy: 3, path: "/sales/delivery" },
   { id: "43", name: "Cancelled", parent_id: "34", orderBy: 4, path: "/sales/cancel" },
@@ -195,6 +195,7 @@ export const data = [
   { id: "94", name: "Payment Mode", parent_id: "82", orderBy: 1, path: "/settings/payment" },
 
   { id: "95", name: "Shipment Mode", parent_id: "83", orderBy: 1, path: "/settings/shipment" },
+  { id: "100", name: "Delivery Mode", parent_id: "83", orderBy: 2, path: "/settings/deliverymode" },
 
   { id: "96", name: "Role", parent_id: "84", orderBy: 2, path: "/settings/user/role" },
   { id: "97", name: "Role Privileges", parent_id: "84", orderBy: 3, path: "/settings/user/role-privileges" },

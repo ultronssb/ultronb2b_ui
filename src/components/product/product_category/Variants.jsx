@@ -44,6 +44,8 @@ const Variants = () => {
   const [groups, setGroups] = useState([]);
   const [groupName, setGroupName] = useState('');
 
+  const [variantTypeList, setVariantTypeList] = useState([])
+
 
   useEffect(() => {
     fetchAllVariants();
@@ -86,10 +88,11 @@ const Variants = () => {
   const fetchAllVariantType = async () => {
     try {
       setIsLoading(true);
-      const response = await B2B_API.get(`variantType`).json();
-      const data = response?.response || [];
+      const res = await B2B_API.get(`variantType`).json();
+      const data = res?.response || [];
       const filteredData = data.filter(item => !['Colour', 'Solid'].includes(item));
       setVariantTypes(filteredData);
+      setVariantTypeList(res.response)
     } catch (error) {
       setIsError(true);
       notify({
@@ -535,7 +538,6 @@ const Variants = () => {
     ? groupName || _.find(groups, { id: variant.group })?.name
     : _.find(groups, { id: variant.group })?.name || groupName;
 
-
   return (
     <div>
       {!isCreateVariant && (
@@ -635,7 +637,7 @@ const Variants = () => {
                     }
                   }}
                   clearable
-                  disabled={variant?.name}
+                  disabled={variantTypeList.find(item => item === variant.name)}
                 />
               </div>
               {errors.group && <span className="error">{errors.group}</span>}

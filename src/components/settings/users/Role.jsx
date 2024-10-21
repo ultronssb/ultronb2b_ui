@@ -184,6 +184,9 @@ const Role = () => {
   return (
     <>
       <div className='grid-container'>
+        <div>
+          <header>Role Details</header>
+        </div>
         <form onSubmit={(event) => createRole(event)} className='form-container'>
           {json.map(e => (
             <div className={e.className ? e.className : "form-group"}>

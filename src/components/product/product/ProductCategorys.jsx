@@ -122,9 +122,6 @@ const ProductCategorys = () => {
         <section className="product-category-section">
             <h2 className="product-category-sub-heading">Category</h2>
             <div className="" style={{ display: 'flex', flexDirection: 'row' }}>
-                <div className="" style={{ width: '30rem' }}>
-                    Choose the category attributes for this product to create and manage SKUs and their inventory levels.
-                </div>
                 <div className='input-field-container'>
                     <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}>
                         <div className="product-category-g-row">

@@ -85,7 +85,7 @@ const OrderAbondened = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <div>
-        <h2>Order Abondened</h2>
+        <header>Order Abondened</header>
       </div>
       <B2BTableGrid
         columns={columns}

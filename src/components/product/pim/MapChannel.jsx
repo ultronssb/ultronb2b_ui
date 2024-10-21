@@ -38,7 +38,6 @@ const MapChannel = () => {
 //   useEffect(() => {
 //     fetchAllProducts();
 // }, [searchTerm, pagination]);
-  console.log(searchTerm,'search');
   const fetchAllCompanyLocations = async () => {
     try {
       const response = await B2B_API.get('company-location/get-all').json();

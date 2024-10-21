@@ -14,11 +14,105 @@ const Group = () => {
   }
 
   const [group, setGroup] = useState(initialData);
-  const [groups, setGroups] = useState([]);
+  const [groups, setGroups] = useState();
   const [rowCount, setRowCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
+
+  useEffect(() => {
+    fetchGroups();
+  }, [pagination.pageIndex, pagination.pageSize]);
+
+  const addGroup = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await B2B_API.post(`group/save`, { json: group }).json();
+      setGroup(initialData);
+      fetchGroups()
+      notify({
+        id: 'create_group',
+        message: response.message,
+        success: true,
+        error: false
+      })
+
+    } catch (error) {
+      notify({
+        id: "add_group_error",
+        message: error.message,
+        success: false,
+        error: true
+      });
+    }
+  }
+
+  const fetchGroups = async () => {
+    try {
+      setIsLoading(true);
+      const response = await B2B_API.get(`group/get-all-group?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      setGroups(response?.response?.content);
+      setRowCount(response?.response?.totalElements)
+    } catch (error) {
+      setIsError(true);
+      notify({
+        error: true,
+        success: false,
+        title: error?.message
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChange = (event, key) => {
+    const value = event.target.type === 'radio' ? event.target.value : event.target.value;
+    setGroup(prev => ({
+      ...prev, [key]: key === 'name' ? value.toUpperCase() : value
+    }));
+  };
+
+  const handleChangeOrder = async (id, newOrder) => {
+    setGroups(prevData => {
+      const updatedData = [...prevData];
+      const itemToUpdate = updatedData.find(item => item.id === id);
+      const currentOrder = itemToUpdate.displayOrder;
+      if (newOrder < currentOrder) {
+        updatedData.forEach(item => {
+          if (item.displayOrder >= newOrder && item.displayOrder < currentOrder) {
+            item.displayOrder += 1;
+          }
+        });
+      } else if (newOrder > currentOrder) {
+        updatedData.forEach(item => {
+          if (item.displayOrder > currentOrder && item.displayOrder <= newOrder) {
+            item.displayOrder -= 1;
+          }
+        });
+      }
+      itemToUpdate.displayOrder = newOrder;
+      const sortedData = updatedData.sort((a, b) => a.displayOrder - b.displayOrder);
+      updateDisplayOrderOnServer(sortedData);
+      return sortedData;
+    });
+  };
+
+  const updateDisplayOrderOnServer = async (groups) => {
+    try {
+      const res = await B2B_API.put('group/display-order', { json: groups }).json();
+      notify({
+        message: res.message,
+        success: true,
+        error: false
+      });
+    } catch (error) {
+      notify({
+        message: error.message,
+        success: false,
+        error: true
+      });
+    }
+  };
 
   const columns = useMemo(() => [
     {
@@ -38,7 +132,27 @@ const Group = () => {
       accessorKey: 'name',
       size: 120
     },
-
+    {
+      header: 'Display Order',
+      accessorKey: 'displayOrder',
+      size: 100,
+      Cell: ({ cell, row }) => {
+        const original = row.original;
+        return (
+          <select
+            value={original.displayOrder}
+            onChange={e => handleChangeOrder(original.id, Number(e.target.value))}
+            style={{ width: '100px', height: '30px', borderRadius: '5px', padding: '0rem 0.5rem', cursor: 'pointer' }}
+          >
+            {[...Array(groups.length)].map((_, index) => (
+              <option key={index} value={index + 1}>
+                {index + 1}
+              </option>
+            ))}
+          </select>
+        );
+      },
+    },
     {
       header: 'Status',
       accessorKey: 'status',
@@ -76,55 +190,6 @@ const Group = () => {
   const editGroup = (roleObj) => {
     setGroup((prev => ({ ...prev, ...roleObj })))
   }
-
-  useEffect(() => {
-    fetchGroups();
-  }, [pagination.pageIndex, pagination.pageSize]);
-
-  const addGroup = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await B2B_API.post(`group/save`, { json: group }).json();
-      setGroup(initialData);
-      fetchGroups()
-      notify({
-        id: 'create_group',
-        message: response.message,
-        success: true,
-        error: false
-      })
-
-    } catch (error) {
-      notify({
-        id: "add_group_error",
-        message: error.message,
-        success: false,
-        error: true
-      });
-    }
-  }
-
-
-  const fetchGroups = async () => {
-    try {
-      const response = await B2B_API.get(`group/get-all-group?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
-      setGroups(response?.response?.content);
-      setRowCount(response?.response?.totalElements)
-    } catch (error) {
-      console.error('Failed to fetch groups:', error);
-    }
-  };
-
-
-
-  const handleChange = (event, key) => {
-    const value = event.target.type === 'radio' ? event.target.value : event.target.value;
-    setGroup(prev => ({
-      ...prev, [key]: key === 'name' ? value.toUpperCase() : value
-    }));
-  };
-
-
 
   return (
     <>

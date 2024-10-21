@@ -46,7 +46,6 @@ const EnrichmentHierarchy = () => {
       setCategorys(categories)
       setLoading(false)
       setCategorysAndselectedPairs()
-      console.log(categories)
     } catch (error) {
       console.error('Error fetching variants:', error);
     }
@@ -155,7 +154,6 @@ const EnrichmentHierarchy = () => {
     return categoryName.filter(key => !selectedKeys.includes(key) || selectedPairs[currentIndex].key === key);
   };
 
-console.log(selectedPairs)
   return (
     <div>
       <div className="" style={{ display: 'flex', flexDirection: 'row' }}>
@@ -163,7 +161,7 @@ console.log(selectedPairs)
           <div style={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}>
             <h2 className="product-category-sub-heading">Attributes</h2>
             {selectedPairs.map((pair, index) => (
-              <div>
+              <div key={index}>
                 <>
                   <div className="product-category-g-row">
                     <div className="product-category-g-col" >

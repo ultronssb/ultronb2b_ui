@@ -18,7 +18,7 @@ const ProductVariant = () => {
     const [selectedPairs, setSelectedPairs] = useState([{ key: '', values: [] }]);
     const [combinations, setCombinations] = useState([]);
     const [variants, setVariants] = useState([]);
-    const [activeTab, setActiveTab] = useState('Price');
+    const [activeTab, setActiveTab] = useState('Transaction');
     const [expandedRows, setExpandedRows] = useState([]);
     const [productVariantMap, setProductVariantMap] = useState(new Map())
     const isRowExpanded = (index) => expandedRows.includes(index);
@@ -59,7 +59,9 @@ const ProductVariant = () => {
             const productMap = new Map();
             _.map(product.productVariants, pv => {
                 const variantIds = _.map(pv.variants, va => va.id);
-                productMap.set(JSON.stringify(variantIds), pv);
+                // Sort the variant IDs to ensure a consistent key
+                const sortedVariantIds = _.sortBy(variantIds);
+                productMap.set(JSON.stringify(sortedVariantIds), pv); // Use sorted keys
             });
             setProductVariantMap(productMap);
         }
@@ -69,7 +71,8 @@ const ProductVariant = () => {
         for (let i = 0; i < combination.length; i++) {
             const partialCombination = _.slice(combination, 0, i + 1);
             const flattenedCombination = _.flatten(partialCombination);
-            const key = JSON.stringify(flattenedCombination);
+            const sortedFlattenedCombination = _.sortBy(flattenedCombination);
+            const key = JSON.stringify(sortedFlattenedCombination);
             if (productVariantMap.has(key)) {
                 return productVariantMap.get(key);
             }
@@ -87,6 +90,7 @@ const ProductVariant = () => {
                 variant = {}
             }
             variant['variants'] = _.map(combination, c => _.find(variants, v => v.id === c));
+            variant['status'] = variant.id ? variant.status : 'ACTIVE'
             prodVariants.push(variant);
         })
         setProduct(prev => ({
@@ -285,6 +289,28 @@ const ProductVariant = () => {
         },
     ];
 
+    const handleEnable = (index) => {
+        setProduct((prevProduct) => {
+            return {
+                ...prevProduct,
+                newProductVariants: prevProduct.newProductVariants.map((variant, i) => {
+                    if (i === index) {
+                        return {
+                            ...variant,
+                            status: variant.status === "ACTIVE" ? "INACTIVE" : "ACTIVE",
+                        };
+                    }
+                    return variant;
+                }),
+            };
+        });
+    };
+
+    console.log('p : ', product.newProductVariants);
+
+    console.log(product,"prod");
+    
+
 
     return (
         <section className="product-variant-section">
@@ -387,17 +413,17 @@ const ProductVariant = () => {
                         </tr>
                     </thead>
                     {
-                        productVariants?.map((item, index) => (
+                        product?.newProductVariants?.map((item, index) => (
                             <tbody>
                                 <tr key={index} data-testid="table-row" data-cy="variantSummary" className={`product-info-variant-table-list-row product-info-variant-table-list-row--expandable ${isRowExpanded(index) ? 'product-info-variant-table-list-row--expanded' : ''}`}>
                                     <td onClick={() => handleToggle(index)} data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--compact product-info-variant-pt2 product-info-variant-pl0 product-info-variant-flex product-info-variant-flex--align-center">
                                         <FontAwesomeIcon icon={faAngleRight} className={`i fa product-info-variant-icon product-info-variant-table-list-toggle-icon ${isRowExpanded(index) ? 'product-info-variant-table-list-toggle-icon--toggled' : ''}`} onClick={() => handleToggle(index)} />
                                         <div className="product-info-variant-id-badge product-info-variant-id-badge--small">
-                                            <div key={index} className="product-info-variant-id-badge__image" data-cy="badgeImage" data-testid="badgeImage">
+                                            {/* <div key={index} className="product-info-variant-id-badge__image" data-cy="badgeImage" data-testid="badgeImage">
                                                 {item.imageUrl ? (
                                                     <img src={item.imageUrl} alt="Uploaded Badge" style={{ maxWidth: '100px', maxHeight: '100px' }} />
                                                 ) : item.image ? <img src={`${BASE_URL}${item.image}?${Date.now()}`} alt="Uploaded Badge" style={{ maxWidth: '100px', maxHeight: '100px' }} /> : null}
-                                            </div>
+                                            </div> */}
                                             <div className="product-info-variant-id-badge__content">
                                                 <div className="product-info-variant-id-badge__header-title" data-cy="badgeHeader" data-testid="badgeHeader">
                                                     <h5>
@@ -414,7 +440,7 @@ const ProductVariant = () => {
                                     </td>
                                     <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--input input-columns">
                                         <div className="product-info-variant-util-pos-relative">
-                                            <input className="product-info-variant-input product-info-variant-input--text-align-right" type="text" placeholder="Enter the amount" name="sellingPrice" data-cy="retail-price-excluding-tax-input" value={item.sellingPrice} style={{ paddingLeft: '4ch', cursor: 'not-allowed' }} disabled />
+                                            <input className="product-info-variant-input product-info-variant-input--text-align-right" type="text" placeholder="Enter the amount" name="sellingPrice" data-cy="retail-price-excluding-tax-input" value={item.sellingPrice} style={{ paddingLeft: '4ch'}}/>
                                             <div className="product-info-variant-input-icon product-info-variant-input-icon--left product-info-variant-input-symbol" value={item.sellingPrice}>Rs</div>
                                         </div>
                                     </td>
@@ -426,6 +452,16 @@ const ProductVariant = () => {
                                                 checked={item?.status === "ACTIVE"}
                                                 onChange={() => handleEnable(index)}
                                             />
+                                            {/* {
+                                                product.productVariants.map((item, index) => (
+                                                    <input
+                                                        className="product-info-variant-switch-input"
+                                                        type="checkbox"
+                                                        checked={item?.status === "ACTIVE"}
+                                                        onChange={() => handleEnable(index)}
+                                                    />
+                                                ))
+                                            } */}
                                             <div className="product-info-variant-switch-track">
                                                 <FontAwesomeIcon icon={faCheck} className="i fa product-info-variant-switch-icon" />
                                                 <FontAwesomeIcon icon={faTimes} className="i fa product-info-variant-cross-icon" />
@@ -440,7 +476,7 @@ const ProductVariant = () => {
                                             <div className="product-info-variant-table-list-expanded-container">
                                                 <div className="product-info-variant-table-list-expanded-content">
                                                     <div className="product-info-variant-tabs product-info-variant-mb5" role="tablist">
-                                                        <div className="product-info-variant-tab" data-cy="ImageTab" data-tab-name="Image">
+                                                        {/* <div className="product-info-variant-tab" data-cy="ImageTab" data-tab-name="Image">
                                                             <button
                                                                 className={`product-info-variant-tab-button ${activeTab === 'Image' ? 'active-tab' : ''}`}
                                                                 type="button"
@@ -451,7 +487,7 @@ const ProductVariant = () => {
                                                             >
                                                                 Image
                                                             </button>
-                                                        </div>
+                                                        </div> */}
                                                         <div className="product-info-variant-tab" data-tab-name="Transaction">
                                                             <button
                                                                 className={`product-info-variant-tab-button ${activeTab === 'Transaction' ? 'active-tab' : ''}`}

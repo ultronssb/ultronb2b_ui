@@ -1,6 +1,6 @@
-import React from 'react';
-import { Grid, TextInput, Textarea, Select, Button, Table, Group, ActionIcon, Space } from '@mantine/core';
+import { ActionIcon, Button, Grid, Group, Table, TextInput } from '@mantine/core';
 import { IconMinus } from '@tabler/icons-react';
+import React from 'react';
 
 const styles = {
   table: {
@@ -56,9 +56,6 @@ const Packing = () => {
           <Grid>
             <Grid.Col span={6}>
               <TextInput label="Customer Name" placeholder="Enter customer name" />
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <TextInput label="Customer Location" placeholder="Enter location" />
             </Grid.Col>
             <Grid.Col span={6}>
               <TextInput label="Mobile No" placeholder="Enter mobile number" />
