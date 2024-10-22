@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
-import { ProductContext } from './CreateProduct';
 import notify from '../../../utils/Notification';
+import { ProductContext } from './CreateProduct';
 
 const ProductType = () => {
     // const { stateData } = useContext(ActiveTabContext);
@@ -17,7 +17,7 @@ const ProductType = () => {
     const [productTags, setProductTags] = useState([]);
     const [taxonomy, setTaxonomy] = useState([]);
     const navigate = useNavigate();
-    const [imageError, setImageError] = useState('')
+    const [imageError, setImageError] = useState('');
 
     const resetRef = useRef(null);
 
@@ -194,6 +194,9 @@ const ProductType = () => {
 
     console.log(product, "pro");
 
+    const handleOpenModal = () => {
+    }
+
 
 
     return (
@@ -233,7 +236,7 @@ const ProductType = () => {
                                         error={field.error}
                                         maxDropdownHeight={400}
                                     />
-                                    {field.masterCreation && (<FontAwesomeIcon icon={faCirclePlus} title={field.masterNew} />)}
+                                    {field.masterCreation && (<FontAwesomeIcon icon={faCirclePlus} title={field.masterNew} onClick={handleOpenModal} />)}
                                 </div>
                             )
                         }
@@ -247,7 +250,7 @@ const ProductType = () => {
                                         data={productTags.map(tag => tag.name)}
                                         onChange={(selectedTags) => handleChange({ target: { value: selectedTags } }, "tags")}
                                     />
-                                    {field.masterCreation && (<FontAwesomeIcon icon={faCirclePlus} title={field.masterNew} />)}
+                                    {field.masterCreation && (<FontAwesomeIcon icon={faCirclePlus} title={field.masterNew} onClick={handleOpenModal} />)}
                                 </div>
                             )
                         }

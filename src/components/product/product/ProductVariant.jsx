@@ -1,17 +1,16 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { faAngleRight, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleRight, faCheck, faPlus, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
-import './ProductVariant.css';
-import _ from 'lodash';
-import B2BSelect from '../../../common/B2BSelect';
 import { Button, Group, MultiSelect, Text } from '@mantine/core';
-import { B2B_API } from '../../../api/Interceptor';
-import { ProductContext } from './CreateProduct';
 import { Dropzone } from '@mantine/dropzone';
 import { IconUpload } from '@tabler/icons-react';
-import { BASE_URL } from '../../../api/EndPoints';
-import JsBarcode from 'jsbarcode';
+import _ from 'lodash';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Barcode from 'react-barcode';
+import { BASE_URL } from '../../../api/EndPoints';
+import { B2B_API } from '../../../api/Interceptor';
+import B2BSelect from '../../../common/B2BSelect';
+import { ProductContext } from './CreateProduct';
+import './ProductVariant.css';
 
 
 const ProductVariant = () => {
@@ -131,9 +130,9 @@ const ProductVariant = () => {
         } catch (error) {
             console.error('Error fetching variants:', error);
         }
-        
+
     };
-    console.log(variants,"resVar");
+    console.log(variants, "resVar");
 
     const setSelectedPairsFromProduct = () => {
         const { prodVariants } = product;

@@ -14,8 +14,7 @@ import notify from '../../utils/Notification';
 import states from '../crm/StatesAndDistricts.json';
 import './CustomerCreate.css';
 
-const CustomerCreate = () => {
-  const { stateData } = useContext(ActiveTabContext);
+const CustomerCreate = ({ setIsCreateCustomer, customerId, setCustomerId }) => {
   const initialCustomerState = {
     name: '',
     email: '',
@@ -52,10 +51,6 @@ const CustomerCreate = () => {
   const options = ['Detail Info', 'Address'];
   const [activeTab, setActiveTab] = useState(options[0]);
   const [opened, { open, close }] = useDisclosure(false);
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const id = queryParams.get('id');
-  const navigate = useNavigate();
   const [addresses, setAddresses] = useState([])
   const initialAddressState = {
     address1: '',
@@ -65,15 +60,15 @@ const CustomerCreate = () => {
     pincode: '',
     country: 'INDIA',
     isPrimary: false,
-    custmoerId: id
+    custmoerId: customerId
   }
   const [address, setAddress] = useState(initialAddressState);
 
   useEffect(() => {
     const fetchCustomerData = async () => {
-      if (!id) return;
+      if (!customerId) return;
       try {
-        const customerRes = await B2B_API.get(`customer/${id}`).json();
+        const customerRes = await B2B_API.get(`customer/${customerId}`).json();
         setCustomer(prev => ({
           ...prev,
           ...customerRes.response,
@@ -83,7 +78,7 @@ const CustomerCreate = () => {
       }
     };
     fetchCustomerData();
-  }, [id]);
+  }, [customerId]);
 
   useEffect(() => {
     fetchAddressData();
@@ -91,7 +86,7 @@ const CustomerCreate = () => {
 
   const fetchAddressData = async () => {
     try {
-      const locationRes = await B2B_API.get(`locations/customer/${id}`).json();
+      const locationRes = await B2B_API.get(`locations/customer/${customerId}`).json();
       setAddresses(locationRes.response);
       setCities(states[locationRes.response.state] || []);
     } catch (error) {
@@ -458,6 +453,7 @@ const CustomerCreate = () => {
           error: false,
           success: true,
         });
+        setIsCreateCustomer(false)
       } else {
         notify({
           title: 'Error!',
@@ -490,7 +486,7 @@ const CustomerCreate = () => {
         });
         setAddress(initialAddressState);
         close();
-        fetchAddressData()
+        setIsCreateCustomer(false)
       }
     } catch (error) {
       console.error('An error occurred while saving:', error);
@@ -504,7 +500,8 @@ const CustomerCreate = () => {
   };
 
   const handleCancel = () => {
-    navigate('/crm/customer', { state: { ...stateData, tabs: stateData.childTabs } });
+    setIsCreateCustomer(false)
+    setCustomerId('')
   };
 
   /* Modal Popup button functions */
@@ -521,19 +518,8 @@ const CustomerCreate = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ flexGrow: 1, display:'flex', alignItems:'center' }} className='customer-details-header'>Customer {id ? <span style={{fontSize:'15px', marginLeft:'0.5rem'}}>- (Edit)</span> : ''}</div>
-        <B2BButton
-          style={{ color: '#000' }}
-          name="Back"
-          onClick={handleCancel}
-          leftSection={<IconArrowLeft size={15} />}
-          color={"rgb(207, 239, 253)"}
-        />
-      </div>
-
       {
-        id && (
+        customerId && (
           <Tabs value={activeTab} onTabChange={setActiveTab} color='2px solid #3c6d8e'>
             <Tabs.List>
               {options.map((item, index) => (
@@ -673,14 +659,14 @@ const CustomerCreate = () => {
         )
       }
       {
-        id && (
+        customerId && (
           <div className='custBtn'>
-            {activeTab === 'Customer' && (<B2BButton type='button' onClick={handleSave} color='green' name={customer?.id ? "Update" : "Save"} />)}
+            {activeTab === 'Detail Info' && (<B2BButton type='button' onClick={handleSave} color='green' name={"Update"} />)}
           </div>
         )
       }
       {
-        !id && (
+        !customerId && (
           <div className='customer-container'>
             <div className='customer-form-section'>
               {customerFields.map((field, index) => (
@@ -754,7 +740,7 @@ const CustomerCreate = () => {
         )
       }
       {
-        !id && (
+        !customerId && (
           <div className='custBtn'>
             <B2BButton type='button' onClick={() => handleCancel()} color='red' name="Cancel" />
             <B2BButton type='button' onClick={() => handleSave()} name={"Save"} />

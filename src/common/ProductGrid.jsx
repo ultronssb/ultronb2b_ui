@@ -118,7 +118,7 @@ const ProductGrid = ({ data,
             },
         ];
         // Conditionally add the 'Publish' column when pimId is present, and insert it before the last column (Actions)
-        if (pimId) {
+        if (pimId && !map) {
             columnArray[0].columns.splice(columnArray[0].columns.length - 1, 0, {
                 header: 'Publish',
                 accessorKey: 'isPublished',
@@ -149,8 +149,8 @@ const ProductGrid = ({ data,
             ),
             enableSorting: false,
             enableColumnDragging: false,
-            mantineTableHeadCellProps: { align: 'center' },
-            mantineTableBodyCellProps: { align: 'center' },
+            mantineTableHeadCellProps: { align: 'left' },
+            mantineTableBodyCellProps: { align: 'left' },
             size: 100,
             Cell: ({ row }) => {
                 return map ? (
