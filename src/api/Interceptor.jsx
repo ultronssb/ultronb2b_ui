@@ -1,10 +1,42 @@
 import ky from "ky";
 import { BASE_URL } from "./EndPoints";
+import { useGlobalNavigate } from "../common/NavigationContext"; // Use the context for global navigation
 
 const getToken = () => {
     const token = localStorage.getItem("token");
     return token;
 }
+export const createB2BAPI = () => {
+    const navigate = useGlobalNavigate(); // Call the hook here
+
+    return ky.create({
+        prefixUrl: BASE_URL,
+        hooks: {
+            beforeRequest: [
+                (request) => {
+                    request.headers.set("Authorization", `Bearer ${getToken()}`);
+                }
+            ],
+            beforeError: [
+                async (error) => {
+                    const { response } = error;
+
+                    if (response.status === 403 || response.status === 401) {
+                        console.log(response.status, 'response.status');
+                        navigate("/"); // Navigate to index page
+                        return;
+                    }
+                    return await response.json();
+                }
+            ],
+            afterResponse: [
+                async (response) => {
+                    return response;
+                }
+            ],
+        },
+    });
+};
 
 export const B2B_API = ky.create({
     prefixUrl: BASE_URL,
@@ -17,9 +49,11 @@ export const B2B_API = ky.create({
         beforeError: [
             async (error) => {
                 const { response } = error
+                const navigate = useGlobalNavigate(); // Use global navigation
+
                 if (response.status === 403 || response.status === 401) {
                     console.log(response.status, 'response.status');
-                    // window.location.href = "/"
+                    return navigate("/"); // Navigate to index page
                 }
                 return await response.json();
             }
