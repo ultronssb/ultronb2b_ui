@@ -504,10 +504,7 @@ const EnrichProduct = () => {
 
   return (
     <EnrichProductContext.Provider value={{ handleChange, product, setProduct, pim, setPim, videoFile, multimedia, setMultimedia }}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <B2BButton style={{ color: '#000' }} name="Back" onClick={handleBack} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
           <h3>Created Date: {users} - {createdDate ? createdDate : "No date available"}</h3>
           <h3>Updated Date: {users} - {updatedDate ? updatedDate : "No date available"}</h3>
@@ -516,10 +513,11 @@ const EnrichProduct = () => {
           <h3> Channel Name : {channel}</h3>
           <h3> Store : {store}</h3>
         </div>
+        <B2BButton style={{ color: '#000' }} name="Back" onClick={handleBack} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <div className='form-group' style={{ display: 'flex', flexDirection: 'column', maxWidth: '49%', alignItems: 'center' }}>
+        <div className='form-group' style={{ display: 'flex', flexDirection: 'column', maxWidth: '20%', alignItems: 'flex-start' }}>
           {/* Image Display Section */}
           <div style={{ textAlign: 'center', marginBottom: '1rem', border: '1px solid #ccc', padding: '10px', width: '200px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '10px' }}>
             {imageFile || pim.image ? (
@@ -542,12 +540,13 @@ const EnrichProduct = () => {
             </Button>
           </Group>
 
-          <div style={{ display: 'flex', justifyContent: 'space-around', width: '10rem', marginTop: '1rem', marginRight: '5rem' }}>
-            <h3>Published</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
+            <h3>{pim.isPublished ? "Un publish" : "Publish"}</h3>
             <Switch
               checked={pim?.isPublished}
               onChange={(e) => publishPim(e)}
               color="teal"
+              style={{marginLeft:'1rem'}}
               disabled={!checkPublished()}
               size="md"
               thumbIcon={
@@ -572,7 +571,7 @@ const EnrichProduct = () => {
             <h5 style={{ color: 'red' }}>Note* Upload all variant image & product Image to Publish</h5> : ''}
 
         </div>
-        <div className='form-group' style={{ display: 'flex', flexDirection: 'column', maxWidth: '49%', alignItems: 'center' }}>
+        <div className='form-group' style={{ display: 'flex', flexDirection: 'column', maxWidth: '25%', alignItems: 'center' }}>
           <div style={{ textAlign: 'center', marginBottom: '1rem', border: '1px solid #ccc', padding: '10px', width: '200px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '10px' }}>
             {videoFile ? (
               <div style={{ backgroundColor: 'black', height: '100%', display: 'flex', alignItems: 'center' }}>

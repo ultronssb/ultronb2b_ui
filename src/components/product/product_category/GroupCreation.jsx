@@ -23,7 +23,7 @@ const GroupCreation = ({ setIsCreateGroup, groupId, setGroupId }) => {
     }
 
     useEffect(() => {
-        if (groupId !== '') {
+        if (groupId) {
             fetchGroup()
         }
     }, [groupId])

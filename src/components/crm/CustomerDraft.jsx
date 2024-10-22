@@ -2,12 +2,12 @@ import { Button, Modal, Select, Text } from '@mantine/core';
 import { IconPencil } from '@tabler/icons-react';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../api/Interceptor';
 import B2BButton from '../../common/B2BButton';
 import B2BTableGrid from '../../common/B2BTableGrid';
 import { getpayLoadFromToken } from '../../common/JwtPayload';
 import { ActiveTabContext } from '../../layout/Layout';
 import notify from '../../utils/Notification';
+import { createB2BAPI } from '../../api/Interceptor';
 
 const CustomerDraft = () => {
   const { stateData } = useContext(ActiveTabContext);
@@ -25,6 +25,7 @@ const CustomerDraft = () => {
   const navigate = useNavigate();
   const payload = useMemo(() => getpayLoadFromToken(), [])
   const user = payload?.ROLE
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchSalesman();

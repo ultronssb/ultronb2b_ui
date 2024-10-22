@@ -1,12 +1,13 @@
 import { Select } from '@mantine/core'
 import React from 'react'
 
-const B2BSelect = ({ placeholder, value, data, required, onChange, style, styles, clearable, scroll, leftSection, leftSectionPointerEvents, error, disabled }) => {
+const B2BSelect = ({ placeholder,name, value, data, required, onChange, style, styles, clearable, scroll, leftSection, leftSectionPointerEvents, error, disabled }) => {
     
     return (
         <Select
             className='input-textField'
             style={style}
+            name={name}
             styles={{...styles}}
             placeholder={placeholder}
             value={value}

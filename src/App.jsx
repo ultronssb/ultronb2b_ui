@@ -70,6 +70,7 @@ import RolePrivileges from './components/settings/users/RolePrivileges';
 import Layout from './layout/Layout';
 
 import VariantBarcode from './components/product/barcode/Barcode';
+import { NavigationProvider } from './common/NavigationContext.jsx';
 
 const ProtectedRoute = ({ element: Component }) => {
   const navigate = useNavigate();
@@ -87,125 +88,128 @@ const ProtectedRoute = ({ element: Component }) => {
 function App() {
 
   return (
-    <Routes>
-      <Route path='/' element={<AdminLogin />} />
+    <NavigationProvider>
+      <Routes>
 
-      <Route element={<Layout />}>
-        <Route path='/dashboard' element={<ProtectedRoute element={Dashboard} />} />
+        <Route path='/' element={<AdminLogin />} />
 
-        <Route path='/product/product-hierarchy' element={<ProtectedRoute element={Category} />} />
-        <Route path='/product/tags' element={<ProtectedRoute element={ProductTags} />} />
-        <Route path='/product/gst' element={<ProtectedRoute element={GST} />} />
-        <Route path='/product/variants' element={<ProtectedRoute element={Variants} />} />
-        <Route path='/product/brand' element={<ProtectedRoute element={Brand} />} />
-        <Route path='/product/group' element={<ProtectedRoute element={Group} />} />
-        <Route path='/product/taxonomy' element={<ProtectedRoute element={Taxonomy} />} />
-        <Route path='/product/attribute' element={<ProtectedRoute element={Attribute} />} />
-        <Route path='/product/fabricContent' element={<ProtectedRoute element={FabricContent} />} />
-        {/* 
+        <Route element={<Layout />}>
+          <Route path='/dashboard' element={<ProtectedRoute element={Dashboard} />} />
+
+          <Route path='/product/product-hierarchy' element={<ProtectedRoute element={Category} />} />
+          <Route path='/product/tags' element={<ProtectedRoute element={ProductTags} />} />
+          <Route path='/product/gst' element={<ProtectedRoute element={GST} />} />
+          <Route path='/product/variants' element={<ProtectedRoute element={Variants} />} />
+          <Route path='/product/brand' element={<ProtectedRoute element={Brand} />} />
+          <Route path='/product/group' element={<ProtectedRoute element={Group} />} />
+          <Route path='/product/taxonomy' element={<ProtectedRoute element={Taxonomy} />} />
+          <Route path='/product/attribute' element={<ProtectedRoute element={Attribute} />} />
+          <Route path='/product/fabricContent' element={<ProtectedRoute element={FabricContent} />} />
+          {/* 
         <Route path='/product/tax/tax-masters' element={<ProtectedRoute element={TaxMasters} />} />
         <Route path='/product/tax/gst-slabs' element={<ProtectedRoute element={GSTSlabs} />} />
         <Route path='/product/tax/hsn' element={<ProtectedRoute element={HsnSac} />} />
  */}
 
-        <Route path='/product/product/articles' element={<ProtectedRoute element={Articles} />} />
-        <Route path='/product/product/create' element={<ProtectedRoute element={CreateProduct} />} />
+          <Route path='/product/product/articles' element={<ProtectedRoute element={Articles} />} />
+          <Route path='/product/product/create' element={<ProtectedRoute element={CreateProduct} />} />
 
 
-        <Route path='/product/pim' element={<ProtectedRoute element={ProductInfoManagement} />} />
-        <Route path='/product/pim/map-channel' element={<ProtectedRoute element={MapChannel} />} />
-        <Route path='/product/pim/enrich-product' element={<ProtectedRoute element={EnrichProduct} />} />
+          <Route path='/product/pim' element={<ProtectedRoute element={ProductInfoManagement} />} />
+          <Route path='/product/pim/map-channel' element={<ProtectedRoute element={MapChannel} />} />
+          <Route path='/product/pim/enrich-product' element={<ProtectedRoute element={EnrichProduct} />} />
 
-        <Route path='/product/price-book' element={<ProtectedRoute element={PriceBook} />} />
-        <Route path='/product/price-book/create' element={<ProtectedRoute element={CreatePriceBook} />} />
+          <Route path='/product/price-book' element={<ProtectedRoute element={PriceBook} />} />
+          <Route path='/product/price-book/create' element={<ProtectedRoute element={CreatePriceBook} />} />
 
-        <Route path='/product/barcode' element={<ProtectedRoute element={VariantBarcode} />} />
+          <Route path='/product/barcode' element={<ProtectedRoute element={VariantBarcode} />} />
 
-        <Route path='/product/history' element={<ProtectedRoute element={ProductHistory} />} />
-
-
+          <Route path='/product/history' element={<ProtectedRoute element={ProductHistory} />} />
 
 
-        {/* sales */}
-        <Route path='/sales/enquiry' element={<ProtectedRoute element={Enquiry} />} />
-        <Route path='/sales/order-management' element={<ProtectedRoute element={OrderOpen} />} />
-        <Route path='/sales/delivery' element={<ProtectedRoute element={OrderDelivered} />} />
-        <Route path='/sales/cancel' element={<ProtectedRoute element={OrderCancelled} />} />
-        <Route path='/sales/abandon' element={<ProtectedRoute element={OrderAbondened} />} />
-        <Route path='/sales/return' element={<ProtectedRoute element={OrderReturned} />} />
-        <Route path='/sales/create-order' element={<ProtectedRoute element={CreateOrder} />} />
-
-        <Route path='/sales/sales-order' element={<ProtectedRoute element={SalesOrder} />} />
-
-        <Route path='/sales/invoice' element={<ProtectedRoute element={Invoice} />} />
-
-        <Route path='/sales/shippment-note' element={<ProtectedRoute element={ShipmentNote} />} />
-
-        <Route path='/sales/return-note' element={<ProtectedRoute element={ReturnNote} />} />
-
-        <Route path='/sales/packing' element={<ProtectedRoute element={Packing} />} />
 
 
-        {/* Inventory */}
-        <Route path='/inventory/stocks' element={<ProtectedRoute element={Stocks} />} />
-        <Route path='/inventory/stocks/opening-stocks' element={<ProtectedRoute element={OpeningStocks} />} />
+          {/* sales */}
+          <Route path='/sales/enquiry' element={<ProtectedRoute element={Enquiry} />} />
+          <Route path='/sales/order-management' element={<ProtectedRoute element={OrderOpen} />} />
+          <Route path='/sales/delivery' element={<ProtectedRoute element={OrderDelivered} />} />
+          <Route path='/sales/cancel' element={<ProtectedRoute element={OrderCancelled} />} />
+          <Route path='/sales/abandon' element={<ProtectedRoute element={OrderAbondened} />} />
+          <Route path='/sales/return' element={<ProtectedRoute element={OrderReturned} />} />
+          <Route path='/sales/create-order' element={<ProtectedRoute element={CreateOrder} />} />
 
-        <Route path='/inventory/collections' element={<ProtectedRoute element={Collections} />} />
-        <Route path='/inventory/collections/create' element={<ProtectedRoute element={CollectionCreation} />} />
+          <Route path='/sales/sales-order' element={<ProtectedRoute element={SalesOrder} />} />
 
-        <Route path='/inventory/discounts' element={<ProtectedRoute element={Discounts} />} />
-        <Route path='/inventory/discounts/create' element={<ProtectedRoute element={DiscountCreation} />} />
+          <Route path='/sales/invoice' element={<ProtectedRoute element={Invoice} />} />
 
+          <Route path='/sales/shippment-note' element={<ProtectedRoute element={ShipmentNote} />} />
 
-        {/* crm */}
-        <Route path='/crm/customer' element={<ProtectedRoute element={Customer} />} />
-        <Route path='/crm/customer/create' element={<ProtectedRoute element={CustomerCreate} />} />
-        <Route path='/crm/customer/draft' element={<ProtectedRoute element={CustomerDraft} />} />
+          <Route path='/sales/return-note' element={<ProtectedRoute element={ReturnNote} />} />
 
-        <Route path='/crm/loyalty' element={<ProtectedRoute element={Loyalty} />} />
-        <Route path='/crm/loyalty/create' element={<ProtectedRoute element={LoyaltyCreate} />} />
-        <Route path='/crm/loyalty/point-status' element={<ProtectedRoute element={LoyaltyPointStatus} />} />
-
-        <Route path='/crm/salesman' element={<ProtectedRoute element={Salesman} />} />
+          <Route path='/sales/packing' element={<ProtectedRoute element={Packing} />} />
 
 
-        {/* E-Commerce */}
-        <Route path='/e-commerce/mobile' element={<ProtectedRoute element={MobileApp} />} />
-        <Route path='/e-commerce/mobile/publish' element={<ProtectedRoute element={PublishApp} />} />
-        <Route path='/e-commerce/mobile/live' element={<ProtectedRoute element={AppIsLive} />} />
+          {/* Inventory */}
+          <Route path='/inventory/stocks' element={<ProtectedRoute element={Stocks} />} />
+          <Route path='/inventory/stocks/opening-stocks' element={<ProtectedRoute element={OpeningStocks} />} />
 
-        <Route path='/e-commerce/website' element={<ProtectedRoute element={Website} />} />
-        <Route path='/e-commerce/website/site-info' element={<ProtectedRoute element={SiteInfo} />} />
+          <Route path='/inventory/collections' element={<ProtectedRoute element={Collections} />} />
+          <Route path='/inventory/collections/create' element={<ProtectedRoute element={CollectionCreation} />} />
 
-        <Route path='/e-commerce/settings' element={<ProtectedRoute element={Settings} />} />
-        <Route path='/e-commerce/settings/publish' element={<ProtectedRoute element={Publish} />} />
+          <Route path='/inventory/discounts' element={<ProtectedRoute element={Discounts} />} />
+          <Route path='/inventory/discounts/create' element={<ProtectedRoute element={DiscountCreation} />} />
 
 
-        {/* Settings */}
-        <Route path='/settings/company-profile' element={<ProtectedRoute element={CompanyProfile} />} />
-        <Route path='/settings/company-profile/channels' element={<ProtectedRoute element={Channel} />} />
-        <Route path='/settings/company-profile/other-settings' element={<ProtectedRoute element={OtherSettings} />} />
-        <Route path='/settings/company-profile/legal' element={<ProtectedRoute element={Legal} />} />
-        <Route path='/settings/company-profile/business-rules' element={<ProtectedRoute element={BusinessRules} />} />
+          {/* crm */}
+          <Route path='/crm/customer' element={<ProtectedRoute element={Customer} />} />
+          <Route path='/crm/customer/create' element={<ProtectedRoute element={CustomerCreate} />} />
+          <Route path='/crm/customer/draft' element={<ProtectedRoute element={CustomerDraft} />} />
 
-        <Route path='/settings/location' element={<ProtectedRoute element={LocationDetails} />} />
-        <Route path='/settings/location/new-location' element={<ProtectedRoute element={NewLocation} />} />
+          <Route path='/crm/loyalty' element={<ProtectedRoute element={Loyalty} />} />
+          <Route path='/crm/loyalty/create' element={<ProtectedRoute element={LoyaltyCreate} />} />
+          <Route path='/crm/loyalty/point-status' element={<ProtectedRoute element={LoyaltyPointStatus} />} />
 
-        <Route path='/settings/payment' element={<ProtectedRoute element={Payment} />} />
+          <Route path='/crm/salesman' element={<ProtectedRoute element={Salesman} />} />
 
-        <Route path='/settings/shipment' element={<ProtectedRoute element={Shipment} />} />
-        <Route path='/settings/deliverymode' element={<ProtectedRoute element={DeliveryMode} />} />
 
-        <Route path='/settings/user-management' element={<ProtectedRoute element={AddUsers} />} />
-        <Route path='/settings/user/role' element={<Role />} />
-        <Route path='/settings/user/role-privileges' element={<ProtectedRoute element={RolePrivileges} />} />
+          {/* E-Commerce */}
+          <Route path='/e-commerce/mobile' element={<ProtectedRoute element={MobileApp} />} />
+          <Route path='/e-commerce/mobile/publish' element={<ProtectedRoute element={PublishApp} />} />
+          <Route path='/e-commerce/mobile/live' element={<ProtectedRoute element={AppIsLive} />} />
 
-        <Route path='/settings/location-type' element={<ProtectedRoute element={LocationType} />} />
+          <Route path='/e-commerce/website' element={<ProtectedRoute element={Website} />} />
+          <Route path='/e-commerce/website/site-info' element={<ProtectedRoute element={SiteInfo} />} />
 
-        <Route path='/settings/filters' element={<ProtectedRoute element={Filters} />} />
+          <Route path='/e-commerce/settings' element={<ProtectedRoute element={Settings} />} />
+          <Route path='/e-commerce/settings/publish' element={<ProtectedRoute element={Publish} />} />
 
-      </Route>
-    </Routes>
+
+          {/* Settings */}
+          <Route path='/settings/company-profile' element={<ProtectedRoute element={CompanyProfile} />} />
+          <Route path='/settings/company-profile/channels' element={<ProtectedRoute element={Channel} />} />
+          <Route path='/settings/company-profile/other-settings' element={<ProtectedRoute element={OtherSettings} />} />
+          <Route path='/settings/company-profile/legal' element={<ProtectedRoute element={Legal} />} />
+          <Route path='/settings/company-profile/business-rules' element={<ProtectedRoute element={BusinessRules} />} />
+
+          <Route path='/settings/location' element={<ProtectedRoute element={LocationDetails} />} />
+          <Route path='/settings/location/new-location' element={<ProtectedRoute element={NewLocation} />} />
+
+          <Route path='/settings/payment' element={<ProtectedRoute element={Payment} />} />
+
+          <Route path='/settings/shipment' element={<ProtectedRoute element={Shipment} />} />
+          <Route path='/settings/deliverymode' element={<ProtectedRoute element={DeliveryMode} />} />
+
+          <Route path='/settings/user-management' element={<ProtectedRoute element={AddUsers} />} />
+          <Route path='/settings/user/role' element={<Role />} />
+          <Route path='/settings/user/role-privileges' element={<ProtectedRoute element={RolePrivileges} />} />
+
+          <Route path='/settings/location-type' element={<ProtectedRoute element={LocationType} />} />
+
+          <Route path='/settings/filters' element={<ProtectedRoute element={Filters} />} />
+
+        </Route>
+      </Routes>
+    </NavigationProvider>
   );
 }
 

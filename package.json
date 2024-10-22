@@ -24,7 +24,7 @@
     "@mantine/notifications": "^7.12.1",
     "@mantinex/dev-icons": "^1.0.2",
     "@stylexjs/stylex": "^0.7.5",
-    "@tabler/icons-react": "^3.11.0",
+    "@tabler/icons-react": "3.17.0",
     "@tanstack/react-table": "^8.19.3",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.12",

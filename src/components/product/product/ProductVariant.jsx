@@ -472,10 +472,10 @@ const ProductVariant = () => {
                                     </td>
                                     <td data-testid="table-body-cell" className="product-info-variant-table-list-cell product-info-variant-table-list-cell--toggle product-info-variant-align-center product-info-variant-valign-t product-info-variant-pt4 product-info-variant-pr0 product-info-variant-pl0" style={{ verticalAlign: 'middle' }}>
                                         <div style={{ width: '100%', height: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                            {product.isCreateBarcode && item?.barcode?.barcode ? (
+                                            {product.isCreateBarcode && _.size(item.barcode) > 0  ? (
                                                 <Barcode value={item.barcode[0]?.barcode} fontSize={8} width={0.5} height={40} />
                                             ) : (
-                                                <span>No Barcode For this Variant</span>
+                                                <span>{product.id && product.isCreateBarcode ? "Barcode will be generated after update" : "No Barcode For this Variant"}</span>
                                             )}
                                         </div>
 

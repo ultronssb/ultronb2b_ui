@@ -32,7 +32,7 @@ const ProductTagCreation = ({ setIsCreateTag, tagId, setTagId }) => {
     }
 
     useEffect(() => {
-        if (tagId !== '') {
+        if (tagId) {
             fetchTag()
         }
     }, [tagId])

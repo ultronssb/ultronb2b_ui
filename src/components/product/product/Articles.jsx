@@ -19,15 +19,27 @@ const Articles = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const query_param = new URLSearchParams(location.search);
+  const page = query_param.get('page');
+  const size = query_param.get('size');
+  const search = query_param.get('search');
 
 
   useEffect(() => {
     fetchAllProducts();
   }, [pagination.pageIndex, pagination.pageSize, searchTerm]);
 
+  useEffect(() => {
+    if(page && size) {
+      setPagination({pageIndex: parseInt(page), pageSize: parseInt(size)})
+      setSearchTerm(search)
+    }
+  },[location.search])
+
+  console.log("pagination :",pagination)
   const editVarient = (varobj) => {
     setIsCreateProduct(true);
-    navigate(`/product/product/create?id=${varobj?.productId}`, { state: { ...stateData, tabs: stateData.childTabs } });
+    navigate(`/product/product/create?id=${varobj?.productId}&page=${pagination.pageIndex}&size=${pagination.pageSize}&search=${searchTerm}`, { state: { ...stateData, tabs: stateData.childTabs } });
   };
 
   const fetchAllProducts = async () => {

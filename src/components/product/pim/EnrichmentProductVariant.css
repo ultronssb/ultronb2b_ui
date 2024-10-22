@@ -1198,7 +1198,7 @@ table {
 /* image css start */
 .cn-variant-image-container {
     height: 220px;
-    width: 220px;
+    width: 100%;
 }
 
 .cn-variant-image-button {

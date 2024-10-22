@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { BASE_URL } from '../../../api/EndPoints';
-import { B2B_API } from '../../../api/Interceptor';
+import { createB2BAPI } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTabs from '../../../common/B2BTabs';
 import notify from '../../../utils/Notification';
@@ -34,6 +34,9 @@ const CreateProduct = () => {
   const query_param = new URLSearchParams(location.search);
   const to = query_param.get('toUrl');
   const from = query_param.get('from')
+  const page = query_param.get('page');
+  const size = query_param.get('size');
+  const search = query_param.get('search');
 
   const initialState = {
     productId: '',
@@ -93,6 +96,8 @@ const CreateProduct = () => {
   const [imageFile, setImageFile] = useState(null)
   const [activeTab, setActiveTab] = useState("1");
   const [isFormValid, setIsFormValid] = useState(false);
+  const B2B_API = createB2BAPI();
+
   const [inputError, setInputError] = useState({
     articleNameError: false,
     articleNameErrorMessage: '',
@@ -684,7 +689,11 @@ const CreateProduct = () => {
     if (to && from) {
       return navigate(`${to}&from=${encodeURIComponent(from)}`)
     }
-    navigate('/product/product/articles', { state: { ...stateData, tabs: stateData.childTabs } })
+    let url = '/product/product/articles'
+    if (page && size) {
+      url = `${url}?page=${page}&size=${size}&search=${search}`
+    }
+    navigate(url, { state: { ...stateData, tabs: stateData.childTabs } })
   }
 
   return (
@@ -698,7 +707,7 @@ const CreateProduct = () => {
         margin='10px'
       />
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-        {product.productId  && activeTab < "6" ?
+        {product.productId && activeTab < "6" ?
           <B2BButton
             name={"Update"}
             id={"Save"}
@@ -706,7 +715,7 @@ const CreateProduct = () => {
             style={{ backgroundColor: 'green' }}
             disabled={!isFormValid} // Disable Save button if the form is not valid
           /> : ''}
-         <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
+        <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
 
       </div>
       <div style={{ minHeight: '50vh' }}>

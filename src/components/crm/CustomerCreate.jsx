@@ -5,7 +5,6 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconArrowLeft } from '@tabler/icons-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../api/Interceptor';
 import B2BButton from '../../common/B2BButton';
 import B2BInput from '../../common/B2BInput';
 import B2BSelect from '../../common/B2BSelect';
@@ -13,6 +12,7 @@ import { ActiveTabContext } from '../../layout/Layout';
 import notify from '../../utils/Notification';
 import states from '../crm/StatesAndDistricts.json';
 import './CustomerCreate.css';
+import { createB2BAPI } from '../../api/Interceptor';
 
 const CustomerCreate = ({ setIsCreateCustomer, customerId, setCustomerId }) => {
   const initialCustomerState = {
@@ -52,6 +52,8 @@ const CustomerCreate = ({ setIsCreateCustomer, customerId, setCustomerId }) => {
   const [activeTab, setActiveTab] = useState(options[0]);
   const [opened, { open, close }] = useDisclosure(false);
   const [addresses, setAddresses] = useState([])
+  const B2B_API = createB2BAPI()
+  
   const initialAddressState = {
     address1: '',
     address2: '',

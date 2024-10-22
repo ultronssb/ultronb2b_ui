@@ -6,7 +6,7 @@
 
 .create-product-btn {
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
 }
 
 .group-input {

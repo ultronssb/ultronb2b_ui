@@ -1,4 +1,4 @@
-import { faArrowTurnUp, faFilter, faFilterCircleXmark, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faArrowTurnUp, faCirclePlus, faFilter, faFilterCircleXmark, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import _ from 'lodash';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -279,25 +279,25 @@ const Category = () => {
       },
       size: 150,
     },
-    { 
-    header: (
-      <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
-        <div>Status ({status})</div>
-        <FontAwesomeIcon icon={openStatus ? faFilterCircleXmark : faFilter} size={18} style={{ marginLeft: '1.5rem', cursor: 'pointer' }} onClick={() => setOpenStatus(!openStatus)} />
-        {
-          openStatus && (
-            <div className='status-dropdown'>
-              <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
-                <Text size="xs" fw={800}>ACTIVE</Text>
+    {
+      header: (
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+          <div>Status ({status})</div>
+          <FontAwesomeIcon icon={openStatus ? faFilterCircleXmark : faFilter} size={18} style={{ marginLeft: '1.5rem', cursor: 'pointer' }} onClick={() => setOpenStatus(!openStatus)} />
+          {
+            openStatus && (
+              <div className='status-dropdown'>
+                <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+                  <Text size="xs" fw={800}>ACTIVE</Text>
+                </div>
+                <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+                  <Text size="xs" fw={800}>INACTIVE</Text>
+                </div>
               </div>
-              <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
-                <Text size="xs" fw={800}>INACTIVE</Text>
-              </div>
-            </div>
-          )
-        }
-      </div>
-    ),
+            )
+          }
+        </div>
+      ),
       id: 'status',
       accessorKey: 'status',
       Cell: ({ cell, row }) => {
@@ -365,10 +365,10 @@ const Category = () => {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <header>Category Details</header>
-      <div className='product-category-container'>
-        <div className='create-product-btn'>
+    <div className='grid-container'>
+      <div className='user--container'>
+        <header>Category Details</header>
+        <div className='right--section'>
           {
             isCreateCategory === false ?
               <B2BButton style={{ color: '#000' }} name="Create Category" onClick={() => { setIsCreateCategory(true); setIsLevelOneDisabled(true) }} leftSection={<IconPlus size={15} />} color={"rgb(207, 239, 253)"} />
@@ -376,87 +376,83 @@ const Category = () => {
               <B2BButton style={{ color: '#000' }} name="Back" onClick={() => handleCancel()} leftSection={<IconArrowLeft size={15} />} color={"rgb(207, 239, 253)"} />
           }
         </div>
-        <div>
-          {
-            isCreateCategory === false && (
-              <B2BTableGrid
-                columns={categoryColumns}
-                data={productCategories}
-                enableTopToolbar={true}
-                enableGlobalFilter={true}
-                enableFullScreenToggle={true}
-                pagination={pagination}
-                rowCount={categoryRowCount}
-                onPaginationChange={setPagination}
+      </div>
+      {
+        isCreateCategory ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className='group-input'>
+              <label>Group Name</label>
+              <B2BSelect
+                value={categoryTree[0].productGroup?.name}
+                data={groups.map(group => group.name)}
+                required={true}
+                onChange={(event) => handleSelectChange(event)}
+                clearable={true}
               />
-            )
-          }
-          {
-            isCreateCategory === true && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div className='group-input'>
-                  <label>Group Name</label>
-                  <B2BSelect
-                    value={categoryTree[0].productGroup?.name}
-                    data={groups.map(group => group.name)}
-                    required={true}
-                    onChange={(event) => handleSelectChange(event)}
-                    clearable={true}
+              {(<FontAwesomeIcon icon={faCirclePlus} title={"masterNew"} />)}
+              <label>Types</label>
+              {id ? <B2BInput
+                value={types}
+                disabled={true} /> :
+                <B2BSelect
+                  value={types}
+                  data={typesOptions}
+                  required
+                  onChange={handleTypeSelectChange}
+                  clearable
+                />}
+            </div>
+            <div className="form-group status-container">
+              <label className='form-label'>Status</label>
+              <div className='radio-group'>
+                <div className='status-block'>
+                  <input
+                    type="radio"
+                    value="ACTIVE"
+                    onChange={(event) => handleChange(event, 'status')}
+                    checked={categoryTree[0]?.status === "ACTIVE"}
+                    name="status"
+                    id="status-active"
                   />
-                  <label>Types</label>
-                  {id ? <B2BInput
-                    value={types}
-                    disabled={true} /> :
-                    <B2BSelect
-                      value={types}
-                      data={typesOptions}
-                      required
-                      onChange={handleTypeSelectChange}
-                      clearable
-                    />}
+                  <label className='form-span radio' htmlFor="status-active">ACTIVE</label>
                 </div>
-                <div className="form-group status-container">
-                  <label className='form-label'>Status</label>
-                  <div className='radio-group'>
-                    <div className='status-block'>
-                      <input
-                        type="radio"
-                        value="ACTIVE"
-                        onChange={(event) => handleChange(event, 'status')}
-                        checked={categoryTree[0]?.status === "ACTIVE"}
-                        name="status"
-                        id="status-active"
-                      />
-                      <label className='form-span radio' htmlFor="status-active">ACTIVE</label>
-                    </div>
-                    <div className='status-block'>
-                      <input
-                        type="radio"
-                        value="INACTIVE"
-                        onChange={(event) => handleChange(event, 'status')}
-                        checked={categoryTree[0]?.status === "INACTIVE"}
-                        name="status"
-                        id="status-inactive"
-                      />
-                      <label className='form-span radio' htmlFor="status-inactive">INACTIVE</label>
-                    </div>
-                  </div>
-                </div>
-                <CategoryTree
-                  level={1}
-                  categories={categoryTree}
-                  onCategoryChange={(newTree) => setCategoryTree(newTree)}
-                  disable={isLevelOneDisabled}
-                />
-                <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center' }}>
-                  <B2BButton onClick={() => handleCancel()} name='Cancel' color='#ff0000' />
-                  <B2BButton onClick={() => handleSave()} name={id ? 'Update' : 'Save'} color='rgb(26, 160, 70)' />
+                <div className='status-block'>
+                  <input
+                    type="radio"
+                    value="INACTIVE"
+                    onChange={(event) => handleChange(event, 'status')}
+                    checked={categoryTree[0]?.status === "INACTIVE"}
+                    name="status"
+                    id="status-inactive"
+                  />
+                  <label className='form-span radio' htmlFor="status-inactive">INACTIVE</label>
                 </div>
               </div>
-            )
-          }
-        </div>
-      </div>
+            </div>
+            <CategoryTree
+              level={1}
+              categories={categoryTree}
+              onCategoryChange={(newTree) => setCategoryTree(newTree)}
+              disable={isLevelOneDisabled}
+            />
+            <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center' }}>
+              <B2BButton onClick={() => handleCancel()} name='Cancel' color='#ff0000' />
+              <B2BButton onClick={() => handleSave()} name={id ? 'Update' : 'Save'} color='rgb(26, 160, 70)' />
+            </div>
+          </div>
+        ) : (
+          <B2BTableGrid
+            columns={categoryColumns}
+            data={productCategories}
+            enableTopToolbar={true}
+            enableGlobalFilter={true}
+            enableFullScreenToggle={true}
+            pagination={pagination}
+            rowCount={categoryRowCount}
+            onPaginationChange={setPagination}
+          />
+        )
+      }
     </div>
   );
 };

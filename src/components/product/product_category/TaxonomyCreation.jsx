@@ -32,7 +32,7 @@ const TaxonomyCreation = ({ setIsCreateTaxonomy, taxonomyId, setTaxonomyId }) =>
     }
 
     useEffect(() => {
-        if (taxonomyId !== '') {
+        if (taxonomyId) {
             fetchTaxonomy()
         }
     }, [taxonomyId])
@@ -41,7 +41,6 @@ const TaxonomyCreation = ({ setIsCreateTaxonomy, taxonomyId, setTaxonomyId }) =>
         try {
             const res = await B2B_API.get(`taxonomy/${taxonomyId}`).json();
             setTaxonomy(res?.response);
-            console.log(res.response);
         } catch (error) {
             notify({ error: true, success: false, title: error?.message });
         }
@@ -50,7 +49,7 @@ const TaxonomyCreation = ({ setIsCreateTaxonomy, taxonomyId, setTaxonomyId }) =>
     const handleChange = (event, key) => {
         const value = event.target.type === 'radio' ? event.target.value : event.target.value;
         setTaxonomy(prev => ({
-            ...prev, [key]: key === 'name' ? value.toUpperCase() : value
+            ...prev, [key]: key === 'name' ? _.capitalize(value) : value
         }));
     };
 
@@ -88,7 +87,7 @@ const TaxonomyCreation = ({ setIsCreateTaxonomy, taxonomyId, setTaxonomyId }) =>
                             />
                             <label className='form-span radio' htmlFor="status-active">ACTIVE</label>
                         </div>
-                        <div className='layout-fields-status-radio'>
+                        <div className='status-block'>
                             <input
                                 type="radio"
                                 value="INACTIVE"
