@@ -35,7 +35,7 @@ const Variants = () => {
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
-  const variantOptions = ['Colour', 'Solid', 'More Variants'];
+  const variantOptions = ['Colour', 'Solid / Pattern', 'More Variants'];
   const [activeTab, setActiveTab] = useState(variantOptions[0]);
 
   const [otherVariantTypes, setOtherVariantTypes] = useState([]);
@@ -63,7 +63,7 @@ const Variants = () => {
   }, [variantTypes])
 
   const fetchAllVariants = async () => {
-    const type = activeTab === 'More Variants' ? 'Others' : activeTab;
+    const type = activeTab === 'More Variants' ? 'Others' : activeTab === 'Solid / Pattern' ? 'Solid' : activeTab;
     try {
       setIsLoading(true);
       const res = await B2B_API.get(`variant/get-All?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&type=${type}`).json();
@@ -111,7 +111,8 @@ const Variants = () => {
     setGroups(response.response);
   };
 
-  const fetchVariantType = async (variantType) => {
+  const fetchVariantType = async (variant) => {
+    const variantType = variant === variantOptions[1] ? 'Solid' : variant;
     try {
       setIsLoading(true);
       const res = await B2B_API.get(`variantType/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
@@ -166,7 +167,7 @@ const Variants = () => {
       setVariant(prev => ({
         ...prev,
         name: selectedVariant === 'More Variants' ? '' : selectedVariant,
-        type: selectedVariant === 'More Variants' ? 'Others' : selectedVariant,
+        type: selectedVariant === 'More Variants' ? 'Others' : selectedVariant === variantOptions[1] ? 'Solid' : selectedVariant,
       }));
     }
     if (selectedVariant !== 'More Variants') {
@@ -408,7 +409,7 @@ const Variants = () => {
       },
     ],
 
-    "Solid": [
+    "Solid / Pattern": [
       {
         header: 'S.No',
         accessorFn: (_, index) => index + 1,
@@ -538,12 +539,16 @@ const Variants = () => {
     ? groupName || _.find(groups, { id: variant.group })?.name
     : _.find(groups, { id: variant.group })?.name || groupName;
 
+
+  console.log('var : ', variant);
+
+
   return (
     <div>
       {!isCreateVariant && (
         <>
           <div className='user--container'>
-            <Text size='lg'>Variant Details</Text>
+          <header>Variant Details</header>
             <div className='right--section'>
               <B2BButton
                 style={{ color: '#000' }}
@@ -637,7 +642,7 @@ const Variants = () => {
                     }
                   }}
                   clearable
-                  disabled={variantTypeList.find(item => item === variant.name)}
+                  disabled={variantTypeList.find(item => item === variant.name === variantOptions[1] ? 'Solid' : variant.name)}
                 />
               </div>
               {errors.group && <span className="error">{errors.group}</span>}
@@ -663,7 +668,7 @@ const Variants = () => {
                 </div>
               </>
             )}
-            {currentVariantType === 'Solid' && (
+            {currentVariantType === 'Solid / Pattern' && (
               <>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   {renderInput('Value', 'value')}

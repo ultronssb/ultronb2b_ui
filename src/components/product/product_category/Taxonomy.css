@@ -1,0 +1,46 @@
+.layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+}
+
+.form-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.layout-fields {
+    display: flex;
+    gap: 3rem;
+}
+
+.layout-fields-label {
+    width: 180px;
+}
+
+.layout-fields-input {
+    padding: 12px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 250px;
+    outline: none;
+    color: #000;
+}
+
+.layout-fields-status-input {
+    width: 250px;
+    display: flex;
+    gap: 5rem;
+}
+
+.layout-fields-status-radio {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.layout-fields-btn {
+    display: flex;
+    gap: 2rem;
+}

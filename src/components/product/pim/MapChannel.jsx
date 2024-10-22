@@ -33,11 +33,8 @@ const MapChannel = () => {
       setAreAllSelected(false);
       setProduct([]);
     }
-  }, [pagination, selectedChannel, selectedStore, mapStatus,searchTerm]);
-  
-//   useEffect(() => {
-//     fetchAllProducts();
-// }, [searchTerm, pagination]);
+  }, [pagination, selectedChannel, selectedStore, mapStatus, searchTerm]);
+
   const fetchAllCompanyLocations = async () => {
     try {
       const response = await B2B_API.get('company-location/get-all').json();
@@ -65,12 +62,14 @@ const MapChannel = () => {
       console.error("Error fetching channels:", error);
     }
   };
- 
- 
+
+  console.log('map status : ', mapStatus);
+
+
   const fetchAllProducts = async () => {
     setIsLoading(true);
     try {
-      const endpoint = mapStatus
+      const endpoint = mapStatus === true
         ? `pim/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&searchTerm=${searchTerm}`
         : `map-channel/product?page=${pagination.pageIndex}&size=${pagination.pageSize}&channelId=${selectedChannel}&locationId=${selectedStore}&status=ACTIVE&searchTerm=${searchTerm}`;
 
@@ -101,6 +100,16 @@ const MapChannel = () => {
     }
   };
 
+  const handleSelectChannel = (selectedOption) => {
+    setSelectedChannel(selectedOption);
+    setMapStatus(true)
+  };
+
+  const handleSelectStore = (selectedOption) => {
+    setSelectedStore(selectedOption);
+    setMapStatus(true)
+  };
+
   const onSave = async () => {
     const prod = {
       channelId: selectedChannel,
@@ -108,6 +117,8 @@ const MapChannel = () => {
       productIds: selectedPairs,
     };
     await B2B_API.post('map-channel', { json: prod }).json();
+    setMapStatus(true)
+    setSelectedPairs([]);
     fetchAllProducts();
   };
 
@@ -118,6 +129,8 @@ const MapChannel = () => {
       productIds: selectedPairs,
     };
     await B2B_API.delete('map-channel', { json: prod }).json();
+    setMapStatus(true)
+    setSelectedPairs([]);
     fetchAllProducts();
   };
 
@@ -130,12 +143,16 @@ const MapChannel = () => {
       setSelectedPairs([]);
       setAreAllSelected(!areAllSelected);
     }
-   
+
   };
+
   const handleSearchChange = (event) => {
     const value = event.currentTarget.value;
     setSearchTerm(value);
-};
+  };
+
+  console.log(channelOptions);
+
 
 
   return (
@@ -146,7 +163,7 @@ const MapChannel = () => {
           <B2BSelect
             id="channel-select"
             value={selectedChannel}
-            onChange={setSelectedChannel}
+            onChange={handleSelectChannel}
             data={channelOptions}
             placeholder="Select a channel"
           />
@@ -154,7 +171,7 @@ const MapChannel = () => {
           <B2BSelect
             id="store-select"
             value={selectedStore}
-            onChange={setSelectedStore}
+            onChange={handleSelectStore}
             data={storeOptions}
             placeholder="Select a store"
           />
@@ -162,20 +179,17 @@ const MapChannel = () => {
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: '2rem', marginBottom: '0.5rem' }}>
         <div className='left--section'>
-          <div>
-            <h2>{!mapStatus ? 'Unmapped Products - ' : 'Mapped Products - '}</h2>
-          </div>
-          <B2BButton onClick={() => { setMapStatus(!mapStatus); setSelectedPairs([]) }} disabled={!mapStatus} name='UnMapped' />
-          <B2BButton onClick={() => { setMapStatus(!mapStatus); setSelectedPairs([]) }} disabled={mapStatus} name='Mapped' />
+          <B2BButton onClick={() => { setMapStatus(false); setSelectedPairs([]) }} name='Add Product' style={{ backgroundColor: mapStatus ? '#EBEBEB' : '#CFEFFD', border: mapStatus ? '1px solid silver' : '', color: '#000' }} />
         </div>
-        <div className='right--section'>
+        <div className='right--section' style={{ flexDirection: 'column' }}>
           <B2BButton
             style={{ color: selectedPairs.length === 0 ? '#000' : (mapStatus ? '#fff' : '#fff') }}
-            name={mapStatus ? "UnMap" : "Map"}
+            name={mapStatus ? "Click To Remove" : "Click To Add"}
             onClick={mapStatus ? unMap : onSave}
             disabled={selectedPairs.length == 0}
             color={mapStatus ? "rgb(255, 0, 0)" : "rgb(0, 125, 0)"}
           />
+          <div>{selectedPairs.length} products will be {mapStatus ? 'removed' : 'added'}</div>
         </div>
       </div>
       <ProductGrid

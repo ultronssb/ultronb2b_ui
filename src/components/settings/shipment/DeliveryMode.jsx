@@ -1,27 +1,38 @@
-import { IconPencil } from '@tabler/icons-react';
+import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
-import B2BInput from '../../../common/B2BInput';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
+import DeliveryModeCreation from './DeliveryModeCreation';
 
 const DeliveryMode = () => {
-    const initialData = {
-        name: '',
-        status: 'ACTIVE'
-    };
-
-    const [deliveryMode, setDeliveryMode] = useState(initialData);
     const [deliveryModeList, setDeliveryModeList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
     const [rowCount, setRowCount] = useState(0);
+    const [isCreateDeliveryMode, setIsCreateDeliveryMode] = useState(false);
+    const [deliveryModeId, setDeliveryModeId] = useState('');
 
     useEffect(() => {
         fetchDeliveryModes();
     }, [pagination.pageIndex, pagination.pageSize]);
+
+    const fetchDeliveryModes = async () => {
+        setIsLoading(true);
+        try {
+            const res = await B2B_API.get(`delivery-mode/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+            const data = res?.response?.content || [];
+            setRowCount(res?.response?.totalElements || 0);
+            setDeliveryModeList(data);
+        } catch (error) {
+            setIsError(true);
+            notify({ error: true, success: false, title: error?.message });
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const columns = useMemo(() => [
         {
@@ -70,112 +81,65 @@ const DeliveryMode = () => {
     ], []);
 
     const editDeliveryMode = (obj) => {
-        setDeliveryMode((prev) => ({ ...prev, ...obj }));
+        setDeliveryModeId(obj?.id);
+        setIsCreateDeliveryMode(true);
     };
 
-    const fetchDeliveryModes = async () => {
-        setIsLoading(true);
-        try {
-            const res = await B2B_API.get(`delivery-mode/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
-            const data = res?.response?.content || [];
-            setRowCount(res?.response?.totalElements || 0);
-            setDeliveryModeList(data);
-        } catch (error) {
-            setIsError(true);
-            notify({ error: true, success: false, title: error?.message });
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const handleCreate = () => {
+        setIsCreateDeliveryMode(true)
+    }
 
-    const handleChange = (event, key) => {
-        const value = event.target.type === 'radio' ? event.target.value : event.target.value;
-        setDeliveryMode((prev) => ({
-            ...prev,
-            [key]: key === 'name' ? value.toUpperCase() : value
-        }));
-    };
-
-    const createDeliveryMode = async (event) => {
-        event.preventDefault();
-        try {
-            const response = await B2B_API.post('delivery-mode', { json: deliveryMode }).json();
-            setDeliveryMode(initialData);
-            fetchDeliveryModes()
-            notify({ message: response.message, success: true, error: false });
-        } catch (error) {
-            notify({ message: error.message, success: false, error: true });
-        }
-    };
-
-    const json = [
-        {
-            label: "Delivery Mode Name",
-            value: deliveryMode.name,
-            onChange: (event) => handleChange(event, 'name'),
-            type: "text",
-            placeholder: "Delivery Mode Name"
-        },
-        {
-            label: "Status",
-            type: "radio",
-            name: "status",
-            className: "form-group status-container",
-            options: [
-                { value: "ACTIVE", label: "ACTIVE" },
-                { value: "INACTIVE", label: "INACTIVE" }
-            ],
-            value: deliveryMode.status,
-            onChange: (event) => handleChange(event, 'status')
-        }
-    ];
+    const handleBack = () => {
+        setIsCreateDeliveryMode(false)
+        setDeliveryModeId('')
+    }
 
     return (
         <div>
-            <div>
+            <div className='user--container'>
                 <header>Delivery Mode Details</header>
+                <div className='right--section'>
+                    {
+                        isCreateDeliveryMode ?
+                            <B2BButton
+                                style={{ color: '#000' }}
+                                name={"Back"}
+                                onClick={handleBack}
+                                leftSection={<IconArrowLeft size={15} />}
+                                color={"rgb(207, 239, 253)"}
+                            />
+                            :
+                            <B2BButton
+                                style={{ color: '#000' }}
+                                name={"Create Delivery Mode"}
+                                onClick={handleCreate}
+                                leftSection={<IconPlus size={15} />}
+                                color={"rgb(207, 239, 253)"}
+                            />
+                    }
+                </div>
             </div>
-            <div className='grid-container'>
-                <form onSubmit={createDeliveryMode} className='form-container'>
-                    {json.map((e, index) => (
-                        <div key={index} className={e.className || "form-group"}>
-                            <label className='form-label'>{e.label}</label>
-                            {e.type === "radio" ? (
-                                <div className='radio-label-block'>
-                                    {e.options.map((option, idx) => (
-                                        <div key={idx} className='radio-group'>
-                                            <div className='status-block'>
-                                                <input id={`${e.name}-${option.value.toLowerCase()}`} value={option.value} onChange={e.onChange} checked={e.value === option.value} type={e.type} />
-                                                <label className='form-span radio' htmlFor={`${e.name}-${option.value.toLowerCase()}`} >
-                                                    {option.label}
-                                                </label>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <B2BInput value={e.value} className='form-input' onChange={e.onChange} type={e.type} required placeholder={e.placeholder} />
-                            )}
-                        </div>
-                    ))}
-                    <div className='save-button-container'>
-                        <B2BButton type='button' color='red' onClick={() => setDeliveryMode(initialData)} name="Cancel" />
-                        <B2BButton type='submit' name={deliveryMode?.deliveryModeId ? 'Update' : "Save"} />
-                    </div>
-                </form>
-            </div>
-            <B2BTableGrid
-                columns={columns}
-                data={deliveryModeList}
-                isLoading={isLoading}
-                isError={isError}
-                enableTopToolbar
-                enableGlobalFilter
-                pagination={pagination}
-                rowCount={rowCount}
-                onPaginationChange={setPagination}
-                enableFullScreenToggle
-            />
+            {
+                isCreateDeliveryMode ?
+                    <DeliveryModeCreation
+                        setIsCreateDeliveryMode={setIsCreateDeliveryMode}
+                        deliveryModeId={deliveryModeId}
+                        setDeliveryModeId={setDeliveryModeId}
+                    />
+                    :
+                    <B2BTableGrid
+                        columns={columns}
+                        data={deliveryModeList}
+                        isLoading={isLoading}
+                        isError={isError}
+                        enableTopToolbar
+                        enableGlobalFilter
+                        pagination={pagination}
+                        rowCount={rowCount}
+                        onPaginationChange={setPagination}
+                        enableFullScreenToggle
+                    />
+            }
         </div>
     );
 };

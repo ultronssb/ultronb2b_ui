@@ -196,7 +196,7 @@ const GST = () => {
       {!createGSTArea && (
         <>
           <div className='user--container'>
-            <Text size='lg'>GST Details</Text>
+          <header>GST Details</header>
             <div className='right--section'>
               <B2BButton
                 style={{ color: '#000' }}

@@ -3,6 +3,7 @@ import 'mantine-react-table/styles.css'; //make sure MRT styles were imported in
 import { useEffect, useMemo, useState } from "react";
 import { B2B_API } from '../../api/Interceptor';
 import B2BTableGrid from "../../common/B2BTableGrid";
+import { Box, Grid, SimpleGrid } from '@mantine/core';
 
 const Dashboard = () => {
 
@@ -138,6 +139,16 @@ const Dashboard = () => {
         enableResizing={true}
         enableColumnActions={false}
       />
+      {/* <div className='container'>
+        <h1>Welcome to Ultron B2B, Sachin</h1>
+      </div>
+      <SimpleGrid cols={3}>
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+      </SimpleGrid> */}
     </>
   )
 }

@@ -29,15 +29,30 @@ const ProductGrid = ({ data,
                     {
                         accessorKey: 'product.image',
                         header: 'Image',
-                        size: 150,
+                        size: 110,
                         enableSorting: false,
                         enableColumnDragging: false,
                         Cell: ({ row }) => {
                             const item = pimId ? row.original.product?.image : row.original.image;
                             return (
-                                <img src={`${BASE_URL.replace('/api', '')}${item}`} alt="Uploaded Badge" style={{ maxWidth: '50px', maxHeight: '50px' }} />
+                                <img src={`${BASE_URL.replace('/api', '')}${item}`} alt="Upload IMG" style={{ maxWidth: '50px', maxHeight: '50px' }} />
                             );
                         }
+                    },
+                    {
+                        accessorKey: 'createdDate',
+                        header: 'Created Date',
+                        size: 120,
+                        enableSorting: false,
+                        enableColumnDragging: false,
+                        Cell: ({ row }) => {
+                            const timestamp = pimId ? row.original.product.createdDate : row.original.createdDate;
+                            const formattedDate = new Date(Number(timestamp)).toLocaleDateString('en-GB'); // Format as 'DD/MM/YYYY'
+                            
+                            return <span>{formattedDate}</span>;
+                        },
+                        
+
                     },
                     {
                         accessorKey: 'articleCode',
@@ -102,8 +117,8 @@ const ProductGrid = ({ data,
                 ],
             },
         ];
-         // Conditionally add the 'Publish' column when pimId is present, and insert it before the last column (Actions)
-         if (pimId) {
+        // Conditionally add the 'Publish' column when pimId is present, and insert it before the last column (Actions)
+        if (pimId && !map) {
             columnArray[0].columns.splice(columnArray[0].columns.length - 1, 0, {
                 header: 'Publish',
                 accessorKey: 'isPublished',
@@ -134,8 +149,8 @@ const ProductGrid = ({ data,
             ),
             enableSorting: false,
             enableColumnDragging: false,
-            mantineTableHeadCellProps: { align: 'center' },
-            mantineTableBodyCellProps: { align: 'center' },
+            mantineTableHeadCellProps: { align: 'left' },
+            mantineTableBodyCellProps: { align: 'left' },
             size: 100,
             Cell: ({ row }) => {
                 return map ? (
