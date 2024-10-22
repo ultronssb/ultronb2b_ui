@@ -18,7 +18,6 @@ const EnrichProduct = () => {
   const [product, setProduct] = useState({
     status: '',
   });
-  const resetRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
   const [imageError, setImageError] = useState('')
@@ -438,14 +437,8 @@ const EnrichProduct = () => {
       ...prevProduct, video: null
     }));
     setPim((prev) => ({
-      ...prev,
-      product: {
-        ...prev.product, image: null
-      }
+      ...prev, image: null
     }))
-    if (resetRef.current) {
-      resetRef.current();
-    }
     setVideoFile(null);
     setImageFile(null);
 
@@ -507,6 +500,8 @@ const EnrichProduct = () => {
     );
   };
 
+  console.log(pim, "pim");
+
   return (
     <EnrichProductContext.Provider value={{ handleChange, product, setProduct, pim, setPim, videoFile, multimedia, setMultimedia }}>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -539,7 +534,7 @@ const EnrichProduct = () => {
           </div>
 
           <Group justify="flex-start">
-            <FileButton resetRef={resetRef} onChange={(file) => fileChange(file)} accept="image/png,image/jpeg">
+            <FileButton onChange={(file) => fileChange(file)} accept="image/png,image/jpeg">
               {(props) => <Button {...props}>Upload Image</Button>}
             </FileButton>
             <Button disabled={!imageFile && !pim?.image} color="red" onClick={clearFile}>
@@ -547,7 +542,7 @@ const EnrichProduct = () => {
             </Button>
           </Group>
 
-          <div style={{ display: 'flex', justifyContent: 'space-around', width: '10rem',marginTop:'1rem',marginRight:'5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-around', width: '10rem', marginTop: '1rem', marginRight: '5rem' }}>
             <h3>Published</h3>
             <Switch
               checked={pim?.isPublished}
@@ -596,7 +591,7 @@ const EnrichProduct = () => {
           </div>
 
           <Group justify="flex-start">
-            <FileButton resetRef={resetRef} onChange={(file) => videoChange(file)} accept="video/mp4,video/x-m4v,video/*">
+            <FileButton onChange={(file) => videoChange(file)} accept="video/mp4,video/x-m4v,video/*">
               {(props) => <Button {...props}>Upload video</Button>}
             </FileButton>
             <Button disabled={!videoFile} color="red" onClick={clearFile}>
