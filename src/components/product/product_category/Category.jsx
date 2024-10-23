@@ -13,6 +13,8 @@ import notify from '../../../utils/Notification';
 import './Category.css';
 import { Text } from '@mantine/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import B2BModal from '../../../common/B2BModal';
+import AddBrand from './AddBrand';
 
 const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children, disable }) => {
   return (
@@ -107,6 +109,14 @@ const Category = () => {
   const id = queryParams.get('id');
   const categoryStatus = queryParams.get('status');
   const navigate = useNavigate();
+
+  const initialData = {
+    name: "",
+    status: "ACTIVE"
+  }
+  const [open, setOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(initialData);
+  const [activeComponent, setActiveComponent] = useState('');
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -207,6 +217,18 @@ const Category = () => {
     }
   };
 
+  const addGroup = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await B2B_API.post(`group/save`, { json: modalContent }).json();
+      setOpen(false)
+      fetchGroup();
+      notify({ id: 'create_group', message: response.message, success: true, error: false })
+    } catch (error) {
+      notify({ id: "add_group_error", message: error.message, success: false, error: true });
+    }
+  }
+
   const handleCancel = () => {
     setIsCreateCategory(false);
     const urlParams = new URLSearchParams(location.search);
@@ -283,7 +305,7 @@ const Category = () => {
       header: (
         <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
           <div>Status ({status})</div>
-          <FontAwesomeIcon icon={openStatus ? faFilterCircleXmark : faFilter} size={18} style={{ marginLeft: '1.5rem', cursor: 'pointer' }} onClick={() => setOpenStatus(!openStatus)} />
+          <FontAwesomeIcon icon={openStatus ? faFilterCircleXmark : faFilter} style={{ marginLeft: '1.5rem', cursor: 'pointer' }} onClick={() => setOpenStatus(!openStatus)} />
           {
             openStatus && (
               <div className='status-dropdown'>
@@ -364,6 +386,27 @@ const Category = () => {
     ]);
   }
 
+  const handleOpenModal = (key) => {
+    setActiveComponent(key)
+    setModalContent(prev => ({ ...prev, title: key }))
+    setOpen(true);
+  }
+
+  const handleModalChange = (event, key) => {
+    let val = event.target.value
+    setModalContent((prev => ({ ...prev, [key]:val.toUpperCase()})))
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+    setModalContent(initialData);
+  }
+
+
+  const renderModalChild = () => {
+    return <AddBrand onClose={handleClose} modalContent={modalContent} handleModalChange={handleModalChange} saveData={addGroup} />
+  }
+
   return (
     <div className='grid-container'>
       <div className='user--container'>
@@ -389,7 +432,7 @@ const Category = () => {
                 onChange={(event) => handleSelectChange(event)}
                 clearable={true}
               />
-              {(<FontAwesomeIcon icon={faCirclePlus} title={"masterNew"} />)}
+              {(<FontAwesomeIcon icon={faCirclePlus} title={"masterNew"} onClick={() => handleOpenModal("Groupname")} />)}
               <label>Types</label>
               {id ? <B2BInput
                 value={types}
@@ -453,6 +496,13 @@ const Category = () => {
           />
         )
       }
+      <B2BModal opened={open} size={'lg'} close={() => {
+        setModalContent(initialData);
+        setOpen(false)
+      }}
+      >
+        {renderModalChild()}
+      </B2BModal>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
 import GroupCreation from './GroupCreation';
+import B2BForm from '../../../common/B2BForm';
 
 const Group = () => {
   const [groups, setGroups] = useState();
@@ -14,6 +15,11 @@ const Group = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [isCreateGroup, setIsCreateGroup] = useState(false);
   const [groupId, setGroupId] = useState('');
+  const initialData = {
+    name: "",
+    status: "ACTIVE"
+  }
+  const [group, setGroup] = useState(initialData);
 
   useEffect(() => {
     fetchGroups();
@@ -36,6 +42,18 @@ const Group = () => {
       setIsLoading(false);
     }
   };
+
+  const addGroup = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await B2B_API.post(`group/save`, { json: group }).json();
+      setGroup(initialData);
+      setIsCreateGroup(false)
+      notify({ id: 'create_group', message: response.message, success: true, error: false })
+    } catch (error) {
+      notify({ id: "add_group_error", message: error.message, success: false, error: true });
+    }
+  }
 
   const handleChangeOrder = async (id, newOrder) => {
     setGroups(prevData => {
@@ -78,6 +96,29 @@ const Group = () => {
       });
     }
   };
+
+  const json = [
+    {
+      label: "Group Name",
+      value: group?.name,
+      required: true,
+      onChange: (event) => handleChange(event, "name"),
+      type: "text",
+      placeholder: "Tag Name"
+    },
+    {
+      label: "Status",
+      value: group?.status,
+      onChange: (event) => handleChange(event, "status"),
+      type: "radio",
+      className: "form-group status-container",
+      placeholder: "Status",
+      options: [
+        { value: "ACTIVE", label: "ACTIVE" },
+        { value: "INACTIVE", label: "INACTIVE" }
+      ]
+    }
+  ]
 
   const columns = useMemo(() => [
     {
@@ -152,8 +193,15 @@ const Group = () => {
     }
   ])
 
+  const handleChange = (event, key) => {
+    const value = event.target.type === 'radio' ? event.target.value : event.target.value;
+    setGroup(prev => ({
+      ...prev, [key]: key === 'name' ? value.toUpperCase() : value
+    }));
+  };
+
   const editGroup = (obj) => {
-    setGroupId(obj?.id);
+    setGroup(obj);
     setIsCreateGroup(true);
   };
 
@@ -163,8 +211,14 @@ const Group = () => {
 
   const handleBack = () => {
     setIsCreateGroup(false)
-    setGroupId('')
+    setGroup(initialData)
   }
+
+  const handleCancel = () => {
+    setIsCreateGroup(false)
+    setGroup(initialData)
+  };
+
 
   return (
     <div className='grid-container'>
@@ -193,10 +247,11 @@ const Group = () => {
       </div>
       {
         isCreateGroup ?
-          <GroupCreation
-            setIsCreateGroup={setIsCreateGroup}
-            groupId={groupId}
-            setGroupId={setGroupId}
+          <B2BForm
+            json={json}
+            handleChange={handleChange}
+            onSave={addGroup}
+            handleCancel={handleCancel}
           />
           :
           <B2BTableGrid

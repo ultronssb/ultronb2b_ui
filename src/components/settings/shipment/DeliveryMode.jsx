@@ -5,6 +5,7 @@ import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
 import DeliveryModeCreation from './DeliveryModeCreation';
+import B2BForm from '../../../common/B2BForm';
 
 const DeliveryMode = () => {
     const [deliveryModeList, setDeliveryModeList] = useState([]);
@@ -14,6 +15,11 @@ const DeliveryMode = () => {
     const [rowCount, setRowCount] = useState(0);
     const [isCreateDeliveryMode, setIsCreateDeliveryMode] = useState(false);
     const [deliveryModeId, setDeliveryModeId] = useState('');
+    const initialData = {
+        name: '',
+        status: 'ACTIVE'
+    };
+    const [deliveryMode, setDeliveryMode] = useState(initialData);
 
     useEffect(() => {
         fetchDeliveryModes();
@@ -33,6 +39,28 @@ const DeliveryMode = () => {
             setIsLoading(false);
         }
     };
+
+    const json = [
+        {
+            label: "Name",
+            value: deliveryMode.name,
+            onChange: (event) => handleChange(event, 'name'),
+            type: "text",
+            placeholder: "Delivery Mode Name"
+        },
+        {
+            label: "Status",
+            type: "radio",
+            name: "status",
+            className: "form-group status-container",
+            options: [
+                { value: "ACTIVE", label: "ACTIVE" },
+                { value: "INACTIVE", label: "INACTIVE" }
+            ],
+            value: deliveryMode.status,
+            onChange: (event) => handleChange(event, 'status')
+        }
+    ];
 
     const columns = useMemo(() => [
         {
@@ -80,19 +108,46 @@ const DeliveryMode = () => {
         }
     ], []);
 
+    const createDeliveryMode = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await B2B_API.post('delivery-mode', { json: deliveryMode }).json();
+            setDeliveryMode(initialData);
+            notify({ message: response.message, success: true, error: false });
+            setIsCreateDeliveryMode(false)
+        } catch (error) {
+            notify({ message: error.message, success: false, error: true });
+        }
+    };
+
+    const handleChange = (event, key) => {
+        const value = event.target.type === 'radio' ? event.target.value : event.target.value;
+        setDeliveryMode((prev) => ({
+            ...prev,
+            [key]: key === 'name' ? value.toUpperCase() : value
+        }));
+    };
+
+
     const editDeliveryMode = (obj) => {
-        setDeliveryModeId(obj?.id);
+        setDeliveryMode(obj);
         setIsCreateDeliveryMode(true);
     };
 
     const handleCreate = () => {
         setIsCreateDeliveryMode(true)
+        setDeliveryMode(initialData)
     }
 
     const handleBack = () => {
         setIsCreateDeliveryMode(false)
-        setDeliveryModeId('')
+        setDeliveryMode(initialData)
     }
+
+    const handleCancel = () => {
+        setIsCreateDeliveryMode(false)
+        setDeliveryMode(initialData)
+    };
 
     return (
         <div>
@@ -121,10 +176,11 @@ const DeliveryMode = () => {
             </div>
             {
                 isCreateDeliveryMode ?
-                    <DeliveryModeCreation
-                        setIsCreateDeliveryMode={setIsCreateDeliveryMode}
-                        deliveryModeId={deliveryModeId}
-                        setDeliveryModeId={setDeliveryModeId}
+                    <B2BForm
+                        json={json}
+                        handleChange={handleChange}
+                        onSave={createDeliveryMode}
+                        handleCancel={handleCancel}
                     />
                     :
                     <B2BTableGrid

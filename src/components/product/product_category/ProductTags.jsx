@@ -6,6 +6,7 @@ import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
 import ProductTagCreation from './ProductTagCreation';
+import B2BForm from '../../../common/B2BForm';
 
 const ProductTags = () => {
 
@@ -16,6 +17,12 @@ const ProductTags = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [isCreateTag, setIsCreateTag] = useState(false);
   const [tagId, setTagId] = useState('');
+  const initialData = {
+    name: "",
+    status: "ACTIVE"
+  }
+  const [tag, setTag] = useState(initialData);
+
 
   useEffect(() => {
     fetchTags();
@@ -82,10 +89,61 @@ const ProductTags = () => {
     }
   ])
 
+  const json = [
+    {
+      label: "Tag Name",
+      value: tag?.name,
+      required: true,
+      onChange: (event) => handleChange(event, "name"),
+      type: "text",
+      placeholder: "Tag Name"
+    },
+    {
+      label: "Status",
+      value: tag?.status,
+      onChange: (event) => handleChange(event, "status"),
+      type: "radio",
+      className: "form-group status-container",
+      placeholder: "Status",
+      options: [
+        { value: "ACTIVE", label: "ACTIVE" },
+        { value: "INACTIVE", label: "INACTIVE" }
+      ]
+    }
+  ]
+
+  const addGroup = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await B2B_API.post(`product-tag`, { json: tag }).json();
+      setTag(initialData);
+      notify({
+        id: 'create_tag',
+        message: response.message || "Tag added successfully",
+        success: true,
+        error: false
+      })
+      setIsCreateTag(false)
+      fetchTags();
+    } catch (error) {
+      notify({
+        id: "add_tag_error",
+        message: error.message,
+        success: false,
+        error: true
+      });
+    }
+  }
+
+  const handleChange = (event, key) => {
+    const value = event.target.type === 'radio' ? event.target.value : event.target.value;
+    setTag(prev => ({
+      ...prev, [key]: key === 'name' ? _.capitalize(value) : value
+    }));
+  };
+
   const editGroup = (obj) => {
-    console.log(obj);
-    
-    setTagId(obj?.id);
+    setTag(obj);
     setIsCreateTag(true);
   };
 
@@ -95,7 +153,7 @@ const ProductTags = () => {
 
   const handleBack = () => {
     setIsCreateTag(false)
-    setTagId('')
+    setTag(initialData)
   }
 
   return (
@@ -125,10 +183,10 @@ const ProductTags = () => {
       </div>
       {
         isCreateTag ?
-          <ProductTagCreation
-            setIsCreateTag={setIsCreateTag}
-            tagId={tagId}
-            setTagId={setTagId}
+          <B2BForm
+            json={json}
+            handleChange={handleChange}
+            onSave={addGroup}
           />
           :
           <B2BTableGrid

@@ -1,9 +1,12 @@
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
+import { B2B_API, createB2BAPI } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import TaxonomyCreation from './TaxonomyCreation';
+import B2BForm from '../../../common/B2BForm';
+import _ from 'lodash';
+import notify from '../../../utils/Notification';
 
 const Taxonomy = () => {
   const [taxonomys, setTaxonomys] = useState([]);
@@ -13,7 +16,13 @@ const Taxonomy = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [isCreateTaxonomy, setIsCreateTaxonomy] = useState(false);
   const [taxonomyId, setTaxonomyId] = useState();
-
+  const initialData = {
+    name: "",
+    description: "",
+    status: "ACTIVE",
+  }
+  const [taxonomy, setTaxonomy] = useState(initialData)
+  const B2B_API = createB2BAPI();
   useEffect(() => {
     fetchTaxonomys();
   }, [pagination.pageIndex, pagination.pageSize]);
@@ -30,6 +39,56 @@ const Taxonomy = () => {
       setIsLoading(false);
     }
   };
+  const json = [
+    {
+      label: "Taxonomy Name",
+      value: taxonomy?.name,
+      required: true,
+      onChange: (event) => handleChange(event, "name"),
+      type: "text",
+      placeholder: "Taxonomy Name"
+    },
+    {
+      label: "Status",
+      value: taxonomy?.status,
+      onChange: (event) => handleChange(event, "status"),
+      type: "radio",
+      className: "form-group status-container",
+      placeholder: "Status",
+      options: [
+        { value: "ACTIVE", label: "ACTIVE" },
+        { value: "INACTIVE", label: "INACTIVE" }
+      ]
+    }
+  ]
+
+  const handleChange = (event, key) => {
+    const value = event.target.type === 'radio' ? event.target.value : event.target.value;
+    setTaxonomy(prev => ({
+      ...prev, [key]: key === 'name' ? _.capitalize(value) : value
+    }));
+  };
+
+  const addTaxonomy = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await B2B_API.post(`taxonomy`, { json: taxonomy }).json();
+      setTaxonomy(initialData);
+      notify({
+        message: response.message,
+        success: true,
+        error: false
+      })
+      setIsCreateTaxonomy(false)
+      fetchTaxonomys();
+    } catch (error) {
+      notify({
+        message: error.message,
+        success: false,
+        error: true
+      });
+    }
+  }
 
   const columns = useMemo(() => [
     {
@@ -84,18 +143,24 @@ const Taxonomy = () => {
   ], [])
 
   const editTaxonomy = (obj) => {
-    setTaxonomyId(obj?.id);
+    setTaxonomy(obj);
     setIsCreateTaxonomy(true);
   };
 
   const handleCreate = () => {
     setIsCreateTaxonomy(true)
+    setTaxonomy(initialData)
   }
 
   const handleBack = () => {
     setIsCreateTaxonomy(false)
-    setTaxonomyId('')
+    setTaxonomy(initialData)
   }
+
+  const handleCancel = () => {
+    setIsCreateTaxonomy(false)
+    setTaxonomyId('')
+  };
 
   return (
     <div>
@@ -124,10 +189,11 @@ const Taxonomy = () => {
       </div>
       {
         isCreateTaxonomy ?
-          <TaxonomyCreation
-            setIsCreateTaxonomy={setIsCreateTaxonomy}
-            taxonomyId={taxonomyId}
-            setTaxonomyId={setTaxonomyId}
+          <B2BForm
+            json={json}
+            handleChange={handleChange}
+            onSave={addTaxonomy}
+            handleCancel={handleCancel}
           />
           :
           <B2BTableGrid

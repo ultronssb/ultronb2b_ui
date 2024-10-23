@@ -33,7 +33,7 @@ const BrandCreation = ({ setIsCreateBrand, brandId, setBrandId, }) => {
     }
 
     useEffect(() => {
-        if (brandId !== '') {
+        if (brandId) {
             fetchBrand()
         }
     }, [brandId])
