@@ -6,6 +6,9 @@ import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
 import GroupCreation from './GroupCreation';
 import B2BForm from '../../../common/B2BForm';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Text } from '@mantine/core';
 
 const Group = () => {
   const [groups, setGroups] = useState();
@@ -20,15 +23,17 @@ const Group = () => {
     status: "ACTIVE"
   }
   const [group, setGroup] = useState(initialData);
+  const [status, setStatus] = useState('ACTIVE')
+  const [openDropDown, setOpenDropDown] = useState(false);
 
   useEffect(() => {
     fetchGroups();
-  }, [pagination.pageIndex, pagination.pageSize]);
+  }, [pagination.pageIndex, pagination.pageSize, status]);
 
   const fetchGroups = async () => {
     try {
       setIsLoading(true);
-      const response = await B2B_API.get(`group/get-all-group?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const response = await B2B_API.get(`group/get-all-group?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&status=${status}`).json();
       setGroups(response?.response?.content);
       setRowCount(response?.response?.totalElements)
     } catch (error) {
@@ -160,9 +165,21 @@ const Group = () => {
       },
     },
     {
-      header: 'Status',
+      header: (
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+          <div>Status ({status})</div>
+          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(!openDropDown)} />
+          {openDropDown && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>}
+        </div>
+      ),
       accessorKey: 'status',
-      size: 100,
       Cell: ({ cell, row }) => {
         const status = row.original.status;
         return (
@@ -192,6 +209,11 @@ const Group = () => {
       }
     }
   ])
+
+  const handleStatusChange = (status) => {
+    setOpenDropDown(false)
+    setStatus(status)
+  }
 
   const handleChange = (event, key) => {
     const value = event.target.type === 'radio' ? event.target.value : event.target.value;

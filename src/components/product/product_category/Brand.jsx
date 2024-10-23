@@ -1,10 +1,11 @@
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
-import B2BTableGrid from '../../../common/B2BTableGrid';
-import BrandCreation from './BrandCreation';
 import B2BForm from '../../../common/B2BForm';
+import B2BTableGrid from '../../../common/B2BTableGrid';
 
 const Brand = () => {
   const [brands, setBrands] = useState([]);
@@ -18,6 +19,8 @@ const Brand = () => {
     status: "ACTIVE",
   }
   const [brand, setBrand] = useState(initialData);
+  const [status, setStatus] = useState('ACTIVE')
+  const [openDropDown, setOpenDropDown] = useState(false);
 
   useEffect(() => {
     getAllBrand();
@@ -33,11 +36,16 @@ const Brand = () => {
     }
   }
 
+  const handleStatusChange = (status) => {
+    setStatus(status);
+    setOpenDropDown(false)
+  }
+
   const brandColumns = useMemo(() => [
     {
       header: 'S.No',
       accessorFn: (_, index) => index + 1,
-      size: 100,
+      size: 50,
       mantineTableHeadCellProps: {
         align: 'center'
       },
@@ -47,14 +55,24 @@ const Brand = () => {
     },
     {
       header: 'Name',
-      accessorKey: 'name'
+      accessorKey: 'name',
+      size: 100
     },
     {
       header: 'Description',
-      accessorKey: 'description'
+      accessorKey: 'description',
+      size: 180
     },
     {
-      header: 'Status',
+      header: (
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+          <div onClick={() => setOpenDropDown((prev) => {
+            console.log(!prev);
+            return !prev
+          })}>Status ({status})</div>
+          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} />
+        </div>
+      ),
       accessorKey: 'status',
       Cell: ({ cell, row }) => {
         const status = row.original.status;
@@ -73,13 +91,13 @@ const Brand = () => {
       mantineTableBodyCellProps: {
         align: 'center'
       },
-      size: 100,
+      size: 50,
       Cell: ({ row }) => {
         const { original } = row;
         return (
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
             <IconPencil onClick={() => editBrand(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-
+            <p>{openDropDown ? "Working" : "No Working"}</p>
           </div>
         )
       }

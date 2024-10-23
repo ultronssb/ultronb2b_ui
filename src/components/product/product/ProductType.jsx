@@ -282,7 +282,7 @@ const ProductType = () => {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', cursor: 'pointer', fontSize: '1.25rem' }}>
                                     <MultiSelect
                                         value={product?.tags || []}
-                                        style={{width: '250px'}}
+                                        style={{ width: '250px' }}
                                         placeholder="Tags"
                                         withScrollArea={true}
                                         size='xs'
@@ -384,7 +384,7 @@ const ProductType = () => {
                     </div>
                 </div>
             </form>
-            <B2BModal opened={open} size={'lg'} close={() => {
+            <B2BModal opened={open} size={'lg'} title={modalContent.title} close={() => {
                 setModalContent(initialData);
                 setOpen(false)
             }}

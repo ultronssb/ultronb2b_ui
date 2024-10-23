@@ -4,6 +4,8 @@ import _ from 'lodash';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { useMemo, useState } from 'react';
 import { BASE_URL } from '../api/EndPoints';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
 
 const ProductGrid = ({ data,
     editVariant,
@@ -20,7 +22,8 @@ const ProductGrid = ({ data,
     onPaginationChange = () => { }, pagination, pageCount, manualPagination,
     rowCount, isFetching }) => {
     const { pimId } = data[0] || {};
-
+    const [status, setStatus] = useState('ACTIVE');
+    const [openMenubar, setOpenMenubar] = useState(false);
     const columns = useMemo(() => {
         const columnArray = [
             {
@@ -42,22 +45,22 @@ const ProductGrid = ({ data,
                     {
                         accessorKey: 'createdDate',
                         header: 'Created Date',
-                        size: 120,
+                        size: 80,
                         enableSorting: false,
                         enableColumnDragging: false,
                         Cell: ({ row }) => {
                             const timestamp = pimId ? row.original.product.createdDate : row.original.createdDate;
                             const formattedDate = new Date(Number(timestamp)).toLocaleDateString('en-GB'); // Format as 'DD/MM/YYYY'
-                            
+
                             return <span>{formattedDate}</span>;
                         },
-                        
+
 
                     },
                     {
                         accessorKey: 'articleCode',
                         header: 'Product Code',
-                        size: 150,
+                        size: 80,
                         enableSorting: false,
                         enableColumnDragging: false,
                         Cell: ({ row }) => (
@@ -67,7 +70,7 @@ const ProductGrid = ({ data,
                     {
                         accessorKey: 'articleName',
                         header: 'Product Name',
-                        size: 250,
+                        size: 200,
                         enableSorting: false,
                         enableColumnDragging: false,
                         Cell: ({ row }) => (
@@ -77,7 +80,7 @@ const ProductGrid = ({ data,
                     {
                         accessorKey: 'brand.name',
                         header: 'Brand',
-                        size: 150,
+                        size: 130,
                         enableSorting: false,
                         enableColumnDragging: false,
                         Cell: ({ row }) => (
@@ -101,8 +104,13 @@ const ProductGrid = ({ data,
                     },
                     {
                         accessorKey: 'status',
-                        header: 'Status',
-                        size: 100,
+                        header: (
+                            <div style={{ alignItems: 'center' }}>
+                                <div>Status({status})</div>
+                                <FontAwesomeIcon icon={openMenubar ? faFilterCircleXmark : faFilter} onClick={() => setOpenMenubar(!openMenubar)} />
+                            </div>
+                        ),
+                        size: 180,
                         enableSorting: false,
                         enableColumnDragging: false,
                         Cell: ({ cell, row }) => {

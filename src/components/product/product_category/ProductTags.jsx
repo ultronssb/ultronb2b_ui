@@ -7,6 +7,9 @@ import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
 import ProductTagCreation from './ProductTagCreation';
 import B2BForm from '../../../common/B2BForm';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileCircleXmark, faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { Text } from '@mantine/core';
 
 const ProductTags = () => {
 
@@ -22,21 +25,27 @@ const ProductTags = () => {
     status: "ACTIVE"
   }
   const [tag, setTag] = useState(initialData);
-
+  const [status, setStatus] = useState('ACTIVE');
+  const [openMenubar, setOpenMenubar] = useState(false)
 
   useEffect(() => {
     fetchTags();
-  }, [pagination.pageIndex, pagination.pageSize]);
+  }, [pagination.pageIndex, pagination.pageSize, status]);
 
   const fetchTags = async () => {
     try {
-      const response = await B2B_API.get(`product-tag/page?page=${pagination.pageIndex}&size=${pagination.pageSize}`).json();
+      const response = await B2B_API.get(`product-tag/page?page=${pagination.pageIndex}&size=${pagination.pageSize}&status=${status}`).json();
       setTags(response?.response?.content);
       setRowCount(response?.response?.totalElements)
     } catch (error) {
       console.error('Failed to fetch groups:', error);
     }
   };
+
+  const handleStatusChange = (status) => {
+    setOpenMenubar(false)
+    setStatus(status)
+  }
 
   const columns = useMemo(() => [
     {
@@ -57,7 +66,21 @@ const ProductTags = () => {
       size: 120
     },
     {
-      header: 'Status',
+      header: (
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+          <div>Status({status})</div>
+          <FontAwesomeIcon icon={openMenubar ? faFilterCircleXmark : faFilter} onClick={() => setOpenMenubar(!openMenubar)} />
+          {openMenubar && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>
+          }
+        </div>
+      ),
       accessorKey: 'status',
       size: 100,
       Cell: ({ cell, row }) => {

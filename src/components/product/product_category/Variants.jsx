@@ -11,6 +11,8 @@ import B2BSelectable from '../../../common/B2BSelectable';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
 import './Variant.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
 
 const Variants = () => {
   const initialState = {
@@ -43,13 +45,15 @@ const Variants = () => {
   const [errors, setErrors] = useState({});
   const [groups, setGroups] = useState([]);
   const [groupName, setGroupName] = useState('');
+  const [status, setStatus] = useState('ACTIVE')
+  const [openDropDown, setOpenDropDown] = useState(false);
 
   const [variantTypeList, setVariantTypeList] = useState([])
 
 
   useEffect(() => {
     fetchAllVariants();
-  }, [pagination.pageIndex, pagination.pageSize, activeTab]);
+  }, [pagination.pageIndex, pagination.pageSize, activeTab, status]);
 
   useEffect(() => {
     fetchAllVariantType();
@@ -66,7 +70,7 @@ const Variants = () => {
     const type = activeTab === 'More Variants' ? 'Others' : activeTab === 'Solid / Pattern' ? 'Solid' : activeTab;
     try {
       setIsLoading(true);
-      const res = await B2B_API.get(`variant/get-All?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&type=${type}`).json();
+      const res = await B2B_API.get(`variant/get-All?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&type=${type}&status=${status}`).json();
       const data = res?.response?.content || [];
       setRowCount(res?.response?.totalElements || 0);
       setVariantList(data);
@@ -88,7 +92,7 @@ const Variants = () => {
   const fetchAllVariantType = async () => {
     try {
       setIsLoading(true);
-      const res = await B2B_API.get(`variantType`).json();
+      const res = await B2B_API.get(`variantType?& status=${status}`).json();
       const data = res?.response || [];
       const filteredData = data.filter(item => !['Colour', 'Solid'].includes(item));
       setVariantTypes(filteredData);
@@ -358,6 +362,11 @@ const Variants = () => {
     fetchAllVariants();
   };
 
+  const handleStatusChange = (status) => {
+    setOpenDropDown(false)
+    setStatus(status)
+  }
+
   const columns = {
     "Colour": [
       {
@@ -385,7 +394,20 @@ const Variants = () => {
         }
       },
       {
-        header: 'Status',
+        header: (
+          <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+            <div>Status ({status})</div>
+            <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(!openDropDown)} />
+            {openDropDown && <div className='status-dropdown'>
+              <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+                <Text size="xs" fw={800}>ACTIVE</Text>
+              </div>
+              <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+                <Text size="xs" fw={800}>INACTIVE</Text>
+              </div>
+            </div>}
+          </div>
+        ),
         accessorKey: 'status',
         Cell: ({ cell, row }) => {
           const status = row.original.status;
@@ -548,7 +570,7 @@ const Variants = () => {
       {!isCreateVariant && (
         <>
           <div className='user--container'>
-          <header>Variant Details</header>
+            <header>Variant Details</header>
             <div className='right--section'>
               <B2BButton
                 style={{ color: '#000' }}

@@ -2,6 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react'
 import B2BTableGrid from '../../../common/B2BTableGrid'
 import { B2B_API } from '../../../api/Interceptor';
 import Barcode from 'react-barcode';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { Text } from '@mantine/core';
 
 const VariantBarcode = () => {
   const [productVariant, setProductVariant] = useState([]);
@@ -9,14 +12,16 @@ const VariantBarcode = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
+  const [status, setStatus] = useState('ACTIVE');
+  const [openMenubar, setOpenMenubar] = useState(false);
 
   useEffect(() => {
     fetchVariant();
-  }, [pagination])
+  }, [pagination, status])
 
   const fetchVariant = async () => {
     try {
-      const res = await B2B_API.get(`barcode/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const res = await B2B_API.get(`barcode/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&status=${status}`).json();
       const data = res.response.content;
       setProductVariant(res?.response?.content);
       setRowCount(res?.response?.totalElements)
@@ -25,6 +30,11 @@ const VariantBarcode = () => {
       console.error('Error fetching variants:', error);
     }
   };
+
+  const handleStatusChange = (status) => {
+    setOpenMenubar(false)
+    setStatus(status)
+  }
 
   const columns = useMemo(() => [
     {
@@ -46,7 +56,7 @@ const VariantBarcode = () => {
     {
       header: 'Barcode',
       accessorKey: 'barcode',
-      size: 120,  
+      size: 120,
       Cell: ({ cell, row }) => {
         const status = row.original.barcode;
         return (
@@ -56,8 +66,22 @@ const VariantBarcode = () => {
       },
     },
     {
-      header: 'Status',
-      size: 100,
+      header: (
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+          <div>status({status})</div>
+          <FontAwesomeIcon icon={openMenubar ? faFilterCircleXmark : faFilter} onClick={() => setOpenMenubar(!openMenubar)} />
+          {openMenubar && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>
+          }
+        </div>
+      ),
+      size: 180,
       Cell: ({ cell, row }) => {
         const status = row.original.status;
         return (
@@ -67,7 +91,7 @@ const VariantBarcode = () => {
         );
       },
     },
-    
+
   ])
 
   return (

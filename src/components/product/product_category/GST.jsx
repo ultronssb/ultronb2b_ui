@@ -9,6 +9,8 @@ import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
 import B2BTextarea from '../../../common/B2BTextarea';
 import B2BInput from '../../../common/B2BInput';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
 
 const GST = () => {
   const initialGSTState = {
@@ -30,6 +32,8 @@ const GST = () => {
   const [rowCount, setRowCount] = useState(5);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [status, setStatus] = useState('ACTIVE')
+  const [openDropDown, setOpenDropDown] = useState(false)
 
   useEffect(() => {
     fetchAllGSTs();
@@ -72,9 +76,14 @@ const GST = () => {
       size: 130
     },
     {
-      header: 'Status',
+      header: (
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+          <div>Status ({status})</div>
+          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(!openDropDown)} />
+        </div>
+      ),
       accessorKey: 'status',
-      size: 80,
+      size: 120,
       Cell: ({ cell, row }) => {
         const status = row.original.status;
         return (
@@ -196,7 +205,7 @@ const GST = () => {
       {!createGSTArea && (
         <>
           <div className='user--container'>
-          <header>GST Details</header>
+            <header>GST Details</header>
             <div className='right--section'>
               <B2BButton
                 style={{ color: '#000' }}

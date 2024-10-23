@@ -3,9 +3,8 @@ import B2BButton from '../../../common/B2BButton'
 
 const AddBrand = ({ modalContent, onClose, saveData, handleModalChange }) => {
     return (
-        <div className='layout'>
             <form onSubmit={(e) => saveData(e, modalContent?.title)} className='form-layout'>
-                <h3>{modalContent?.id ? 'Update' : 'Create'} {modalContent.title}</h3>
+                {/* <h3>{modalContent?.id ? 'Update' : 'Create'} {modalContent.title}</h3> */}
                 <div className='layout-fields'>
                     <label className='layout-fields-label'>Name</label>
                     <input
@@ -49,7 +48,6 @@ const AddBrand = ({ modalContent, onClose, saveData, handleModalChange }) => {
                     <B2BButton type='submit' name={modalContent?.id ? 'Update' : "Save"} />
                 </div>
             </form>
-        </div>
     )
 }
 

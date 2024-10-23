@@ -394,7 +394,7 @@ const Category = () => {
 
   const handleModalChange = (event, key) => {
     let val = event.target.value
-    setModalContent((prev => ({ ...prev, [key]:val.toUpperCase()})))
+    setModalContent((prev => ({ ...prev, [key]: val.toUpperCase() })))
   }
 
   const handleClose = () => {
@@ -432,7 +432,7 @@ const Category = () => {
                 onChange={(event) => handleSelectChange(event)}
                 clearable={true}
               />
-              {(<FontAwesomeIcon icon={faCirclePlus} title={"masterNew"} onClick={() => handleOpenModal("Groupname")} />)}
+              {(<FontAwesomeIcon icon={faCirclePlus} title={"masterNew"} size='xl' onClick={() => handleOpenModal("Groupname")} />)}
               <label>Types</label>
               {id ? <B2BInput
                 value={types}
@@ -496,7 +496,7 @@ const Category = () => {
           />
         )
       }
-      <B2BModal opened={open} size={'lg'} close={() => {
+      <B2BModal opened={open} size={'lg'} title={modalContent?.title} close={() => {
         setModalContent(initialData);
         setOpen(false)
       }}

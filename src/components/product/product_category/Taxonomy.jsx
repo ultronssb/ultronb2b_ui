@@ -7,6 +7,9 @@ import TaxonomyCreation from './TaxonomyCreation';
 import B2BForm from '../../../common/B2BForm';
 import _ from 'lodash';
 import notify from '../../../utils/Notification';
+import { Text } from '@mantine/core';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Taxonomy = () => {
   const [taxonomys, setTaxonomys] = useState([]);
@@ -23,6 +26,9 @@ const Taxonomy = () => {
   }
   const [taxonomy, setTaxonomy] = useState(initialData)
   const B2B_API = createB2BAPI();
+  const [status, setStatus] = useState('ACTIVE')
+  const [openDropDown, setOpenDropDown] = useState(false);
+
   useEffect(() => {
     fetchTaxonomys();
   }, [pagination.pageIndex, pagination.pageSize]);
@@ -89,6 +95,10 @@ const Taxonomy = () => {
       });
     }
   }
+  const handleStatusChange = (status) => {
+    setOpenDropDown(false)
+    setStatus(status)
+  }
 
   const columns = useMemo(() => [
     {
@@ -107,11 +117,23 @@ const Taxonomy = () => {
       accessorKey: 'name',
       size: 120
     },
-
     {
-      header: 'Status',
+      header: (
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+          <div onClick={() => setOpenDropDown(!openDropDown)}>Status ({status})</div>
+          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} />
+          {openDropDown && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>}
+        </div>
+      ),
+      size: 200,
       accessorKey: 'status',
-      size: 100,
       Cell: ({ cell, row }) => {
         const status = row.original.status;
         return (

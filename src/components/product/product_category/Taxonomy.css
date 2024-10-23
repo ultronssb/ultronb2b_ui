@@ -13,11 +13,13 @@
 
 .layout-fields {
     display: flex;
-    gap: 3rem;
+    /* gap: 3rem; */
+    justify-content: center;
+    align-items: center;
 }
 
 .layout-fields-label {
-    width: 180px;
+    width: 120px;
 }
 
 .layout-fields-input {
@@ -32,7 +34,7 @@
 .layout-fields-status-input {
     width: 250px;
     display: flex;
-    gap: 5rem;
+    gap: 2rem;
 }
 
 .layout-fields-status-radio {
@@ -43,4 +45,5 @@
 .layout-fields-btn {
     display: flex;
     gap: 2rem;
+    justify-content: center;
 }
