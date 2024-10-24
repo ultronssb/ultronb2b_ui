@@ -53,7 +53,6 @@ export const B2B_API = ky.create({
 
                 if (response.status === 403 || response.status === 401) {
                     console.log(response.status, 'response.status');
-                    return navigate("/"); // Navigate to index page
                 }
                 return await response.json();
             }
