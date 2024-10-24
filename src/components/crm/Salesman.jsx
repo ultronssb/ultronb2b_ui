@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../api/Interceptor';
+import { createB2BAPI } from '../../api/Interceptor';
 import B2BTableGrid from '../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../layout/Layout';
 import notify from '../../utils/Notification';
@@ -13,6 +13,8 @@ const Salesman = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [customerCounts, setCustomerCount] = useState({});
+  const B2B_API = createB2BAPI();
+
   useEffect(() => {
     fetchSaleMan();
     fetchCustomerCount()

@@ -2,7 +2,6 @@ import { AppShell, Avatar, Button, Container, Group, rem } from '@mantine/core';
 import { IconLogout, IconUserCircle } from '@tabler/icons-react';
 import { createContext, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { B2B_API } from '../api/Interceptor';
 import ultron_logo from "../assets/ultron-logo.png";
 import avatar from '../avatar.jpg';
 import B2BMenu from '../common/B2BMenu';
@@ -13,9 +12,11 @@ import { ModuleJson } from '../moduleData/ModuleJson';
 import CustomPopup from '../utils/Custompopup';
 import UseInactivityLogout from '../utils/UseInactivityLogout';
 import { LogOut } from '../utils/Utilities';
+import { createB2BAPI } from '../api/Interceptor';
 
 export const ScrollContext = createContext(null);
-export const ActiveTabContext = createContext(null)
+export const ActiveTabContext = createContext()
+
 export default function Layout() {
   const [stateData, setStateData] = useState({
     parentId: null,
@@ -24,7 +25,7 @@ export default function Layout() {
     childParentId: null,
     buttonGroup: []
   });
-  const [userName, setUserName] = useState('');
+  const [user, setUser] = useState(null);
 
   const [opened, setOpened] = useState(false);
   const openModal = () => setOpened(true);
@@ -34,7 +35,7 @@ export default function Layout() {
   const { state } = useLocation();
   const appShellRef = useRef(null)
   const headerData = useMemo(() => ModuleJson(null), []);
-
+  const B2B_API = createB2BAPI();
 
   const menuItems = [
     {
@@ -61,13 +62,14 @@ export default function Layout() {
 
   useEffect(() => {
     if (state) {
-      setStateData({
+      setStateData((prevState) => ({
+        ...prevState,
         parentId: state.parentId,
         activeIndex: state.activeIndex,
         childTabs: state.tabs,
         childParentId: state.childParentId,
-        buttonGroup: state.childParentId ? ModuleJson(state.childParentId) : []
-      });
+        buttonGroup: state.childParentId ? ModuleJson(state.childParentId) : [],
+      }));
     }
   }, [state]);
 
@@ -78,10 +80,8 @@ export default function Layout() {
   const fetchUser = async () => {
     let userId = JSON.parse(localStorage.getItem('user'))?.userId
     const response = await B2B_API.get(`user/${userId}`).json();
-    const { firstName } = response.response
-    setUserName(firstName)
+    setUser(response?.response)
   }
-
 
   // This Funtion is used to navigate page from header 
   const handleLinkClick = useCallback((index, tab) => {
@@ -112,8 +112,10 @@ export default function Layout() {
     navigate(tabs.path, { state: { parentId: tabs.parentId, tabs: parentTabs, childParentId: tabs.childParentId, activeIndex: index, buttonGroup: buttonGroup } });
   }
 
+  const contextValue = { stateData, setStateData, user };
+
   return (
-    <ActiveTabContext.Provider value={{ stateData, setStateData }}>
+    <ActiveTabContext.Provider value={contextValue}>
       <ScrollContext.Provider value={scrollToTop}>
         <AppShell header={{ height: 60 }} ref={appShellRef} padding="md" style={{ height: '100vh' }}>
           <AppShell.Header style={{ borderBottom: 'none' }}>
@@ -134,7 +136,7 @@ export default function Layout() {
                 <B2BMenu trigger="hover" menuItems={menuItems}>
                   <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', width: '10rem', justifyContent: 'flex-end' }}>
                     <div style={{ paddingRight: '2rem' }}>
-                      <label className="person_name">Hi, {userName}</label>
+                      <label className="person_name">Hi, {user?.firstName}</label>
                     </div>
                     <Avatar styles={{ image: { padding: 0 } }} className="avatar" src={avatar} alt="Sachin's Avatar" />
                   </div>

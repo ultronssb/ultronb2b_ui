@@ -1,10 +1,10 @@
 import { IconPencil } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ERROR_MESSAGE } from '../../../common/CommonResponse';
 import notify from '../../../utils/Notification';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 export const Attribute = () => {
   const initialData = {
@@ -18,6 +18,7 @@ export const Attribute = () => {
   const [rowCount, setRowCount] = useState(5);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const B2B_API = createB2BAPI();
 
   const columns = useMemo(() => [
     {

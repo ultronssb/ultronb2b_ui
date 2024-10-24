@@ -1,7 +1,6 @@
 import { PasswordInput } from '@mantine/core';
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BAnchor from '../../../common/B2BAnchor';
 import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
@@ -11,6 +10,7 @@ import B2BTextarea from '../../../common/B2BTextarea';
 import { ERROR_MESSAGE } from '../../../common/CommonResponse';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const AddUsers = () => {
   const initialUserState = {
@@ -37,6 +37,7 @@ const AddUsers = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalSearch, setGlobalSearch] = useState("");
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchAllUsers();

@@ -1,11 +1,11 @@
 import { Select } from '@mantine/core'
 import React from 'react'
 
-const B2BSelect = ({ placeholder,name, value, data, required, onChange, style, styles, clearable, scroll, leftSection, leftSectionPointerEvents, error, disabled }) => {
+const B2BSelect = ({ searchable, className, radius, defaultValue, placeholder, value, data, required, onChange, style, styles, clearable, scroll, leftSection, leftSectionPointerEvents, error, disabled, name }) => {
     
     return (
         <Select
-            className='input-textField'
+            className={className ?? 'input-textField'}
             style={style}
             name={name}
             styles={{...styles}}
@@ -16,12 +16,13 @@ const B2BSelect = ({ placeholder,name, value, data, required, onChange, style, s
             onChange={onChange}
             clearable={clearable}
             withScrollArea={scroll}
-            searchable
+            searchable={searchable}
+            defaultValue={defaultValue}
             disabled={disabled}
             leftSectionPointerEvents={leftSectionPointerEvents}
             leftSection= {leftSection}
             comboboxProps={{ shadow: 'md' }}
-            radius="sm"
+            radius={radius || "sm"}
             size='md'
             error={error}
         />

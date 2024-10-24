@@ -1,7 +1,7 @@
 import ky from 'ky';
 import 'mantine-react-table/styles.css'; //make sure MRT styles were imported in your app root (once)
 import { useEffect, useMemo, useState } from "react";
-import { B2B_API } from '../../api/Interceptor';
+import { createB2BAPI } from '../../api/Interceptor';
 import B2BTableGrid from "../../common/B2BTableGrid";
 import { Box, Grid, SimpleGrid } from '@mantine/core';
 

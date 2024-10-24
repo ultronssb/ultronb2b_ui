@@ -1,9 +1,9 @@
 import { Tabs } from '@mantine/core';
 import React, { useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../api/Interceptor';
 import B2BTableGrid from '../../common/B2BTableGrid';
 import { getpayLoadFromToken } from '../../common/JwtPayload';
 import notify from '../../utils/Notification';
+import { createB2BAPI } from '../../api/Interceptor';
 
 const Enquiry = () => {
   const [enquiries, setEnquiries] = useState([]);
@@ -12,6 +12,7 @@ const Enquiry = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [rowCount, setRowCount] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
+  const B2B_API = createB2BAPI();
 
   const payload = useMemo(() => getpayLoadFromToken(), []);
   const userRole = payload?.ROLE;

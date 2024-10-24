@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
@@ -9,6 +8,7 @@ import B2BTextarea from '../../../common/B2BTextarea';
 import { getpayLoadFromToken } from '../../../common/JwtPayload';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const NewLocation = () => {
 
@@ -39,7 +39,8 @@ const NewLocation = () => {
 
   const [company, setCompany] = useState(initialCompany);
   const [companyLocations, setCompanyLocations] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const B2B_API = createB2BAPI();
 
 
   useEffect(() => {

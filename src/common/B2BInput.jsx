@@ -5,14 +5,14 @@ const B2BInput = ({ value, styles, edit, onChange, placeholder, variant, require
     return (
         <TextInput
             className='input-textField'
-            styles={{input: {fontSize: '14px', cursor: edit === true ? 'not-allowed' : 'text'}, ...styles}}
+            styles={{ input: { fontSize: '14px', cursor: edit === true ? 'not-allowed' : 'text' }, ...styles }}
             placeholder={placeholder}
-            value={value ||''}
+            value={value || ''}
             type={type}
             variant={variant}
             required={required}
             size='md'
-            radius="sm"
+            radius={radius || "sm"}
             disabled={disabled}
             onChange={onChange}
             error={error}

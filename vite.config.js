@@ -3,10 +3,9 @@ import react from '@vitejs/plugin-react';
 import styleX from 'vite-plugin-stylex';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-// Capture the mode passed by Vite
 export default defineConfig(({ mode }) => {
   return {
-    plugins: [react(), styleX(), ,visualizer()],
+    plugins: [react(), styleX(), , visualizer()],
     server: {
       host: '0.0.0.0',
       port: 3000,
@@ -15,7 +14,7 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': '/src',
       },
-    }, 
+    },
     build: {
       target: 'esnext',
     },
@@ -32,5 +31,5 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
     },
-  }
+  };
 });

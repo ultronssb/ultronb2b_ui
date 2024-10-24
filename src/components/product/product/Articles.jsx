@@ -1,12 +1,12 @@
 import { IconPlus } from '@tabler/icons-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import { ERROR_MESSAGE } from '../../../common/CommonResponse';
 import ProductGrid from '../../../common/ProductGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
 import notify from '../../../utils/Notification';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const Articles = () => {
 
@@ -23,7 +23,7 @@ const Articles = () => {
   const page = query_param.get('page');
   const size = query_param.get('size');
   const search = query_param.get('search');
-
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchAllProducts();

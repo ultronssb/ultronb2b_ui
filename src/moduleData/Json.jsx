@@ -103,22 +103,22 @@ export const data = [
   // { id: "25", name: "HSN/SAC", parent_id: "9", orderBy: 4, path: "/product/tax/hsn"},
 
   /* Sales Child Component */
-  { id: "34", name: "Order Dashboard", parent_id: "3", orderBy: 1, path: "/sales/enquiry" },
-  { id: "35", name: "Sales Order", parent_id: "3", orderBy: 2, path: "/sales/sales-order" },
-  { id: "36", name: "Invoice", parent_id: "3", orderBy: 3, path: "/sales/invoice" },
-  { id: "37", name: "Shippment Note", parent_id: "3", orderBy: 4, path: "/sales/shippment-note" },
-  { id: "38", name: "Return Note", parent_id: "3", orderBy: 5, path: "/sales/return-note" },
-  { id: "39", name: "Packing", parent_id: "3", orderBy: 6, path: "/sales/packing" },
+  { id: "34", name: "Enquiry", parent_id: "3", orderBy: 1, path: "/sales/enquiry" },
+  { id: "35", name: "Order Dashboard", parent_id: "3", orderBy: 2, path: "/sales/order-management" },
+  { id: "36", name: "Sales Order", parent_id: "3", orderBy: 3, path: "/sales/sales-order/:orderNo" },
+  { id: "37", name: "Invoice", parent_id: "3", orderBy: 4, path: "/sales/invoice" },
+  { id: "38", name: "Shippment Note", parent_id: "3", orderBy: 5, path: "/sales/shippment-note" },
+  { id: "39", name: "Return Note", parent_id: "3", orderBy: 6, path: "/sales/return-note" },
+  { id: "40", name: "Packing", parent_id: "3", orderBy: 7, path: "/sales/packing" },
 
-  { id: "40", name: "Enquiry", parent_id: "34", orderBy: 1, path: "/sales/enquiry" },
-  { id: "41", name: "Open Order", parent_id: "34", orderBy: 2, path: "/sales/order-management" },
-  { id: "42", name: "Delivered", parent_id: "34", orderBy: 3, path: "/sales/delivery" },
-  { id: "43", name: "Cancelled", parent_id: "34", orderBy: 4, path: "/sales/cancel" },
-  { id: "44", name: "Abandoned", parent_id: "34", orderBy: 5, path: "/sales/abandon" },
-  { id: "45", name: "Returned", parent_id: "34", orderBy: 6, path: "/sales/return" },
-  { id: "46", name: "Create Order", parent_id: "34", orderBy: 7, path: "/sales/create-order" },
+  { id: "41", name: "Open Order", parent_id: "35", orderBy: 2, path: "/sales/order-management" },
+  { id: "42", name: "Delivered", parent_id: "35", orderBy: 3, path: "/sales/delivery" },
+  { id: "43", name: "Cancelled", parent_id: "35", orderBy: 4, path: "/sales/cancel" },
+  { id: "44", name: "Abandoned", parent_id: "35", orderBy: 5, path: "/sales/abandon" },
+  { id: "45", name: "Returned", parent_id: "35", orderBy: 6, path: "/sales/return" },
+  // { id: "46", name: "Create Order", parent_id: "35", orderBy: 7, path: "/sales/create-order" },
 
-  { id: "47", name: "Sales Order", parent_id: "36", orderBy: 1, path: "/sales/sales-order" },
+  // { id: "47", name: "Sales Order", parent_id: "36", orderBy: 1, path: "/sales/sales-order" },
 
   { id: "48", name: "Invoice", parent_id: "37", orderBy: 1, path: "/sales/invoice" },
 

@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import B2BTableGrid from '../../../common/B2BTableGrid'
-import { B2B_API } from '../../../api/Interceptor';
 import Barcode from 'react-barcode';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { Text } from '@mantine/core';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const VariantBarcode = () => {
   const [productVariant, setProductVariant] = useState([]);
@@ -14,6 +14,7 @@ const VariantBarcode = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
   const [status, setStatus] = useState('ACTIVE');
   const [openMenubar, setOpenMenubar] = useState(false);
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchVariant();

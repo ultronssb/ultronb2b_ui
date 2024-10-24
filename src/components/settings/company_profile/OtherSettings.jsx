@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { B2B_API } from '../../../api/Interceptor'
 import B2BButton from '../../../common/B2BButton'
 import B2BInput from '../../../common/B2BInput'
 import B2BSelect from '../../../common/B2BSelect'
 import notify from '../../../utils/Notification'
+import { createB2BAPI } from '../../../api/Interceptor'
 
 const OtherSettings = () => {
 
@@ -26,7 +26,7 @@ const OtherSettings = () => {
   }
 
   const [otherSettings, setOtherSettings] = useState(initialState)
-
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     // fetchCompanies();

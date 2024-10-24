@@ -1,7 +1,6 @@
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
@@ -10,6 +9,7 @@ import B2BForm from '../../../common/B2BForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileCircleXmark, faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { Text } from '@mantine/core';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const ProductTags = () => {
 
@@ -26,7 +26,8 @@ const ProductTags = () => {
   }
   const [tag, setTag] = useState(initialData);
   const [status, setStatus] = useState('ACTIVE');
-  const [openMenubar, setOpenMenubar] = useState(false)
+  const [openMenubar, setOpenMenubar] = useState(false);
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchTags();

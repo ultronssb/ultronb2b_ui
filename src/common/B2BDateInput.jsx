@@ -4,7 +4,7 @@ import { DateInput } from '@mantine/dates';
 import dayjs from 'dayjs';
 import React from 'react';
 
-const B2BDateInput = (props) => {
+const B2BDateInput = ({value, placeholder,onChange, required }) => {
     const dateParser = (input) => {
         if (input === 'WW2') {
             return new Date(1939, 8, 1);
@@ -17,10 +17,13 @@ const B2BDateInput = (props) => {
         <DateInput
             className="input-textField"
             dateParser={dateParser}
+            value={value}
+            required={required}
             rightSection={<FontAwesomeIcon icon={faCalendar} />}
             rightSectionPointerEvents="none"
             valueFormat="DD/MM/YYYY"
-            placeholder="DD/MM/YYYY"
+            onChange={onChange}
+            placeholder={placeholder}
             clearable
             radius="sm"
             size='md'

@@ -3,7 +3,6 @@ import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { BASE_URL } from '../../../api/EndPoints';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
@@ -13,6 +12,7 @@ import notify from '../../../utils/Notification';
 import './Variant.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const Variants = () => {
   const initialState = {
@@ -48,8 +48,8 @@ const Variants = () => {
   const [status, setStatus] = useState('ACTIVE')
   const [openDropDown, setOpenDropDown] = useState(false);
 
-  const [variantTypeList, setVariantTypeList] = useState([])
-
+  const [variantTypeList, setVariantTypeList] = useState([]);
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchAllVariants();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import notify from '../../../utils/Notification';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const GroupCreation = ({ setIsCreateGroup, groupId, setGroupId }) => {
     const initialData = {
@@ -9,6 +9,7 @@ const GroupCreation = ({ setIsCreateGroup, groupId, setGroupId }) => {
         status: "ACTIVE"
     }
     const [group, setGroup] = useState(initialData);
+    const B2B_API = createB2BAPI();
 
     const addGroup = async (event) => {
         event.preventDefault();

@@ -1,7 +1,7 @@
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../api/Interceptor';
+import { createB2BAPI } from '../../api/Interceptor';
 import B2BButton from '../../common/B2BButton';
 import B2BTableGrid from '../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../layout/Layout';
@@ -17,6 +17,7 @@ const Collections = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     const fetchCollections = async () => {

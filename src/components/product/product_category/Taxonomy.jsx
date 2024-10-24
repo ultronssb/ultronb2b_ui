@@ -1,6 +1,5 @@
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { B2B_API, createB2BAPI } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import TaxonomyCreation from './TaxonomyCreation';
@@ -10,6 +9,7 @@ import notify from '../../../utils/Notification';
 import { Text } from '@mantine/core';
 import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const Taxonomy = () => {
   const [taxonomys, setTaxonomys] = useState([]);

@@ -3,7 +3,7 @@ import { IconArrowLeft } from '@tabler/icons-react';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../api/EndPoints';
-import { B2B_API } from '../../api/Interceptor';
+import { createB2BAPI } from '../../api/Interceptor';
 import B2BButton from '../../common/B2BButton';
 import B2BInput from '../../common/B2BInput';
 import B2BTextarea from '../../common/B2BTextarea';
@@ -22,6 +22,7 @@ const CollectionCreation = () => {
     status: 'ACTIVE',
   };
 
+  const B2B_API = createB2BAPI();
   const [collection, setCollection] = useState(initialState);
   const [products, setProducts] = useState([]);
   const [selectedPairs, setSelectedPairs] = useState([]);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { B2B_API } from '../../../api/Interceptor';
 import notify from '../../../utils/Notification';
 import B2BButton from '../../../common/B2BButton';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const DeliveryModeCreation = ({ setIsCreateDeliveryMode, deliveryModeId, setDeliveryModeId }) => {
     const initialData = {
@@ -9,6 +9,7 @@ const DeliveryModeCreation = ({ setIsCreateDeliveryMode, deliveryModeId, setDeli
         status: 'ACTIVE'
     };
     const [deliveryMode, setDeliveryMode] = useState(initialData);
+    const B2B_API = createB2BAPI();
 
     const createDeliveryMode = async (event) => {
         event.preventDefault();

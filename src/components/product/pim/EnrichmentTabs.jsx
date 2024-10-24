@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTabs from '../../../common/B2BTabs';
 import EnrichmentAttributes from './EnrichmentAttributes';
@@ -12,6 +11,7 @@ import EnrichmentSeo from './EnrichmentSeo';
 import EnrichmentTransaction from './EnrichmentTransaction';
 import { EnrichProductContext } from './EnrichProduct';
 import _ from 'lodash';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const EnrichmentTabs = () => {
     const { product, pim, videoFile, multimedia } = useContext(EnrichProductContext);
@@ -19,6 +19,7 @@ const EnrichmentTabs = () => {
     const [sliderValue, setSliderValue] = useState(0); // Percentage filled
     const [filledFieldsCount, setFilledFieldsCount] = useState(0); // Count of filled fields
     const [totalFieldsCount, setTotalFieldsCount] = useState(0); // Total number of fields to track
+    const B2B_API = createB2BAPI();
 
     const navigate = useNavigate();
     const query_param = new URLSearchParams(location.search);

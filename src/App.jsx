@@ -138,6 +138,7 @@ function App() {
           <Route path='/sales/return' element={<ProtectedRoute element={OrderReturned} />} />
           <Route path='/sales/create-order' element={<ProtectedRoute element={CreateOrder} />} />
 
+          <Route path='/sales/sales-order/:orderNo' element={<ProtectedRoute element={SalesOrder} />} />
           <Route path='/sales/sales-order' element={<ProtectedRoute element={SalesOrder} />} />
 
           <Route path='/sales/invoice' element={<ProtectedRoute element={Invoice} />} />

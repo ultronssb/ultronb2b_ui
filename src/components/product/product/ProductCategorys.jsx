@@ -2,10 +2,10 @@ import { faClose, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
 import './ProductCategory.css';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const ProductCategorys = () => {
     const { product, setProduct, inputError, setInputError } = useContext(ProductContext);
@@ -14,6 +14,7 @@ const ProductCategorys = () => {
     const [categorys, setCategorys] = useState([]);
     const [categoryName, setCategoryName] = useState([]);
     const [selectedPairs, setSelectedPairs] = useState([{ ...initialState }]);
+    const B2B_API = createB2BAPI();
 
     useEffect(() => {
         fetchcategory();

@@ -4,11 +4,11 @@ import { NumberInput } from '@mantine/core';
 import { IconPercentage } from '@tabler/icons-react';
 import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
 import './ProductFabricContent.css';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const ProductFabricContent = () => {
     const { product, setProduct, handleChange, inputError, setInputError } = useContext(ProductContext);
@@ -18,6 +18,7 @@ const ProductFabricContent = () => {
     const [lastChild, setLastChild] = useState([]);
     const [fCCValue, setFCCValue] = useState('');
     const [fabricValue, setFabricValue] = useState([]);
+    const B2B_API = createB2BAPI();
 
     useEffect(() => {
         fetchVariant();

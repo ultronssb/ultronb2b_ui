@@ -10,16 +10,17 @@ import { useForm } from '@mantine/form';
 import { useToggle } from '@mantine/hooks';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../api/Interceptor';
 import LOGO from '../../assets/ultron-logo.png';
 import B2BButton from '../../common/B2BButton';
 import '../../css/AdminLogin.css';
 import notify from '../../utils/Notification';
+import { createB2BAPI } from '../../api/Interceptor';
 
 export function AdminLogin(props) {
   const [type, toggle] = useToggle(['login', 'register']);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const B2B_API = createB2BAPI();
 
   const form = useForm({
     initialValues: {
@@ -45,7 +46,6 @@ export function AdminLogin(props) {
       const { token } = response?.response
       localStorage.setItem('token', token)
       localStorage.setItem('user', JSON.stringify(response?.response))
-      setLoading(false);
       navigate('/dashboard')
       notify({
         id: "success",
@@ -55,7 +55,6 @@ export function AdminLogin(props) {
         message: `Logged in User: ${response?.response?.userId}`,
       })
     } catch (error) {
-      setLoading(false);
       const { message } = error;
       notify({
         id: "login failure",
@@ -65,8 +64,9 @@ export function AdminLogin(props) {
         title: message,
         message: `Oops: ${message || "Something went wrong!!!"}`
       })
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (

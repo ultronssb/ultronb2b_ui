@@ -1,12 +1,12 @@
 import { IconPencil } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const Role = () => {
   const initialData = {
@@ -21,8 +21,10 @@ const Role = () => {
   const [isError, setIsError] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
   const [rowCount, setRowCount] = useState(0);
-
-  const formRef = useRef(null)
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [deleteContent, setDeleteContent] = useState({});
+  const [opened, { open, close }] = useDisclosure(false);
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchRoles();
@@ -87,20 +89,34 @@ const Role = () => {
         const { original } = row;
         return (
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <IconPencil onClick={() => editRole(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
+            <IconPencil style={{ cursor: 'pointer', color: 'teal' }} stroke={2} onClick={()=>editRole(original)} />
+            <IconTrash style={{ cursor: 'pointer', color: 'red' }} stroke={2}  onClick={()=>handleDeleteModal(original)}/>
           </div>
         )
       }
     }
   ])
 
+  const onGlobalFilterChange = (data) => {
+    console.log(data, "Global Filter Change")
+  }
 
-  const editRole = (obj) => {
-    if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'auto' });
-    }
-    setRole((prev) => ({ ...prev, ...obj }));
-  };
+  const onColumnFilterFnsChange = (data) => {
+    console.log(data, "columnFilter Function change")
+  }
+
+  const editRole = (roleObj) => {
+    setRole((prev => ({ ...prev, ...roleObj })))
+  }
+
+  const handleDeleteModal = (roleObj) => {
+    setDeleteContent(roleObj);
+    open(true);
+  }
+
+  const handleDelete = (roleId) => {
+    console.log(roleId);
+  }
 
   const fetchRoles = async () => {
     try {
@@ -181,6 +197,19 @@ const Role = () => {
     }
   ]
 
+  const DeleteModalContent = ({ body }) => {
+    const { name, roleId } = body;
+    return (
+      <>
+        <h4>Delete This Role {name}</h4>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '1rem' }}>
+          <B2BButton onClick={close} name={"No"} />
+          <B2BButton color={'red'} onClick={() => handleDelete(name)} name={"Yes"} />
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
       <div className='grid-container'>
@@ -242,7 +271,14 @@ const Role = () => {
         rowCount={rowCount}
         onPaginationChange={setPagination}
         enableFullScreenToggle={true}
+        manualFiltering={true}
+
+        onColumnFilterFnsChange={onColumnFilterFnsChange}
+        onGlobalFilterChange={onGlobalFilterChange}
+        columnFilters={columnFilters}
+        onColumnFiltersChange={setColumnFilters}
       />
+      <B2BModal opened={opened} title={"Are You Sure ?"} children={<DeleteModalContent body={deleteContent} />} open={open} close={close} />
     </>
   );
 }

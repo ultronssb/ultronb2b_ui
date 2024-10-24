@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import B2BButton from '../../../common/B2BButton';
-import { B2B_API } from '../../../api/Interceptor';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const ProductTagCreation = ({ setIsCreateTag, tagId, setTagId }) => {
     const initialData = {
@@ -8,6 +8,7 @@ const ProductTagCreation = ({ setIsCreateTag, tagId, setTagId }) => {
         status: "ACTIVE"
     }
     const [tag, setTag] = useState(initialData);
+    const B2B_API = createB2BAPI();
 
     const addGroup = async (event) => {
         event.preventDefault();

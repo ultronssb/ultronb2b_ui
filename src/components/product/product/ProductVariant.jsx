@@ -7,10 +7,10 @@ import _ from 'lodash';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Barcode from 'react-barcode';
 import { BASE_URL } from '../../../api/EndPoints';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
 import './ProductVariant.css';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 
 const ProductVariant = () => {
@@ -25,6 +25,8 @@ const ProductVariant = () => {
     const isRowExpanded = (index) => expandedRows.includes(index);
     const openRef = useRef(null);
     const [productVariants, setProductVariants] = useState([]);
+    const B2B_API = createB2BAPI();
+
 
     useEffect(() => {
         fetchVariant();

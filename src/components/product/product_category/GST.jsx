@@ -1,7 +1,6 @@
 import { Text } from '@mantine/core';
 import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ERROR_MESSAGE } from '../../../common/CommonResponse';
@@ -11,6 +10,7 @@ import B2BTextarea from '../../../common/B2BTextarea';
 import B2BInput from '../../../common/B2BInput';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const GST = () => {
   const initialGSTState = {
@@ -33,7 +33,8 @@ const GST = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState('ACTIVE')
-  const [openDropDown, setOpenDropDown] = useState(false)
+  const [openDropDown, setOpenDropDown] = useState(false);
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchAllGSTs();

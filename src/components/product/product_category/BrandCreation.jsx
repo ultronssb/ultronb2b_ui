@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import notify from '../../../utils/Notification';
 import './Taxonomy.css';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const BrandCreation = ({ setIsCreateBrand, brandId, setBrandId, }) => {
     const initialData = {
@@ -11,6 +11,7 @@ const BrandCreation = ({ setIsCreateBrand, brandId, setBrandId, }) => {
         status: "ACTIVE",
     }
     const [brand, setBrand] = useState(initialData);
+    const B2B_API = createB2BAPI();
 
     const addBrand = async (event) => {
         event.preventDefault();

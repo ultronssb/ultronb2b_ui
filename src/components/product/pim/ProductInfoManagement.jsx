@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect'; // Ensure you import B2BSelect
 import ProductGrid from '../../../common/ProductGrid';
 import { ActiveTabContext } from '../../../layout/Layout';
 import _ from 'lodash';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const ProductInfoManagement = () => {
   const { stateData } = useContext(ActiveTabContext);
@@ -19,7 +19,8 @@ const ProductInfoManagement = () => {
   const [selectedStore, setSelectedStore] = useState('');
   const [status, SetStatus] = useState('ACTIVE')
   const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const B2B_API = createB2BAPI();
 
   const statusOption = [
     { value: 'ACTIVE', label: 'ACTIVE' },

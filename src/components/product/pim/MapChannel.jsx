@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BSelect from '../../../common/B2BSelect';
 import ProductGrid from '../../../common/ProductGrid';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const MapChannel = () => {
   const [product, setProduct] = useState([]);
@@ -18,7 +18,7 @@ const MapChannel = () => {
   const [mapStatus, setMapStatus] = useState(false);
   const [areAllSelected, setAreAllSelected] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchAllCompanyLocations();

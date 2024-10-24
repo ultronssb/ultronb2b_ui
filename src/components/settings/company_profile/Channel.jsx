@@ -1,7 +1,6 @@
 import { Flex, Tooltip } from '@mantine/core';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
@@ -9,6 +8,7 @@ import B2BTableGrid from '../../../common/B2BTableGrid';
 import B2BTextarea from '../../../common/B2BTextarea';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 
 const Channel = () => {
@@ -27,6 +27,7 @@ const Channel = () => {
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
     const [rowCount, setRowCount] = useState(0);
     const [createChannel, setCreateChannel] = useState(false);
+    const B2B_API = createB2BAPI();
 
     useEffect(() => {
         fetchCompany();

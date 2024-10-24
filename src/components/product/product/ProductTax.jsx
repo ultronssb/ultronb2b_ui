@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BSelect from '../../../common/B2BSelect';
 import { ProductContext } from './CreateProduct';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const ProductTaxSelect = () => {
     const { product, handleChange, inputError } = useContext(ProductContext);
     const [tax, setTax] = useState([]);
+    const B2B_API = createB2BAPI();
+
 
     useEffect(() => {
         getAllTax();

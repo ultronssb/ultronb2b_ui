@@ -3,13 +3,13 @@ import { IconArrowLeft, IconCheck, IconPencil, IconX } from '@tabler/icons-react
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../../../api/EndPoints'
-import { B2B_API } from '../../../api/Interceptor'
 import B2BButton from '../../../common/B2BButton'
 import B2BInput from '../../../common/B2BInput'
 import B2BSelect from '../../../common/B2BSelect'
 import { ActiveTabContext } from '../../../layout/Layout'
 import notify from '../../../utils/Notification'
 import EnrichmentTabs from './EnrichmentTabs'
+import { createB2BAPI } from '../../../api/Interceptor'
 
 export const EnrichProductContext = createContext(null);
 
@@ -33,8 +33,7 @@ const EnrichProduct = () => {
   const [multimedia, setMultimedia] = useState([])
   const [sliderValue, setSliderValue] = useState(0);
   const [totalFields, setTotalFields] = useState(0);
-
-
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     if (id) {

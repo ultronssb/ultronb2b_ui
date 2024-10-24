@@ -1,11 +1,11 @@
 import { rem, Switch } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
 import _ from 'lodash';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const Filters = () => {
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 });
@@ -14,6 +14,7 @@ const Filters = () => {
     const [variantTypeList, setVariantTypeList] = useState([]);
     const [isCategoryFilter, setIsCategoryFilter] = useState(false);
     const [checkedState, setCheckedState] = useState({})
+    const B2B_API = createB2BAPI();
 
     useEffect(() => {
         fetchAllData();

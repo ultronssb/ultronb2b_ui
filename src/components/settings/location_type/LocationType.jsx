@@ -1,11 +1,11 @@
 import { IconPencil } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const LocationType = () => {
     const initialData = {
@@ -19,6 +19,7 @@ const LocationType = () => {
     const [isError, setIsError] = useState(false);
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
     const [rowCount, setRowCount] = useState(0);
+    const B2B_API = createB2BAPI();
 
     useEffect(() => {
         fetchLocationTypes();

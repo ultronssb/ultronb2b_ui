@@ -3,11 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDisclosure } from '@mantine/hooks';
 import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
 import { EnrichProductContext } from './EnrichProduct';
 import { Textarea } from '@mantine/core';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const EnrichmentHierarchy = () => {
   const { product, setProduct, pim, setPim } = useContext(EnrichProductContext);
@@ -21,6 +21,7 @@ const EnrichmentHierarchy = () => {
   const [loading, setLoading] = useState(true);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [existingCategoryKey, setExistingCategoryKey] = useState([])
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchCategory();

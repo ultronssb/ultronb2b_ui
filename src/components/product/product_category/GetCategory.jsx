@@ -4,8 +4,8 @@ import { Divider, Group } from '@mantine/core';
 import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../../api/Interceptor';
 import { ActiveTabContext } from '../../../layout/Layout';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const GetCategory = () => {
     const { stateData } = useContext(ActiveTabContext);
@@ -13,6 +13,7 @@ const GetCategory = () => {
     const [category, setCategory] = useState([]);
     const [expandedNodes, setExpandedNodes] = useState({});
     const navigate = useNavigate();
+    const B2B_API = createB2BAPI();
 
     const toggleNode = (nodeName) => {
         setExpandedNodes((prevExpanded) => ({

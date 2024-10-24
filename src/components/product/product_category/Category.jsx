@@ -3,7 +3,6 @@ import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import _ from 'lodash';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
@@ -15,6 +14,7 @@ import { Text } from '@mantine/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import B2BModal from '../../../common/B2BModal';
 import AddBrand from './AddBrand';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const CategoryInput = ({ level, name, onChange, onAdd, onRemove, children, disable }) => {
   return (
@@ -109,6 +109,7 @@ const Category = () => {
   const id = queryParams.get('id');
   const categoryStatus = queryParams.get('status');
   const navigate = useNavigate();
+  const B2B_API = createB2BAPI();
 
   const initialData = {
     name: "",

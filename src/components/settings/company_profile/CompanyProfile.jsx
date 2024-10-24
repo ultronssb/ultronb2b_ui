@@ -1,7 +1,6 @@
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BInput from '../../../common/B2BInput';
 import B2BSelect from '../../../common/B2BSelect';
@@ -10,6 +9,7 @@ import B2BTextarea from '../../../common/B2BTextarea';
 import { getpayLoadFromToken } from '../../../common/JwtPayload';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const CompanyProfile = () => {
 
@@ -44,7 +44,7 @@ const CompanyProfile = () => {
   const [rowCount, setRowCount] = useState(5);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     if (user === 'COMPANY_ADMIN') {

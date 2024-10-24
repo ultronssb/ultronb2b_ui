@@ -2,10 +2,10 @@ import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BForm from '../../../common/B2BForm';
 import B2BTableGrid from '../../../common/B2BTableGrid';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const Brand = () => {
   const [brands, setBrands] = useState([]);
@@ -21,6 +21,7 @@ const Brand = () => {
   const [brand, setBrand] = useState(initialData);
   const [status, setStatus] = useState('ACTIVE')
   const [openDropDown, setOpenDropDown] = useState(false);
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     getAllBrand();

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import notify from '../../../utils/Notification';
 import './Taxonomy.css';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const TaxonomyCreation = ({ setIsCreateTaxonomy, taxonomyId, setTaxonomyId }) => {
     const initialData = {
@@ -10,6 +10,7 @@ const TaxonomyCreation = ({ setIsCreateTaxonomy, taxonomyId, setTaxonomyId }) =>
         status: "ACTIVE"
     }
     const [taxonomy, setTaxonomy] = useState(initialData);
+    const B2B_API = createB2BAPI();
 
     const addTaxonomy = async (event) => {
         event.preventDefault();

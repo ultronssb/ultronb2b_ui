@@ -1,11 +1,11 @@
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../../api/Interceptor';
 import B2BButton from '../../../common/B2BButton';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import { ERROR_MESSAGE } from '../../../common/CommonResponse';
 import notify from '../../../utils/Notification';
+import { createB2BAPI } from '../../../api/Interceptor';
 
 const LocationDetails = () => {
   const [locations, setLocations] = useState([]);
@@ -15,8 +15,7 @@ const LocationDetails = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchAllCompanyLocations();

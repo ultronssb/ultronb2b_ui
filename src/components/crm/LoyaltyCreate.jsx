@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconArrowLeft } from '@tabler/icons-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { B2B_API } from '../../api/Interceptor';
+import { createB2BAPI } from '../../api/Interceptor';
 import B2BButton from '../../common/B2BButton';
 import B2BInput from '../../common/B2BInput';
 import B2BSelect from '../../common/B2BSelect';
@@ -30,6 +30,8 @@ const LoyaltyCreate = () => {
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get('id');
   const navigate = useNavigate();
+  const B2B_API = createB2BAPI();
+
 
   useEffect(() => {
     const fetchLoyalty = async () => {

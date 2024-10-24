@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import { useEffect, useMemo, useState } from 'react';
-import { B2B_API } from '../../api/Interceptor';
 import B2BButton from '../../common/B2BButton';
 import B2BTableGrid from '../../common/B2BTableGrid';
 import notify from '../../utils/Notification';
 import CustomerCreate from './CustomerCreate';
+import { createB2BAPI } from '../../api/Interceptor';
 
 const Customer = () => {
   const [customers, setCustomers] = useState([]);
@@ -17,6 +17,7 @@ const Customer = () => {
   const [globalSearch, setGlobalSearch] = useState("")
   const [isCreateCustomer, setIsCreateCustomer] = useState(false);
   const [customerId, setCustomerId] = useState('');
+  const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchCustomers();
