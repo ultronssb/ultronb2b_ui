@@ -3,6 +3,9 @@ import { createB2BAPI } from '../../api/Interceptor';
 import B2BTableGrid from '../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../layout/Layout';
 import notify from '../../utils/Notification';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Text } from '@mantine/core';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
 
 const Salesman = () => {
   const { stateData } = useContext(ActiveTabContext);
@@ -14,6 +17,8 @@ const Salesman = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [customerCounts, setCustomerCount] = useState({});
   const B2B_API = createB2BAPI();
+  const [status, setStatus] = useState('ACTIVE')
+  const [openDropDown, setOpenDropDown] = useState(false)
 
   useEffect(() => {
     fetchSaleMan();
@@ -74,7 +79,21 @@ const Salesman = () => {
       accessorKey: "assignedLocation",
     },
     {
-      header: 'Status',
+      header: (
+        <div>
+          <div onClick={() => setOpenDropDown(!openDropDown)}>Status({status})</div>
+          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(!openDropDown)} />
+          {openDropDown && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>
+          }
+        </div>
+      ),
       accessorKey: 'status',
       Cell: ({ cell, row }) => {
         const status = row.original.status;
@@ -92,7 +111,12 @@ const Salesman = () => {
         return customerCounts[row?.userId];
       }
     }
-  ], [customerCounts]);
+  ], [customerCounts,status,openDropDown]);
+
+  const handleStatusChange = (status) => {
+    setOpenDropDown(false)
+    setStatus(status);
+  }
   return (
 
     <div>

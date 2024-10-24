@@ -337,7 +337,7 @@ const FabricContent = () => {
     {
       header: (
         <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
-          <div>Status</div>
+          <div>Status({status})</div>
           <FontAwesomeIcon icon={openStatus ? faFilterCircleXmark : faFilter} size={18} style={{ marginLeft: '1.5rem', cursor: 'pointer' }} onClick={() => setOpenStatus(!openStatus)} />
           {
             openStatus && (

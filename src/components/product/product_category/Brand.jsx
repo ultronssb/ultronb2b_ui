@@ -6,6 +6,8 @@ import B2BButton from '../../../common/B2BButton';
 import B2BForm from '../../../common/B2BForm';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import { createB2BAPI } from '../../../api/Interceptor';
+import { Text } from '@mantine/core';
+import notify from '../../../utils/Notification';
 
 const Brand = () => {
   const [brands, setBrands] = useState([]);
@@ -25,11 +27,11 @@ const Brand = () => {
 
   useEffect(() => {
     getAllBrand();
-  }, [brandPagination.pageIndex, brandPagination.pageSize])
+  }, [brandPagination.pageIndex, brandPagination.pageSize,status])
 
   const getAllBrand = async () => {
     try {
-      const res = await B2B_API.get(`brand/get-all?page=${brandPagination.pageIndex}&pageSize=${brandPagination.pageSize}`).json();
+      const res = await B2B_API.get(`brand/get-all?page=${brandPagination.pageIndex}&pageSize=${brandPagination.pageSize}&status=${status}`).json();
       setBrands(res?.response?.content);
       setBrandRowCount(res?.response?.totalElements)
     } catch (err) {
@@ -67,14 +69,21 @@ const Brand = () => {
     {
       header: (
         <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
-          <div onClick={() => setOpenDropDown((prev) => {
-            console.log(!prev);
-            return !prev
-          })}>Status ({status})</div>
-          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} />
+          <div onClick={() => setOpenDropDown(prev => !prev)}>Status ({status})</div>
+          <FontAwesomeIcon onClick={() => setOpenDropDown(prev => !prev)} icon={openDropDown ? faFilterCircleXmark : faFilter} />
+          {openDropDown && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>
+          }
         </div>
       ),
       accessorKey: 'status',
+      size:100,
       Cell: ({ cell, row }) => {
         const status = row.original.status;
         return (
@@ -92,18 +101,17 @@ const Brand = () => {
       mantineTableBodyCellProps: {
         align: 'center'
       },
-      size: 50,
+      size: 100,
       Cell: ({ row }) => {
         const { original } = row;
         return (
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
             <IconPencil onClick={() => editBrand(original)} style={{ cursor: 'pointer', color: 'teal' }} stroke={2} />
-            <p>{openDropDown ? "Working" : "No Working"}</p>
           </div>
         )
       }
     }
-  ], [])
+  ], [openDropDown, status])
 
   const json = [
     // {
@@ -155,7 +163,7 @@ const Brand = () => {
 
   const handleBack = () => {
     setIsCreateBrand(false)
-    setBrandId('')
+    setBrand(initialData)
   }
 
   const handleChange = (event, key) => {
@@ -169,6 +177,7 @@ const Brand = () => {
     try {
       const res = await B2B_API.post(`brand`, { json: brand }).json();
       setBrand(initialData);
+      getAllBrand();
       notify({
         message: res.message,
         success: true,

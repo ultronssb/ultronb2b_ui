@@ -1,4 +1,4 @@
-import { IconPencil } from '@tabler/icons-react';
+import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
 import B2BButton from '../../../common/B2BButton';
@@ -6,6 +6,10 @@ import B2BInput from '../../../common/B2BInput';
 import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
 import { createB2BAPI } from '../../../api/Interceptor';
+import B2BForm from '../../../common/B2BForm';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { Text } from '@mantine/core';
 
 const LocationType = () => {
     const initialData = {
@@ -20,10 +24,13 @@ const LocationType = () => {
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
     const [rowCount, setRowCount] = useState(0);
     const B2B_API = createB2BAPI();
+    const [isCreateLocation, setIsCreateLocation] = useState(false);
+    const [status, setStatus] = useState('ACTION');
+    const [openMenubar, setOpenMenubar] = useState(false);
 
     useEffect(() => {
         fetchLocationTypes();
-    }, [pagination.pageIndex, pagination.pageSize]);
+    }, [pagination.pageIndex, pagination.pageSize, status]);
 
     const columns = useMemo(() => [
         {
@@ -45,7 +52,20 @@ const LocationType = () => {
             size: 100,
         },
         {
-            header: 'Status',
+            header: (
+                <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+                    <div onClick={() => setOpenMenubar(prev => !prev)}>Status({status})</div>
+                    <FontAwesomeIcon icon={openMenubar ? faFilterCircleXmark : faFilter} onClick={() => setOpenMenubar(!openMenubar)} />
+                    {openMenubar && <div className='status-dropdown'>
+                        <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+                            <Text size="xs" fw={800}>ACTIVE</Text>
+                        </div>
+                        <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+                            <Text size="xs" fw={800}>INACTIVE</Text>
+                        </div>
+                    </div>}
+                </div>
+            ),
             accessorKey: 'status',
             size: 100,
             Cell: ({ cell, row }) => {
@@ -75,16 +95,23 @@ const LocationType = () => {
                 );
             }
         }
-    ], []);
+    ], [status,openMenubar]);
+
+    const handleStatusChange = (newStatus) => {
+        setIsCreateLocation(false)
+        setStatus(newStatus)
+        setOpenMenubar(false)
+    }
 
     const editLocationType = (obj) => {
-        setLocationType((prev) => ({ ...prev, ...obj }));
+        setLocationType(obj);
+        setIsCreateLocation(true)
     };
 
     const fetchLocationTypes = async () => {
         setIsLoading(true);
         try {
-            const res = await B2B_API.get(`location-type/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+            const res = await B2B_API.get(`location-type/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&status=${status}`).json();
             const data = res?.response?.content || [];
             setRowCount(res?.response?.totalElements || 0);
             setLocationTypes(data);
@@ -138,69 +165,69 @@ const LocationType = () => {
         }
     ];
 
+    const handleBack = () => {
+        setIsCreateLocation(false);
+        setLocationType(initialData);
+    }
+
+    const handleCreate = () => {
+        setIsCreateLocation(true)
+        setLocationType(initialData);
+    }
+
+    const handleCancel = () => {
+        setIsCreateLocation(false)
+        setLocationType(initialData);
+    }
+
     return (
         <div>
-            <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
                 <header>Location Type Details</header>
+                <div className='left--section'>
+                    {
+                        isCreateLocation ?
+                            <B2BButton
+                                style={{ color: '#000' }}
+                                name={"Back"}
+                                onClick={handleBack}
+                                leftSection={<IconArrowLeft size={15} />}
+                                color={"rgb(207, 239, 253)"}
+                            />
+                            :
+                            <B2BButton
+                                style={{ color: '#000' }}
+                                name={"Create Role"}
+                                onClick={handleCreate}
+                                leftSection={<IconPlus size={15} />}
+                                color={"rgb(207, 239, 253)"}
+                            />
+                    }
+                </div>
             </div>
-            <div className='grid-container'>
-                <form onSubmit={createLocationType} className='form-container'>
-                    {json.map((e, index) => (
-                        <div key={index} className={e.className || "form-group"}>
-                            <label className='form-label'>{e.label}</label>
-                            {e.type === "radio" ? (
-                                <div className='radio-label-block'>
-                                    {e.options.map((option, idx) => (
-                                        <div key={idx} className='radio-group'>
-                                            <div className='status-block'>
-                                                <input
-                                                    id={`${e.name}-${option.value.toLowerCase()}`}
-                                                    value={option.value}
-                                                    onChange={e.onChange}
-                                                    checked={e.value === option.value}
-                                                    type={e.type}
-                                                />
-                                                <label
-                                                    className='form-span radio'
-                                                    htmlFor={`${e.name}-${option.value.toLowerCase()}`}
-                                                >
-                                                    {option.label}
-                                                </label>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <B2BInput
-                                    value={e.value}
-                                    className='form-input'
-                                    onChange={e.onChange}
-                                    type={e.type}
-                                    required
-                                    placeholder={e.placeholder}
-                                />
-                            )}
-                        </div>
-                    ))}
-                    <div className='save-button-container'>
-                        <B2BButton type='button' color='red' onClick={() => setLocationType(initialData)} name="Cancel" />
-                        <B2BButton type='submit' name={locationType?.locationTypeId ? 'Update' : "Save"} />
-                    </div>
-                </form>
-            </div>
-            <B2BTableGrid
-                columns={columns}
-                data={locationTypes}
-                isLoading={isLoading}
-                isError={isError}
-                enableTopToolbar
-                enableGlobalFilter
-                pagination={pagination}
-                rowCount={rowCount}
-                onPaginationChange={setPagination}
-                enableFullScreenToggle
-            />
-        </div>
+            {
+                isCreateLocation ?
+                    <B2BForm
+                        json={json}
+                        handleChange={handleChange}
+                        onSave={createLocationType}
+                        handleCancel={handleCancel}
+                    />
+
+                    : <B2BTableGrid
+                        columns={columns}
+                        data={locationTypes}
+                        isLoading={isLoading}
+                        isError={isError}
+                        enableTopToolbar
+                        enableGlobalFilter
+                        pagination={pagination}
+                        rowCount={rowCount}
+                        onPaginationChange={setPagination}
+                        enableFullScreenToggle
+                    />
+            }
+        </div >
     );
 };
 

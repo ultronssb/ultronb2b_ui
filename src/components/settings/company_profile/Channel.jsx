@@ -9,6 +9,10 @@ import B2BTextarea from '../../../common/B2BTextarea';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
 import { createB2BAPI } from '../../../api/Interceptor';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { Text } from '@mantine/core';
+import { size } from 'lodash';
 
 
 const Channel = () => {
@@ -28,6 +32,9 @@ const Channel = () => {
     const [rowCount, setRowCount] = useState(0);
     const [createChannel, setCreateChannel] = useState(false);
     const B2B_API = createB2BAPI();
+    const [status, setStatus] = useState('ACTIVE')
+    const [openMenubar, setOpenMenubar] = useState(false);
+
 
     useEffect(() => {
         fetchCompany();
@@ -41,7 +48,7 @@ const Channel = () => {
         {
             header: 'S.No',
             accessorFn: (_, index) => index + 1,
-            size: 100,
+            size: 50,
             mantineTableHeadCellProps: {
                 align: 'center'
             },
@@ -52,16 +59,18 @@ const Channel = () => {
         {
             header: 'Channel ID',
             accessorKey: 'channelId',
+            size: 60
         },
         {
             header: 'Channel Name',
             accessorKey: 'name',
+            size: 90
         },
         {
             header: 'Description',
             accessorKey: 'description',
             maxSize: 600,
-            size: 300,
+            size: 200,
             onFocus: () => (
                 <Flex gap="md">
                     <Tooltip label="Edit">
@@ -75,7 +84,21 @@ const Channel = () => {
             accessorKey: 'companyName',
         },
         {
-            header: 'Status',
+            header: (
+                <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+                    <div>Status({status})</div>
+                    <FontAwesomeIcon icon={openMenubar ? faFilterCircleXmark : faFilter} onClick={() => setOpenMenubar(!openMenubar)} />
+                    {openMenubar && <div className='status-dropdown'>
+                        <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+                            <Text size="xs" fw={800}>ACTIVE</Text>
+                        </div>
+                        <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+                            <Text size="xs" fw={800}>INACTIVE</Text>
+                        </div>
+                    </div>
+                    }
+                </div>
+            ),
             accessorKey: 'status',
             size: 150,
             Cell: ({ cell, row }) => {
@@ -106,6 +129,11 @@ const Channel = () => {
             }
         }
     ]
+
+    const handleStatusChange = (status) => {
+        setOpenMenubar(false)
+        setStatus(status)
+    }
 
     const editChannel = (channelObj) => {
         setCreateChannel(true)

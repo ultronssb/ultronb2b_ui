@@ -97,6 +97,7 @@ const CreateProduct = () => {
   const [activeTab, setActiveTab] = useState("1");
   const [isFormValid, setIsFormValid] = useState(false);
   const B2B_API = createB2BAPI();
+  const [status,setStatus]=useState('ACTION')
 
   const [inputError, setInputError] = useState({
     articleNameError: false,
@@ -140,7 +141,7 @@ const CreateProduct = () => {
 
   useEffect(() => {
     setIsFormValid(validateProductVariants());
-  }, [product?.prodVariants]);
+  }, [product?.prodVariants,status]);
 
   const checkDirectValue = (key) => {
     if (key === 'brandId') return true

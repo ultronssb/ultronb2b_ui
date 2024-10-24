@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { createB2BAPI } from '../../../api/Interceptor';
 
 const Taxonomy = () => {
+  const B2B_API = createB2BAPI();
   const [taxonomys, setTaxonomys] = useState([]);
   const [rowCount, setRowCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,17 +26,16 @@ const Taxonomy = () => {
     status: "ACTIVE",
   }
   const [taxonomy, setTaxonomy] = useState(initialData)
-  const B2B_API = createB2BAPI();
   const [status, setStatus] = useState('ACTIVE')
   const [openDropDown, setOpenDropDown] = useState(false);
 
   useEffect(() => {
     fetchTaxonomys();
-  }, [pagination.pageIndex, pagination.pageSize]);
+  }, [pagination.pageIndex, pagination.pageSize, status]);
 
   const fetchTaxonomys = async () => {
     try {
-      const response = await B2B_API.get(`taxonomy/get-all-taxonomy?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const response = await B2B_API.get(`taxonomy/get-all-taxonomy?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&status=${status}`).json();
       setTaxonomys(response?.response?.content);
       setRowCount(response?.response?.totalElements)
     } catch (error) {
@@ -119,9 +119,9 @@ const Taxonomy = () => {
     },
     {
       header: (
-        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
-          <div onClick={() => setOpenDropDown(!openDropDown)}>Status ({status})</div>
-          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} />
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }} >
+          <div onClick={() => setOpenDropDown(prev => !prev)}>Status ({status})</div>
+          <FontAwesomeIcon onClick={() => setOpenDropDown(prev => !prev)} icon={openDropDown ? faFilterCircleXmark : faFilter} />
           {openDropDown && <div className='status-dropdown'>
             <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
               <Text size="xs" fw={800}>ACTIVE</Text>
@@ -129,7 +129,8 @@ const Taxonomy = () => {
             <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
               <Text size="xs" fw={800}>INACTIVE</Text>
             </div>
-          </div>}
+          </div>
+          }
         </div>
       ),
       size: 200,
@@ -162,7 +163,7 @@ const Taxonomy = () => {
         )
       }
     }
-  ], [])
+  ], [status,openDropDown])
 
   const editTaxonomy = (obj) => {
     setTaxonomy(obj);

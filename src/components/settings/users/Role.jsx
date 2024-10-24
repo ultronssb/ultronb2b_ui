@@ -1,4 +1,4 @@
-import { IconPencil } from '@tabler/icons-react';
+import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import B2BButton from '../../../common/B2BButton';
@@ -7,6 +7,10 @@ import B2BTableGrid from '../../../common/B2BTableGrid';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
 import { createB2BAPI } from '../../../api/Interceptor';
+import B2BForm from '../../../common/B2BForm';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { Text } from '@mantine/core';
 
 const Role = () => {
   const initialData = {
@@ -21,20 +25,23 @@ const Role = () => {
   const [isError, setIsError] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
   const [rowCount, setRowCount] = useState(0);
-  const [columnFilters, setColumnFilters] = useState([]);
+  const [columnFilters, setColumnFilters] = useState([]);  const [isCreateRole, setIsCreateRole] = useState(false);
+  const [status, setStatus] = useState('ACTIVE');
+  const [openMenubar, setOpenMenubar] = useState(false);
+
   const [deleteContent, setDeleteContent] = useState({});
   const [opened, { open, close }] = useDisclosure(false);
   const B2B_API = createB2BAPI();
 
   useEffect(() => {
     fetchRoles();
-  }, [pagination.pageIndex, pagination.pageSize]);
+  }, [pagination.pageIndex, pagination.pageSize,status]);
 
   const columns = useMemo(() => [
     {
       header: 'S.No',
       accessorFn: (_, index) => index + 1,
-      size: 100,
+      size: 60,
       mantineTableHeadCellProps: {
         align: 'center'
       },
@@ -45,26 +52,39 @@ const Role = () => {
     {
       header: 'Role ID',
       accessorKey: 'roleId',
-      size: 100,
+      size: 50,
     },
     {
       header: 'Role Name',
       accessorKey: 'name',
-      size: 120
+      size: 100
     },
     {
       header: 'Role Description',
       accessorKey: 'description',
-      size: 210,
+      size: 100,
     },
     {
       header: 'Created Date',
       accessorKey: 'createdDate',
       accessorFn: (row) => dayjs(row.createdDate).format('DD/MM/YYYY'),
-      size: 100,
+      size: 50,
     },
     {
-      header: 'Status',
+      header: (
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+          <div>Status({status})</div>
+          <FontAwesomeIcon icon={openMenubar ? faFilterCircleXmark : faFilter} onClick={() => setOpenMenubar(!openMenubar)} />
+          {openMenubar && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>}
+        </div>
+      ),
       accessorKey: 'status',
       size: 100,
       Cell: ({ cell, row }) => {
@@ -84,7 +104,7 @@ const Role = () => {
       mantineTableBodyCellProps: {
         align: 'center'
       },
-      size: 100,
+      size: 80,
       Cell: ({ row }) => {
         const { original } = row;
         return (
@@ -120,7 +140,7 @@ const Role = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await B2B_API.get(`role/get-all-role?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const response = await B2B_API.get(`role/get-all-role?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&status=${status}`).json();
 
       setRoles(response?.response?.content);
       setRowCount(response?.response?.totalElements)
@@ -213,52 +233,30 @@ const Role = () => {
   return (
     <>
       <div className='grid-container'>
-        <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
           <header>Role Details</header>
-        </div>
-        <form onSubmit={(event) => createRole(event)} className='form-container'>
-          {json.map(e => (
-            <div className={e.className ? e.className : "form-group"}>
-              <label className='form-label'>{e.label}</label>
-              {e.type == "radio" ? (
-                <div className='radio-label-block'>
-                  {e.options.map((option, idx) => (
-                    <div className='radio-group'>
-                      <div className='status-block'>
-                        <input
-                          id={`${e.name}-${option.value.toLowerCase()}`}
-                          value={option.value}
-                          style={e.style && e.style}
-                          onChange={(event) => e.onChange(event, e.name)}
-                          checked={e.value === option.value}
-                          type={e.type}
-                          placeholder={e.placeholder}
-                        />
-                        <label className='form-span radio' htmlFor={`${e.name}-${option.value.toLowerCase()}`}>{option.label}</label>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )
-                :
-                <B2BInput
-                  value={e.value}
-                  className='form-input'
-                  style={e.style}
-                  onChange={(event) => e.onChange(event, e.name)}
-                  type={e.type}
-                  disabled={e.disable}
-                  required={e.required}
-                  placeholder={e.placeholder}
+
+          <div className='left--section'>
+            {
+              isCreateRole ?
+                <B2BButton
+                  style={{ color: '#000' }}
+                  name={"Back"}
+                  onClick={handleBack}
+                  leftSection={<IconArrowLeft size={15} />}
+                  color={"rgb(207, 239, 253)"}
                 />
-              }
-            </div>
-          ))}
-          <div className='save-button-container'>
-            <B2BButton type='button' color={'red'} onClick={() => setRole(initialData)} name="Cancel" />
-            <B2BButton type='submit' name={role?.roleId ? 'Update' : "Save"} />
+                :
+                <B2BButton
+                  style={{ color: '#000' }}
+                  name={"Create Role"}
+                  onClick={handleCreate}
+                  leftSection={<IconPlus size={15} />}
+                  color={"rgb(207, 239, 253)"}
+                />
+            }
           </div>
-        </form>
+        </div>
       </div>
       <B2BTableGrid
         columns={columns}

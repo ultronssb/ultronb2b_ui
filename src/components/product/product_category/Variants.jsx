@@ -67,7 +67,7 @@ const Variants = () => {
   }, [variantTypes])
 
   const fetchAllVariants = async () => {
-    const type = activeTab === 'More Variants' ? 'Others' : activeTab === 'Solid / Pattern' ? 'Solid' : activeTab;
+    const type = activeTab === 'More Variants' ? 'Others' : activeTab;
     try {
       setIsLoading(true);
       const res = await B2B_API.get(`variant/get-All?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&type=${type}&status=${status}`).json();
@@ -92,9 +92,9 @@ const Variants = () => {
   const fetchAllVariantType = async () => {
     try {
       setIsLoading(true);
-      const res = await B2B_API.get(`variantType?& status=${status}`).json();
+      const res = await B2B_API.get(`variantType`).json();
       const data = res?.response || [];
-      const filteredData = data.filter(item => !['Colour', 'Solid'].includes(item));
+      const filteredData = data.filter(item => !['Colour', 'Solid / Pattern'].includes(item));
       setVariantTypes(filteredData);
       setVariantTypeList(res.response)
     } catch (error) {
@@ -116,12 +116,11 @@ const Variants = () => {
   };
 
   const fetchVariantType = async (variant) => {
-    const variantType = variant === variantOptions[1] ? 'Solid' : variant;
     try {
       setIsLoading(true);
-      const res = await B2B_API.get(`variantType/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
-      const data = res?.response?.content || [];
-      const result = data.find(item => item.name === variantType);
+      const res = await B2B_API.get(`variantType/view`).json();
+      const data = res?.response;
+      const result = data.find(item => item.name === variant);
       if (result && result.group) {
         setGroupName(result.group.name);
       }
@@ -171,7 +170,7 @@ const Variants = () => {
       setVariant(prev => ({
         ...prev,
         name: selectedVariant === 'More Variants' ? '' : selectedVariant,
-        type: selectedVariant === 'More Variants' ? 'Others' : selectedVariant === variantOptions[1] ? 'Solid' : selectedVariant,
+        type: selectedVariant === 'More Variants' ? 'Others' : selectedVariant,
       }));
     }
     if (selectedVariant !== 'More Variants') {
@@ -225,7 +224,7 @@ const Variants = () => {
       if (!variant.hexaColorCode) {
         tempErrors.hexaColorCode = 'Hexa Color Code is required';
       }
-    } else if (currentVariantType === 'Solid') {
+    } else if (currentVariantType === 'Solid / Pattern') {
       if (!variant.value) {
         tempErrors.value = 'Value is required';
       }
@@ -345,7 +344,7 @@ const Variants = () => {
     const type = varobj.type === 'Others' ? 'More Variants' : varobj.type;
     setCurrentVariantType(type);
     setVariant(prev => ({ ...prev, ...varobj }));
-    if (varobj.type === 'Solid') {
+    if (varobj.type === 'Solid / Pattern') {
       initializeImage(varobj.image);
     }
     fetchVariantType(varobj.name);
@@ -562,9 +561,6 @@ const Variants = () => {
     : _.find(groups, { id: variant.group })?.name || groupName;
 
 
-  console.log('var : ', variant);
-
-
   return (
     <div>
       {!isCreateVariant && (
@@ -664,7 +660,7 @@ const Variants = () => {
                     }
                   }}
                   clearable
-                  disabled={variantTypeList.find(item => item === variant.name === variantOptions[1] ? 'Solid' : variant.name)}
+                disabled={variantTypeList.find(item => item === variant.name)}
                 />
               </div>
               {errors.group && <span className="error">{errors.group}</span>}

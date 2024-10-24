@@ -38,49 +38,59 @@ const GST = () => {
 
   useEffect(() => {
     fetchAllGSTs();
-  }, [pagination.pageIndex, pagination.pageSize]);
+  }, [pagination.pageIndex, pagination.pageSize,status]);
 
 
   const columns = useMemo(() => [
     {
       header: 'Name',
-      accessorKey: 'name'
+      accessorKey: 'name',
+      size:50
     },
     {
       header: 'Rate',
       accessorKey: 'gstRate',
-      size: 80
+      size: 50
     },
     {
       header: 'IGST',
       accessorKey: 'igst',
-      size: 80
+      size: 50
     },
     {
       header: 'CGST',
       accessorKey: 'cgst',
-      size: 80
+      size: 50
     },
     {
       header: 'SGST',
       accessorKey: 'sgst',
-      size: 80
+      size: 50
     },
     {
       header: 'GST Cess',
       accessorKey: 'gstcess',
-      size: 80
+      size: 50
     },
     {
       header: 'Description',
       accessorKey: 'description',
-      size: 130
+      size: 150
     },
     {
       header: (
         <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
-          <div>Status ({status})</div>
-          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(!openDropDown)} />
+          <div onClick={() => setOpenDropDown(prev => !prev)}>Status ({status})</div>
+          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(prev => !prev)} />
+          {openDropDown && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>
+          }
         </div>
       ),
       accessorKey: 'status',
@@ -102,7 +112,7 @@ const GST = () => {
       mantineTableBodyCellProps: {
         align: 'center'
       },
-      size: 100,
+      size: 50,
       Cell: ({ row }) => {
         const { original } = row;
         return (
@@ -112,7 +122,7 @@ const GST = () => {
         );
       }
     }
-  ], []);
+  ], [status, openDropDown]);
 
 
 
@@ -121,11 +131,16 @@ const GST = () => {
     setGst((prev => ({ ...prev, ...gstObj })));
   };
 
+  const handleStatusChange = (status) => {
+    setOpenDropDown(false);
+    setStatus(status);
+  }
+
 
   const fetchAllGSTs = async () => {
     setIsLoading(true);
     try {
-      const response = await B2B_API.get(`gst/get-all?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const response = await B2B_API.get(`gst/get-all?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&status=${status}`).json();
       const data = response?.response?.content || [];
       setRowCount(response?.response?.totalElements || 0);
       setGsts(data);

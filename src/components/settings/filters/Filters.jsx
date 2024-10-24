@@ -1,4 +1,4 @@
-import { rem, Switch } from '@mantine/core';
+import { rem, Switch, Text } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import B2BButton from '../../../common/B2BButton';
@@ -6,6 +6,8 @@ import B2BTableGrid from '../../../common/B2BTableGrid';
 import notify from '../../../utils/Notification';
 import _ from 'lodash';
 import { createB2BAPI } from '../../../api/Interceptor';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
 
 const Filters = () => {
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 15 });
@@ -15,6 +17,8 @@ const Filters = () => {
     const [isCategoryFilter, setIsCategoryFilter] = useState(false);
     const [checkedState, setCheckedState] = useState({})
     const B2B_API = createB2BAPI();
+    const [status, setStatus] = useState('ACTIVE')
+    const [openDropDown, setOpenDropDown] = useState(false)
 
     useEffect(() => {
         fetchAllData();
@@ -32,7 +36,7 @@ const Filters = () => {
 
     const getAllVariant = async () => {
         try {
-            const res = await B2B_API.get(`variantType/view?page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+            const res = await B2B_API.get(`variantType/get-all?status=ACTIVE&page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
             setVariantTypeList(res.response.content);
             setRowCount(res.response.totalElements);
         } catch (error) {
@@ -160,7 +164,21 @@ const Filters = () => {
         },
         {
             id: 'status',
-            header: 'Status',
+            header: (
+                <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+                    <div>Status({status})</div>
+                    <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(!openDropDown)} />
+                    {openDropDown && <div className='status-dropdown'>
+                        <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+                            <Text size="xs" fw={800}>ACTIVE</Text>
+                        </div>
+                        <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+                            <Text size="xs" fw={800}>INACTIVE</Text>
+                        </div>
+                    </div>
+                    }
+                </div>
+            ),
             accessorKey: 'status',
             size: 100,
             Cell: ({ row }) => (
@@ -194,7 +212,12 @@ const Filters = () => {
                 );
             },
         }
-    ], [categoryLeafCounts, checkedState, categoryList]);
+    ], [categoryLeafCounts, checkedState, categoryList,status,openDropDown]);
+
+    const handleStatusChange = (status) => {
+        setOpenDropDown(false)
+        setStatus(status)
+    }
 
 
     const handleChangeCategoryOrder = (id, newOrder) => {
@@ -277,7 +300,21 @@ const Filters = () => {
         },
         {
             id: 'variantStatus',
-            header: 'Status',
+            header: (
+                <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+                    <div>Status({status})</div>
+                    <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(!openDropDown)} />
+                    {openDropDown && <div className='status-dropdown'>
+                        <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+                            <Text size="xs" fw={800}>ACTIVE</Text>
+                        </div>
+                        <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+                            <Text size="xs" fw={800}>INACTIVE</Text>
+                        </div>
+                    </div>
+                    }
+                </div>
+            ),
             accessorKey: 'status',
             size: 100,
             Cell: ({ row }) => (
@@ -310,7 +347,7 @@ const Filters = () => {
                 );
             },
         }
-    ], [checkedState, variantTypeList]);
+    ], [checkedState, variantTypeList,status,openDropDown]);
 
     const handleChangeVariantTypeOrder = (id, newOrder) => {
         setVariantTypeList(prevData => {

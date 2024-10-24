@@ -1,6 +1,6 @@
-import { Checkbox } from '@mantine/core';
+import { Checkbox, Text } from '@mantine/core';
 import { IconPencil } from '@tabler/icons-react';
-import _ from 'lodash';
+import _, { size } from 'lodash';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { useMemo, useState } from 'react';
 import { BASE_URL } from '../api/EndPoints';
@@ -101,13 +101,23 @@ const ProductGrid = ({ data,
                                 maximumFractionDigits: 2,
                             }) : 'N/A';
                         },
+                        size:120
                     },
                     {
                         accessorKey: 'status',
                         header: (
-                            <div style={{ alignItems: 'center' }}>
-                                <div>Status({status})</div>
+                            <div>
+                                <div onClick={() => setOpenMenubar(prev => !prev)}>Status({status})</div>
                                 <FontAwesomeIcon icon={openMenubar ? faFilterCircleXmark : faFilter} onClick={() => setOpenMenubar(!openMenubar)} />
+                                {openMenubar && <div className='status-dropdown'>
+                                    <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+                                        <Text size="xs" fw={800}>ACTIVE</Text>
+                                    </div>
+                                    <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+                                        <Text size="xs" fw={800}>INACTIVE</Text>
+                                    </div>
+                                </div>
+                                }
                             </div>
                         ),
                         size: 180,
@@ -159,7 +169,7 @@ const ProductGrid = ({ data,
             enableColumnDragging: false,
             mantineTableHeadCellProps: { align: 'left' },
             mantineTableBodyCellProps: { align: 'left' },
-            size: 100,
+            size: 50,
             Cell: ({ row }) => {
                 return map ? (
                     <Checkbox
@@ -177,9 +187,12 @@ const ProductGrid = ({ data,
         });
 
         return columnArray;
-    }, [pimId, map, areAllSelected, selectedPairs, data]);
+    }, [pimId, map, areAllSelected, selectedPairs, data, status, openMenubar]);
 
-
+    const handleStatusChange = (status) => {
+        setOpenMenubar(false);
+        setStatus(status)
+    }
 
 
     const renderDetailPanel = ({ row }) => {

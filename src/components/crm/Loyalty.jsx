@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import B2BButton from '../../common/B2BButton';
 import B2BTableGrid from '../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../layout/Layout';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Text } from '@mantine/core';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
 
 export const Loyalty = () => {
   const { stateData } = useContext(ActiveTabContext);
@@ -13,6 +16,8 @@ export const Loyalty = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+    const [status, setStatus] = useState('ACTIVE')
+    const [openDropDown, setOpenDropDown] = useState(false)
 
   const columns = useMemo(() => [
     {
@@ -51,7 +56,21 @@ export const Loyalty = () => {
       accessorKey: 'createdOn'
     },
     {
-      header: 'Status',
+      header:(
+        <div>
+          <div onClick={() => setOpenDropDown(!openDropDown)}>Status({status})</div>
+          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(!openDropDown)} />
+          {openDropDown && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>
+          }
+        </div>
+      ),
       accessorKey: 'status',
       Cell: ({ cell, row }) => {
         const status = row.original.status;
@@ -80,7 +99,12 @@ export const Loyalty = () => {
         );
       }
     }
-  ], []);
+  ], [status,openDropDown]);
+
+  const handleStatusChange = (status) => {
+    setOpenDropDown(false);
+    setStatus(status)
+  }
 
   const editLoyalty = (node) => {
     const id = node.id;

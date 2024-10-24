@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +7,8 @@ import B2BButton from '../../common/B2BButton';
 import B2BTableGrid from '../../common/B2BTableGrid';
 import { ActiveTabContext } from '../../layout/Layout';
 import notify from '../../utils/Notification';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { Text } from '@mantine/core';
 
 const Collections = () => {
 
@@ -18,11 +21,13 @@ const Collections = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const B2B_API = createB2BAPI();
+  const [status, setStatus] = useState('ACTIVE');
+  const [openDropDown, setOpenDropDown] = useState(false);
 
   useEffect(() => {
     const fetchCollections = async () => {
       try {
-        const res = await B2B_API.get(`collections/view?page=${pagination.pageIndex}&size=${pagination.pageSize}`).json();
+        const res = await B2B_API.get(`collections/view?page=${pagination.pageIndex}&size=${pagination.pageSize}&status=${status}`).json();
         const data = res?.response.content || [];
         setRowCount(res?.response?.totalElements || 0);
         setCollections(data);
@@ -38,13 +43,13 @@ const Collections = () => {
       }
     }
     fetchCollections();
-  }, [])
+  }, [status])
 
   const columns = useMemo(() => [
     {
       header: 'S.No',
       accessorFn: (_, index) => index + 1,
-      size: 100,
+      size: 70,
       mantineTableHeadCellProps: { align: 'center' },
       mantineTableBodyCellProps: { align: 'center' },
     },
@@ -74,8 +79,23 @@ const Collections = () => {
       accessorKey: 'description'
     },
     {
-      header: 'Status',
+      header: (
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+          <div onClick={() => setOpenDropDown(prev => !prev)}>Status({status})</div>
+          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(!openDropDown)} />
+          {openDropDown && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>
+          }
+        </div>
+      ),
       accessorKey: 'status',
+      size:180,
       Cell: ({ cell, row }) => {
         const status = row.original.status;
         return (
@@ -111,7 +131,12 @@ const Collections = () => {
         );
       }
     }
-  ], []);
+  ], [status, openDropDown]);
+
+  const handleStatusChange = (status) => {
+    setOpenDropDown(false)
+    setStatus(status)
+  }
 
   const sortedCollections = collections.sort((a, b) => {
     return a.collectionId.localeCompare(b.collectionId);

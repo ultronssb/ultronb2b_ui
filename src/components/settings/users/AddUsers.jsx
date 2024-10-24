@@ -1,4 +1,4 @@
-import { PasswordInput } from '@mantine/core';
+import { PasswordInput, Text } from '@mantine/core';
 import { IconArrowLeft, IconPencil, IconPlus } from '@tabler/icons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import B2BAnchor from '../../../common/B2BAnchor';
@@ -11,6 +11,8 @@ import { ERROR_MESSAGE } from '../../../common/CommonResponse';
 import '../../../css/formstyles/Formstyles.css';
 import notify from '../../../utils/Notification';
 import { createB2BAPI } from '../../../api/Interceptor';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
 
 const AddUsers = () => {
   const initialUserState = {
@@ -38,6 +40,8 @@ const AddUsers = () => {
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalSearch, setGlobalSearch] = useState("");
   const B2B_API = createB2BAPI();
+  const [status, setStatus] = useState('ACTIVE')
+  const [openDropDown, setOpenDropDown] = useState(false)
 
   useEffect(() => {
     fetchAllUsers();
@@ -119,27 +123,46 @@ const AddUsers = () => {
     {
       header: 'User Name',
       accessorFn: (row) => row?.firstName + " " + (row?.lastName === null ? '' : row?.lastName),
-      accessorKey: "userName"
+      accessorKey: "userName",
+      size:120
     },
     {
       header: 'Email ID',
-      accessorKey: 'emailId'
+      accessorKey: 'emailId',
+      size:130
     },
     {
-      header: 'Mobile No.',
-      accessorKey: 'mobileNumber'
+      header: 'Mobile No',
+      accessorKey: 'mobileNumber',
+      size:90
     },
     {
       header: 'Role',
       accessorFn: (row) => row?.roleName,
-      accessorKey: 'roleName'
+      accessorKey: 'roleName',
+      size:100
     },
     {
       header: 'Location ID',
-      accessorKey: 'assignedLocation'
+      accessorKey: 'assignedLocation',
+      size:100
     },
     {
-      header: 'Status',
+      header: (
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem' }}>
+          <div>Status({status})</div>
+          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(!openDropDown)} />
+          {openDropDown && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>
+          }
+        </div>
+      ),
       accessorKey: 'status',
       Cell: ({ cell, row }) => {
         const status = row.original.status;
@@ -158,7 +181,7 @@ const AddUsers = () => {
       mantineTableBodyCellProps: {
         align: 'center'
       },
-      size: 100,
+      size: 80,
       Cell: ({ row }) => {
         const { original } = row;
         return (
@@ -168,14 +191,19 @@ const AddUsers = () => {
         )
       }
     }
-  ], [])
+  ], [status, openDropDown])
+
+  const handleStatusChange = (status) => {
+    setOpenDropDown(false)
+    setStatus(status)
+  }
 
   const editUser = async (userObj) => {
     setCreateUserArea(true);
     const res = await B2B_API.get(`user/${userObj.userId}`).json();
     if (res.response && res.response.emailId) {
       setUser({ ...res.response, userName: res.response.emailId });
-      setPagination({pageIndex: 0, pageSize: 5})
+      setPagination({ pageIndex: 0, pageSize: 5 })
     } else {
       setUser(res.response);
     }

@@ -6,6 +6,9 @@ import B2BTableGrid from '../../common/B2BTableGrid';
 import notify from '../../utils/Notification';
 import CustomerCreate from './CustomerCreate';
 import { createB2BAPI } from '../../api/Interceptor';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter, faFilterCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { Text } from '@mantine/core';
 
 const Customer = () => {
   const [customers, setCustomers] = useState([]);
@@ -18,10 +21,12 @@ const Customer = () => {
   const [isCreateCustomer, setIsCreateCustomer] = useState(false);
   const [customerId, setCustomerId] = useState('');
   const B2B_API = createB2BAPI();
+  const [status, setStatus] = useState('ACTIVE')
+  const [openDropDown, setOpenDropDown] = useState(false)
 
   useEffect(() => {
     fetchCustomers();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.pageIndex, pagination.pageSize]);
 
 
@@ -38,7 +43,7 @@ const Customer = () => {
   useEffect(() => {
     console.log(columnFilters, "columnFilters");
     filterCustomers();
-  }, [columnFilters, globalSearch])
+  }, [columnFilters, globalSearch,status])
 
   const filterCustomers = async () => {
     const filter = columnFilters && columnFilters.map(filter => {
@@ -76,7 +81,7 @@ const Customer = () => {
   const fetchCustomers = async () => {
     try {
       setIsLoading(true);
-      const response = await B2B_API.get(`customer?status=APPROVED&page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`).json();
+      const response = await B2B_API.get(`customer?status=APPROVED&page=${pagination.pageIndex}&pageSize=${pagination.pageSize}&status=${status}`).json();
       const data = response?.response?.content || [];
       setRowCount(response?.response?.totalElements || 0);
 
@@ -134,7 +139,21 @@ const Customer = () => {
       enableColumnFilter: false,
     },
     {
-      header: 'Status',
+      header: (
+        <div>
+          <div onClick={() => setOpenDropDown(!openDropDown)}>Status({status})</div>
+          <FontAwesomeIcon icon={openDropDown ? faFilterCircleXmark : faFilter} onClick={() => setOpenDropDown(!openDropDown)} />
+          {openDropDown && <div className='status-dropdown'>
+            <div onClick={() => handleStatusChange('ACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>ACTIVE</Text>
+            </div>
+            <div onClick={() => handleStatusChange('INACTIVE')} className='select-status'>
+              <Text size="xs" fw={800}>INACTIVE</Text>
+            </div>
+          </div>
+          }
+        </div>
+      ),
       accessorKey: 'status',
       Cell: ({ cell, row }) => {
         const status = row.original.status;
@@ -163,7 +182,12 @@ const Customer = () => {
         );
       }
     }
-  ], []);
+  ], [status, openDropDown]);
+
+  const handleStatusChange = (status) => {
+    setOpenDropDown(false)
+    setStatus(status)
+  }
 
   const editCustomer = (node) => {
     const customerId = node.customerId;
